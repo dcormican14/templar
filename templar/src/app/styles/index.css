@@ -1,0 +1,87 @@
+/* Templar Theme System - Import all individual theme files */
+
+/* Import all theme CSS files */
+@import './themes/light.css';
+@import './themes/dark.css';
+@import './themes/high-contrast.css';
+@import './themes/sepia.css';
+@import './themes/solarized-dark.css';
+
+/* Base theme system styles */
+* {
+  border-color: var(--border);
+}
+
+/* Smooth transitions for theme switching */
+*,
+*::before,
+*::after {
+  transition: 
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* Base component styles using CSS variables */
+.templar-card {
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.templar-button {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: 1px solid var(--primary);
+  transition: all 0.2s ease;
+}
+
+.templar-button:hover {
+  background: var(--primary-hover);
+}
+
+.templar-button--secondary {
+  background: var(--secondary);
+  color: var(--secondary-foreground);
+  border: 1px solid var(--border);
+}
+
+.templar-button--secondary:hover {
+  background: var(--secondary-hover);
+}
+
+.templar-input {
+  background: var(--input);
+  color: var(--foreground);
+  border: 1px solid var(--input-border);
+}
+
+.templar-input::placeholder {
+  color: var(--input-placeholder);
+}
+
+.templar-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary);
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  [data-theme] {
+    --background: #ffffff !important;
+    --foreground: #000000 !important;
+    --primary: #000000 !important;
+    --border: #000000 !important;
+  }
+}

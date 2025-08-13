@@ -1,0 +1,72 @@
+/* High Contrast Theme - Maximum readability for low-vision users */
+[data-theme="high-contrast"] {
+  /* Base colors */
+  --background: #ffffff;
+  --foreground: #000000;
+  
+  /* Primary colors */
+  --primary: #0000ff;
+  --primary-foreground: #ffffff;
+  --primary-hover: #0000cc;
+  
+  /* Secondary colors */
+  --secondary: #f0f0f0;
+  --secondary-foreground: #000000;
+  --secondary-hover: #e0e0e0;
+  
+  /* Accent colors */
+  --accent: #ffffff;
+  --accent-foreground: #000000;
+  
+  /* Border and dividers */
+  --border: #000000;
+  --border-hover: #333333;
+  
+  /* Muted elements */
+  --muted: #e0e0e0;
+  --muted-foreground: #000000;
+  
+  /* Success colors */
+  --success: #008000;
+  --success-foreground: #ffffff;
+  
+  /* Warning colors */
+  --warning: #ff8c00;
+  --warning-foreground: #000000;
+  
+  /* Error colors */
+  --error: #ff0000;
+  --error-foreground: #ffffff;
+  
+  /* Info colors */
+  --info: #0000ff;
+  --info-foreground: #ffffff;
+  
+  /* Card and surface colors */
+  --card: #ffffff;
+  --card-foreground: #000000;
+  
+  /* Input colors */
+  --input: #ffffff;
+  --input-border: #000000;
+  --input-placeholder: #666666;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 4px 0 rgb(0 0 0 / 0.8);
+  --shadow: 0 2px 6px 0 rgb(0 0 0 / 0.9), 0 2px 4px -1px rgb(0 0 0 / 0.9);
+  --shadow-md: 0 6px 12px -1px rgb(0 0 0 / 0.9), 0 4px 8px -2px rgb(0 0 0 / 0.9);
+  --shadow-lg: 0 12px 24px -3px rgb(0 0 0 / 0.9), 0 8px 12px -4px rgb(0 0 0 / 0.9);
+}
+
+/* Enhanced focus styles for accessibility */
+[data-theme="high-contrast"] *:focus {
+  outline: 3px solid #0000ff !important;
+  outline-offset: 2px !important;
+}
+
+[data-theme="high-contrast"] button:focus,
+[data-theme="high-contrast"] input:focus,
+[data-theme="high-contrast"] select:focus,
+[data-theme="high-contrast"] textarea:focus {
+  box-shadow: 0 0 0 3px #0000ff !important;
+}

@@ -1,0 +1,59 @@
+/* Dark Theme - Low-light environments, battery saving on OLED screens */
+[data-theme="dark"] {
+  /* Base colors */
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  
+  /* Primary colors */
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --primary-hover: #60a5fa;
+  
+  /* Secondary colors */
+  --secondary: #1e293b;
+  --secondary-foreground: #f1f5f9;
+  --secondary-hover: #334155;
+  
+  /* Accent colors */
+  --accent: #111827;
+  --accent-foreground: #d1d5db;
+  
+  /* Border and dividers */
+  --border: #374151;
+  --border-hover: #4b5563;
+  
+  /* Muted elements */
+  --muted: #111827;
+  --muted-foreground: #9ca3af;
+  
+  /* Success colors */
+  --success: #10b981;
+  --success-foreground: #ffffff;
+  
+  /* Warning colors */
+  --warning: #f59e0b;
+  --warning-foreground: #000000;
+  
+  /* Error colors */
+  --error: #ef4444;
+  --error-foreground: #ffffff;
+  
+  /* Info colors */
+  --info: #60a5fa;
+  --info-foreground: #ffffff;
+  
+  /* Card and surface colors */
+  --card: #1f2937;
+  --card-foreground: #f9fafb;
+  
+  /* Input colors */
+  --input: #1f2937;
+  --input-border: #4b5563;
+  --input-placeholder: #6b7280;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+}

@@ -1,0 +1,60 @@
+/* Light Theme - Default bright theme for general use */
+:root,
+[data-theme="light"] {
+  /* Base colors */
+  --background: #ffffff;
+  --foreground: #171717;
+  
+  /* Primary colors */
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --primary-hover: #2563eb;
+  
+  /* Secondary colors */
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --secondary-hover: #e2e8f0;
+  
+  /* Accent colors */
+  --accent: #f8fafc;
+  --accent-foreground: #334155;
+  
+  /* Border and dividers */
+  --border: #e2e8f0;
+  --border-hover: #cbd5e1;
+  
+  /* Muted elements */
+  --muted: #f8fafc;
+  --muted-foreground: #64748b;
+  
+  /* Success colors */
+  --success: #10b981;
+  --success-foreground: #ffffff;
+  
+  /* Warning colors */
+  --warning: #f59e0b;
+  --warning-foreground: #ffffff;
+  
+  /* Error colors */
+  --error: #ef4444;
+  --error-foreground: #ffffff;
+  
+  /* Info colors */
+  --info: #3b82f6;
+  --info-foreground: #ffffff;
+  
+  /* Card and surface colors */
+  --card: #ffffff;
+  --card-foreground: #171717;
+  
+  /* Input colors */
+  --input: #ffffff;
+  --input-border: #d1d5db;
+  --input-placeholder: #9ca3af;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}

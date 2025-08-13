@@ -1,0 +1,95 @@
+/* Solarized Dark Theme - Developer-friendly balanced contrast, popular in coding tools */
+[data-theme="solarized-dark"] {
+  /* Solarized color palette */
+  /* Base colors from Ethan Schoonover's Solarized scheme */
+  --solarized-base03: #002b36;
+  --solarized-base02: #073642;
+  --solarized-base01: #586e75;
+  --solarized-base00: #657b83;
+  --solarized-base0: #839496;
+  --solarized-base1: #93a1a1;
+  --solarized-base2: #eee8d5;
+  --solarized-base3: #fdf6e3;
+  --solarized-blue: #268bd2;
+  --solarized-cyan: #2aa198;
+  --solarized-green: #859900;
+  --solarized-yellow: #b58900;
+  --solarized-orange: #cb4b16;
+  --solarized-red: #dc322f;
+  --solarized-magenta: #d33682;
+  --solarized-violet: #6c71c4;
+
+  /* Base colors */
+  --background: var(--solarized-base03);
+  --foreground: var(--solarized-base0);
+  
+  /* Primary colors */
+  --primary: var(--solarized-blue);
+  --primary-foreground: var(--solarized-base3);
+  --primary-hover: var(--solarized-cyan);
+  
+  /* Secondary colors */
+  --secondary: var(--solarized-base02);
+  --secondary-foreground: var(--solarized-base1);
+  --secondary-hover: var(--solarized-base01);
+  
+  /* Accent colors */
+  --accent: var(--solarized-base02);
+  --accent-foreground: var(--solarized-base1);
+  
+  /* Border and dividers */
+  --border: var(--solarized-base01);
+  --border-hover: var(--solarized-base00);
+  
+  /* Muted elements */
+  --muted: var(--solarized-base02);
+  --muted-foreground: var(--solarized-base00);
+  
+  /* Success colors */
+  --success: var(--solarized-green);
+  --success-foreground: var(--solarized-base03);
+  
+  /* Warning colors */
+  --warning: var(--solarized-yellow);
+  --warning-foreground: var(--solarized-base03);
+  
+  /* Error colors */
+  --error: var(--solarized-red);
+  --error-foreground: var(--solarized-base3);
+  
+  /* Info colors */
+  --info: var(--solarized-cyan);
+  --info-foreground: var(--solarized-base03);
+  
+  /* Card and surface colors */
+  --card: var(--solarized-base02);
+  --card-foreground: var(--solarized-base0);
+  
+  /* Input colors */
+  --input: var(--solarized-base02);
+  --input-border: var(--solarized-base01);
+  --input-placeholder: var(--solarized-base00);
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 43 54 / 0.3);
+  --shadow: 0 1px 3px 0 rgb(0 43 54 / 0.4), 0 1px 2px -1px rgb(0 43 54 / 0.4);
+  --shadow-md: 0 4px 6px -1px rgb(0 43 54 / 0.4), 0 2px 4px -2px rgb(0 43 54 / 0.4);
+  --shadow-lg: 0 10px 15px -3px rgb(0 43 54 / 0.4), 0 4px 6px -4px rgb(0 43 54 / 0.4);
+}
+
+/* Code-friendly enhancements */
+[data-theme="solarized-dark"] code,
+[data-theme="solarized-dark"] pre {
+  background: var(--solarized-base02);
+  color: var(--solarized-base0);
+  border: 1px solid var(--solarized-base01);
+}
+
+[data-theme="solarized-dark"] .syntax-highlight {
+  --syntax-comment: var(--solarized-base01);
+  --syntax-keyword: var(--solarized-green);
+  --syntax-string: var(--solarized-cyan);
+  --syntax-number: var(--solarized-red);
+  --syntax-function: var(--solarized-blue);
+  --syntax-variable: var(--solarized-base0);
+}
