@@ -81,10 +81,11 @@ export {
   useNotificationSettings, 
   useAppearanceSettings 
 } from './SettingsProvider';
+export { useCSSVariables } from './useCSSVariables';
 
 // Re-export types
 export type { User, AuthContextType } from './AuthProvider';
-export type { Theme, ResolvedTheme, ThemeContextType } from './ThemeProvider';
+export type { Theme, ResolvedTheme, ThemeContextType, ThemeVariables } from './ThemeProvider';
 export type { Toast, ToastType } from './ToastProvider';
 export type { ModalConfig } from './ModalProvider';
 export type { AppSettings } from './SettingsProvider';

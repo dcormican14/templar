@@ -8,8 +8,33 @@ import {
   useLoading,
   useModal,
   useSettings,
-  useAsyncOperation
+  useAsyncOperation,
+  useCSSVariables
 } from './providers';
+import { 
+  Button, 
+  Icon, 
+  IconSun, 
+  IconMoon, 
+  IconSettings, 
+  IconUser, 
+  IconBell, 
+  IconHeart, 
+  IconStar, 
+  IconCheck, 
+  IconX, 
+  IconPlus, 
+  IconMinus, 
+  IconEdit, 
+  IconDelete, 
+  IconLoading,
+  IconArrowRight,
+  IconArrowLeft,
+  IconSearch,
+  IconHome,
+  IconWarning,
+  IconInfo
+} from './components/atoms';
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -31,13 +56,14 @@ export default function Home() {
 }
 
 function ProviderTestContent() {
-  const { theme, setTheme, availableThemes, toggleTheme, resolvedTheme } = useTheme();
+  const { theme, setTheme, availableThemes, toggleTheme, resolvedTheme, getCSSVariable, themeVariables } = useTheme();
   const { success, error, warning, info, clearToasts, toasts } = useToast();
   const { user, login, logout, isAuthenticated, isLoading: authLoading } = useAuth();
   const { startLoading, stopLoading, isLoading, isAnyLoading } = useLoading();
   const { openModal, closeAllModals, modals } = useModal();
   const { settings, updateSettings, resetSettings } = useSettings();
   const { execute } = useAsyncOperation();
+  const cssVars = useCSSVariables();
 
   // Test functions
   const handleLogin = async () => {
@@ -132,6 +158,7 @@ function ProviderTestContent() {
           <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-gray-100">
             Templar RoundTable Provider Demo
           </h1>
+          <Button />
           <p className="text-gray-600 dark:text-gray-400">
             Testing all providers in the RoundTable ecosystem
           </p>
@@ -171,6 +198,771 @@ function ProviderTestContent() {
               >
                 Toggle Theme
               </button>
+            </div>
+          </div>
+        </section>
+
+        {/* CSS Variables Demo */}
+        <section className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">CSS Variables Demo</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+            {/* Color Swatches */}
+            <div className="space-y-3">
+              <h3 className="font-medium text-gray-900 dark:text-gray-100">Base Colors</h3>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="w-6 h-6 rounded border"
+                    style={{ backgroundColor: themeVariables.background }}
+                  />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Background: {themeVariables.background}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="w-6 h-6 rounded border"
+                    style={{ backgroundColor: themeVariables.foreground }}
+                  />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Foreground: {themeVariables.foreground}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="w-6 h-6 rounded border"
+                    style={{ backgroundColor: themeVariables.primary }}
+                  />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Primary: {themeVariables.primary}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="w-6 h-6 rounded border"
+                    style={{ backgroundColor: themeVariables.secondary }}
+                  />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Secondary: {themeVariables.secondary}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Status Colors */}
+            <div className="space-y-3">
+              <h3 className="font-medium text-gray-900 dark:text-gray-100">Status Colors</h3>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="w-6 h-6 rounded border"
+                    style={{ backgroundColor: themeVariables.success }}
+                  />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Success: {themeVariables.success}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="w-6 h-6 rounded border"
+                    style={{ backgroundColor: themeVariables.warning }}
+                  />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Warning: {themeVariables.warning}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="w-6 h-6 rounded border"
+                    style={{ backgroundColor: themeVariables.error }}
+                  />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Error: {themeVariables.error}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div 
+                    className="w-6 h-6 rounded border"
+                    style={{ backgroundColor: themeVariables.info }}
+                  />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Info: {themeVariables.info}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Dynamic Component Example */}
+            <div className="space-y-3">
+              <h3 className="font-medium text-gray-900 dark:text-gray-100">Dynamic Components</h3>
+              <div className="space-y-2">
+                {/* Card using CSS variables directly */}
+                <div 
+                  className="p-3 rounded"
+                  style={{ 
+                    backgroundColor: themeVariables.card,
+                    color: themeVariables.cardForeground,
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    borderColor: themeVariables.border,
+                    boxShadow: themeVariables.shadow
+                  }}
+                >
+                  <p className="text-sm font-medium">Dynamic Card</p>
+                  <p className="text-xs opacity-75">Uses theme variables</p>
+                </div>
+
+                {/* Button using CSS variables */}
+                <button
+                  className="px-3 py-2 rounded text-sm font-medium transition-colors"
+                  style={{
+                    backgroundColor: themeVariables.primary,
+                    color: themeVariables.primaryForeground,
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = themeVariables.primaryHover;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = themeVariables.primary;
+                  }}
+                >
+                  Dynamic Button
+                </button>
+
+                {/* Input using CSS variables */}
+                <input
+                  type="text"
+                  placeholder="Dynamic input..."
+                  className="w-full px-3 py-2 rounded text-sm"
+                  style={{
+                    backgroundColor: themeVariables.input,
+                    color: themeVariables.foreground,
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    borderColor: themeVariables.inputBorder
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* CSS Variable Debugging */}
+          <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-900 rounded">
+            <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-2">CSS Variable Access</h3>
+            <div className="text-sm space-y-1 text-gray-600 dark:text-gray-400">
+              <p><code>getCSSVariable('primary')</code>: {getCSSVariable('primary')}</p>
+              <p><code>themeVariables.primary</code>: {themeVariables.primary}</p>
+              <p>Use these values to create dynamic components that respond to theme changes!</p>
+            </div>
+          </div>
+        </section>
+
+        {/* useCSSVariables Hook Demo */}
+        <section className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">useCSSVariables Hook Demo</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Surface Styles */}
+            <div className="space-y-4">
+              <h3 className="font-medium text-gray-900 dark:text-gray-100">Pre-built Surface Styles</h3>
+              
+              <div className="p-3 rounded" style={cssVars.surface.primary}>
+                Primary Surface
+              </div>
+              
+              <div className="p-3 rounded" style={cssVars.surface.secondary}>
+                Secondary Surface
+              </div>
+              
+              <div className="p-3 rounded border" style={cssVars.surface.card}>
+                Card Surface
+              </div>
+              
+              <div className="p-3 rounded" style={cssVars.surface.success}>
+                Success Surface
+              </div>
+              
+              <div className="p-3 rounded" style={cssVars.surface.warning}>
+                Warning Surface
+              </div>
+              
+              <div className="p-3 rounded" style={cssVars.surface.error}>
+                Error Surface
+              </div>
+            </div>
+
+            {/* Advanced Usage */}
+            <div className="space-y-4">
+              <h3 className="font-medium text-gray-900 dark:text-gray-100">Advanced Usage</h3>
+              
+              {/* Custom styles using createStyles */}
+              <div 
+                className="p-3 rounded"
+                style={cssVars.createStyles({
+                  backgroundColor: 'accent',
+                  color: 'accent-foreground',
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  borderColor: 'border',
+                })}
+              >
+                Using createStyles()
+              </div>
+              
+              {/* Color with opacity */}
+              <div 
+                className="p-3 rounded"
+                style={{
+                  backgroundColor: cssVars.getColorWithOpacity('primary', 0.1),
+                  color: cssVars.primary,
+                  borderWidth: '1px',
+                  borderStyle: 'solid',
+                  borderColor: cssVars.getColorWithOpacity('primary', 0.3),
+                }}
+              >
+                Primary with Opacity
+              </div>
+              
+              {/* Custom variable access */}
+              <div 
+                className="p-3 rounded"
+                style={{
+                  backgroundColor: cssVars.getVariable('muted'),
+                  color: cssVars.getVariable('muted-foreground'),
+                  boxShadow: cssVars.shadows.md,
+                }}
+              >
+                Custom Variable Access
+              </div>
+              
+              {/* Gradient using theme colors */}
+              <div 
+                className="p-3 rounded"
+                style={{
+                  background: `linear-gradient(135deg, ${cssVars.primary}, ${cssVars.secondary})`,
+                  color: cssVars.primaryForeground,
+                }}
+              >
+                Gradient with Theme Colors
+              </div>
+            </div>
+          </div>
+          
+          <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-900 rounded">
+            <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-2">useCSSVariables Usage</h3>
+            <pre className="text-sm overflow-x-auto">
+{`const cssVars = useCSSVariables();
+
+// Use pre-built surface styles
+<div style={cssVars.surface.primary}>Primary Button</div>
+
+// Create custom styles
+<div style={cssVars.createStyles({
+  backgroundColor: 'card',
+  color: 'card-foreground',
+  borderWidth: '1px',
+  borderStyle: 'solid',
+  borderColor: 'border'
+})}>Custom Card</div>
+
+// Access individual variables
+<div style={{ color: cssVars.primary }}>Primary Text</div>
+
+// Use with opacity
+<div style={{ 
+  backgroundColor: cssVars.getColorWithOpacity('primary', 0.1) 
+}}>Subtle Background</div>`}
+            </pre>
+          </div>
+        </section>
+
+        {/* Atomic Components Demo */}
+        <section className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Atomic Components Demo</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            Demonstrating fully integrated atomic components with RoundTable providers
+          </p>
+          
+          <div className="space-y-6">
+            {/* Button Variants */}
+            <div>
+              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Button Component</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Variants</h4>
+                  <div className="flex flex-wrap gap-2">
+                    <Button variant="primary" size="md">
+                      Primary
+                    </Button>
+                    <Button variant="secondary" size="md">
+                      Secondary
+                    </Button>
+                    <Button variant="outline" size="md">
+                      Outline
+                    </Button>
+                    <Button variant="ghost" size="md">
+                      Ghost
+                    </Button>
+                    <Button variant="destructive" size="md">
+                      Destructive
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Sizes</h4>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button variant="primary" size="xs">
+                      XS
+                    </Button>
+                    <Button variant="primary" size="sm">
+                      SM
+                    </Button>
+                    <Button variant="primary" size="md">
+                      MD
+                    </Button>
+                    <Button variant="primary" size="lg">
+                      LG
+                    </Button>
+                    <Button variant="primary" size="xl">
+                      XL
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">States & Features</h4>
+                  <div className="space-y-2">
+                    <Button
+                      variant="primary"
+                      loadingKey="demo-async"
+                      onAsyncClick={async () => {
+                        await new Promise(resolve => setTimeout(resolve, 2000));
+                        // Will automatically show success toast
+                      }}
+                    >
+                      Async Action
+                    </Button>
+                    <Button variant="secondary" disabled>
+                      Disabled
+                    </Button>
+                    <Button variant="outline" fullWidth>
+                      Full Width
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Provider Integration Demo */}
+            <div>
+              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Provider Integration</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Loading Integration</h4>
+                  <div className="space-y-2">
+                    <Button
+                      variant="primary"
+                      loadingKey="custom-loading"
+                      onAsyncClick={async () => {
+                        // Simulate API call
+                        await new Promise(resolve => setTimeout(resolve, 3000));
+                        throw new Error('Demo error handling');
+                      }}
+                    >
+                      Test Error Handling
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      onClick={() => {
+                        startLoading('manual-loading');
+                        setTimeout(() => stopLoading('manual-loading'), 2000);
+                      }}
+                    >
+                      Manual Loading
+                    </Button>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      Buttons automatically integrate with LoadingProvider and ToastProvider
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Theme Adaptation</h4>
+                  <div className="space-y-2">
+                    <Button
+                      variant="primary"
+                      onClick={() => {
+                        info('Theme Info', `Current theme: ${theme}, Resolved: ${resolvedTheme}`);
+                      }}
+                    >
+                      Show Theme Info
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={toggleTheme}
+                    >
+                      Toggle Theme
+                    </Button>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                      Colors automatically adapt using useCSSVariables()
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Implementation Code */}
+            <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-900 rounded">
+              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Usage Example</h3>
+              <pre className="text-sm overflow-x-auto">
+{`import { Button } from './components/atoms';
+
+// Basic usage
+<Button variant="primary" size="md">
+  Click me
+</Button>
+
+// With async action and loading states
+<Button
+  variant="primary"
+  loadingKey="my-action"
+  onAsyncClick={async () => {
+    // Automatic loading states and toast notifications
+    await performAsyncAction();
+  }}
+>
+  Async Action
+</Button>
+
+// Fully integrated with providers
+<Button
+  variant="outline"
+  onClick={() => {
+    // Access to all provider hooks
+    success('Success!', 'Action completed');
+  }}
+>
+  Show Toast
+</Button>`}
+              </pre>
+            </div>
+          </div>
+        </section>
+
+        {/* Icon Component Demo */}
+        <section className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Icon Component Demo</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            Iconoir-powered icon system with theme integration and animation support
+          </p>
+          
+          <div className="space-y-6">
+            {/* Basic Icon Usage */}
+            <div>
+              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Basic Usage</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Common Icons</h4>
+                  <div className="flex flex-wrap gap-3 items-center">
+                    <div className="flex items-center gap-2">
+                      <IconHome />
+                      <span className="text-sm">Home</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <IconUser />
+                      <span className="text-sm">User</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <IconSettings />
+                      <span className="text-sm">Settings</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <IconBell />
+                      <span className="text-sm">Bell</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <IconSearch />
+                      <span className="text-sm">Search</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Action Icons</h4>
+                  <div className="flex flex-wrap gap-3 items-center">
+                    <div className="flex items-center gap-2">
+                      <IconCheck color="success" />
+                      <span className="text-sm">Check</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <IconX color="error" />
+                      <span className="text-sm">Close</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <IconPlus color="primary" />
+                      <span className="text-sm">Add</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <IconMinus />
+                      <span className="text-sm">Remove</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <IconEdit color="info" />
+                      <span className="text-sm">Edit</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Theme Icons</h4>
+                  <div className="flex flex-wrap gap-3 items-center">
+                    <div className="flex items-center gap-2">
+                      <IconSun color="warning" />
+                      <span className="text-sm">Light</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <IconMoon color="info" />
+                      <span className="text-sm">Dark</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <IconHeart color="error" />
+                      <span className="text-sm">Love</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <IconStar color="warning" />
+                      <span className="text-sm">Star</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Size Variations */}
+            <div>
+              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Size Variations</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Predefined Sizes</h4>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <Icon name="star" size="xs" color="warning" />
+                      <span className="text-sm">XS (12px)</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Icon name="star" size="sm" color="warning" />
+                      <span className="text-sm">SM (16px)</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Icon name="star" size="md" color="warning" />
+                      <span className="text-sm">MD (20px)</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Icon name="star" size="lg" color="warning" />
+                      <span className="text-sm">LG (24px)</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Icon name="star" size="xl" color="warning" />
+                      <span className="text-sm">XL (32px)</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Custom Sizes</h4>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <Icon name="heart" size={14} color="error" />
+                      <span className="text-sm">14px</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Icon name="heart" size={28} color="error" />
+                      <span className="text-sm">28px</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Icon name="heart" size={40} color="error" />
+                      <span className="text-sm">40px</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Color Variations */}
+            <div>
+              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Color System Integration</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Theme Colors</h4>
+                  <div className="flex flex-wrap gap-3">
+                    <div className="flex items-center gap-2">
+                      <Icon name="user" color="inherit" />
+                      <span className="text-sm">Inherit</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Icon name="user" color="primary" />
+                      <span className="text-sm">Primary</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Icon name="user" color="secondary" />
+                      <span className="text-sm">Secondary</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Icon name="user" color="muted" />
+                      <span className="text-sm">Muted</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Status Colors</h4>
+                  <div className="flex flex-wrap gap-3">
+                    <div className="flex items-center gap-2">
+                      <Icon name="check" color="success" />
+                      <span className="text-sm">Success</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Icon name="warning" color="warning" />
+                      <span className="text-sm">Warning</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Icon name="x" color="error" />
+                      <span className="text-sm">Error</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Icon name="info" color="info" />
+                      <span className="text-sm">Info</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Animations */}
+            <div>
+              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Animation Support</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Loading Animations</h4>
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <IconLoading />
+                      <span className="text-sm">Auto Spin</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Icon name="settings" spin color="primary" />
+                      <span className="text-sm">Manual Spin</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Icon name="heart" pulse color="error" />
+                      <span className="text-sm">Pulse</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Interactive Example</h4>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      const isAnimated = !settings.appearance.animations;
+                      updateSettings({
+                        appearance: {
+                          ...settings.appearance,
+                          animations: isAnimated
+                        }
+                      });
+                      info('Animations', `Animations ${isAnimated ? 'enabled' : 'disabled'}`);
+                    }}
+                    icon={<Icon name={settings.appearance.animations ? "check" : "x"} color={settings.appearance.animations ? "success" : "error"} />}
+                    iconPosition="left"
+                  >
+                    {settings.appearance.animations ? 'Disable' : 'Enable'} Animations
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Buttons with Icons */}
+            <div>
+              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Integration with Button Component</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Icon Positions</h4>
+                  <div className="space-y-2">
+                    <Button
+                      variant="primary"
+                      icon={<IconArrowLeft />}
+                      iconPosition="left"
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      icon={<IconArrowRight />}
+                      iconPosition="right"
+                    >
+                      Next
+                    </Button>
+                    <Button
+                      variant="outline"
+                      icon={<IconPlus />}
+                      iconPosition="left"
+                      onClick={() => success('Added!', 'Item added successfully')}
+                    >
+                      Add Item
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Action Buttons</h4>
+                  <div className="space-y-2">
+                    <Button
+                      variant="destructive"
+                      icon={<IconDelete />}
+                      iconPosition="left"
+                      size="sm"
+                      onClick={() => error('Deleted!', 'Item deleted')}
+                    >
+                      Delete
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      icon={<IconEdit />}
+                      iconPosition="left"
+                      size="sm"
+                      onClick={() => info('Edit Mode', 'Editing enabled')}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="outline"
+                      icon={<IconSearch />}
+                      iconPosition="left"
+                      size="sm"
+                      onClick={() => info('Searching...', 'Search initiated')}
+                    >
+                      Search
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Implementation Code */}
+            <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-900 rounded">
+              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Usage Examples</h3>
+              <pre className="text-sm overflow-x-auto">
+{`import { Icon, IconSun, IconMoon } from './components/atoms';
+
+// Basic usage
+<Icon name="user" size="md" color="primary" />
+
+// Predefined convenience components
+<IconSun color="warning" />
+<IconMoon color="info" />
+
+// With animations
+<Icon name="settings" spin color="primary" />
+<Icon name="heart" pulse color="error" />
+
+// Custom icon component
+import CustomIcon from 'iconoir/icons/custom-icon.svg';
+<Icon name={CustomIcon} size={24} color="#ff0000" />
+
+// In buttons
+<Button
+  icon={<IconPlus />}
+  iconPosition="left"
+  variant="primary"
+>
+  Add Item
+</Button>`}
+              </pre>
             </div>
           </div>
         </section>
@@ -228,9 +1020,9 @@ function ProviderTestContent() {
             </p>
             {user && (
               <div className="mb-4 p-3 bg-gray-100 dark:bg-gray-700 rounded">
-                <p className="text-sm"><strong>User:</strong> {user.name}</p>
-                <p className="text-sm"><strong>Email:</strong> {user.email}</p>
-                <p className="text-sm"><strong>Role:</strong> {user.role || 'User'}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400"><strong>User:</strong> {user.name}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400"><strong>Email:</strong> {user.email}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400"><strong>Role:</strong> {user.role || 'User'}</p>
               </div>
             )}
           </div>

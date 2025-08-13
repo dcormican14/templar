@@ -12,6 +12,43 @@ interface ThemeContextType {
   toggleTheme: () => void;
   availableThemes: Theme[];
   cycleTheme: () => void;
+  // CSS Variables access
+  getCSSVariable: (variableName: string) => string;
+  themeVariables: ThemeVariables;
+}
+
+interface ThemeVariables {
+  background: string;
+  foreground: string;
+  primary: string;
+  primaryForeground: string;
+  primaryHover: string;
+  secondary: string;
+  secondaryForeground: string;
+  secondaryHover: string;
+  accent: string;
+  accentForeground: string;
+  border: string;
+  borderHover: string;
+  muted: string;
+  mutedForeground: string;
+  success: string;
+  successForeground: string;
+  warning: string;
+  warningForeground: string;
+  error: string;
+  errorForeground: string;
+  info: string;
+  infoForeground: string;
+  card: string;
+  cardForeground: string;
+  input: string;
+  inputBorder: string;
+  inputPlaceholder: string;
+  shadowSm: string;
+  shadow: string;
+  shadowMd: string;
+  shadowLg: string;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -33,6 +70,55 @@ export function ThemeProvider({
 }: ThemeProviderProps) {
   const [theme, setThemeState] = useState<Theme>(defaultTheme);
   const [mounted, setMounted] = useState(false);
+  const [themeVariables, setThemeVariables] = useState<ThemeVariables>({} as ThemeVariables);
+
+  // Get CSS variable value
+  const getCSSVariable = (variableName: string): string => {
+    if (typeof window === 'undefined') return '';
+    const style = getComputedStyle(document.documentElement);
+    return style.getPropertyValue(`--${variableName}`).trim();
+  };
+
+  // Update theme variables when theme changes
+  const updateThemeVariables = () => {
+    if (typeof window === 'undefined') return;
+    
+    const variables: ThemeVariables = {
+      background: getCSSVariable('background'),
+      foreground: getCSSVariable('foreground'),
+      primary: getCSSVariable('primary'),
+      primaryForeground: getCSSVariable('primary-foreground'),
+      primaryHover: getCSSVariable('primary-hover'),
+      secondary: getCSSVariable('secondary'),
+      secondaryForeground: getCSSVariable('secondary-foreground'),
+      secondaryHover: getCSSVariable('secondary-hover'),
+      accent: getCSSVariable('accent'),
+      accentForeground: getCSSVariable('accent-foreground'),
+      border: getCSSVariable('border'),
+      borderHover: getCSSVariable('border-hover'),
+      muted: getCSSVariable('muted'),
+      mutedForeground: getCSSVariable('muted-foreground'),
+      success: getCSSVariable('success'),
+      successForeground: getCSSVariable('success-foreground'),
+      warning: getCSSVariable('warning'),
+      warningForeground: getCSSVariable('warning-foreground'),
+      error: getCSSVariable('error'),
+      errorForeground: getCSSVariable('error-foreground'),
+      info: getCSSVariable('info'),
+      infoForeground: getCSSVariable('info-foreground'),
+      card: getCSSVariable('card'),
+      cardForeground: getCSSVariable('card-foreground'),
+      input: getCSSVariable('input'),
+      inputBorder: getCSSVariable('input-border'),
+      inputPlaceholder: getCSSVariable('input-placeholder'),
+      shadowSm: getCSSVariable('shadow-sm'),
+      shadow: getCSSVariable('shadow'),
+      shadowMd: getCSSVariable('shadow-md'),
+      shadowLg: getCSSVariable('shadow-lg'),
+    };
+    
+    setThemeVariables(variables);
+  };
 
   // Get system preference
   const getSystemTheme = (): 'light' | 'dark' => {
@@ -98,6 +184,9 @@ export function ThemeProvider({
     } else {
       root.classList.remove('dark');
     }
+
+    // Update theme variables after DOM changes
+    setTimeout(updateThemeVariables, 0);
   }, [resolvedTheme, mounted, attribute]);
 
   // Listen for system theme changes when in system mode
@@ -112,6 +201,7 @@ export function ThemeProvider({
       root.classList.remove('light', 'dark', 'high-contrast', 'sepia', 'solarized-dark');
       root.classList.add(newResolvedTheme);
       root.classList.toggle('dark', newResolvedTheme === 'dark');
+      setTimeout(updateThemeVariables, 0);
     };
 
     mediaQuery.addEventListener('change', handleChange);
@@ -129,6 +219,7 @@ export function ThemeProvider({
       root.classList.remove('light', 'dark', 'high-contrast', 'sepia', 'solarized-dark');
       root.classList.add(newResolvedTheme);
       root.classList.toggle('dark', newResolvedTheme === 'dark');
+      setTimeout(updateThemeVariables, 0);
     };
 
     // Check every minute for time-based theme changes
@@ -169,6 +260,8 @@ export function ThemeProvider({
     toggleTheme,
     availableThemes,
     cycleTheme,
+    getCSSVariable,
+    themeVariables,
   };
 
   return (
@@ -189,4 +282,4 @@ export function useTheme() {
 // Alias for backward compatibility
 export const DarkModeProvider = ThemeProvider;
 
-export { type Theme, type ResolvedTheme, type ThemeContextType };
+export { type Theme, type ResolvedTheme, type ThemeContextType, type ThemeVariables };
