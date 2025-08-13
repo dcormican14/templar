@@ -1,34 +1,12 @@
 export { 
   Icon,
-  IconArrowRight,
-  IconArrowLeft,
-  IconCheck,
-  IconX,
-  IconBell,
-  IconUser,
-  IconSettings,
-  IconSearch,
-  IconPlus,
-  IconMinus,
-  IconEdit,
-  IconDelete,
-  IconEye,
-  IconEyeOff,
-  IconHeart,
-  IconStar,
-  IconHome,
-  IconMenu,
-  IconWarning,
-  IconInfo,
-  IconLoading,
-  IconLock,
-  IconUnlock,
-  IconDownload,
-  IconUpload,
-  IconShare,
-  IconCopy,
-  IconSun,
-  IconMoon,
   type IconProps,
   type IconName
 } from './Icon';
+
+export { 
+  iconRegistry, 
+  availableIcons, 
+  getIcon, 
+  iconCount 
+} from './iconRegistry';

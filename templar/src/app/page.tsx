@@ -13,27 +13,7 @@ import {
 } from './providers';
 import { 
   Button, 
-  Icon, 
-  IconSun, 
-  IconMoon, 
-  IconSettings, 
-  IconUser, 
-  IconBell, 
-  IconHeart, 
-  IconStar, 
-  IconCheck, 
-  IconX, 
-  IconPlus, 
-  IconMinus, 
-  IconEdit, 
-  IconDelete, 
-  IconLoading,
-  IconArrowRight,
-  IconArrowLeft,
-  IconSearch,
-  IconHome,
-  IconWarning,
-  IconInfo
+  Icon
 } from './components/atoms';
 
 export default function Home() {
@@ -649,23 +629,23 @@ function ProviderTestContent() {
                   <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Common Icons</h4>
                   <div className="flex flex-wrap gap-3 items-center">
                     <div className="flex items-center gap-2">
-                      <IconHome />
+                      <Icon name="Home" />
                       <span className="text-sm">Home</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <IconUser />
+                      <Icon name="User" />
                       <span className="text-sm">User</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <IconSettings />
+                      <Icon name="Settings" />
                       <span className="text-sm">Settings</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <IconBell />
+                      <Icon name="Bell" />
                       <span className="text-sm">Bell</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <IconSearch />
+                      <Icon name="Search" />
                       <span className="text-sm">Search</span>
                     </div>
                   </div>
@@ -675,23 +655,23 @@ function ProviderTestContent() {
                   <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Action Icons</h4>
                   <div className="flex flex-wrap gap-3 items-center">
                     <div className="flex items-center gap-2">
-                      <IconCheck color="success" />
+                      <Icon name="Check" color="success" />
                       <span className="text-sm">Check</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <IconX color="error" />
+                      <Icon name="Xmark" color="error" />
                       <span className="text-sm">Close</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <IconPlus color="primary" />
+                      <Icon name="Plus" color="primary" />
                       <span className="text-sm">Add</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <IconMinus />
+                      <Icon name="Minus" />
                       <span className="text-sm">Remove</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <IconEdit color="info" />
+                      <Icon name="EditPencil" color="info" />
                       <span className="text-sm">Edit</span>
                     </div>
                   </div>
@@ -701,19 +681,19 @@ function ProviderTestContent() {
                   <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Theme Icons</h4>
                   <div className="flex flex-wrap gap-3 items-center">
                     <div className="flex items-center gap-2">
-                      <IconSun color="warning" />
+                      <Icon name="SunLight" color="warning" />
                       <span className="text-sm">Light</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <IconMoon color="info" />
+                      <Icon name="HalfMoon" color="info" />
                       <span className="text-sm">Dark</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <IconHeart color="error" />
+                      <Icon name="Heart" color="error" />
                       <span className="text-sm">Love</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <IconStar color="warning" />
+                      <Icon name="Star" color="warning" />
                       <span className="text-sm">Star</span>
                     </div>
                   </div>
@@ -729,23 +709,23 @@ function ProviderTestContent() {
                   <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Predefined Sizes</h4>
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
-                      <Icon name="star" size="xs" color="warning" />
+                      <Icon name="Star" size="xs" color="warning" />
                       <span className="text-sm">XS (12px)</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Icon name="star" size="sm" color="warning" />
+                      <Icon name="Star" size="sm" color="warning" />
                       <span className="text-sm">SM (16px)</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Icon name="star" size="md" color="warning" />
+                      <Icon name="Star" size="md" color="warning" />
                       <span className="text-sm">MD (20px)</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Icon name="star" size="lg" color="warning" />
+                      <Icon name="Star" size="lg" color="warning" />
                       <span className="text-sm">LG (24px)</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Icon name="star" size="xl" color="warning" />
+                      <Icon name="Star" size="xl" color="warning" />
                       <span className="text-sm">XL (32px)</span>
                     </div>
                   </div>
@@ -755,15 +735,15 @@ function ProviderTestContent() {
                   <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Custom Sizes</h4>
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
-                      <Icon name="heart" size={14} color="error" />
+                      <Icon name="Heart" size={14} color="error" />
                       <span className="text-sm">14px</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Icon name="heart" size={28} color="error" />
+                      <Icon name="Heart" size={28} color="error" />
                       <span className="text-sm">28px</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Icon name="heart" size={40} color="error" />
+                      <Icon name="Heart" size={40} color="error" />
                       <span className="text-sm">40px</span>
                     </div>
                   </div>
@@ -779,19 +759,19 @@ function ProviderTestContent() {
                   <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Theme Colors</h4>
                   <div className="flex flex-wrap gap-3">
                     <div className="flex items-center gap-2">
-                      <Icon name="user" color="inherit" />
+                      <Icon name="User" color="inherit" />
                       <span className="text-sm">Inherit</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Icon name="user" color="primary" />
+                      <Icon name="User" color="primary" />
                       <span className="text-sm">Primary</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Icon name="user" color="secondary" />
+                      <Icon name="User" color="secondary" />
                       <span className="text-sm">Secondary</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Icon name="user" color="muted" />
+                      <Icon name="User" color="muted" />
                       <span className="text-sm">Muted</span>
                     </div>
                   </div>
@@ -801,19 +781,19 @@ function ProviderTestContent() {
                   <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Status Colors</h4>
                   <div className="flex flex-wrap gap-3">
                     <div className="flex items-center gap-2">
-                      <Icon name="check" color="success" />
+                      <Icon name="Check" color="success" />
                       <span className="text-sm">Success</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Icon name="warning" color="warning" />
+                      <Icon name="WarningTriangle" color="warning" />
                       <span className="text-sm">Warning</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Icon name="x" color="error" />
+                      <Icon name="Xmark" color="error" />
                       <span className="text-sm">Error</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Icon name="info" color="info" />
+                      <Icon name="InfoCircle" color="info" />
                       <span className="text-sm">Info</span>
                     </div>
                   </div>
@@ -829,15 +809,15 @@ function ProviderTestContent() {
                   <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Loading Animations</h4>
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-2">
-                      <IconLoading />
+                      <Icon name="RefreshDouble" />
                       <span className="text-sm">Auto Spin</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Icon name="settings" spin color="primary" />
+                      <Icon name="Settings" spin color="primary" />
                       <span className="text-sm">Manual Spin</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Icon name="heart" pulse color="error" />
+                      <Icon name="Heart" pulse color="error" />
                       <span className="text-sm">Pulse</span>
                     </div>
                   </div>
@@ -857,7 +837,7 @@ function ProviderTestContent() {
                       });
                       info('Animations', `Animations ${isAnimated ? 'enabled' : 'disabled'}`);
                     }}
-                    icon={<Icon name={settings.appearance.animations ? "check" : "x"} color={settings.appearance.animations ? "success" : "error"} />}
+                    icon={<Icon name={settings.appearance.animations ? "Check" : "Xmark"} color={settings.appearance.animations ? "success" : "error"} />}
                     iconPosition="left"
                   >
                     {settings.appearance.animations ? 'Disable' : 'Enable'} Animations
@@ -875,21 +855,21 @@ function ProviderTestContent() {
                   <div className="space-y-2">
                     <Button
                       variant="primary"
-                      icon={<IconArrowLeft />}
+                      icon={<Icon name="ArrowLeft" />}
                       iconPosition="left"
                     >
                       Back
                     </Button>
                     <Button
                       variant="secondary"
-                      icon={<IconArrowRight />}
+                      icon={<Icon name="ArrowRight" />}
                       iconPosition="right"
                     >
                       Next
                     </Button>
                     <Button
                       variant="outline"
-                      icon={<IconPlus />}
+                      icon={<Icon name="Plus" />}
                       iconPosition="left"
                       onClick={() => success('Added!', 'Item added successfully')}
                     >
@@ -903,7 +883,7 @@ function ProviderTestContent() {
                   <div className="space-y-2">
                     <Button
                       variant="destructive"
-                      icon={<IconDelete />}
+                      icon={<Icon name="Trash" />}
                       iconPosition="left"
                       size="sm"
                       onClick={() => error('Deleted!', 'Item deleted')}
@@ -912,7 +892,7 @@ function ProviderTestContent() {
                     </Button>
                     <Button
                       variant="ghost"
-                      icon={<IconEdit />}
+                      icon={<Icon name="EditPencil" />}
                       iconPosition="left"
                       size="sm"
                       onClick={() => info('Edit Mode', 'Editing enabled')}
@@ -921,7 +901,7 @@ function ProviderTestContent() {
                     </Button>
                     <Button
                       variant="outline"
-                      icon={<IconSearch />}
+                      icon={<Icon name="Search" />}
                       iconPosition="left"
                       size="sm"
                       onClick={() => info('Searching...', 'Search initiated')}
@@ -937,18 +917,14 @@ function ProviderTestContent() {
             <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-900 rounded">
               <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Usage Examples</h3>
               <pre className="text-sm overflow-x-auto">
-{`import { Icon, IconSun, IconMoon } from './components/atoms';
+{`import { Icon } from './components/atoms';
 
 // Basic usage
-<Icon name="user" size="md" color="primary" />
-
-// Predefined convenience components
-<IconSun color="warning" />
-<IconMoon color="info" />
+<Icon name="User" size="md" color="primary" />
 
 // With animations
-<Icon name="settings" spin color="primary" />
-<Icon name="heart" pulse color="error" />
+<Icon name="Settings" spin color="primary" />
+<Icon name="Heart" pulse color="error" />
 
 // Custom icon component
 import CustomIcon from 'iconoir/icons/custom-icon.svg';
@@ -956,7 +932,7 @@ import CustomIcon from 'iconoir/icons/custom-icon.svg';
 
 // In buttons
 <Button
-  icon={<IconPlus />}
+  icon={<Icon name="Plus" />}
   iconPosition="left"
   variant="primary"
 >
