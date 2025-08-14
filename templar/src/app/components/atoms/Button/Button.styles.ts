@@ -84,7 +84,7 @@ export const createBaseStyles = (
   transition: animationsEnabled ? 'all 0.2s ease' : 'none',
   display: 'inline-flex',
   alignItems: 'center',
-  justifyContent: hasIcon ? 'space-between' : 'center',
+  justifyContent: 'center',
   verticalAlign: 'top',
   borderRadius: rounded ? '24px' : '8px',
   fontWeight: '500',

@@ -23,9 +23,22 @@ export const createIconContainer = (
   position: IconPosition,
   buttonSize: ButtonSize
 ): React.ReactElement => {
+  // Responsive spacing based on button size
+  const getSpacing = (size: ButtonSize): string => {
+    const spacingMap = {
+      xs: '2px',
+      sm: '3px',
+      md: '4px',
+      lg: '5px',
+      xl: '6px',
+    };
+    return spacingMap[size];
+  };
+
+  const spacing = getSpacing(buttonSize);
   const marginStyle = position === 'leading' 
-    ? { marginRight: '4px' } 
-    : { marginLeft: '4px' };
+    ? { marginRight: spacing } 
+    : { marginLeft: spacing };
 
   return (
     <span style={{ 
@@ -52,3 +65,37 @@ export const createTextContainer = (children: React.ReactNode): React.ReactEleme
 export const createSpacerElement = (): React.ReactElement => (
   <span style={{ width: '1px' }} />
 );
+
+export const createCenteredContent = (
+  icon: React.ReactNode,
+  iconPosition: IconPosition,
+  buttonSize: ButtonSize,
+  children: React.ReactNode
+): React.ReactElement => {
+  // Responsive spacing based on button size
+  const getSpacing = (size: ButtonSize): string => {
+    const spacingMap = {
+      xs: '2px',
+      sm: '3px',
+      md: '4px',
+      lg: '5px',
+      xl: '6px',
+    };
+    return spacingMap[size];
+  };
+
+  const spacing = getSpacing(buttonSize);
+
+  return (
+    <span style={{ 
+      display: 'flex', 
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: spacing
+    }}>
+      {iconPosition === 'leading' && renderIcon(icon, buttonSize)}
+      <span>{children}</span>
+      {iconPosition === 'trailing' && renderIcon(icon, buttonSize)}
+    </span>
+  );
+};

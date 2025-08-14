@@ -4,7 +4,7 @@ import React, { forwardRef, useMemo } from 'react';
 import { useCSSVariables, useLoading, useSettings } from '../../../providers';
 import type { ButtonProps } from './Button.types';
 import { getVariantStyles, getSizeStyles, createBaseStyles } from './Button.styles';
-import { createIconContainer, createTextContainer, createSpacerElement } from './Button.utils';
+import { createCenteredContent, createTextContainer } from './Button.utils';
 import { ProgressIndicator } from '../ProgressIndicator';
 import { useAsyncClick, useButtonHover } from './hooks';
 
@@ -84,20 +84,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
       return (
         <>
-          {/* Leading icon or spacer */}
-          {hasIcon && iconPosition === 'leading' 
-            ? createIconContainer(icon, 'leading', size)
-            : hasIcon && iconPosition === 'trailing' && createSpacerElement()
-          }
-          
-          {/* Text content */}
-          {createTextContainer(children)}
-          
-          {/* Trailing icon or spacer */}
-          {hasIcon && iconPosition === 'trailing'
-            ? createIconContainer(icon, 'trailing', size)
-            : hasIcon && iconPosition === 'leading' && createSpacerElement()
-          }
+          {hasIcon ? (
+            createCenteredContent(icon, iconPosition, size, children)
+          ) : (
+            createTextContainer(children)
+          )}
         </>
       );
     };
