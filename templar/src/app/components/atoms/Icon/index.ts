@@ -21,7 +21,7 @@ export {
   createIconProps
 } from './Icon.utils';
 
-export { IconAnimations } from './IconAnimations';
+export { IconAnimations } from './components';
 
 export { 
   iconRegistry, 

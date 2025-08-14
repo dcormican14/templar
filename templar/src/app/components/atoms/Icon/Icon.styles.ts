@@ -8,10 +8,10 @@ export const getSizeValue = (size: IconSize | number): number => {
   
   const sizeMap = {
     xs: 12,
-    sm: 16,
-    md: 20,
-    lg: 24,
-    xl: 32,
+    sm: 18,
+    md: 24,
+    lg: 30,
+    xl: 46,
   };
   return sizeMap[size];
 };

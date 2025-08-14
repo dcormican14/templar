@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import type { ButtonVariant } from './Button.types';
+import type { ButtonVariant } from '../Button.types';
 
 interface UseButtonHoverOptions {
   variant: ButtonVariant;

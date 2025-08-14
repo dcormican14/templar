@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useLoading, useToast } from '../../../providers';
+import { useLoading, useToast } from '@/app/providers';
 
 interface UseAsyncClickOptions {
   loadingKey?: string;

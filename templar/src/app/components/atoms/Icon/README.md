@@ -22,8 +22,10 @@ Icon/
 ├── Icon.types.ts            # TypeScript type definitions
 ├── Icon.styles.ts           # Style computation functions
 ├── Icon.utils.ts            # Utility functions
-├── IconAnimations.tsx       # Animation styles component
 ├── iconRegistry.ts          # Icon registry and dynamic loading
+├── components/
+│   ├── index.ts            # Component exports
+│   └── IconAnimations.tsx  # Animation styles component
 └── README.md               # Documentation
 ```
 

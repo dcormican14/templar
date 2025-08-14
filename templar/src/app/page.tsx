@@ -579,6 +579,7 @@ function ProviderTestContent() {
                     </Button>
                     <Button
                       variant="secondary"
+                      disabled
                       onClick={() => {
                         startLoading('manual-loading');
                         setTimeout(() => stopLoading('manual-loading'), 2000);

@@ -6,8 +6,7 @@ import type { ButtonProps } from './Button.types';
 import { getVariantStyles, getSizeStyles, createBaseStyles } from './Button.styles';
 import { createIconContainer, createTextContainer, createSpacerElement } from './Button.utils';
 import { LoadingSpinner } from '../LoadingSpinner';
-import { useAsyncClick } from './useAsyncClick';
-import { useButtonHover } from './useButtonHover';
+import { useAsyncClick, useButtonHover } from './hooks';
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ 

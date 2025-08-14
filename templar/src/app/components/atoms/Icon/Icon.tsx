@@ -5,7 +5,7 @@ import { useCSSVariables, useSettings } from '../../../providers';
 import type { IconProps } from './Icon.types';
 import { getSizeValue, getColorValue, getAnimationStyles, createIconStyles } from './Icon.styles';
 import { resolveIconComponent, createIconProps } from './Icon.utils';
-import { IconAnimations } from './IconAnimations';
+import { IconAnimations } from './components';
 
 export const Icon = forwardRef<SVGSVGElement, IconProps>(
   ({ 

@@ -50,20 +50,20 @@ export const getVariantStyles = (variant: ButtonVariant, cssVars: any) => {
 
 export const getSizeStyles = (size: ButtonSize): React.CSSProperties => {
   const sizeMap = {
-    xs: { padding: '4px 8px', fontSize: '12px', minWidth: '64px', height: '40px' },
-    sm: { padding: '6px 12px', fontSize: '14px', minWidth: '80px', height: '40px' },
-    md: { padding: '8px 16px', fontSize: '16px', minWidth: '96px', height: '48px' },
-    lg: { padding: '10px 20px', fontSize: '18px', minWidth: '112px', height: '56px' },
-    xl: { padding: '12px 24px', fontSize: '20px', minWidth: '128px', height: '64px' },
+    xs: { padding: '4px 8px', fontSize: '14px', minWidth: '82px', height: '40px' },
+    sm: { padding: '6px 12px', fontSize: '16px', minWidth: '82px', height: '40px' },
+    md: { padding: '8px 16px', fontSize: '18px', minWidth: '112px', height: '48px' },
+    lg: { padding: '10px 20px', fontSize: '20px', minWidth: '112px', height: '52px' },
+    xl: { padding: '12px 24px', fontSize: '22px', minWidth: '142px', height: '60px' },
   };
   return sizeMap[size];
 };
 
 export const getIconSize = (buttonSize: ButtonSize): 'xs' | 'sm' | 'md' | 'lg' | 'xl' => {
   const iconSizeMap = {
-    xs: 'xs' as const,
-    sm: 'xs' as const,
-    md: 'sm' as const,
+    xs: 'sm' as const,
+    sm: 'sm' as const,
+    md: 'md' as const,
     lg: 'md' as const,
     xl: 'lg' as const,
   };
@@ -80,6 +80,7 @@ export const createBaseStyles = (
   width: fullWidth ? '100%' : 'auto',
   opacity: isDisabled ? 0.6 : 1,
   cursor: isDisabled ? 'not-allowed' : 'pointer',
+  pointerEvents: isDisabled ? 'none' : 'auto',
   transition: animationsEnabled ? 'all 0.2s ease' : 'none',
   display: 'inline-flex',
   alignItems: 'center',
@@ -90,4 +91,5 @@ export const createBaseStyles = (
   outline: 'none',
   position: 'relative',
   fontFamily: 'inherit',
+  userSelect: 'none',
 });

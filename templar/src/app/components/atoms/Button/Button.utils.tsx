@@ -24,8 +24,8 @@ export const createIconContainer = (
   buttonSize: ButtonSize
 ): React.ReactElement => {
   const marginStyle = position === 'leading' 
-    ? { marginRight: '0.5rem' } 
-    : { marginLeft: '0.5rem' };
+    ? { marginRight: '4px' } 
+    : { marginLeft: '4px' };
 
   return (
     <span style={{ 

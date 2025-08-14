@@ -18,13 +18,14 @@ A comprehensive, accessible, and highly customizable button component built with
 ```
 Button/
 ├── index.ts                 # Main exports
-├── Button.clean.tsx         # Main component implementation
+├── Button.tsx               # Main component implementation
 ├── Button.types.ts          # TypeScript type definitions
 ├── Button.styles.ts         # Style computation functions
 ├── Button.utils.tsx         # Utility functions for rendering
-├── LoadingSpinner.tsx       # Loading spinner component
-├── useAsyncClick.ts         # Custom hook for async operations
-├── useButtonHover.ts        # Custom hook for hover effects
+├── hooks/
+│   ├── index.ts            # Hook exports
+│   ├── useAsyncClick.ts    # Custom hook for async operations
+│   └── useButtonHover.ts   # Custom hook for hover effects
 └── README.md               # Documentation
 ```
 
