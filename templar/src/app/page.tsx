@@ -13,7 +13,8 @@ import {
 } from './providers';
 import { 
   Button, 
-  Icon
+  Icon,
+  ProgressIndicator
 } from './components/atoms';
 
 export default function Home() {
@@ -44,6 +45,26 @@ function ProviderTestContent() {
   const { settings, updateSettings, resetSettings } = useSettings();
   const { execute } = useAsyncOperation();
   const cssVars = useCSSVariables();
+
+  // Progress bar state
+  const [progressValue, setProgressValue] = useState(0);
+  const [isProgressRunning, setIsProgressRunning] = useState(false);
+  const [demoProgress1, setDemoProgress1] = useState(0);
+  const [demoProgress2, setDemoProgress2] = useState(0);
+  const [demoProgress3, setDemoProgress3] = useState(0);
+  const [demoProgress4, setDemoProgress4] = useState(0);
+
+  // Animate demo progress bars on mount
+  useEffect(() => {
+    const intervals = [
+      setInterval(() => setDemoProgress1(prev => (prev + 1) % 101), 150),
+      setInterval(() => setDemoProgress2(prev => (prev + 1.2) % 101), 120),
+      setInterval(() => setDemoProgress3(prev => (prev + 0.8) % 101), 180),
+      setInterval(() => setDemoProgress4(prev => (prev + 1.5) % 101), 100),
+    ];
+
+    return () => intervals.forEach(clearInterval);
+  }, []);
 
   // Test functions
   const handleLogin = async () => {
@@ -79,6 +100,36 @@ function ProviderTestContent() {
     }).then(result => {
       success('Async Success', result as string);
     });
+  };
+
+  const startProgressDemo = () => {
+    if (isProgressRunning) return;
+    
+    setIsProgressRunning(true);
+    setProgressValue(0);
+    info('Progress Started', 'Simulating file upload progress...');
+    
+    const interval = setInterval(() => {
+      setProgressValue(prev => {
+        const newValue = prev + Math.random() * 15; // Random increment
+        
+        if (newValue >= 100) {
+          clearInterval(interval);
+          setIsProgressRunning(false);
+          setProgressValue(100);
+          success('Upload Complete!', 'File has been uploaded successfully');
+          
+          // Reset after 2 seconds
+          setTimeout(() => {
+            setProgressValue(0);
+          }, 2000);
+          
+          return 100;
+        }
+        
+        return newValue;
+      });
+    }, 200); // Update every 200ms
   };
 
   const openTestModal = () => {
@@ -436,6 +487,188 @@ function ProviderTestContent() {
   backgroundColor: cssVars.getColorWithOpacity('primary', 0.1) 
 }}>Subtle Background</div>`}
             </pre>
+          </div>
+        </section>
+
+        {/* ProgressIndicator Component Demo */}
+        <section className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">ProgressIndicator Component Demo</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            Versatile progress component that can display both spinners and progress bars
+          </p>
+          
+          <div className="space-y-6">
+            {/* Progress Bar Demo */}
+            <div>
+              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Interactive Progress Bar</h3>
+              <div className="space-y-4">
+                <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      File Upload Progress
+                    </span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                      {Math.round(progressValue)}%
+                    </span>
+                  </div>
+                  
+                  <ProgressIndicator
+                    type="progressBar"
+                    value={progressValue}
+                    max={100}
+                    showPercentage={true}
+                    color="primary"
+                    width="100%"
+                    thickness={8}
+                    label={`Upload progress: ${Math.round(progressValue)}%`}
+                  />
+                  
+                  <div className="mt-3 flex gap-2">
+                    <Button
+                      variant="primary"
+                      onClick={startProgressDemo}
+                      disabled={isProgressRunning}
+                      icon={<Icon name={isProgressRunning ? "RefreshDouble" : "ArrowUp"} spin={isProgressRunning} />}
+                      iconPosition="leading"
+                    >
+                      {isProgressRunning ? 'Uploading...' : 'Start Upload Demo'}
+                    </Button>
+                    
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setProgressValue(0);
+                        setIsProgressRunning(false);
+                      }}
+                      disabled={progressValue === 0}
+                      icon={<Icon name="RefreshDouble" />}
+                      iconPosition="leading"
+                    >
+                      Reset
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Spinner vs Progress Bar Comparison */}
+            <div>
+              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Spinner vs Progress Bar</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                    Spinner Mode (Indeterminate)
+                  </h4>
+                  <div className="flex items-center gap-4 mb-3">
+                    <ProgressIndicator type="spinner" size="xs" color="primary" />
+                    <ProgressIndicator type="spinner" size="sm" color="success" />
+                    <ProgressIndicator type="spinner" size="md" color="warning" />
+                    <ProgressIndicator type="spinner" size="lg" color="error" />
+                    <ProgressIndicator type="spinner" size="xl" color="info" />
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    Use for unknown duration tasks like API calls
+                  </p>
+                </div>
+
+                <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                    Progress Bar Mode (Determinate)
+                  </h4>
+                  <div className="space-y-2">
+                    <ProgressIndicator type="progressBar" value={demoProgress1} color="success" width={200} showPercentage />
+                    <ProgressIndicator type="progressBar" value={demoProgress2} color="primary" width={200} showPercentage />
+                    <ProgressIndicator type="progressBar" value={demoProgress3} color="warning" width={200} showPercentage />
+                    <ProgressIndicator type="progressBar" value={demoProgress4} color="error" width={200} showPercentage />
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                    Use for trackable progress like uploads, downloads
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Advanced Examples */}
+            <div>
+              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Advanced Examples</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Custom Styling</h4>
+                  <div className="space-y-2">
+                    {/* Thin progress bar */}
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Thin (2px height)</p>
+                      <ProgressIndicator type="progressBar" value={demoProgress1} thickness={2} width="100%" color="primary" />
+                    </div>
+                    
+                    {/* Thick progress bar */}
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Thick (12px height)</p>
+                      <ProgressIndicator type="progressBar" value={demoProgress2} thickness={12} width="100%" color="success" />
+                    </div>
+                    
+                    {/* Custom width */}
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Custom width (150px)</p>
+                      <ProgressIndicator type="progressBar" value={demoProgress3} width={150} color="warning" showPercentage />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Real-world Use Cases</h4>
+                  <div className="space-y-3">
+                    <div className="p-3 border rounded">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm">Installing packages...</span>
+                        <ProgressIndicator type="spinner" size="sm" color="primary" />
+                      </div>
+                    </div>
+                    
+                    <div className="p-3 border rounded">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm">Download Progress</span>
+                        <span className="text-xs">{(demoProgress2 * 0.051).toFixed(1)} MB / 5.1 MB</span>
+                      </div>
+                      <ProgressIndicator type="progressBar" value={demoProgress2} width="100%" color="info" thickness={4} />
+                    </div>
+                    
+                    <div className="p-3 border rounded">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm">Form Completion</span>
+                        <span className="text-xs">{Math.ceil(demoProgress3 / 20)} of 5 steps</span>
+                      </div>
+                      <ProgressIndicator type="progressBar" value={demoProgress3} width="100%" color="success" showPercentage />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Implementation Code */}
+            <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-900 rounded">
+              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Usage Examples</h3>
+              <pre className="text-sm overflow-x-auto">
+{`import { ProgressIndicator } from './components/atoms';
+
+// Spinner for indeterminate progress
+<ProgressIndicator type="spinner" size="md" color="primary" />
+
+// Progress bar for trackable progress
+<ProgressIndicator
+  type="progressBar"
+  value={progress}
+  max={100}
+  showPercentage={true}
+  color="success"
+  width="100%"
+  thickness={8}
+/>
+
+// Backward compatible LoadingSpinner
+<LoadingSpinner size="lg" color="warning" />`}
+              </pre>
+            </div>
           </div>
         </section>
 

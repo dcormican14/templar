@@ -5,7 +5,7 @@ import { useCSSVariables, useLoading, useSettings } from '../../../providers';
 import type { ButtonProps } from './Button.types';
 import { getVariantStyles, getSizeStyles, createBaseStyles } from './Button.styles';
 import { createIconContainer, createTextContainer, createSpacerElement } from './Button.utils';
-import { LoadingSpinner } from '../LoadingSpinner';
+import { ProgressIndicator } from '../ProgressIndicator';
 import { useAsyncClick, useButtonHover } from './hooks';
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -74,7 +74,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         const spinnerColor = variant === 'outline' || variant === 'ghost' ? 'primary' : 'inherit';
         
         return (
-          <LoadingSpinner 
+          <ProgressIndicator 
+            type="spinner"
             size={spinnerSize}
             color={spinnerColor}
           />

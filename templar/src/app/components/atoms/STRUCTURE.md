@@ -43,14 +43,14 @@ Icon/
 └── README.md               # Comprehensive documentation
 ```
 
-### LoadingSpinner Component
+### ProgressIndicator Component
 ```
-LoadingSpinner/
-├── index.ts                 # Main exports
-├── LoadingSpinner.tsx       # Main component implementation
-├── LoadingSpinner.types.ts  # TypeScript type definitions
-├── LoadingSpinner.styles.ts # Style computation functions
-└── README.md               # Comprehensive documentation
+ProgressIndicator/
+├── index.ts                     # Main exports and legacy compatibility
+├── ProgressIndicator.tsx        # Main component implementation
+├── ProgressIndicator.types.ts   # TypeScript type definitions
+├── ProgressIndicator.styles.ts  # Style computation functions
+└── README.md                   # Comprehensive documentation
 ```
 
 ## Organizational Principles
@@ -75,11 +75,18 @@ LoadingSpinner/
 // Clean imports from subdirectories
 import { Button, useAsyncClick, useButtonHover } from './components/atoms/Button';
 import { Icon, IconAnimations } from './components/atoms/Icon';
-import { LoadingSpinner } from './components/atoms/LoadingSpinner';
+import { ProgressIndicator, LoadingSpinner } from './components/atoms/ProgressIndicator';
 
 // Specific imports still work
 import { useAsyncClick } from './components/atoms/Button/hooks';
 import { IconAnimations } from './components/atoms/Icon/components';
+
+// New ProgressIndicator with dual modes
+<ProgressIndicator type="spinner" />
+<ProgressIndicator type="progressBar" value={75} />
+
+// Backward compatibility maintained
+<LoadingSpinner size="md" color="primary" />
 ```
 
 This structure follows React best practices and makes the codebase more professional and maintainable.
