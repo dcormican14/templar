@@ -1,8 +1,31 @@
 # Icon Component
 
-A comprehensive icon system built on top of [Iconoir React](https://iconoir.com) with full RoundTable provider integration and theme support.
+A comprehensive, theme-aware icon component built with React, TypeScript, and the iconoir icon library.
 
 ## Features
+
+- **1000+ Icons**: Complete iconoir icon library with dynamic loading
+- **Flexible sizing**: xs, sm, md, lg, xl or custom pixel values
+- **Color variants**: Theme colors, inherit, or custom colors
+- **Animations**: Built-in spin and pulse animations
+- **Theme integration**: Automatic adaptation to RoundTable theme system
+- **Type safety**: Full TypeScript support with icon name autocompletion
+- **Performance**: Memoized computations and optimized re-renders
+- **Accessibility**: Proper SVG attributes and screen reader support
+
+## File Structure
+
+```
+Icon/
+├── index.ts                 # Main exports
+├── Icon.tsx                 # Main component implementation
+├── Icon.types.ts            # TypeScript type definitions
+├── Icon.styles.ts           # Style computation functions
+├── Icon.utils.ts            # Utility functions
+├── IconAnimations.tsx       # Animation styles component
+├── iconRegistry.ts          # Icon registry and dynamic loading
+└── README.md               # Documentation
+```
 
 - **1500+ Icons**: Access to the complete Iconoir icon library via iconoir-react
 - **Theme Integration**: Automatic color adaptation using RoundTable ThemeProvider

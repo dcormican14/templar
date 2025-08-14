@@ -1,8 +1,27 @@
 export { 
-  Icon,
-  type IconProps,
-  type IconName
+  Icon
 } from './Icon';
+
+export { 
+  type IconProps,
+  type IconName,
+  type IconSize,
+  type IconColor
+} from './Icon.types';
+
+export {
+  getSizeValue,
+  getColorValue,
+  getAnimationStyles,
+  createIconStyles
+} from './Icon.styles';
+
+export {
+  resolveIconComponent,
+  createIconProps
+} from './Icon.utils';
+
+export { IconAnimations } from './IconAnimations';
 
 export { 
   iconRegistry, 

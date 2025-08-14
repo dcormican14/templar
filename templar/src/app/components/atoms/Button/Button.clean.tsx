@@ -5,7 +5,7 @@ import { useCSSVariables, useLoading, useSettings } from '../../../providers';
 import type { ButtonProps } from './Button.types';
 import { getVariantStyles, getSizeStyles, createBaseStyles } from './Button.styles';
 import { createIconContainer, createTextContainer, createSpacerElement } from './Button.utils';
-import { LoadingSpinner } from '../LoadingSpinner';
+import { LoadingSpinner } from './LoadingSpinner';
 import { useAsyncClick } from './useAsyncClick';
 import { useButtonHover } from './useButtonHover';
 
@@ -69,15 +69,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     // Content rendering
     const renderContent = () => {
       if (isButtonLoading) {
-        // Map button size to spinner size
-        const spinnerSize = size === 'xs' ? 'xs' : size === 'sm' ? 'xs' : 'sm';
-        // Determine spinner color based on variant
-        const spinnerColor = variant === 'outline' || variant === 'ghost' ? 'primary' : 'inherit';
-        
         return (
           <LoadingSpinner 
-            size={spinnerSize}
-            color={spinnerColor}
+            variant={variant} 
+            cssVars={cssVars} 
+            animationsEnabled={animationsEnabled} 
           />
         );
       }

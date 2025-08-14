@@ -447,72 +447,114 @@ function ProviderTestContent() {
           </p>
           
           <div className="space-y-6">
-            {/* Button Variants */}
+            {/* Button Variants Grid */}
             <div>
-              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Button Component</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Variants</h4>
-                  <div className="flex flex-wrap gap-2">
-                    <Button variant="primary" size="md">
-                      Primary
-                    </Button>
-                    <Button variant="secondary" size="md">
-                      Secondary
-                    </Button>
-                    <Button variant="outline" size="md">
-                      Outline
-                    </Button>
-                    <Button variant="ghost" size="md">
-                      Ghost
-                    </Button>
-                    <Button variant="destructive" size="md">
-                      Destructive
-                    </Button>
+              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Button Component Matrix</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                Complete showcase of all button variants across all available sizes
+              </p>
+              
+              {/* Create grid for each variant */}
+              {(['primary', 'secondary', 'outline', 'ghost', 'destructive'] as const).map((variant) => (
+                <div key={variant} className="mb-4">
+                  <h4 className="text-md font-medium text-gray-800 dark:text-gray-200 mb-2 capitalize">
+                    {variant}
+                  </h4>
+                  <div className="grid grid-cols-5 gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-md">
+                    {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
+                      <div key={size} className="flex flex-col items-center space-y-1">
+                        <span className="text-xs text-gray-500 dark:text-gray-400 uppercase font-medium">
+                          {size}
+                        </span>
+                        <Button 
+                          variant={variant} 
+                          size={size}
+                          onClick={() => info(`${variant} ${size}`, `Clicked ${variant} button in ${size} size`)}
+                        >
+                          {variant}
+                        </Button>
+                      </div>
+                    ))}
                   </div>
                 </div>
+              ))}
+            </div>
 
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Sizes</h4>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <Button variant="primary" size="xs">
-                      XS
-                    </Button>
-                    <Button variant="primary" size="sm">
-                      SM
-                    </Button>
-                    <Button variant="primary" size="md">
-                      MD
-                    </Button>
-                    <Button variant="primary" size="lg">
-                      LG
-                    </Button>
-                    <Button variant="primary" size="xl">
-                      XL
-                    </Button>
-                  </div>
+            {/* Primary Buttons with Icons */}
+            <div>
+              {/* Leading Icons Row */}
+              <div className="mb-4">
+                <h4 className="text-md font-medium text-gray-800 dark:text-gray-200 mb-2">
+                  Leading Icons
+                </h4>
+                <div className="grid grid-cols-5 gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-md">
+                  {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
+                    <div key={size} className="flex flex-col items-center space-y-1">
+                      <span className="text-xs text-gray-500 dark:text-gray-400 uppercase font-medium">
+                        {size}
+                      </span>
+                      <Button 
+                        variant="primary" 
+                        size={size}
+                        icon={<Icon name="Plus" />}
+                        iconPosition="leading"
+                        onClick={() => info(`Add ${size}`, `Clicked add button in ${size} size`)}
+                      >
+                        Add
+                      </Button>
+                    </div>
+                  ))}
                 </div>
+              </div>
 
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">States & Features</h4>
-                  <div className="space-y-2">
-                    <Button
-                      variant="primary"
-                      loadingKey="demo-async"
-                      onAsyncClick={async () => {
-                        await new Promise(resolve => setTimeout(resolve, 2000));
-                        // Will automatically show success toast
-                      }}
-                    >
-                      Async Action
-                    </Button>
-                    <Button variant="secondary" disabled>
-                      Disabled
-                    </Button>
-                    <Button variant="outline" fullWidth>
-                      Full Width
-                    </Button>
-                  </div>
+              {/* Trailing Icons Row */}
+              <div className="mb-4">
+                <h4 className="text-md font-medium text-gray-800 dark:text-gray-200 mb-2">
+                  Trailing Icons
+                </h4>
+                <div className="grid grid-cols-5 gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-md">
+                  {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
+                    <div key={size} className="flex flex-col items-center space-y-1">
+                      <span className="text-xs text-gray-500 dark:text-gray-400 uppercase font-medium">
+                        {size}
+                      </span>
+                      <Button 
+                        variant="primary" 
+                        size={size}
+                        icon={<Icon name="ArrowRight" />}
+                        iconPosition="trailing"
+                        onClick={() => info(`Next ${size}`, `Clicked next button in ${size} size`)}
+                      >
+                        Next
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Rounded Buttons Row */}
+              <div className="mb-4">
+                <h4 className="text-md font-medium text-gray-800 dark:text-gray-200 mb-2">
+                  Rounded Buttons
+                </h4>
+                <div className="grid grid-cols-5 gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-md">
+                  {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
+                    <div key={size} className="flex flex-col items-center space-y-1">
+                      <span className="text-xs text-gray-500 dark:text-gray-400 uppercase font-medium">
+                        {size}
+                      </span>
+                      <Button 
+                        variant="primary" 
+                        size={size}
+                        rounded
+                        icon={<Icon name="Star" />}
+                        iconPosition="leading"
+                        onClick={() => info(`Rounded ${size}`, `Clicked rounded button in ${size} size`)}
+                      >
+                        Rounded
+                      </Button>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -838,7 +880,7 @@ function ProviderTestContent() {
                       info('Animations', `Animations ${isAnimated ? 'enabled' : 'disabled'}`);
                     }}
                     icon={<Icon name={settings.appearance.animations ? "Check" : "Xmark"} color={settings.appearance.animations ? "success" : "error"} />}
-                    iconPosition="left"
+                    iconPosition="leading"
                   >
                     {settings.appearance.animations ? 'Disable' : 'Enable'} Animations
                   </Button>
@@ -855,22 +897,22 @@ function ProviderTestContent() {
                   <div className="space-y-2">
                     <Button
                       variant="primary"
-                      icon={<Icon name="ArrowLeft" />}
-                      iconPosition="left"
+                      icon={<Icon name="ArrowLeft" size="lg" />}
+                      iconPosition="leading"
                     >
                       Back
                     </Button>
                     <Button
                       variant="secondary"
-                      icon={<Icon name="ArrowRight" />}
-                      iconPosition="right"
+                      icon={<Icon name="ArrowRight" size="lg" />}
+                      iconPosition="trailing"
                     >
                       Next
                     </Button>
                     <Button
                       variant="outline"
-                      icon={<Icon name="Plus" />}
-                      iconPosition="left"
+                      icon={<Icon name="Plus" size="lg" />}
+                      iconPosition="leading"
                       onClick={() => success('Added!', 'Item added successfully')}
                     >
                       Add Item
@@ -884,7 +926,7 @@ function ProviderTestContent() {
                     <Button
                       variant="destructive"
                       icon={<Icon name="Trash" />}
-                      iconPosition="left"
+                      iconPosition="leading"
                       size="sm"
                       onClick={() => error('Deleted!', 'Item deleted')}
                     >
@@ -893,7 +935,7 @@ function ProviderTestContent() {
                     <Button
                       variant="ghost"
                       icon={<Icon name="EditPencil" />}
-                      iconPosition="left"
+                      iconPosition="leading"
                       size="sm"
                       onClick={() => info('Edit Mode', 'Editing enabled')}
                     >
@@ -902,7 +944,7 @@ function ProviderTestContent() {
                     <Button
                       variant="outline"
                       icon={<Icon name="Search" />}
-                      iconPosition="left"
+                      iconPosition="leading"
                       size="sm"
                       onClick={() => info('Searching...', 'Search initiated')}
                     >
@@ -933,7 +975,7 @@ import CustomIcon from 'iconoir/icons/custom-icon.svg';
 // In buttons
 <Button
   icon={<Icon name="Plus" />}
-  iconPosition="left"
+  iconPosition="leading"
   variant="primary"
 >
   Add Item
