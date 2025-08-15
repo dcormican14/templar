@@ -11,19 +11,20 @@ export const getVariantStyles = (variant: ButtonVariant, cssVars: any) => {
   switch (variant) {
     case 'primary':
       return {
-        ...cssVars.surface.primary,
+        backgroundColor: cssVars.primary,
+        color: cssVars.primaryForeground,
         ...baseStyles,
       };
     case 'secondary':
       return {
         backgroundColor: cssVars.secondary,
-        color: cssVars.primary,
+        color: cssVars.secondaryForeground,
         ...baseStyles,
       };
     case 'destructive':
       return {
         backgroundColor: cssVars.error,
-        color: cssVars.secondary,
+        color: cssVars.errorForeground,
         ...baseStyles,
       };
     case 'outline':
@@ -42,7 +43,8 @@ export const getVariantStyles = (variant: ButtonVariant, cssVars: any) => {
       };
     default:
       return {
-        ...cssVars.surface.primary,
+        backgroundColor: cssVars.primary,
+        color: cssVars.primaryForeground,
         ...baseStyles,
       };
   }

@@ -96,18 +96,18 @@ export const ProgressIndicator = forwardRef<HTMLDivElement, ProgressIndicatorPro
     // Unified text styles
     const textStyles = useMemo(() => {
       if (type === 'spinner') {
-        return createSpinnerTextStyles(spinnerSize, cssVars.secondary, size);
+        return createSpinnerTextStyles(spinnerSize, cssVars.muted, size);
       } else {
-        return createProgressBarTextStyles(sizeValue, trackHeight, fillHeight, cssVars.secondary, size);
+        return createProgressBarTextStyles(sizeValue, trackHeight, fillHeight, cssVars.muted, size);
       }
-    }, [type, spinnerSize, sizeValue, cssVars.secondary, size, trackHeight, fillHeight]);
+    }, [type, spinnerSize, sizeValue, cssVars.muted, size, trackHeight, fillHeight]);
 
     // Unified styles based on type
     const containerStyles = useMemo(() => {
       if (type === 'spinner') {
         return createSpinnerContainerStyles(spinnerSize, shouldShowPercentage);
       } else {
-        return createProgressBarStyles(width, trackHeight, cssVars.mutedForeground || '#e5e5e5', cssVars.background || '#f5f5f5', fillHeight);
+        return createProgressBarStyles(width, trackHeight, cssVars.muted, cssVars.background, fillHeight);
       }
     }, [type, shouldShowPercentage, spinnerSize, width, trackHeight, cssVars, fillHeight]);
 
@@ -118,13 +118,13 @@ export const ProgressIndicator = forwardRef<HTMLDivElement, ProgressIndicatorPro
     );
 
     const spinnerTrackStyles = useMemo(() => 
-      type === 'spinner' ? createSpinnerTrackStyles(spinnerSize, thickness, cssVars.mutedForeground || '#e5e5e5', trackSize) : undefined,
+      type === 'spinner' ? createSpinnerTrackStyles(spinnerSize, thickness, cssVars.muted, trackSize) : undefined,
       [type, spinnerSize, thickness, cssVars, trackSize]
     );
 
     // Progress bar specific styles (only when needed)
     const progressBarTrackStyles = useMemo(() => 
-      type === 'progressBar' ? createProgressBarTrackStyles(width, trackHeight, cssVars.mutedForeground || '#e5e5e5', fillHeight, shouldShowPercentage, trackSize) : undefined,
+      type === 'progressBar' ? createProgressBarTrackStyles(width, trackHeight, cssVars.muted, fillHeight, shouldShowPercentage, trackSize) : undefined,
       [type, width, trackHeight, cssVars, fillHeight, shouldShowPercentage, trackSize]
     );
 
