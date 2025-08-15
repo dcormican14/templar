@@ -1,56 +1,56 @@
-/* Light Theme - Default bright theme for general use */
-:root,
+/* Light Theme - Bright environments */
 [data-theme="light"] {
   /* Base colors */
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #eef0f2; /* antiflash-white */
+  --foreground: #171717; /* eerie-black */
   
   /* Primary colors */
-  --primary: #3b82f6;
-  --primary-foreground: #ffffff;
-  --primary-hover: #2563eb;
+  --primary: #c30b4e; /* rose-red */
+  --primary-foreground: #ffffff; /* near white */
+  --primary-hover: #d43b6d; /* lighter rose-red */
   
   /* Secondary colors */
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
-  --secondary-hover: #e2e8f0;
+  --secondary: #90caf9; /* light-sky-blue */
+  --secondary-foreground: #171717; /* deep neutral */
+  --secondary-hover: #add8ff; /* lighter blue */
   
   /* Accent colors */
-  --accent: #f8fafc;
-  --accent-foreground: #334155;
+  --accent: #d5d9e2; /* platinum */
+  --accent-foreground: #171717; /* deep neutral */
   
   /* Border and dividers */
-  --border: #e2e8f0;
-  --border-hover: #cbd5e1;
+  --border: #d5d9e2; /* platinum */
+  --border-hover: #b5bbc8; /* slightly darker platinum */
   
   /* Muted elements */
-  --muted: #f8fafc;
-  --muted-foreground: #64748b;
+  --muted: #d5d9e2; /* platinum */
+  --muted-foreground: #171717; /* deep neutral */
   
   /* Success colors */
-  --success: #10b981;
-  --success-foreground: #ffffff;
+  --success: #6ee7b7; /* soft mint green */
+  --success-foreground: #171717; /* deep neutral */
   
-  /* Warning colors */
-  --warning: #f59e0b;
-  --warning-foreground: #ffffff;
+  /* Warning colors (coral tone for brand harmony) */
+  --warning: #ff7f7f; /* warm pink-coral */
+  --warning-foreground: #171717; /* deep neutral */
   
-  /* Error colors */
-  --error: #ef4444;
-  --error-foreground: #ffffff;
+  /* Error colors (magenta for brand harmony) */
+  --error: #e84c88; /* magenta-red */
+  --error-foreground: #ffffff; /* near white */
   
-  /* Info colors */
-  --info: #3b82f6;
-  --info-foreground: #ffffff;
+  /* Info colors (brand blue) */
+  --info: #90caf9; /* light-sky-blue */
+  --info-foreground: #171717; /* deep neutral */
   
   /* Card and surface colors */
-  --card: #ffffff;
-  --card-foreground: #171717;
+  --card: #ffffff; /* pure white for clarity */
+  --card-foreground: #171717; /* deep neutral */
   
   /* Input colors */
-  --input: #ffffff;
-  --input-border: #d1d5db;
-  --input-placeholder: #9ca3af;
+  --input: #ffffff; /* white */
+  --input-border: #d5d9e2; /* platinum */
+  --input-placeholder: #b5bbc8; /* softer platinum */
+  --input-foreground: #171717; /* deep neutral */
   
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);

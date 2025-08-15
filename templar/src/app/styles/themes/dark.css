@@ -2,54 +2,55 @@
 [data-theme="dark"] {
   /* Base colors */
   --background: #0a0a0a;
-  --foreground: #ededed;
+  --foreground: #ffffff; /* near white */
   
   /* Primary colors */
-  --primary: #3b82f6;
-  --primary-foreground: #ffffff;
-  --primary-hover: #60a5fa;
+  --primary: #ff90e8; /* violet-web-color */
+  --primary-foreground: #323345; /* space-cadet (deep purple) */
+  --primary-hover: #ffb3ed;
   
   /* Secondary colors */
-  --secondary: #1e293b;
-  --secondary-foreground: #f1f5f9;
-  --secondary-hover: #334155;
+  --secondary: #90caf9; /* light-sky-blue */
+  --secondary-foreground: #323345; /* deep purple */
+  --secondary-hover: #add8ff;
   
   /* Accent colors */
-  --accent: #111827;
-  --accent-foreground: #d1d5db;
+  --accent: #ffb347; /* amber glow */
+  --accent-foreground: #323345; /* deep purple */
   
   /* Border and dividers */
-  --border: #374151;
-  --border-hover: #4b5563;
+  --border: #3a3f53; /* charcoal */
+  --border-hover: #6d7a8b; /* slate mist */
   
   /* Muted elements */
-  --muted: #111827;
-  --muted-foreground: #9ca3af;
+  --muted: #323345; /* space-cadet */
+  --muted-foreground: #ffffff; /* near white */
   
   /* Success colors */
-  --success: #10b981;
-  --success-foreground: #ffffff;
+  --success: #6ee7b7; /* soft mint green */
+  --success-foreground: #323345; /* deep purple */
   
-  /* Warning colors */
-  --warning: #f59e0b;
-  --warning-foreground: #000000;
+  /* Warning colors (coral) */
+  --warning: #ff7f7f; /* warm pink-coral */
+  --warning-foreground: #323345; /* deep purple */
   
-  /* Error colors */
-  --error: #ef4444;
-  --error-foreground: #ffffff;
+  /* Error colors (magenta) */
+  --error: #e84c88; /* magenta-red */
+  --error-foreground: #ffffff; /* near white */
   
-  /* Info colors */
-  --info: #60a5fa;
-  --info-foreground: #ffffff;
+  /* Info colors (brand blue) */
+  --info: #90caf9; /* light-sky-blue */
+  --info-foreground: #323345; /* deep purple */
   
   /* Card and surface colors */
-  --card: #1f2937;
-  --card-foreground: #f9fafb;
+  --card: #1f2029;
+  --card-foreground: #ffffff; /* near white */
   
   /* Input colors */
-  --input: #1f2937;
-  --input-border: #4b5563;
-  --input-placeholder: #6b7280;
+  --input: #1f2029;
+  --input-border: #3a3f53;
+  --input-placeholder: #6d7a8b;
+  --input-foreground: #ffffff; /* near white */
   
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
