@@ -3,6 +3,8 @@ export { Button } from './Button';
 export type { ButtonProps } from './Button';
 export { Card } from './Card';
 export type { CardProps } from './Card';
+export { Divider } from './Divider';
+export type { DividerProps } from './Divider';
 export { 
   Icon,
   type IconProps, 
@@ -23,4 +25,5 @@ export {
 // Re-export all atomic components (with specific exports to avoid conflicts)
 export * from './Button';
 export * from './Card';
+export * from './Divider';
 export * from './Icon';

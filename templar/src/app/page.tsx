@@ -14,6 +14,7 @@ import {
 import { 
   Button, 
   Card,
+  Divider,
   Icon,
   ProgressIndicator
 } from './components/atoms';
@@ -1233,6 +1234,199 @@ function ProviderTestContent() {
                 </Card>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Divider Component Demo */}
+        <section style={sectionStyle} className='p-6 rounded-lg mb-8'>
+          <h2 style={headingStyle} className="text-xl font-semibold mb-4">Divider Component Demo</h2>
+          <p style={mutedTextStyle} className="mb-6">
+            Flexible divider component for visual separation with multiple orientations, variants, and styling options.
+            Fully integrated with the design system's 4px spacing scale and theme variables.
+          </p>
+          
+          <div className="space-y-8">
+            {/* Basic Dividers */}
+            <div>
+              <h3 className="font-medium mb-4" style={headingStyle}>Basic Horizontal Dividers</h3>
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm mb-2" style={mutedTextStyle}>Default divider</p>
+                  <Divider />
+                </div>
+                
+                <div>
+                  <p className="text-sm mb-2" style={mutedTextStyle}>With custom spacing</p>
+                  <Divider spacing="lg" />
+                </div>
+                
+                <div>
+                  <p className="text-sm mb-2" style={mutedTextStyle}>Subtle appearance</p>
+                  <Divider subtle />
+                </div>
+              </div>
+            </div>
+
+            {/* Divider Variants */}
+            <div>
+              <h3 className="font-medium mb-4" style={headingStyle}>Divider Variants</h3>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-xs mb-1" style={mutedTextStyle}>Default</p>
+                  <Divider variant="default" />
+                </div>
+                
+                <div>
+                  <p className="text-xs mb-1" style={mutedTextStyle}>Primary</p>
+                  <Divider variant="primary" />
+                </div>
+                
+                <div>
+                  <p className="text-xs mb-1" style={mutedTextStyle}>Secondary</p>
+                  <Divider variant="secondary" />
+                </div>
+                
+                <div>
+                  <p className="text-xs mb-1" style={mutedTextStyle}>Outline</p>
+                  <Divider variant="outline" />
+                </div>
+                
+                <div>
+                  <p className="text-xs mb-1" style={mutedTextStyle}>Ghost</p>
+                  <Divider variant="ghost" />
+                </div>
+              </div>
+            </div>
+
+            {/* Divider Sizes */}
+            <div>
+              <h3 className="font-medium mb-4" style={headingStyle}>Divider Sizes</h3>
+              <div className="space-y-3">
+                {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
+                  <div key={size}>
+                    <p className="text-xs mb-1" style={mutedTextStyle}>{size.toUpperCase()} ({size === 'xs' ? '1px' : size === 'sm' ? '2px' : size === 'md' ? '3px' : size === 'lg' ? '4px' : '6px'})</p>
+                    <Divider size={size} variant="primary" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Divider Styles */}
+            <div>
+              <h3 className="font-medium mb-4" style={headingStyle}>Divider Styles</h3>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-xs mb-1" style={mutedTextStyle}>Solid (default)</p>
+                  <Divider variant="primary" size="md" />
+                </div>
+                
+                <div>
+                  <p className="text-xs mb-1" style={mutedTextStyle}>Dashed</p>
+                  <Divider variant="primary" size="md" dashed />
+                </div>
+                
+                <div>
+                  <p className="text-xs mb-1" style={mutedTextStyle}>Dotted</p>
+                  <Divider variant="primary" size="md" dotted />
+                </div>
+                
+                <div>
+                  <p className="text-xs mb-1" style={mutedTextStyle}>Rounded edges</p>
+                  <Divider variant="primary" size="lg" rounded />
+                </div>
+              </div>
+            </div>
+
+            {/* Labeled Dividers */}
+            <div>
+              <h3 className="font-medium mb-4" style={headingStyle}>Labeled Dividers</h3>
+              <div className="space-y-4">
+                <div>
+                  <p className="text-xs mb-2" style={mutedTextStyle}>Center label</p>
+                  <Divider label="OR" />
+                </div>
+                
+                <div>
+                  <p className="text-xs mb-2" style={mutedTextStyle}>Start label</p>
+                  <Divider label="Section Start" labelPosition="start" />
+                </div>
+                
+                <div>
+                  <p className="text-xs mb-2" style={mutedTextStyle}>End label</p>
+                  <Divider label="Section End" labelPosition="end" />
+                </div>
+                
+                <div>
+                  <p className="text-xs mb-2" style={mutedTextStyle}>Icon label</p>
+                  <Divider 
+                    label={<Icon name="Star" size="sm" color="primary" />} 
+                    variant="primary"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Vertical Dividers */}
+            <div>
+              <h3 className="font-medium mb-4" style={headingStyle}>Vertical Dividers</h3>
+              <div className="space-y-4">
+                <div>
+                  <p className="text-xs mb-2" style={mutedTextStyle}>Basic vertical dividers</p>
+                  <div className="flex items-center gap-4 h-16">
+                    <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded">Item 1</div>
+                    <Divider orientation="vertical" />
+                    <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded">Item 2</div>
+                    <Divider orientation="vertical" variant="primary" />
+                    <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded">Item 3</div>
+                    <Divider orientation="vertical" size="lg" variant="secondary" />
+                    <div className="p-2 bg-gray-100 dark:bg-gray-800 rounded">Item 4</div>
+                  </div>
+                </div>
+                
+                <div>
+                  <p className="text-xs mb-2" style={mutedTextStyle}>Vertical divider with label</p>
+                  <div className="flex items-center justify-center h-24">
+                    <div 
+                      className="p-4 rounded flex items-center justify-center"
+                      style={{ backgroundColor: cssVars.muted }}
+                    >
+                      <span>Left Content</span>
+                    </div>
+                    <Divider 
+                      orientation="vertical" 
+                      label="VS" 
+                      variant="primary"
+                      spacing="lg"
+                    />
+                    <div 
+                      className="p-4 rounded flex items-center justify-center"
+                      style={{ backgroundColor: cssVars.muted }}
+                    >
+                      <span>Right Content</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Content Section Divider */}
+            <Card variant="ghost" padding="lg">
+              <div className="text-center">
+                <h4 className="text-lg font-semibold mb-2">Article Title</h4>
+                <p className="text-sm opacity-75 mb-4">Published on January 1, 2024</p>
+                
+                <Divider 
+                  label={<Icon name="BookStack" size="sm" />} 
+                  variant="primary" 
+                  spacing="lg" 
+                />
+                
+                <p className="text-sm leading-relaxed">
+                  This is the beginning of an article. The divider above separates the title and metadata 
+                  from the main content, providing clear visual hierarchy and organization.
+                </p>
+              </div>
+            </Card>
           </div>
         </section>
 
