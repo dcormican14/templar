@@ -519,7 +519,6 @@ function ProviderTestContent() {
                     showPercentage={true}
                     color="primary"
                     width="100%"
-                    thickness={8}
                     label={`Upload progress: ${Math.round(progressValue)}%`}
                   />
                   
@@ -551,94 +550,107 @@ function ProviderTestContent() {
               </div>
             </div>
 
-            {/* Spinner vs Progress Bar Comparison */}
+            {/* Preset Examples */}
             <div>
-              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Spinner vs Progress Bar</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                    Spinner Mode (Indeterminate)
-                  </h4>
-                  <div className="flex items-center gap-4 mb-3">
-                    <ProgressIndicator type="spinner" size="xs" color="primary" />
-                    <ProgressIndicator type="spinner" size="sm" color="success" />
-                    <ProgressIndicator type="spinner" size="md" color="warning" />
-                    <ProgressIndicator type="spinner" size="lg" color="error" />
-                    <ProgressIndicator type="spinner" size="xl" color="info" />
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    Use for unknown duration tasks like API calls
-                  </p>
+              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Progress Bar Presets</h3>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">Small (6px bar, 6px background)</p>
+                  <ProgressIndicator type="progressBar" value={demoProgress1} preset="sm" width="100%" color="primary" />
                 </div>
-
-                <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                    Progress Bar Mode (Determinate)
-                  </h4>
-                  <div className="space-y-2">
-                    <ProgressIndicator type="progressBar" value={demoProgress1} color="success" width={200} showPercentage />
-                    <ProgressIndicator type="progressBar" value={demoProgress2} color="primary" width={200} showPercentage />
-                    <ProgressIndicator type="progressBar" value={demoProgress3} color="warning" width={200} showPercentage />
-                    <ProgressIndicator type="progressBar" value={demoProgress4} color="error" width={200} showPercentage />
-                  </div>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                    Use for trackable progress like uploads, downloads
-                  </p>
+                
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">Medium (12px bar, 6px background)</p>
+                  <ProgressIndicator type="progressBar" value={demoProgress2} preset="md" width="100%" color="success" />
+                </div>
+                
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">Large (12px bar, 12px background)</p>
+                  <ProgressIndicator type="progressBar" value={demoProgress3} preset="lg" width="100%" color="warning" />
+                </div>
+                
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">Medium with percentage (track gap effect)</p>
+                  <ProgressIndicator type="progressBar" value={demoProgress2} preset="md" width="100%" color="info" showPercentage />
+                </div>
+                
+                <div>
+                  <p className="text-xs text-gray-500 mb-1">Large with percentage (track gap effect)</p>
+                  <ProgressIndicator type="progressBar" value={demoProgress3} preset="lg" width="100%" color="error" showPercentage />
                 </div>
               </div>
             </div>
 
-            {/* Advanced Examples */}
+            {/* Spinner Preset Examples */}
             <div>
-              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Advanced Examples</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Custom Styling</h4>
-                  <div className="space-y-2">
-                    {/* Thin progress bar */}
-                    <div>
-                      <p className="text-xs text-gray-500 mb-1">Thin (2px height)</p>
-                      <ProgressIndicator type="progressBar" value={demoProgress1} thickness={2} width="100%" color="primary" />
+              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Spinner Presets</h3>
+              <div className="flex gap-6 items-center">
+                <div className="flex flex-col items-center gap-2">
+                  <p className="text-xs text-gray-500">Small (32px, 2px border + track)</p>
+                  <ProgressIndicator type="spinner" preset="sm" color="primary" />
+                </div>
+                
+                <div className="flex flex-col items-center gap-2">
+                  <p className="text-xs text-gray-500">Medium (40px, 3px border + track)</p>
+                  <ProgressIndicator type="spinner" preset="md" color="success" />
+                </div>
+                
+                <div className="flex flex-col items-center gap-2">
+                  <p className="text-xs text-gray-500">Large (48px, 4px border + track)</p>
+                  <ProgressIndicator type="spinner" preset="lg" color="warning" />
+                </div>
+                
+                <div className="flex flex-col items-center gap-2">
+                  <p className="text-xs text-gray-500">Large with percentage</p>
+                  <ProgressIndicator type="spinner" preset="lg" color="info" value={demoProgress2} showPercentage />
+                </div>
+              </div>
+            </div>
+
+            {/* Track Size Examples */}
+            <div>
+              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Customizable Track Sizes</h3>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Spinner Track Sizes</h4>
+                  <div className="flex gap-6 items-center">
+                    <div className="flex flex-col items-center gap-2">
+                      <p className="text-xs text-gray-500">None</p>
+                      <ProgressIndicator type="spinner" preset="md" color="primary" trackSize="none" />
                     </div>
-                    
-                    {/* Thick progress bar */}
-                    <div>
-                      <p className="text-xs text-gray-500 mb-1">Thick (12px height)</p>
-                      <ProgressIndicator type="progressBar" value={demoProgress2} thickness={12} width="100%" color="success" />
+                    <div className="flex flex-col items-center gap-2">
+                      <p className="text-xs text-gray-500">Small</p>
+                      <ProgressIndicator type="spinner" preset="md" color="success" trackSize="sm" />
                     </div>
-                    
-                    {/* Custom width */}
-                    <div>
-                      <p className="text-xs text-gray-500 mb-1">Custom width (150px)</p>
-                      <ProgressIndicator type="progressBar" value={demoProgress3} width={150} color="warning" showPercentage />
+                    <div className="flex flex-col items-center gap-2">
+                      <p className="text-xs text-gray-500">Medium</p>
+                      <ProgressIndicator type="spinner" preset="md" color="warning" trackSize="md" />
+                    </div>
+                    <div className="flex flex-col items-center gap-2">
+                      <p className="text-xs text-gray-500">Large</p>
+                      <ProgressIndicator type="spinner" preset="md" color="error" trackSize="lg" />
                     </div>
                   </div>
                 </div>
-
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Real-world Use Cases</h4>
-                  <div className="space-y-3">
-                    <div className="p-3 border rounded">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm">Installing packages...</span>
-                        <ProgressIndicator type="spinner" size="sm" color="primary" />
-                      </div>
+                
+                <div>
+                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Progress Bar Track Sizes</h4>
+                  <div className="space-y-2">
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">No track</p>
+                      <ProgressIndicator type="progressBar" preset="md" value={60} width="100%" color="primary" trackSize="none" />
                     </div>
-                    
-                    <div className="p-3 border rounded">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm">Download Progress</span>
-                        <span className="text-xs">{(demoProgress2 * 0.051).toFixed(1)} MB / 5.1 MB</span>
-                      </div>
-                      <ProgressIndicator type="progressBar" value={demoProgress2} width="100%" color="info" thickness={4} />
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Small track (fixed 2px)</p>
+                      <ProgressIndicator type="progressBar" preset="md" value={60} width="100%" color="success" trackSize="sm" />
                     </div>
-                    
-                    <div className="p-3 border rounded">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm">Form Completion</span>
-                        <span className="text-xs">{Math.ceil(demoProgress3 / 20)} of 5 steps</span>
-                      </div>
-                      <ProgressIndicator type="progressBar" value={demoProgress3} width="100%" color="success" showPercentage />
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Medium track (half bar height)</p>
+                      <ProgressIndicator type="progressBar" preset="md" value={60} width="100%" color="warning" trackSize="md" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 mb-1">Large track (same as bar height)</p>
+                      <ProgressIndicator type="progressBar" preset="md" value={60} width="100%" color="error" trackSize="lg" />
                     </div>
                   </div>
                 </div>
@@ -651,8 +663,16 @@ function ProviderTestContent() {
               <pre className="text-sm overflow-x-auto">
 {`import { ProgressIndicator } from './components/atoms';
 
-// Spinner for indeterminate progress
-<ProgressIndicator type="spinner" size="md" color="primary" />
+// Spinner for indeterminate progress (preset required)
+<ProgressIndicator type="spinner" preset="md" color="primary" />
+
+// Spinner with presets (only available sizes)
+<ProgressIndicator type="spinner" preset="sm" color="primary" />
+<ProgressIndicator type="spinner" preset="md" color="success" />
+<ProgressIndicator type="spinner" preset="lg" color="warning" />
+
+// Spinner with percentage (only shows on lg preset)
+<ProgressIndicator type="spinner" preset="lg" color="info" value={75} showPercentage />
 
 // Progress bar for trackable progress
 <ProgressIndicator
@@ -662,8 +682,22 @@ function ProviderTestContent() {
   showPercentage={true}
   color="success"
   width="100%"
-  thickness={8}
 />
+
+// Progress bar with presets
+<ProgressIndicator type="progressBar" preset="sm" value={75} width="100%" />
+<ProgressIndicator type="progressBar" preset="md" value={50} width="100%" />
+<ProgressIndicator type="progressBar" preset="lg" value={25} width="100%" />
+
+// Customizable track sizes
+// Spinners: fixed pixel values (sm=1px, md=2px, lg=3px)
+<ProgressIndicator type="spinner" preset="md" trackSize="none" />
+<ProgressIndicator type="spinner" preset="md" trackSize="sm" />
+<ProgressIndicator type="spinner" preset="md" trackSize="lg" />
+
+// Progress bars: relative to bar height (sm=2px fixed, md=half, lg=same)
+<ProgressIndicator type="progressBar" preset="md" trackSize="sm" value={50} width="100%" />
+<ProgressIndicator type="progressBar" preset="lg" trackSize="lg" value={50} width="100%" />
 
 // Backward compatible LoadingSpinner
 <LoadingSpinner size="lg" color="warning" />`}
