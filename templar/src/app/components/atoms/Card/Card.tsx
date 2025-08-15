@@ -25,6 +25,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
     variant = 'default',
     size = 'md',
     padding = 'md',
+    rounded = false,
     clickable = false,
     disabled = false,
     loading = false,
@@ -63,8 +64,8 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
 
     // Styles
     const baseStyles = useMemo(() => 
-      createBaseStyles(false, isDisabled, cssVars),
-      [isDisabled, cssVars]
+      createBaseStyles(false, isDisabled, Boolean(rounded), animationsEnabled),
+      [isDisabled, rounded, animationsEnabled]
     );
 
     const variantStyles = useMemo(() => 
@@ -83,8 +84,8 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
     );
 
     const clickableStyles = useMemo(() => 
-      createClickableStyles(isClickable, isDisabled, cssVars),
-      [isClickable, isDisabled, cssVars]
+      createClickableStyles(isClickable, isDisabled),
+      [isClickable, isDisabled]
     );
 
     const loadingOverlayStyles = useMemo(() => 

@@ -27,7 +27,7 @@ export const createHeaderSection = (
         borderBottom: '1px solid',
         borderBottomColor: cssVars.border,
         paddingBottom: '12px',
-        opacity: 0.9,
+        fontWeight: '500',
       }}
     >
       {header}
@@ -51,7 +51,7 @@ export const createFooterSection = (
         paddingTop: '12px',
         borderTop: '1px solid',
         borderTopColor: cssVars.border,
-        opacity: 0.9,
+        fontWeight: '500',
       }}
     >
       {footer}

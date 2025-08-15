@@ -3,145 +3,111 @@ import type { CardVariant, CardSize, CardPadding } from './Card.types';
 
 export const getVariantStyles = (variant: CardVariant, cssVars: any) => {
   const baseStyles = {
+    borderWidth: '0',
     borderStyle: 'solid' as const,
-    transition: 'all 0.2s ease-in-out',
+    borderColor: 'transparent',
   };
 
   switch (variant) {
+    case 'primary':
+      return {
+        backgroundColor: cssVars.primary,
+        color: cssVars.primaryForeground,
+        ...baseStyles,
+      };
+    case 'secondary':
+      return {
+        backgroundColor: cssVars.secondary,
+        color: cssVars.secondaryForeground,
+        ...baseStyles,
+      };
+    case 'outline':
+      return {
+        backgroundColor: 'transparent',
+        color: cssVars.foreground,
+        borderWidth: '1px',
+        borderStyle: 'solid' as const,
+        borderColor: cssVars.border,
+      };
+    case 'ghost':
+      return {
+        backgroundColor: 'transparent',
+        color: cssVars.foreground,
+        ...baseStyles,
+      };
     case 'default':
       return {
         backgroundColor: cssVars.card,
         color: cssVars.cardForeground,
         borderWidth: '1px',
+        borderStyle: 'solid' as const,
         borderColor: cssVars.border,
         boxShadow: cssVars.shadows.sm,
-        ...baseStyles,
-      };
-    case 'elevated':
-      return {
-        backgroundColor: cssVars.card,
-        color: cssVars.cardForeground,
-        borderWidth: '0px',
-        borderColor: 'transparent',
-        boxShadow: cssVars.shadows.md,
-        ...baseStyles,
-      };
-    case 'outlined':
-      return {
-        backgroundColor: 'transparent',
-        color: cssVars.foreground,
-        borderWidth: '2px',
-        borderColor: cssVars.border,
-        boxShadow: 'none',
-        ...baseStyles,
-      };
-    case 'filled':
-      return {
-        backgroundColor: cssVars.muted,
-        color: cssVars.mutedForeground,
-        borderWidth: '0px',
-        borderColor: 'transparent',
-        boxShadow: 'none',
-        ...baseStyles,
-      };
-    case 'transparent':
-      return {
-        backgroundColor: 'transparent',
-        color: cssVars.foreground,
-        borderWidth: '0px',
-        borderColor: 'transparent',
-        boxShadow: 'none',
-        ...baseStyles,
       };
     default:
       return {
         backgroundColor: cssVars.card,
         color: cssVars.cardForeground,
         borderWidth: '1px',
+        borderStyle: 'solid' as const,
         borderColor: cssVars.border,
         boxShadow: cssVars.shadows.sm,
-        ...baseStyles,
       };
   }
 };
 
 export const getSizeStyles = (size: CardSize): React.CSSProperties => {
-  switch (size) {
-    case 'xs':
-      return {
-        borderRadius: '4px',
-        minHeight: '60px',
-      };
-    case 'sm':
-      return {
-        borderRadius: '6px',
-        minHeight: '80px',
-      };
-    case 'md':
-      return {
-        borderRadius: '8px',
-        minHeight: '100px',
-      };
-    case 'lg':
-      return {
-        borderRadius: '12px',
-        minHeight: '120px',
-      };
-    case 'xl':
-      return {
-        borderRadius: '16px',
-        minHeight: '140px',
-      };
-    default:
-      return {
-        borderRadius: '8px',
-        minHeight: '100px',
-      };
-  }
+  const sizeMap = {
+    xs: { minHeight: '40px', minWidth: '160px' },
+    sm: { minHeight: '48px', minWidth: '200px' },
+    md: { minHeight: '56px', minWidth: '240px' },
+    lg: { minHeight: '64px', minWidth: '280px' },
+    xl: { minHeight: '72px', minWidth: '320px' },
+  };
+  return sizeMap[size];
 };
 
 export const getPaddingStyles = (padding: CardPadding): React.CSSProperties => {
-  switch (padding) {
-    case 'none':
-      return { padding: '0' };
-    case 'xs':
-      return { padding: '8px' };
-    case 'sm':
-      return { padding: '12px' };
-    case 'md':
-      return { padding: '16px' };
-    case 'lg':
-      return { padding: '24px' };
-    case 'xl':
-      return { padding: '32px' };
-    default:
-      return { padding: '16px' };
-  }
+  const paddingMap = {
+    none: { padding: '0px' },
+    xs: { padding: '4px' },
+    sm: { padding: '8px' },
+    md: { padding: '16px' },
+    lg: { padding: '24px' },
+    xl: { padding: '32px' },
+  };
+  return paddingMap[padding];
 };
 
 export const createBaseStyles = (
   fullWidth: boolean,
-  disabled: boolean,
-  cssVars: any
+  isDisabled: boolean,
+  rounded: boolean,
+  animationsEnabled: boolean
 ): React.CSSProperties => ({
   position: 'relative',
   display: 'flex',
   flexDirection: 'column',
   width: fullWidth ? '100%' : 'auto',
-  opacity: disabled ? 0.6 : 1,
-  pointerEvents: disabled ? 'none' : 'auto',
+  opacity: isDisabled ? 0.6 : 1,
+  pointerEvents: isDisabled ? 'none' : 'auto',
   cursor: 'default',
+  borderRadius: rounded ? '24px' : '8px',
+  transition: animationsEnabled ? 'all 0.2s ease' : 'none',
+  fontFamily: 'inherit',
+  fontWeight: '500',
+  outline: 'none',
 });
 
 export const createClickableStyles = (
   clickable: boolean,
-  disabled: boolean,
-  cssVars: any
+  disabled: boolean
 ): React.CSSProperties => {
   if (!clickable || disabled) return {};
   
   return {
     cursor: 'pointer',
+    userSelect: 'none',
     // Hover effects will be handled via JavaScript event handlers
   };
 };
@@ -151,7 +117,7 @@ export const createHeaderStyles = (): React.CSSProperties => ({
   borderBottom: '1px solid',
   borderBottomColor: 'inherit',
   paddingBottom: '12px',
-  opacity: 0.9,
+  fontWeight: '500',
 });
 
 export const createFooterStyles = (): React.CSSProperties => ({
@@ -159,7 +125,7 @@ export const createFooterStyles = (): React.CSSProperties => ({
   paddingTop: '12px',
   borderTop: '1px solid',
   borderTopColor: 'inherit',
-  opacity: 0.9,
+  fontWeight: '500',
 });
 
 export const createContentStyles = (): React.CSSProperties => ({

@@ -983,7 +983,8 @@ function ProviderTestContent() {
         <section style={sectionStyle} className='p-6 rounded-lg mb-8'>
           <h2 style={headingStyle} className="text-xl font-semibold mb-4">Card Component Demo</h2>
           <p style={mutedTextStyle} className="mb-6">
-            Versatile card component with multiple variants, sizes, and interactive capabilities
+            Standardized card component following design system principles with consistent variants, sizing, theming, and interactive capabilities. 
+            Now fully integrated with CSS variables and 4px-based spacing system.
           </p>
           
           <div className="space-y-6">
@@ -996,40 +997,66 @@ function ProviderTestContent() {
                   <p className="text-sm opacity-75">Standard card with border and shadow</p>
                 </Card>
                 
-                <Card variant="elevated" padding="md">
-                  <h4 className="font-medium mb-2">Elevated</h4>
-                  <p className="text-sm opacity-75">Enhanced shadow, no border</p>
+                <Card variant="primary" padding="md">
+                  <h4 className="font-medium mb-2">Primary</h4>
+                  <p className="text-sm opacity-75">Primary theme background</p>
                 </Card>
                 
-                <Card variant="outlined" padding="md">
-                  <h4 className="font-medium mb-2">Outlined</h4>
-                  <p className="text-sm opacity-75">Prominent border styling</p>
+                <Card variant="secondary" padding="md">
+                  <h4 className="font-medium mb-2">Secondary</h4>
+                  <p className="text-sm opacity-75">Secondary theme background</p>
                 </Card>
                 
-                <Card variant="filled" padding="md">
-                  <h4 className="font-medium mb-2">Filled</h4>
-                  <p className="text-sm opacity-75">Muted background color</p>
+                <Card variant="outline" padding="md">
+                  <h4 className="font-medium mb-2">Outline</h4>
+                  <p className="text-sm opacity-75">Outlined with transparent background</p>
                 </Card>
                 
-                <Card variant="transparent" padding="md">
-                  <h4 className="font-medium mb-2">Transparent</h4>
-                  <p className="text-sm opacity-75">No background or border</p>
+                <Card variant="ghost" padding="md">
+                  <h4 className="font-medium mb-2">Ghost</h4>
+                  <p className="text-sm opacity-75">Minimal styling, hover effects</p>
                 </Card>
               </div>
             </div>
 
-            {/* Card Sizes */}
+            {/* Rounded Cards */}
             <div>
-              <h3 className="font-medium mb-3" style={headingStyle}>Card Sizes</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
-                  <Card key={size} variant="default" size={size} padding="sm">
-                    <div className="text-center">
-                      <h4 className="font-medium">{size.toUpperCase()}</h4>
-                      <p className="text-xs opacity-75">Size {size}</p>
-                    </div>
-                  </Card>
-                ))}
+              <h3 className="font-medium mb-3" style={headingStyle}>Rounded Cards</h3>
+              <p className="text-sm mb-4" style={mutedTextStyle}>
+                Cards can use rounded corners (24px) instead of the standard border radius (8px)
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <Card variant="default" padding="md">
+                  <div className="text-center">
+                    <Icon name="Square" size="lg" className="mb-2" />
+                    <h4 className="font-medium mb-2">Standard</h4>
+                    <p className="text-sm opacity-75">8px border radius</p>
+                  </div>
+                </Card>
+                
+                <Card variant="primary" padding="md" rounded>
+                  <div className="text-center">
+                    <Icon name="Circle" size="lg" className="mb-2" />
+                    <h4 className="font-medium mb-2">Rounded</h4>
+                    <p className="text-sm opacity-75">24px border radius</p>
+                  </div>
+                </Card>
+                
+                <Card variant="secondary" padding="md" rounded>
+                  <div className="text-center">
+                    <Icon name="Heart" size="lg" className="mb-2" />
+                    <h4 className="font-medium mb-2">Rounded Secondary</h4>
+                    <p className="text-sm opacity-75">Smooth corners</p>
+                  </div>
+                </Card>
+                
+                <Card variant="outline" padding="md" rounded>
+                  <div className="text-center">
+                    <Icon name="Star" size="lg" className="mb-2" />
+                    <h4 className="font-medium mb-2">Rounded Outline</h4>
+                    <p className="text-sm opacity-75">Outlined with rounded corners</p>
+                  </div>
+                </Card>
               </div>
             </div>
 
@@ -1038,7 +1065,7 @@ function ProviderTestContent() {
               <h3 className="font-medium mb-3" style={headingStyle}>Interactive Cards</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 <Card 
-                  variant="outlined" 
+                  variant="outline" 
                   clickable 
                   onClick={() => info('Card Clicked!', 'Basic click handler triggered')}
                   padding="md"
@@ -1051,7 +1078,7 @@ function ProviderTestContent() {
                 </Card>
                 
                 <Card 
-                  variant="elevated" 
+                  variant="primary" 
                   clickable 
                   onAsyncClick={async () => {
                     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -1066,13 +1093,37 @@ function ProviderTestContent() {
                   </div>
                 </Card>
                 
-                <Card variant="filled" disabled padding="md">
+                <Card variant="default" disabled padding="md">
                   <div className="text-center">
                     <Icon name="Ban" size="lg" className="mb-2" />
                     <h4 className="font-medium mb-2">Disabled Card</h4>
                     <p className="text-sm opacity-75">Cannot interact with this card</p>
                   </div>
                 </Card>
+              </div>
+            </div>
+
+            {/* Padding System */}
+            <div>
+              <h3 className="font-medium mb-3" style={headingStyle}>Padding System (4px Scale)</h3>
+              <p className="text-sm mb-4" style={mutedTextStyle}>
+                Cards use a consistent 4px-based padding system for harmonious spacing
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                {(['none', 'xs', 'sm', 'md', 'lg', 'xl'] as const).map((padding) => (
+                  <Card key={padding} variant="outline" padding={padding}>
+                    <div className="text-center">
+                      <h4 className="font-medium text-sm">{padding.toUpperCase()}</h4>
+                      <p className="text-xs opacity-75">
+                        {padding === 'none' ? '0px' : 
+                         padding === 'xs' ? '8px' :
+                         padding === 'sm' ? '12px' :
+                         padding === 'md' ? '16px' :
+                         padding === 'lg' ? '20px' : '24px'}
+                      </p>
+                    </div>
+                  </Card>
+                ))}
               </div>
             </div>
 
@@ -1113,7 +1164,7 @@ function ProviderTestContent() {
                 </Card>
 
                 <Card 
-                  variant="elevated"
+                  variant="secondary"
                   header={
                     <div className="flex items-center gap-2">
                       <Icon name="User" color="secondary" />
@@ -1159,7 +1210,7 @@ function ProviderTestContent() {
                 </Card>
 
                 <Card 
-                  variant="outlined" 
+                  variant="outline" 
                   padding="md"
                   onClick={() => {
                     // Simulate loading state toggle
