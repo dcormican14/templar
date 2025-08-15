@@ -1,74 +1,60 @@
-/* Sepia/Warm Theme - Comfortable reading mode, reduces eye strain */
+/* Sepia Theme - Warm, vintage look */
 [data-theme="sepia"] {
   /* Base colors */
-  --background: #f7f3e9;
-  --foreground: #433d33;
+  --background: #f4ecd8; /* warm parchment */
+  --foreground: #2b1e14; /* deep brown */
   
   /* Primary colors */
-  --primary: #8b4513;
-  --primary-foreground: #f7f3e9;
-  --primary-hover: #a0522d;
+  --primary: #c30b4e; /* rose-red */
+  --primary-foreground: #fffaf3; /* warm white */
+  --primary-hover: #d94876; /* lighter rose-red */
   
   /* Secondary colors */
-  --secondary: #ede4d3;
-  --secondary-foreground: #433d33;
-  --secondary-hover: #e6dcc7;
+  --secondary: #90caf9; /* light-sky-blue */
+  --secondary-foreground: #2b1e14; /* deep brown */
+  --secondary-hover: #add8ff;
   
   /* Accent colors */
-  --accent: #f2ead7;
-  --accent-foreground: #5d4e37;
+  --accent: #d5b48c; /* muted warm tan */
+  --accent-foreground: #2b1e14; /* deep brown */
   
   /* Border and dividers */
-  --border: #d4c4a8;
-  --border-hover: #c9b896;
+  --border: #bfa27d; /* medium warm brown */
+  --border-hover: #9c7c55;
   
   /* Muted elements */
-  --muted: #f2ead7;
-  --muted-foreground: #6b5b47;
+  --muted: #d9c8aa; /* faded parchment */
+  --muted-foreground: #5c4632; /* soft brown text */
   
   /* Success colors */
-  --success: #228b22;
-  --success-foreground: #f7f3e9;
+  --success: #7dbb8c; /* muted green */
+  --success-foreground: #2b1e14; /* deep brown */
   
   /* Warning colors */
-  --warning: #daa520;
-  --warning-foreground: #433d33;
+  --warning: #e6a96b; /* warm golden amber */
+  --warning-foreground: #2b1e14;
   
   /* Error colors */
-  --error: #cd5c5c;
-  --error-foreground: #f7f3e9;
+  --error: #b44557; /* dusty rose-red */
+  --error-foreground: #fffaf3;
   
   /* Info colors */
-  --info: #4682b4;
-  --info-foreground: #f7f3e9;
+  --info: #90caf9; /* light-sky-blue */
+  --info-foreground: #2b1e14;
   
   /* Card and surface colors */
-  --card: #f4ede4;
-  --card-foreground: #433d33;
+  --card: #f9f3e6; /* light cream */
+  --card-foreground: #2b1e14;
   
   /* Input colors */
-  --input: #f4ede4;
-  --input-border: #d4c4a8;
-  --input-placeholder: #8b7355;
+  --input: #f9f3e6;
+  --input-border: #bfa27d;
+  --input-placeholder: #9c7c55;
+  --input-foreground: #2b1e14;
   
   /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(139 69 19 / 0.1);
-  --shadow: 0 1px 3px 0 rgb(139 69 19 / 0.15), 0 1px 2px -1px rgb(139 69 19 / 0.15);
-  --shadow-md: 0 4px 6px -1px rgb(139 69 19 / 0.15), 0 2px 4px -2px rgb(139 69 19 / 0.15);
-  --shadow-lg: 0 10px 15px -3px rgb(139 69 19 / 0.15), 0 4px 6px -4px rgb(139 69 19 / 0.15);
-}
-
-/* Warm, comfortable styling for reading */
-[data-theme="sepia"] body {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-[data-theme="sepia"] h1,
-[data-theme="sepia"] h2,
-[data-theme="sepia"] h3,
-[data-theme="sepia"] h4,
-[data-theme="sepia"] h5,
-[data-theme="sepia"] h6 {
-  color: #5d4e37;
+  --shadow-sm: 0 1px 2px 0 rgb(43 30 20 / 0.1);
+  --shadow: 0 1px 3px 0 rgb(43 30 20 / 0.2), 0 1px 2px -1px rgb(43 30 20 / 0.2);
+  --shadow-md: 0 4px 6px -1px rgb(43 30 20 / 0.25), 0 2px 4px -2px rgb(43 30 20 / 0.25);
+  --shadow-lg: 0 10px 15px -3px rgb(43 30 20 / 0.3), 0 4px 6px -4px rgb(43 30 20 / 0.3);
 }

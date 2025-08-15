@@ -7,6 +7,7 @@ export const THEME_NAMES = {
   DARK: 'dark',
   HIGH_CONTRAST: 'high-contrast',
   SEPIA: 'sepia',
+  SEPIA_DARK: 'sepia-dark',
   SOLARIZED_DARK: 'solarized-dark',
   SYSTEM: 'system',
   AUTO: 'auto',
@@ -54,6 +55,14 @@ export const THEME_REGISTRY: Record<ThemeName, ThemeInfo> = {
     description: 'Comfortable reading mode, reduces eye strain',
     category: 'special',
     cssFile: '/styles/themes/sepia.css',
+    isComfortReading: true,
+  },
+  [THEME_NAMES.SEPIA_DARK]: {
+    name: 'sepia-dark',
+    displayName: 'Sepia Dark',
+    description: 'Dark mode version of Sepia for low-light reading',
+    category: 'dark',
+    cssFile: '/styles/themes/sepia-dark.css',
     isComfortReading: true,
   },
   [THEME_NAMES.SOLARIZED_DARK]: {

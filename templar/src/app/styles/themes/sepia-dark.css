@@ -1,0 +1,60 @@
+/* Sepia Dark Theme - Warm, vintage dark mode */
+[data-theme="sepia-dark"] {
+  /* Base colors */
+  --background: #2b1e14; /* deep coffee brown */
+  --foreground: #f4ecd8; /* warm parchment */
+  
+  /* Primary colors */
+  --primary: #c86b8f; /* muted rose-red for sepia look */
+  --primary-foreground: #f4ecd8; /* parchment text */
+  --primary-hover: #d98da7; /* lighter muted rose */
+  
+  /* Secondary colors */
+  --secondary: #7ab1d6; /* softened light-sky-blue */
+  --secondary-foreground: #2b1e14; /* deep coffee brown */
+  --secondary-hover: #99c9eb;
+  
+  /* Accent colors */
+  --accent: #d5b48c; /* muted warm tan */
+  --accent-foreground: #2b1e14;
+  
+  /* Border and dividers */
+  --border: #9c7c55; /* warm medium brown */
+  --border-hover: #bfa27d;
+  
+  /* Muted elements */
+  --muted: #3e2b1f; /* faded brown */
+  --muted-foreground: #d9c8aa; /* lighter brown */
+  
+  /* Success colors */
+  --success: #7dbb8c; /* muted green */
+  --success-foreground: #2b1e14;
+  
+  /* Warning colors */
+  --warning: #e6a96b; /* golden amber */
+  --warning-foreground: #2b1e14;
+  
+  /* Error colors */
+  --error: #a8525d; /* warm dusty red */
+  --error-foreground: #f4ecd8;
+  
+  /* Info colors */
+  --info: #7ab1d6; /* softened light-sky-blue */
+  --info-foreground: #2b1e14;
+  
+  /* Card and surface colors */
+  --card: #3e2b1f; /* slightly lighter brown */
+  --card-foreground: #f4ecd8;
+  
+  /* Input colors */
+  --input: #3e2b1f;
+  --input-border: #9c7c55;
+  --input-placeholder: #bfa27d;
+  --input-foreground: #f4ecd8;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(244 236 216 / 0.1);
+  --shadow: 0 1px 3px 0 rgb(244 236 216 / 0.2), 0 1px 2px -1px rgb(244 236 216 / 0.2);
+  --shadow-md: 0 4px 6px -1px rgb(244 236 216 / 0.25), 0 2px 4px -2px rgb(244 236 216 / 0.25);
+  --shadow-lg: 0 10px 15px -3px rgb(244 236 216 / 0.3), 0 4px 6px -4px rgb(244 236 216 / 0.3);
+}

@@ -13,6 +13,7 @@ import {
 } from './providers';
 import { 
   Button, 
+  Card,
   Icon,
   ProgressIndicator
 } from './components/atoms';
@@ -27,8 +28,10 @@ export default function Home() {
 
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-lg">Loading Templar providers...</div>
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
+        <div className="text-lg text-gray-900 dark:text-gray-100">
+          Loading Templar providers...
+        </div>
       </div>
     );
   }
@@ -45,6 +48,29 @@ function ProviderTestContent() {
   const { settings, updateSettings, resetSettings } = useSettings();
   const { execute } = useAsyncOperation();
   const cssVars = useCSSVariables();
+
+  // Theme-aware styling helpers
+  const sectionStyle = {
+    backgroundColor: cssVars.card,
+    color: cssVars.cardForeground,
+    borderWidth: '1px',
+    borderStyle: 'solid' as const,
+    borderColor: cssVars.border,
+    boxShadow: cssVars.shadows.sm
+  };
+
+  const headingStyle = {
+    color: cssVars.foreground
+  };
+
+  const mutedTextStyle = {
+    color: cssVars.mutedForeground
+  };
+
+  const codeBlockStyle = {
+    backgroundColor: cssVars.muted,
+    color: cssVars.mutedForeground
+  };
 
   // Progress bar state
   const [progressValue, setProgressValue] = useState(0);
@@ -158,16 +184,28 @@ function ProviderTestContent() {
       title: 'Large Test Modal',
       content: (
         <div className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Large Modal Content</h3>
-          <p className="mb-4">This demonstrates a larger modal size with more content.</p>
+          <h3 className="text-lg font-semibold mb-4" style={headingStyle}>Large Modal Content</h3>
+          <p className="mb-4" style={mutedTextStyle}>This demonstrates a larger modal size with more content.</p>
           <div className="grid grid-cols-2 gap-4 mb-4">
-            <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded">
-              <h4 className="font-medium mb-2">Feature 1</h4>
-              <p className="text-sm">Description of feature one</p>
+            <div 
+              className="p-4 rounded"
+              style={{
+                backgroundColor: cssVars.muted,
+                color: cssVars.mutedForeground
+              }}
+            >
+              <h4 className="font-medium mb-2" style={headingStyle}>Feature 1</h4>
+              <p className="text-sm" style={mutedTextStyle}>Description of feature one</p>
             </div>
-            <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded">
-              <h4 className="font-medium mb-2">Feature 2</h4>
-              <p className="text-sm">Description of feature two</p>
+            <div 
+              className="p-4 rounded"
+              style={{
+                backgroundColor: cssVars.muted,
+                color: cssVars.mutedForeground
+              }}
+            >
+              <h4 className="font-medium mb-2" style={headingStyle}>Feature 2</h4>
+              <p className="text-sm" style={mutedTextStyle}>Description of feature two</p>
             </div>
           </div>
           <button
@@ -183,18 +221,43 @@ function ProviderTestContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
+    <div 
+      className="min-h-screen transition-colors duration-200"
+      style={{ 
+        backgroundColor: cssVars.background,
+        color: cssVars.foreground
+      }}
+    >
       {/* Floating Theme Switcher */}
-      <div className="fixed top-6 right-6 z-50 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-4 space-y-3">
-        <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
+      <div 
+        className="fixed top-6 right-6 z-50 rounded-lg p-4 space-y-3"
+        style={{
+          backgroundColor: cssVars.card,
+          color: cssVars.cardForeground,
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: cssVars.border,
+          boxShadow: cssVars.shadows.lg
+        }}
+      >
+        <div 
+          className="text-sm font-medium"
+          style={{ color: cssVars.foreground }}
+        >
           Theme Controls
         </div>
         
         <div className="space-y-2">
-          <div className="text-xs text-gray-600 dark:text-gray-400">
+          <div 
+            className="text-xs"
+            style={{ color: cssVars.mutedForeground }}
+          >
             Current: <span className="font-medium">{theme}</span>
           </div>
-          <div className="text-xs text-gray-600 dark:text-gray-400">
+          <div 
+            className="text-xs"
+            style={{ color: cssVars.mutedForeground }}
+          >
             Resolved: <span className="font-medium">{resolvedTheme}</span>
           </div>
         </div>
@@ -204,11 +267,20 @@ function ProviderTestContent() {
             <button
               key={t}
               onClick={() => setTheme(t)}
-              className={`px-3 py-1.5 text-xs rounded border transition-colors ${
-                theme === t
-                  ? 'bg-blue-500 text-white border-blue-500'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600 hover:bg-gray-200 dark:hover:bg-gray-600'
-              }`}
+              className="px-3 py-1.5 text-xs rounded transition-colors"
+              style={theme === t ? {
+                backgroundColor: cssVars.primary,
+                color: cssVars.primaryForeground,
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: cssVars.primary
+              } : {
+                backgroundColor: cssVars.muted,
+                color: cssVars.mutedForeground,
+                borderWidth: '1px',
+                borderStyle: 'solid',
+                borderColor: cssVars.border
+              }}
             >
               {t}
             </button>
@@ -217,7 +289,11 @@ function ProviderTestContent() {
         
         <button
           onClick={toggleTheme}
-          className="w-full px-3 py-1.5 bg-purple-500 text-white text-xs rounded hover:bg-purple-600 transition-colors"
+          className="w-full px-3 py-1.5 text-xs rounded transition-colors"
+          style={{
+            backgroundColor: cssVars.secondary,
+            color: cssVars.secondaryForeground
+          }}
         >
           Quick Toggle
         </button>
@@ -225,92 +301,112 @@ function ProviderTestContent() {
 
       <div className="container mx-auto p-8 pr-20"> {/* Added right padding to avoid overlap with floating controls */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-gray-100">
-            Templar RoundTable Provider Demo
+          <h1 
+            className="text-3xl font-bold mb-2"
+            style={{ color: cssVars.foreground }}
+          >
+            Templar Demo
           </h1>
-          <Button />
-          <p className="text-gray-600 dark:text-gray-400">
-            Testing all providers in the RoundTable ecosystem
+          <p 
+            className="mb-2"
+            style={mutedTextStyle}
+          >
+            Testing all providers, icons, and elements in the RoundTable ecosystem
           </p>
         </div>
 
         {/* CSS Variables Demo */}
-        <section className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">CSS Variables Demo</h2>
+        <section 
+          className="mb-8 p-6 rounded-lg"
+          style={{
+            backgroundColor: cssVars.card,
+            color: cssVars.cardForeground,
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: cssVars.border,
+            boxShadow: cssVars.shadows.sm
+          }}
+        >
+          <h2 
+            className="text-xl font-semibold mb-4"
+            style={headingStyle}
+          >
+            CSS Variables Demo
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
             {/* Color Swatches */}
             <div className="space-y-3">
-              <h3 className="font-medium text-gray-900 dark:text-gray-100">Base Colors</h3>
+              <h3 className="font-medium" style={headingStyle}>Base Colors</h3>
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <div 
                     className="w-6 h-6 rounded border"
                     style={{ backgroundColor: themeVariables.background }}
                   />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Background: {themeVariables.background}</span>
+                  <span className="text-sm" style={mutedTextStyle}>Background: {themeVariables.background}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div 
                     className="w-6 h-6 rounded border"
                     style={{ backgroundColor: themeVariables.foreground }}
                   />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Foreground: {themeVariables.foreground}</span>
+                  <span className="text-sm" style={mutedTextStyle}>Foreground: {themeVariables.foreground}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div 
                     className="w-6 h-6 rounded border"
                     style={{ backgroundColor: themeVariables.primary }}
                   />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Primary: {themeVariables.primary}</span>
+                  <span className="text-sm" style={mutedTextStyle}>Primary: {themeVariables.primary}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div 
                     className="w-6 h-6 rounded border"
                     style={{ backgroundColor: themeVariables.secondary }}
                   />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Secondary: {themeVariables.secondary}</span>
+                  <span className="text-sm" style={mutedTextStyle}>Secondary: {themeVariables.secondary}</span>
                 </div>
               </div>
             </div>
 
             {/* Status Colors */}
             <div className="space-y-3">
-              <h3 className="font-medium text-gray-900 dark:text-gray-100">Status Colors</h3>
+              <h3 className="font-medium" style={headingStyle}>Status Colors</h3>
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <div 
                     className="w-6 h-6 rounded border"
                     style={{ backgroundColor: themeVariables.success }}
                   />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Success: {themeVariables.success}</span>
+                  <span className="text-sm" style={mutedTextStyle}>Success: {themeVariables.success}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div 
                     className="w-6 h-6 rounded border"
                     style={{ backgroundColor: themeVariables.warning }}
                   />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Warning: {themeVariables.warning}</span>
+                  <span className="text-sm" style={mutedTextStyle}>Warning: {themeVariables.warning}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div 
                     className="w-6 h-6 rounded border"
                     style={{ backgroundColor: themeVariables.error }}
                   />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Error: {themeVariables.error}</span>
+                  <span className="text-sm" style={mutedTextStyle}>Error: {themeVariables.error}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div 
                     className="w-6 h-6 rounded border"
                     style={{ backgroundColor: themeVariables.info }}
                   />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">Info: {themeVariables.info}</span>
+                  <span className="text-sm" style={mutedTextStyle}>Info: {themeVariables.info}</span>
                 </div>
               </div>
             </div>
 
             {/* Dynamic Component Example */}
             <div className="space-y-3">
-              <h3 className="font-medium text-gray-900 dark:text-gray-100">Dynamic Components</h3>
+              <h3 className="font-medium" style={headingStyle}>Dynamic Components</h3>
               <div className="space-y-2">
                 {/* Card using CSS variables directly */}
                 <div 
@@ -361,25 +457,23 @@ function ProviderTestContent() {
               </div>
             </div>
           </div>
-
-          {/* CSS Variable Debugging */}
-          <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-900 rounded">
-            <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-2">CSS Variable Access</h3>
-            <div className="text-sm space-y-1 text-gray-600 dark:text-gray-400">
-              <p><code>getCSSVariable('primary')</code>: {getCSSVariable('primary')}</p>
-              <p><code>themeVariables.primary</code>: {themeVariables.primary}</p>
-              <p>Use these values to create dynamic components that respond to theme changes!</p>
-            </div>
-          </div>
         </section>
 
         {/* useCSSVariables Hook Demo */}
-        <section className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">useCSSVariables Hook Demo</h2>
+        <section 
+          className="mb-8 p-6 rounded-lg"
+          style={sectionStyle}
+        >
+          <h2 
+            className="text-xl font-semibold mb-4"
+            style={headingStyle}
+          >
+            useCSSVariables Hook Demo
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Surface Styles */}
             <div className="space-y-4">
-              <h3 className="font-medium text-gray-900 dark:text-gray-100">Pre-built Surface Styles</h3>
+              <h3 className="font-medium" style={headingStyle}>Pre-built Surface Styles</h3>
               
               <div className="p-3 rounded" style={cssVars.surface.primary}>
                 Primary Surface
@@ -408,7 +502,7 @@ function ProviderTestContent() {
 
             {/* Advanced Usage */}
             <div className="space-y-4">
-              <h3 className="font-medium text-gray-900 dark:text-gray-100">Advanced Usage</h3>
+              <h3 className="font-medium" style={headingStyle}>Advanced Usage</h3>
               
               {/* Custom styles using createStyles */}
               <div 
@@ -462,53 +556,43 @@ function ProviderTestContent() {
               </div>
             </div>
           </div>
-          
-          <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-900 rounded">
-            <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-2">useCSSVariables Usage</h3>
-            <pre className="text-sm overflow-x-auto">
-{`const cssVars = useCSSVariables();
-
-// Use pre-built surface styles
-<div style={cssVars.surface.primary}>Primary Button</div>
-
-// Create custom styles
-<div style={cssVars.createStyles({
-  backgroundColor: 'card',
-  color: 'card-foreground',
-  borderWidth: '1px',
-  borderStyle: 'solid',
-  borderColor: 'border'
-})}>Custom Card</div>
-
-// Access individual variables
-<div style={{ color: cssVars.primary }}>Primary Text</div>
-
-// Use with opacity
-<div style={{ 
-  backgroundColor: cssVars.getColorWithOpacity('primary', 0.1) 
-}}>Subtle Background</div>`}
-            </pre>
-          </div>
         </section>
 
         {/* ProgressIndicator Component Demo */}
-        <section className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">ProgressIndicator Component Demo</h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
+        <section 
+          className="mb-8 p-6 rounded-lg"
+          style={sectionStyle}
+        >
+          <h2 
+            className="text-xl font-semibold mb-4"
+            style={headingStyle}
+          >
+            ProgressIndicator Component Demo
+          </h2>
+          <p 
+            className="mb-6"
+            style={mutedTextStyle}
+          >
             Versatile progress component that can display both spinners and progress bars
           </p>
           
           <div className="space-y-6">
             {/* Progress Bar Demo */}
             <div>
-              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Interactive Progress Bar</h3>
+              <h3 className="font-medium mb-3" style={headingStyle}>Interactive Progress Bar</h3>
               <div className="space-y-4">
-                <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                <div 
+                  className="p-4 rounded-lg"
+                  style={{
+                    backgroundColor: cssVars.muted,
+                    color: cssVars.mutedForeground
+                  }}
+                >
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <span className="text-sm font-medium" style={headingStyle}>
                       File Upload Progress
                     </span>
-                    <span className="text-sm text-gray-500 dark:text-gray-400">
+                    <span className="text-sm" style={mutedTextStyle}>
                       {Math.round(progressValue)}%
                     </span>
                   </div>
@@ -553,30 +637,30 @@ function ProviderTestContent() {
 
             {/* Preset Examples */}
             <div>
-              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Progress Bar Presets</h3>
+              <h3 className="font-medium mb-3" style={headingStyle}>Progress Bar Presets</h3>
               <div className="space-y-3">
                 <div>
-                  <p className="text-xs text-gray-500 mb-1">Small (6px bar, 6px background)</p>
+                  <p className="text-xs mb-1" style={mutedTextStyle}>Small (6px bar, 6px background)</p>
                   <ProgressIndicator type="progressBar" value={demoProgress1} preset="sm" width="100%" color="primary" />
                 </div>
                 
                 <div>
-                  <p className="text-xs text-gray-500 mb-1">Medium (12px bar, 6px background)</p>
+                  <p className="text-xs mb-1" style={mutedTextStyle}>Medium (12px bar, 6px background)</p>
                   <ProgressIndicator type="progressBar" value={demoProgress2} preset="md" width="100%" color="success" />
                 </div>
                 
                 <div>
-                  <p className="text-xs text-gray-500 mb-1">Large (12px bar, 12px background)</p>
+                  <p className="text-xs mb-1" style={mutedTextStyle}>Large (12px bar, 12px background)</p>
                   <ProgressIndicator type="progressBar" value={demoProgress3} preset="lg" width="100%" color="warning" />
                 </div>
                 
                 <div>
-                  <p className="text-xs text-gray-500 mb-1">Medium with percentage (track gap effect)</p>
+                  <p className="text-xs mb-1" style={mutedTextStyle}>Medium with percentage (track gap effect)</p>
                   <ProgressIndicator type="progressBar" value={demoProgress2} preset="md" width="100%" color="info" showPercentage />
                 </div>
                 
                 <div>
-                  <p className="text-xs text-gray-500 mb-1">Large with percentage (track gap effect)</p>
+                  <p className="text-xs mb-1" style={mutedTextStyle}>Large with percentage (track gap effect)</p>
                   <ProgressIndicator type="progressBar" value={demoProgress3} preset="lg" width="100%" color="error" showPercentage />
                 </div>
               </div>
@@ -584,25 +668,25 @@ function ProviderTestContent() {
 
             {/* Spinner Preset Examples */}
             <div>
-              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Spinner Presets</h3>
+              <h3 className="font-medium mb-3" style={headingStyle}>Spinner Presets</h3>
               <div className="flex gap-6 items-center">
                 <div className="flex flex-col items-center gap-2">
-                  <p className="text-xs text-gray-500">Small (32px, 2px border + track)</p>
+                  <p className="text-xs" style={mutedTextStyle}>Small (32px, 2px border + track)</p>
                   <ProgressIndicator type="spinner" preset="sm" color="primary" />
                 </div>
                 
                 <div className="flex flex-col items-center gap-2">
-                  <p className="text-xs text-gray-500">Medium (40px, 3px border + track)</p>
+                  <p className="text-xs" style={mutedTextStyle}>Medium (40px, 3px border + track)</p>
                   <ProgressIndicator type="spinner" preset="md" color="success" />
                 </div>
                 
                 <div className="flex flex-col items-center gap-2">
-                  <p className="text-xs text-gray-500">Large (48px, 4px border + track)</p>
+                  <p className="text-xs" style={mutedTextStyle}>Large (48px, 4px border + track)</p>
                   <ProgressIndicator type="spinner" preset="lg" color="warning" />
                 </div>
                 
                 <div className="flex flex-col items-center gap-2">
-                  <p className="text-xs text-gray-500">Large with percentage</p>
+                  <p className="text-xs" style={mutedTextStyle}>Large with percentage</p>
                   <ProgressIndicator type="spinner" preset="lg" color="info" value={demoProgress2} showPercentage />
                 </div>
               </div>
@@ -610,10 +694,10 @@ function ProviderTestContent() {
 
             {/* Track Size Examples */}
             <div>
-              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Customizable Track Sizes</h3>
+              <h3 className="font-medium mb-3" style={headingStyle}>Customizable Track Sizes</h3>
               <div className="space-y-4">
                 <div>
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Spinner Track Sizes</h4>
+                  <h4 className="text-sm font-medium mb-3" style={headingStyle}>Spinner Track Sizes</h4>
                   <div className="flex gap-6 items-center">
                     <div className="flex flex-col items-center gap-2">
                       <p className="text-xs text-gray-500">None</p>
@@ -657,78 +741,31 @@ function ProviderTestContent() {
                 </div>
               </div>
             </div>
-
-            {/* Implementation Code */}
-            <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-900 rounded">
-              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Usage Examples</h3>
-              <pre className="text-sm overflow-x-auto">
-{`import { ProgressIndicator } from './components/atoms';
-
-// Spinner for indeterminate progress (preset required)
-<ProgressIndicator type="spinner" preset="md" color="primary" />
-
-// Spinner with presets (only available sizes)
-<ProgressIndicator type="spinner" preset="sm" color="primary" />
-<ProgressIndicator type="spinner" preset="md" color="success" />
-<ProgressIndicator type="spinner" preset="lg" color="warning" />
-
-// Spinner with percentage (only shows on lg preset)
-<ProgressIndicator type="spinner" preset="lg" color="info" value={75} showPercentage />
-
-// Progress bar for trackable progress
-<ProgressIndicator
-  type="progressBar"
-  value={progress}
-  max={100}
-  showPercentage={true}
-  color="success"
-  width="100%"
-/>
-
-// Progress bar with presets
-<ProgressIndicator type="progressBar" preset="sm" value={75} width="100%" />
-<ProgressIndicator type="progressBar" preset="md" value={50} width="100%" />
-<ProgressIndicator type="progressBar" preset="lg" value={25} width="100%" />
-
-// Customizable track sizes
-// Spinners: fixed pixel values (sm=1px, md=2px, lg=3px)
-<ProgressIndicator type="spinner" preset="md" trackSize="none" />
-<ProgressIndicator type="spinner" preset="md" trackSize="sm" />
-<ProgressIndicator type="spinner" preset="md" trackSize="lg" />
-
-// Progress bars: relative to bar height (sm=2px fixed, md=half, lg=same)
-<ProgressIndicator type="progressBar" preset="md" trackSize="sm" value={50} width="100%" />
-<ProgressIndicator type="progressBar" preset="lg" trackSize="lg" value={50} width="100%" />
-
-// Backward compatible LoadingSpinner
-<LoadingSpinner size="lg" color="warning" />`}
-              </pre>
-            </div>
           </div>
         </section>
 
         {/* Atomic Components Demo */}
-        <section className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Atomic Components Demo</h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
+        <section style={sectionStyle} className='p-6 rounded-lg mb-8'>
+          <h2 style={headingStyle} className="text-xl font-semibold mb-4">Atomic Components Demo</h2>
+          <p style={mutedTextStyle} className="mb-6">
             Demonstrating fully integrated atomic components with RoundTable providers
           </p>
           
           <div className="space-y-6">
             {/* Button Variants Grid */}
             <div>
-              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Button Component Matrix</h3>
+              <h3 className="font-medium mb-3" style={headingStyle}>Button Component Matrix</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                 Complete showcase of all button variants across all available sizes
               </p>
               
               {/* Create grid for each variant */}
               {(['primary', 'secondary', 'outline', 'ghost', 'destructive'] as const).map((variant) => (
-                <div key={variant} className="mb-4">
+                <div key={variant} className="mb-4 space-y-3">
                   <h4 className="text-md font-medium text-gray-800 dark:text-gray-200 mb-2 capitalize">
                     {variant}
                   </h4>
-                  <div className="grid grid-cols-5 gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-md">
+                  <div className="grid grid-cols-5 gap-2 p-3 bg-gray-50 bg-transparent rounded-md">
                     {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
                       <div key={size} className="flex flex-col items-center space-y-1">
                         <span className="text-xs text-gray-500 dark:text-gray-400 uppercase font-medium">
@@ -755,7 +792,7 @@ function ProviderTestContent() {
                 <h4 className="text-md font-medium text-gray-800 dark:text-gray-200 mb-2">
                   Leading Icons
                 </h4>
-                <div className="grid grid-cols-5 gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-md">
+                <div className="grid grid-cols-5 gap-2 p-3 bg-transparent rounded-md">
                   {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
                     <div key={size} className="flex flex-col items-center space-y-1">
                       <span className="text-xs text-gray-500 dark:text-gray-400 uppercase font-medium">
@@ -780,7 +817,7 @@ function ProviderTestContent() {
                 <h4 className="text-md font-medium text-gray-800 dark:text-gray-200 mb-2">
                   Trailing Icons
                 </h4>
-                <div className="grid grid-cols-5 gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-md">
+                <div className="grid grid-cols-5 gap-2 p-3 bg-gray-50 bg-transparent rounded-md">
                   {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
                     <div key={size} className="flex flex-col items-center space-y-1">
                       <span className="text-xs text-gray-500 dark:text-gray-400 uppercase font-medium">
@@ -805,7 +842,7 @@ function ProviderTestContent() {
                 <h4 className="text-md font-medium text-gray-800 dark:text-gray-200 mb-2">
                   Rounded Buttons
                 </h4>
-                <div className="grid grid-cols-5 gap-2 p-3 bg-gray-50 dark:bg-gray-900 rounded-md">
+                <div className="grid grid-cols-5 gap-2 p-3 bg-gray-50 bg-transparent rounded-md">
                   {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
                     <div key={size} className="flex flex-col items-center space-y-1">
                       <span className="text-xs text-gray-500 dark:text-gray-400 uppercase font-medium">
@@ -826,630 +863,329 @@ function ProviderTestContent() {
                 </div>
               </div>
             </div>
-
-            {/* Provider Integration Demo */}
-            <div>
-              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Provider Integration</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Loading Integration</h4>
-                  <div className="space-y-2">
-                    <Button
-                      variant="primary"
-                      loadingKey="custom-loading"
-                      onAsyncClick={async () => {
-                        // Simulate API call
-                        await new Promise(resolve => setTimeout(resolve, 3000));
-                        throw new Error('Demo error handling');
-                      }}
-                    >
-                      Test Error Handling
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      disabled
-                      onClick={() => {
-                        startLoading('manual-loading');
-                        setTimeout(() => stopLoading('manual-loading'), 2000);
-                      }}
-                    >
-                      Manual Loading
-                    </Button>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      Buttons automatically integrate with LoadingProvider and ToastProvider
-                    </p>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Theme Adaptation</h4>
-                  <div className="space-y-2">
-                    <Button
-                      variant="primary"
-                      onClick={() => {
-                        info('Theme Info', `Current theme: ${theme}, Resolved: ${resolvedTheme}`);
-                      }}
-                    >
-                      Show Theme Info
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={toggleTheme}
-                    >
-                      Toggle Theme
-                    </Button>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      Colors automatically adapt using useCSSVariables()
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Implementation Code */}
-            <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-900 rounded">
-              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Usage Example</h3>
-              <pre className="text-sm overflow-x-auto">
-{`import { Button } from './components/atoms';
-
-// Basic usage
-<Button variant="primary" size="md">
-  Click me
-</Button>
-
-// With async action and loading states
-<Button
-  variant="primary"
-  loadingKey="my-action"
-  onAsyncClick={async () => {
-    // Automatic loading states and toast notifications
-    await performAsyncAction();
-  }}
->
-  Async Action
-</Button>
-
-// Fully integrated with providers
-<Button
-  variant="outline"
-  onClick={() => {
-    // Access to all provider hooks
-    success('Success!', 'Action completed');
-  }}
->
-  Show Toast
-</Button>`}
-              </pre>
-            </div>
           </div>
         </section>
 
         {/* Icon Component Demo */}
-        <section className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Icon Component Demo</h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            Iconoir-powered icon system with theme integration and animation support
-          </p>
-          
-          <div className="space-y-6">
-            {/* Basic Icon Usage */}
-            <div>
-              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Basic Usage</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Common Icons</h4>
-                  <div className="flex flex-wrap gap-3 items-center">
-                    <div className="flex items-center gap-2">
-                      <Icon name="Home" />
-                      <span className="text-sm">Home</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="User" />
-                      <span className="text-sm">User</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="Settings" />
-                      <span className="text-sm">Settings</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="Bell" />
-                      <span className="text-sm">Bell</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="Search" />
-                      <span className="text-sm">Search</span>
-                    </div>
+        <section style={sectionStyle} className='p-6 rounded-lg mb-8'>
+          <div >
+            <h2 style={headingStyle}>Icon Component Demo</h2>
+            <p style={mutedTextStyle} className="mb-6">
+              Iconoir-powered icon system with theme integration and animation support
+            </p>
+            
+            <div className="space-y-6">
+              {/* Basic Usage */}
+              <div>
+                <h3 style={headingStyle} className="text-lg mb-3">Basic Usage</h3>
+                <div className="flex flex-wrap gap-4 items-center">
+                  <div className="flex items-center gap-2">
+                    <Icon name="Home" />
+                    <span className="text-sm">Home</span>
                   </div>
-                </div>
-
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Action Icons</h4>
-                  <div className="flex flex-wrap gap-3 items-center">
-                    <div className="flex items-center gap-2">
-                      <Icon name="Check" color="success" />
-                      <span className="text-sm">Check</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="Xmark" color="error" />
-                      <span className="text-sm">Close</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="Plus" color="primary" />
-                      <span className="text-sm">Add</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="Minus" />
-                      <span className="text-sm">Remove</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="EditPencil" color="info" />
-                      <span className="text-sm">Edit</span>
-                    </div>
+                  <div className="flex items-center gap-2">
+                    <Icon name="User" />
+                    <span className="text-sm">User</span>
                   </div>
-                </div>
-
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Theme Icons</h4>
-                  <div className="flex flex-wrap gap-3 items-center">
-                    <div className="flex items-center gap-2">
-                      <Icon name="SunLight" color="warning" />
-                      <span className="text-sm">Light</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="HalfMoon" color="info" />
-                      <span className="text-sm">Dark</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="Heart" color="error" />
-                      <span className="text-sm">Love</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="Star" color="warning" />
-                      <span className="text-sm">Star</span>
-                    </div>
+                  <div className="flex items-center gap-2">
+                    <Icon name="Settings" />
+                    <span className="text-sm">Settings</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Icon name="Bell" />
+                    <span className="text-sm">Bell</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Icon name="Search" />
+                    <span className="text-sm">Search</span>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Size Variations */}
-            <div>
-              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Size Variations</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Predefined Sizes</h4>
+              {/* Sizes & Colors */}
+              <div>
+                <h3 style={headingStyle} className="text-lg mb-3">Sizes & Colors</h3>
+                <div className="space-y-4">
                   <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2">
-                      <Icon name="Star" size="xs" color="warning" />
-                      <span className="text-sm">XS (12px)</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="Star" size="sm" color="warning" />
-                      <span className="text-sm">SM (16px)</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="Star" size="md" color="warning" />
-                      <span className="text-sm">MD (20px)</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="Star" size="lg" color="warning" />
-                      <span className="text-sm">LG (24px)</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="Star" size="xl" color="warning" />
-                      <span className="text-sm">XL (32px)</span>
-                    </div>
+                    <Icon name="Star" size="xs" color="warning" />
+                    <Icon name="Star" size="sm" color="warning" />
+                    <Icon name="Star" size="md" color="warning" />
+                    <Icon name="Star" size="lg" color="warning" />
+                    <Icon name="Star" size="xl" color="warning" />
+                    <span className="text-sm">Size Variations</span>
                   </div>
-                </div>
-
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Custom Sizes</h4>
                   <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2">
-                      <Icon name="Heart" size={14} color="error" />
-                      <span className="text-sm">14px</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="Heart" size={28} color="error" />
-                      <span className="text-sm">28px</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="Heart" size={40} color="error" />
-                      <span className="text-sm">40px</span>
-                    </div>
+                    <Icon name="Check" color="success" />
+                    <Icon name="WarningTriangle" color="warning" />
+                    <Icon name="Xmark" color="error" />
+                    <Icon name="InfoCircle" color="info" />
+                    <Icon name="User" color="primary" />
+                    <span className="text-sm">Color Variations</span>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Color Variations */}
-            <div>
-              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Color System Integration</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Theme Colors</h4>
-                  <div className="flex flex-wrap gap-3">
-                    <div className="flex items-center gap-2">
-                      <Icon name="User" color="inherit" />
-                      <span className="text-sm">Inherit</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="User" color="primary" />
-                      <span className="text-sm">Primary</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="User" color="secondary" />
-                      <span className="text-sm">Secondary</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="User" color="muted" />
-                      <span className="text-sm">Muted</span>
-                    </div>
+              {/* Animations */}
+              <div>
+                <h3 style={headingStyle} className="text-lg mb-3">Animations</h3>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <Icon name="RefreshDouble" />
+                    <span className="text-sm">Auto Spin</span>
                   </div>
-                </div>
-
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Status Colors</h4>
-                  <div className="flex flex-wrap gap-3">
-                    <div className="flex items-center gap-2">
-                      <Icon name="Check" color="success" />
-                      <span className="text-sm">Success</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="WarningTriangle" color="warning" />
-                      <span className="text-sm">Warning</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="Xmark" color="error" />
-                      <span className="text-sm">Error</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="InfoCircle" color="info" />
-                      <span className="text-sm">Info</span>
-                    </div>
+                  <div className="flex items-center gap-2">
+                    <Icon name="Settings" spin color="primary" />
+                    <span className="text-sm">Manual Spin</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Icon name="Heart" pulse color="error" />
+                    <span className="text-sm">Pulse</span>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Animations */}
-            <div>
-              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Animation Support</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Loading Animations</h4>
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2">
-                      <Icon name="RefreshDouble" />
-                      <span className="text-sm">Auto Spin</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="Settings" spin color="primary" />
-                      <span className="text-sm">Manual Spin</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Icon name="Heart" pulse color="error" />
-                      <span className="text-sm">Pulse</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Interactive Example</h4>
+              {/* In Buttons */}
+              <div>
+                <h3 style={headingStyle} className="text-lg mb-3">In Buttons</h3>
+                <div className="flex flex-wrap gap-3">
+                  <Button
+                    variant="primary"
+                    icon={<Icon name="Plus" />}
+                    iconPosition="leading"
+                    onClick={() => success('Added!', 'Item added successfully')}
+                  >
+                    Add Item
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    icon={<Icon name="Trash" />}
+                    iconPosition="leading"
+                    size="sm"
+                    onClick={() => error('Deleted!', 'Item deleted')}
+                  >
+                    Delete
+                  </Button>
                   <Button
                     variant="outline"
-                    onClick={() => {
-                      const isAnimated = !settings.appearance.animations;
-                      updateSettings({
-                        appearance: {
-                          ...settings.appearance,
-                          animations: isAnimated
-                        }
-                      });
-                      info('Animations', `Animations ${isAnimated ? 'enabled' : 'disabled'}`);
-                    }}
-                    icon={<Icon name={settings.appearance.animations ? "Check" : "Xmark"} color={settings.appearance.animations ? "success" : "error"} />}
+                    icon={<Icon name="EditPencil" />}
                     iconPosition="leading"
+                    onClick={() => info('Edit Mode', 'Editing enabled')}
                   >
-                    {settings.appearance.animations ? 'Disable' : 'Enable'} Animations
+                    Edit
                   </Button>
                 </div>
               </div>
             </div>
+          </div>
+        </section>
 
-            {/* Buttons with Icons */}
+        {/* Card Component Demo */}
+        <section style={sectionStyle} className='p-6 rounded-lg mb-8'>
+          <h2 style={headingStyle} className="text-xl font-semibold mb-4">Card Component Demo</h2>
+          <p style={mutedTextStyle} className="mb-6">
+            Versatile card component with multiple variants, sizes, and interactive capabilities
+          </p>
+          
+          <div className="space-y-6">
+            {/* Card Variants */}
             <div>
-              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-3">Integration with Button Component</h3>
+              <h3 className="font-medium mb-3" style={headingStyle}>Card Variants</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+                <Card variant="default" padding="md">
+                  <h4 className="font-medium mb-2">Default</h4>
+                  <p className="text-sm opacity-75">Standard card with border and shadow</p>
+                </Card>
+                
+                <Card variant="elevated" padding="md">
+                  <h4 className="font-medium mb-2">Elevated</h4>
+                  <p className="text-sm opacity-75">Enhanced shadow, no border</p>
+                </Card>
+                
+                <Card variant="outlined" padding="md">
+                  <h4 className="font-medium mb-2">Outlined</h4>
+                  <p className="text-sm opacity-75">Prominent border styling</p>
+                </Card>
+                
+                <Card variant="filled" padding="md">
+                  <h4 className="font-medium mb-2">Filled</h4>
+                  <p className="text-sm opacity-75">Muted background color</p>
+                </Card>
+                
+                <Card variant="transparent" padding="md">
+                  <h4 className="font-medium mb-2">Transparent</h4>
+                  <p className="text-sm opacity-75">No background or border</p>
+                </Card>
+              </div>
+            </div>
+
+            {/* Card Sizes */}
+            <div>
+              <h3 className="font-medium mb-3" style={headingStyle}>Card Sizes</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
+                  <Card key={size} variant="default" size={size} padding="sm">
+                    <div className="text-center">
+                      <h4 className="font-medium">{size.toUpperCase()}</h4>
+                      <p className="text-xs opacity-75">Size {size}</p>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            {/* Interactive Cards */}
+            <div>
+              <h3 className="font-medium mb-3" style={headingStyle}>Interactive Cards</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <Card 
+                  variant="outlined" 
+                  clickable 
+                  onClick={() => info('Card Clicked!', 'Basic click handler triggered')}
+                  padding="md"
+                >
+                  <div className="text-center">
+                    <Icon name="MouseButtonLeft" size="lg" className="mb-2" />
+                    <h4 className="font-medium mb-2">Clickable Card</h4>
+                    <p className="text-sm opacity-75">Click me for a toast message</p>
+                  </div>
+                </Card>
+                
+                <Card 
+                  variant="elevated" 
+                  clickable 
+                  onAsyncClick={async () => {
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    success('Async Complete!', 'Async operation finished successfully');
+                  }}
+                  padding="md"
+                >
+                  <div className="text-center">
+                    <Icon name="CloudSync" size="lg" className="mb-2" />
+                    <h4 className="font-medium mb-2">Async Card</h4>
+                    <p className="text-sm opacity-75">Click for async operation</p>
+                  </div>
+                </Card>
+                
+                <Card variant="filled" disabled padding="md">
+                  <div className="text-center">
+                    <Icon name="Ban" size="lg" className="mb-2" />
+                    <h4 className="font-medium mb-2">Disabled Card</h4>
+                    <p className="text-sm opacity-75">Cannot interact with this card</p>
+                  </div>
+                </Card>
+              </div>
+            </div>
+
+            {/* Structured Cards */}
+            <div>
+              <h3 className="font-medium mb-3" style={headingStyle}>Structured Cards with Header/Footer</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card 
+                  variant="default"
+                  header={
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium">Analytics Dashboard</h4>
+                      <Icon name="BarChart" color="primary" />
+                    </div>
+                  }
+                  footer={
+                    <div className="flex gap-2">
+                      <Button variant="primary" size="sm">
+                        View Details
+                      </Button>
+                      <Button variant="outline" size="sm">
+                        Export
+                      </Button>
+                    </div>
+                  }
+                  padding="md"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-2xl font-bold">1,234</span>
+                      <span className="text-sm text-green-600">+12%</span>
+                    </div>
+                    <p className="text-sm opacity-75">Total visitors this month</p>
+                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                      <div className="bg-blue-500 h-2 rounded-full" style={{ width: '65%' }}></div>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card 
+                  variant="elevated"
+                  header={
+                    <div className="flex items-center gap-2">
+                      <Icon name="User" color="secondary" />
+                      <h4 className="font-medium">User Profile</h4>
+                    </div>
+                  }
+                  footer={
+                    <div className="text-xs opacity-75">
+                      Last updated: {new Date().toLocaleDateString()}
+                    </div>
+                  }
+                  padding="md"
+                >
+                  <div className="space-y-3">
+                    <div>
+                      <p className="font-medium">John Doe</p>
+                      <p className="text-sm opacity-75">Software Engineer</p>
+                    </div>
+                    <div className="flex gap-4 text-sm">
+                      <div>
+                        <span className="font-medium">Projects:</span> 12
+                      </div>
+                      <div>
+                        <span className="font-medium">Tasks:</span> 8
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+            </div>
+
+            {/* Loading State */}
+            <div>
+              <h3 className="font-medium mb-3" style={headingStyle}>Loading State</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Icon Positions</h4>
-                  <div className="space-y-2">
-                    <Button
-                      variant="primary"
-                      icon={<Icon name="ArrowLeft" size="lg" />}
-                      iconPosition="leading"
-                    >
-                      Back
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      icon={<Icon name="ArrowRight" size="lg" />}
-                      iconPosition="trailing"
-                    >
-                      Next
-                    </Button>
-                    <Button
-                      variant="outline"
-                      icon={<Icon name="Plus" size="lg" />}
-                      iconPosition="leading"
-                      onClick={() => success('Added!', 'Item added successfully')}
-                    >
-                      Add Item
-                    </Button>
+                <Card variant="default" loading padding="md">
+                  <h4 className="font-medium mb-2">Loading Content</h4>
+                  <p className="text-sm opacity-75">This content is being loaded...</p>
+                  <div className="space-y-2 mt-4">
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse w-3/4"></div>
                   </div>
-                </div>
+                </Card>
 
-                <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300">Action Buttons</h4>
-                  <div className="space-y-2">
-                    <Button
-                      variant="destructive"
-                      icon={<Icon name="Trash" />}
-                      iconPosition="leading"
-                      size="sm"
-                      onClick={() => error('Deleted!', 'Item deleted')}
-                    >
-                      Delete
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      icon={<Icon name="EditPencil" />}
-                      iconPosition="leading"
-                      size="sm"
-                      onClick={() => info('Edit Mode', 'Editing enabled')}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="outline"
-                      icon={<Icon name="Search" />}
-                      iconPosition="leading"
-                      size="sm"
-                      onClick={() => info('Searching...', 'Search initiated')}
-                    >
-                      Search
-                    </Button>
+                <Card 
+                  variant="outlined" 
+                  padding="md"
+                  onClick={() => {
+                    // Simulate loading state toggle
+                    const card = document.querySelector('[data-loading-demo]') as HTMLElement;
+                    if (card) {
+                      card.style.opacity = '0.6';
+                      setTimeout(() => {
+                        card.style.opacity = '1';
+                        success('Loaded!', 'Content has been refreshed');
+                      }, 2000);
+                    }
+                  }}
+                  data-loading-demo
+                >
+                  <div className="text-center">
+                    <Icon name="RefreshDouble" size="lg" className="mb-2" />
+                    <h4 className="font-medium mb-2">Refresh Content</h4>
+                    <p className="text-sm opacity-75">Click to simulate loading</p>
                   </div>
-                </div>
+                </Card>
               </div>
             </div>
-
-            {/* Implementation Code */}
-            <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-900 rounded">
-              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Usage Examples</h3>
-              <pre className="text-sm overflow-x-auto">
-{`import { Icon } from './components/atoms';
-
-// Basic usage
-<Icon name="User" size="md" color="primary" />
-
-// With animations
-<Icon name="Settings" spin color="primary" />
-<Icon name="Heart" pulse color="error" />
-
-// Custom icon component
-import CustomIcon from 'iconoir/icons/custom-icon.svg';
-<Icon name={CustomIcon} size={24} color="#ff0000" />
-
-// In buttons
-<Button
-  icon={<Icon name="Plus" />}
-  iconPosition="leading"
-  variant="primary"
->
-  Add Item
-</Button>`}
-              </pre>
-            </div>
           </div>
         </section>
 
-        {/* Toast Provider Tests */}
-        <section className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Toast Provider</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-            <button
-              onClick={() => success('Success!', 'This is a success message')}
-              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
-            >
-              Success Toast
-            </button>
-            <button
-              onClick={() => error('Error!', 'This is an error message')}
-              className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
-            >
-              Error Toast
-            </button>
-            <button
-              onClick={() => warning('Warning!', 'This is a warning message')}
-              className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition-colors"
-            >
-              Warning Toast
-            </button>
-            <button
-              onClick={() => info('Info!', 'This is an info message')}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-            >
-              Info Toast
-            </button>
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={clearToasts}
-              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
-            >
-              Clear All Toasts
-            </button>
-            <span className="flex items-center text-sm text-gray-600 dark:text-gray-400">
-              Active toasts: {toasts.length}
-            </span>
-          </div>
-        </section>
-
-        {/* Auth Provider Tests */}
-        <section className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Auth Provider</h2>
-          <div className="mb-4">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-              Status: <span className="font-medium">
-                {authLoading ? 'Loading...' : isAuthenticated ? 'Authenticated' : 'Not authenticated'}
-              </span>
-            </p>
-            {user && (
-              <div className="mb-4 p-3 bg-gray-100 dark:bg-gray-700 rounded">
-                <p className="text-sm text-gray-600 dark:text-gray-400"><strong>User:</strong> {user.name}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400"><strong>Email:</strong> {user.email}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400"><strong>Role:</strong> {user.role || 'User'}</p>
-              </div>
-            )}
-          </div>
-          <div className="flex gap-2">
-            {!isAuthenticated ? (
-              <button
-                onClick={handleLogin}
-                disabled={authLoading}
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50 transition-colors"
-              >
-                {authLoading ? 'Logging in...' : 'Login (Demo)'}
-              </button>
-            ) : (
-              <button
-                onClick={handleLogout}
-                disabled={authLoading}
-                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 disabled:opacity-50 transition-colors"
-              >
-                {authLoading ? 'Logging out...' : 'Logout'}
-              </button>
-            )}
-          </div>
-        </section>
-
-        {/* Loading Provider Tests */}
-        <section className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Loading Provider</h2>
-          <div className="mb-4">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-              Demo loading: <span className="font-medium">{isLoading('demo') ? 'Active' : 'Inactive'}</span>
-            </p>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              Any loading: <span className="font-medium">{isAnyLoading ? 'Yes' : 'No'}</span>
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={simulateLoading}
-              disabled={isLoading('demo')}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:opacity-50 transition-colors"
-            >
-              {isLoading('demo') ? 'Loading... (3s)' : 'Start Demo Loading'}
-            </button>
-            <button
-              onClick={simulateAsyncOperation}
-              disabled={isLoading('async-demo')}
-              className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600 disabled:opacity-50 transition-colors"
-            >
-              {isLoading('async-demo') ? 'Async Loading...' : 'Test Async Operation'}
-            </button>
-          </div>
-        </section>
-
-        {/* Modal Provider Tests */}
-        <section className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Modal Provider</h2>
-          <div className="mb-4">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              Active modals: <span className="font-medium">{modals.length}</span>
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={openTestModal}
-              className="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition-colors"
-            >
-              Open Test Modal
-            </button>
-            <button
-              onClick={openLargeModal}
-              className="px-4 py-2 bg-pink-500 text-white rounded hover:bg-pink-600 transition-colors"
-            >
-              Open Large Modal
-            </button>
-            <button
-              onClick={closeAllModals}
-              disabled={modals.length === 0}
-              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 disabled:opacity-50 transition-colors"
-            >
-              Close All Modals
-            </button>
-          </div>
-        </section>
-
-        {/* Settings Provider Tests */}
-        <section className="mb-8 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Settings Provider</h2>
-          <div className="mb-4">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-              Current settings:
-            </p>
-            <pre className="text-xs bg-gray-100 dark:bg-gray-700 p-3 rounded overflow-x-auto">
-              {JSON.stringify(settings, null, 2)}
-            </pre>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => updateSettings({ 
-                appearance: { 
-                  ...settings.appearance, 
-                  fontSize: settings.appearance.fontSize === 'md' ? 'lg' : 'md' 
-                } 
-              })}
-              className="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 transition-colors"
-            >
-              Toggle Font Size
-            </button>
-            <button
-              onClick={() => updateSettings({ language: settings.language === 'en' ? 'es' : 'en' })}
-              className="px-4 py-2 bg-cyan-500 text-white rounded hover:bg-cyan-600 transition-colors"
-            >
-              Toggle Language
-            </button>
-            <button
-              onClick={resetSettings}
-              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
-            >
-              Reset Settings
-            </button>
-          </div>
-        </section>
-
-        {/* Status Summary */}
-        <section className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-700 rounded-lg">
-          <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Provider Status Summary</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-            <div className="space-y-2">
-              <p><strong>Theme:</strong> {resolvedTheme}</p>
-              <p><strong>Auth:</strong> {isAuthenticated ? '✅ Logged in' : '❌ Not logged in'}</p>
-            </div>
-            <div className="space-y-2">
-              <p><strong>Active Toasts:</strong> {toasts.length}</p>
-              <p><strong>Active Modals:</strong> {modals.length}</p>
-            </div>
-            <div className="space-y-2">
-              <p><strong>Loading States:</strong> {isAnyLoading ? '🔄 Active' : '✅ Idle'}</p>
-              <p><strong>Language:</strong> {settings.language || 'en'}</p>
-            </div>
-          </div>
-        </section>
+        
       </div>
     </div>
   );
