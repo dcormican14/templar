@@ -1,8 +1,8 @@
 /* Dark Theme - Low-light environments, battery saving on OLED screens */
 [data-theme="dark"] {
   /* Base colors */
-  --background: #0a0a0a;
-  --foreground: #ffffff; /* near white */
+  --background: #2c2f3e;
+  --foreground: #d7dae9; /* near white */
   
   /* Primary colors */
   --primary: #ff90e8; /* violet-web-color */
@@ -43,7 +43,7 @@
   --info-foreground: #323345; /* deep purple */
   
   /* Card and surface colors */
-  --card: #1f2029;
+  --card: #3a3f53;
   --card-foreground: #ffffff; /* near white */
   
   /* Input colors */
