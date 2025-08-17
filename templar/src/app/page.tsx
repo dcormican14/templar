@@ -76,7 +76,7 @@ function PageContent() {
         return 'HalfMoon';
       case 'high-contrast':
         return 'Lens';
-      case 'sepia':
+      case 'sepia-light':
         return 'GlassHalf';
       case 'sepia-dark':
         return 'CoffeeCup';
@@ -93,6 +93,8 @@ function PageContent() {
         return 'High Contrast';
       case 'sepia-dark':
         return 'Sepia Dark';
+      case 'sepia-light':
+        return 'Sepia Light';
       case 'solarized-dark':
         return 'Solarized Dark';
       default:

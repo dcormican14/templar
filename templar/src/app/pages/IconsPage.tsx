@@ -20,9 +20,9 @@ export function IconsPage() {
   const sampleIcons = [
     'Home', 'User', 'Settings', 'Search', 'Bell', 'Mail',
     'Calendar', 'Clock', 'Download', 'Upload', 'Edit', 'Trash',
-    'Heart', 'Star', 'Share', 'Link', 'Lock', 'Unlock',
-    'Play', 'Pause', 'Stop', 'SkipNext', 'SkipPrev', 'Volume',
-    'Wifi', 'Battery', 'Phone', 'Message', 'Camera', 'Image'
+    'Heart', 'Star', 'ShareAndroid', 'Link', 'Lock', 'CardLock',
+    'Play', 'Pause', 'BusStop', 'SkipNext', 'SkipPrev', 'SoundHigh',
+    'Wifi', 'BatteryCharging', 'Phone', 'Message', 'Camera', 'MediaImage'
   ];
 
   const iconSizes = ['xs', 'sm', 'md', 'lg', 'xl'] as const;

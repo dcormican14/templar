@@ -1,60 +1,60 @@
-/* Sepia Theme - Warm, vintage look */
-[data-theme="sepia"] {
+/* Sepia Light Theme - Warm, vintage light mode */
+[data-theme="sepia-light"] {
   /* Base colors */
-  --background: #f4ecd8; /* warm parchment */
-  --foreground: #2b1e14; /* deep brown */
-  
+  --background: #f9f4e7; /* parchment cream */
+  --foreground: #3a2b20; /* rich coffee ink */
+
   /* Primary colors */
-  --primary: #c30b4e; /* rose-red */
-  --primary-foreground: #fffaf3; /* warm white */
-  --primary-hover: #d94876; /* lighter rose-red */
-  
+  --primary: #c86b8f; /* muted rose-red */
+  --primary-foreground: #fffaf3; /* soft parchment text */
+  --primary-hover: #d98da7; /* lighter muted rose */
+
   /* Secondary colors */
-  --secondary: #90caf9; /* light-sky-blue */
-  --secondary-foreground: #2b1e14; /* deep brown */
-  --secondary-hover: #add8ff;
-  
+  --secondary: #7ab1d6; /* softened sky blue */
+  --secondary-foreground: #3a2b20;
+  --secondary-hover: #99c9eb;
+
   /* Accent colors */
-  --accent: #d5b48c; /* muted warm tan */
-  --accent-foreground: #2b1e14; /* deep brown */
-  
+  --accent: #d5b48c; /* warm tan */
+  --accent-foreground: #3a2b20;
+
   /* Border and dividers */
-  --border: #bfa27d; /* medium warm brown */
-  --border-hover: #9c7c55;
-  
+  --border: #c9b49d; /* soft brown-grey */
+  --border-hover: #bfa27d;
+
   /* Muted elements */
-  --muted: #d9c8aa; /* faded parchment */
-  --muted-foreground: #5c4632; /* soft brown text */
-  
+  --muted: #ede4d4; /* light faded beige */
+  --muted-foreground: #7a6a58; /* dusty brown */
+
   /* Success colors */
   --success: #7dbb8c; /* muted green */
-  --success-foreground: #2b1e14; /* deep brown */
-  
+  --success-foreground: #3a2b20;
+
   /* Warning colors */
-  --warning: #e6a96b; /* warm golden amber */
-  --warning-foreground: #2b1e14;
-  
+  --warning: #e6a96b; /* golden amber */
+  --warning-foreground: #3a2b20;
+
   /* Error colors */
-  --error: #b44557; /* dusty rose-red */
+  --error: #a8525d; /* dusty red */
   --error-foreground: #fffaf3;
-  
+
   /* Info colors */
-  --info: #90caf9; /* light-sky-blue */
-  --info-foreground: #2b1e14;
-  
+  --info: #7ab1d6;
+  --info-foreground: #3a2b20;
+
   /* Card and surface colors */
-  --card: #f9f3e6; /* light cream */
-  --card-foreground: #2b1e14;
-  
+  --card: #fffaf3; /* soft off-white parchment */
+  --card-foreground: #3a2b20;
+
   /* Input colors */
-  --input: #f9f3e6;
-  --input-border: #bfa27d;
-  --input-placeholder: #9c7c55;
-  --input-foreground: #2b1e14;
-  
+  --input: #fffaf3;
+  --input-border: #c9b49d;
+  --input-placeholder: #bfa27d;
+  --input-foreground: #3a2b20;
+
   /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(43 30 20 / 0.1);
-  --shadow: 0 1px 3px 0 rgb(43 30 20 / 0.2), 0 1px 2px -1px rgb(43 30 20 / 0.2);
-  --shadow-md: 0 4px 6px -1px rgb(43 30 20 / 0.25), 0 2px 4px -2px rgb(43 30 20 / 0.25);
-  --shadow-lg: 0 10px 15px -3px rgb(43 30 20 / 0.3), 0 4px 6px -4px rgb(43 30 20 / 0.3);
+  --shadow-sm: 0 1px 2px 0 rgb(58 43 32 / 0.05);
+  --shadow: 0 1px 3px 0 rgb(58 43 32 / 0.1), 0 1px 2px -1px rgb(58 43 32 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(58 43 32 / 0.12), 0 2px 4px -2px rgb(58 43 32 / 0.12);
+  --shadow-lg: 0 10px 15px -3px rgb(58 43 32 / 0.15), 0 4px 6px -4px rgb(58 43 32 / 0.15);
 }
