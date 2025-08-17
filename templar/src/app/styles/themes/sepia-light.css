@@ -1,12 +1,12 @@
 /* Sepia Light Theme - Warm, vintage light mode */
 [data-theme="sepia-light"] {
   /* Base colors */
-  --background: #f9f4e7; /* parchment cream */
+  --background: #f4ecd8; /* warm cream, similar to sepia-dark foreground */
   --foreground: #3a2b20; /* rich coffee ink */
 
   /* Primary colors */
   --primary: #c86b8f; /* muted rose-red */
-  --primary-foreground: #fffaf3; /* soft parchment text */
+  --primary-foreground: #f9f4e7; /* lighter cream for text on primary */
   --primary-hover: #d98da7; /* lighter muted rose */
 
   /* Secondary colors */
@@ -36,18 +36,18 @@
 
   /* Error colors */
   --error: #a8525d; /* dusty red */
-  --error-foreground: #fffaf3;
+  --error-foreground: #f9f4e7;
 
   /* Info colors */
   --info: #7ab1d6;
   --info-foreground: #3a2b20;
 
   /* Card and surface colors */
-  --card: #fffaf3; /* soft off-white parchment */
+  --card: #f9f4e7; /* slightly lighter than background for contrast */
   --card-foreground: #3a2b20;
 
   /* Input colors */
-  --input: #fffaf3;
+  --input: #f9f4e7;
   --input-border: #c9b49d;
   --input-placeholder: #bfa27d;
   --input-foreground: #3a2b20;

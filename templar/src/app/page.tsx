@@ -77,7 +77,7 @@ function PageContent() {
       case 'high-contrast':
         return 'Lens';
       case 'sepia-light':
-        return 'GlassHalf';
+        return 'Lamp';
       case 'sepia-dark':
         return 'CoffeeCup';
       case 'solarized-dark':
