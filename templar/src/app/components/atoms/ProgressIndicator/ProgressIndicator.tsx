@@ -96,20 +96,20 @@ export const ProgressIndicator = forwardRef<HTMLDivElement, ProgressIndicatorPro
     // Unified text styles
     const textStyles = useMemo(() => {
       if (type === 'spinner') {
-        return createSpinnerTextStyles(spinnerSize, cssVars.muted, size);
+        return createSpinnerTextStyles(spinnerSize, cssVars.progressTrackText, size);
       } else {
-        return createProgressBarTextStyles(sizeValue, trackHeight, fillHeight, cssVars.muted, size);
+        return createProgressBarTextStyles(sizeValue, trackHeight, fillHeight, cssVars.progressTrackText, size);
       }
-    }, [type, spinnerSize, sizeValue, cssVars.muted, size, trackHeight, fillHeight]);
+    }, [type, spinnerSize, sizeValue, cssVars.progressTrackText, size, trackHeight, fillHeight]);
 
     // Unified styles based on type
     const containerStyles = useMemo(() => {
       if (type === 'spinner') {
         return createSpinnerContainerStyles(spinnerSize, shouldShowPercentage);
       } else {
-        return createProgressBarStyles(width, trackHeight, cssVars.muted, cssVars.background, fillHeight);
+        return createProgressBarStyles(width, trackHeight, cssVars.progressTrack, cssVars.background, fillHeight);
       }
-    }, [type, shouldShowPercentage, spinnerSize, width, trackHeight, cssVars, fillHeight]);
+    }, [type, shouldShowPercentage, spinnerSize, width, trackHeight, cssVars.progressTrack, cssVars.background, fillHeight]);
 
     // Spinner-specific styles (only when needed)
     const spinnerStyles = useMemo(() => 
@@ -118,14 +118,14 @@ export const ProgressIndicator = forwardRef<HTMLDivElement, ProgressIndicatorPro
     );
 
     const spinnerTrackStyles = useMemo(() => 
-      type === 'spinner' ? createSpinnerTrackStyles(spinnerSize, thickness, cssVars.muted, trackSize) : undefined,
-      [type, spinnerSize, thickness, cssVars, trackSize]
+      type === 'spinner' ? createSpinnerTrackStyles(spinnerSize, thickness, cssVars.progressTrack, trackSize) : undefined,
+      [type, spinnerSize, thickness, cssVars.progressTrack, trackSize]
     );
 
     // Progress bar specific styles (only when needed)
     const progressBarTrackStyles = useMemo(() => 
-      type === 'progressBar' ? createProgressBarTrackStyles(width, trackHeight, cssVars.muted, fillHeight, shouldShowPercentage, trackSize) : undefined,
-      [type, width, trackHeight, cssVars, fillHeight, shouldShowPercentage, trackSize]
+      type === 'progressBar' ? createProgressBarTrackStyles(width, trackHeight, cssVars.progressTrack, fillHeight, shouldShowPercentage, trackSize) : undefined,
+      [type, width, trackHeight, cssVars.progressTrack, fillHeight, shouldShowPercentage, trackSize]
     );
 
     const progressBarFillStyles = useMemo(() => 
@@ -138,7 +138,7 @@ export const ProgressIndicator = forwardRef<HTMLDivElement, ProgressIndicatorPro
       ...style,
     };
 
-    const accessibilityLabel = label || (type === 'spinner' ? 'Loading' : `Progress: ${Math.round(percentage)}%`);
+    const accessibilityLabel = label || (type === 'spinner' ? 'Loading' : `Progress: ${Math.round(percentage)}`);
 
     if (type === 'spinner') {
       return (
@@ -169,7 +169,7 @@ export const ProgressIndicator = forwardRef<HTMLDivElement, ProgressIndicatorPro
             <div style={spinnerStyles} />
             {shouldShowPercentage && (
               <span style={textStyles}>
-                {Math.round(percentage)}%
+                {Math.round(percentage)}
               </span>
             )}
           </div>
@@ -196,7 +196,7 @@ export const ProgressIndicator = forwardRef<HTMLDivElement, ProgressIndicatorPro
         <div style={progressBarFillStyles} />
         {shouldShowPercentage && (
           <span style={textStyles}>
-            {Math.round(percentage)}%
+            {Math.round(percentage)}
           </span>
         )}
       </div>

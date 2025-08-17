@@ -52,6 +52,10 @@
   --input-placeholder: #ff90e8; /* violet hint */
   --input-foreground: #ffffff; /* white text */
   
+  /* Progress indicator colors */
+  --progress-track: #404040; /* medium gray track for high contrast */
+  --progress-track-text: #ffffff; /* white text for maximum visibility */
+  
   /* Shadows - more defined */
   --shadow-sm: 0 0 2px 0 rgb(255 255 255 / 0.8);
   --shadow: 0 0 4px 0 rgb(255 255 255 / 0.8);

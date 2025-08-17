@@ -173,7 +173,8 @@ export const createTabsContainerStyles = (): React.CSSProperties => {
   return {
     display: 'flex',
     alignItems: 'flex-end', // Bottom align for tabs specifically
-    height: '100%',
+    height: 'calc(100% - 8px)', // Reduce height by 4px to create top gap
+    marginTop: '8px', // Add 4px margin at the top
     gap: '0',
   };
 };

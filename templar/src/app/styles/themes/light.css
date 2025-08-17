@@ -52,6 +52,10 @@
   --input-placeholder: #b5bbc8; /* softer platinum */
   --input-foreground: #171717; /* deep neutral */
   
+  /* Progress indicator colors */
+  --progress-track: #e5e5e5; /* light gray track */
+  --progress-track-text: #6b7280; /* steel-gray-3 for percentage text */
+  
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);

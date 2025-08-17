@@ -52,6 +52,10 @@
   --input-placeholder: #bfa27d;
   --input-foreground: #f4ecd8;
   
+  /* Progress indicator colors */
+  --progress-track: #5c4332; /* warm dark brown track */
+  --progress-track-text: #d9c8aa; /* warm light brown for percentage text */
+  
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(244 236 216 / 0.1);
   --shadow: 0 1px 3px 0 rgb(244 236 216 / 0.2), 0 1px 2px -1px rgb(244 236 216 / 0.2);

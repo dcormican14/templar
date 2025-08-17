@@ -15,7 +15,7 @@ interface RoundTableProps {
       storageKey?: string;
     };
     theme?: {
-      defaultTheme?: 'light' | 'dark' | 'high-contrast' | 'sepia' | 'solarized-dark' | 'system' | 'auto';
+      defaultTheme?: 'light' | 'dark' | 'high-contrast' | 'sepia-light' | 'solarized-dark' | 'system' | 'auto';
       attribute?: string;
       storageKey?: string;
     };

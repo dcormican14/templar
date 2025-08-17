@@ -122,6 +122,8 @@ export function useCSSVariables() {
     shadow: getVariable('shadow'),
     shadowMd: getVariable('shadow-md'),
     shadowLg: getVariable('shadow-lg'),
+    progressTrack: getVariable('progress-track'),
+    progressTrackText: getVariable('progress-track-text'),
     
     // Utility functions
     getVariable,

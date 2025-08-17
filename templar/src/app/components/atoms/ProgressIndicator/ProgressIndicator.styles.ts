@@ -53,8 +53,8 @@ export const getProgressBarTrackThickness = (trackSize: TrackSize, fillHeight: n
 export const shouldShowPercentageForSpinner = (preset: ProgressIndicatorPreset | undefined, showPercentage: boolean): boolean => {
   if (!showPercentage) return false;
   
-  // Only show percentage for lg preset (largest size)
-  return preset === 'lg';
+  // Show percentage for md and lg presets (medium and large sizes)
+  return preset === 'md' || preset === 'lg';
 };
 
 export const getSizeValue = (size: ProgressIndicatorSize | number): number => {
@@ -150,11 +150,11 @@ export const createSpinnerTextStyles = (
   secondaryColor: string,
   sizeType: ProgressIndicatorSize | number
 ): React.CSSProperties => {
-  let fontSize = Math.max(size * 0.25, 8);
+  let fontSize = Math.max(size * 0.35, 10); // Increased from 0.25 to 0.35 and minimum from 8 to 10
   
-  // Add 2px for xl size
+  // Add 3px for xl size (increased from 2px)
   if (sizeType === 'xl' || (typeof sizeType === 'number' && sizeType >= 32)) {
-    fontSize += 2;
+    fontSize += 3;
   }
   
   return {

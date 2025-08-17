@@ -126,7 +126,17 @@ export function ProgressPage() {
             <div style={demoItemStyle}>
               <ProgressIndicator 
                 type="spinner" 
-                size="lg" 
+                preset="md" 
+                value={animatedProgress} 
+                showPercentage={true}
+                color="primary"
+              />
+              <span style={mutedTextStyle}>Medium with Progress</span>
+            </div>
+            <div style={demoItemStyle}>
+              <ProgressIndicator 
+                type="spinner" 
+                preset="lg" 
                 value={animatedProgress} 
                 showPercentage={true}
                 color="primary"
@@ -136,7 +146,7 @@ export function ProgressPage() {
             <div style={demoItemStyle}>
               <ProgressIndicator 
                 type="spinner" 
-                size="lg" 
+                preset="lg" 
                 value={75} 
                 showPercentage={true}
                 color="success"
@@ -146,7 +156,7 @@ export function ProgressPage() {
             <div style={demoItemStyle}>
               <ProgressIndicator 
                 type="spinner" 
-                size="lg" 
+                preset="lg" 
                 value={33} 
                 showPercentage={true}
                 color="warning"

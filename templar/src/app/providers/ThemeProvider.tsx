@@ -49,6 +49,8 @@ interface ThemeVariables {
   shadow: string;
   shadowMd: string;
   shadowLg: string;
+  progressTrack: string;
+  progressTrackText: string;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -115,6 +117,8 @@ export function ThemeProvider({
       shadow: getCSSVariable('shadow'),
       shadowMd: getCSSVariable('shadow-md'),
       shadowLg: getCSSVariable('shadow-lg'),
+      progressTrack: getCSSVariable('progress-track'),
+      progressTrackText: getCSSVariable('progress-track-text'),
     };
     
     setThemeVariables(variables);
