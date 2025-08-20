@@ -17,11 +17,11 @@ import {
   OverviewPage, 
   CSSVariablesPage, 
   ProgressPage, 
-  AtomicComponentsPage, 
+  ComponentPage, 
   IconsPage, 
   CardsPage, 
   DividersPage, 
-  NavigationPage 
+  NavigationPage
 } from './pages';
 
 export default function Page() {
@@ -111,7 +111,7 @@ function PageContent() {
       case 'progress':
         return <ProgressPage />;
       case 'atomic':
-        return <AtomicComponentsPage />;
+        return <ComponentPage />;
       case 'icons':
         return <IconsPage />;
       case 'cards':

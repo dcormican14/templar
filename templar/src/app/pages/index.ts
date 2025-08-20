@@ -1,7 +1,9 @@
 export { OverviewPage } from './OverviewPage';
 export { CSSVariablesPage } from './CSSVariablesPage';
 export { ProgressPage } from './ProgressPage';
+export { ComponentPage } from './ComponentPage';
 export { AtomicComponentsPage } from './AtomicComponentsPage';
+export { MoleculeComponentPage } from './MoleculeComponentPage';
 export { IconsPage } from './IconsPage';
 export { CardsPage } from './CardsPage';
 export { DividersPage } from './DividersPage';

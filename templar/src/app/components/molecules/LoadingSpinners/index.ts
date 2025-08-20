@@ -1,11 +1,3 @@
-export { Navigation } from './Navigation';
-export type { 
-  NavigationProps, 
-  NavigationTab,
-  NavigationTabProps,
-  NavigationBrandProps 
-} from './Navigation';
-
 export { LoadingSpinners } from './LoadingSpinners';
 export type { 
   LoadingSpinnersProps, 
@@ -16,4 +8,14 @@ export type {
   SpinnerAnimationProps,
   DotsAnimationProps,
   PulseAnimationProps
-} from './LoadingSpinners';
+} from './LoadingSpinners.types';
+export { 
+  getSizeStyles, 
+  getColorValue, 
+  createBaseStyles, 
+  createParrotColors,
+  createSpinnerStyles,
+  createDotsStyles,
+  createPulseStyles
+} from './LoadingSpinners.styles';
+export * from './animations';
