@@ -5,6 +5,8 @@ export { Badge } from './Badge';
 export type { BadgeProps } from './Badge';
 export { Card } from './Card';
 export type { CardProps } from './Card';
+export { CodeBlock } from './CodeBlock';
+export type { CodeBlockProps } from './CodeBlock';
 export { Divider } from './Divider';
 export type { DividerProps } from './Divider';
 export { 
@@ -28,5 +30,6 @@ export {
 export * from './Button';
 export * from './Badge';
 export * from './Card';
+export * from './CodeBlock';
 export * from './Divider';
 export * from './Icon';

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button, Icon, Card, Badge } from '../components/atoms';
+import { Button, Icon, Card, Badge, CodeBlock } from '../components/atoms';
 import { useCSSVariables, useToast, useLoading } from '../providers';
 
 export function ButtonsPage() {
@@ -43,19 +43,6 @@ export function ButtonsPage() {
     >
       {children}
     </h3>
-  );
-
-  const CodeBlock = ({ children }: { children: string }) => (
-    <pre 
-      className="text-sm p-3 rounded mb-4 overflow-x-auto"
-      style={{ 
-        backgroundColor: cssVars.muted,
-        color: cssVars.mutedForeground,
-        border: `1px solid ${cssVars.border}`
-      }}
-    >
-      <code>{children}</code>
-    </pre>
   );
 
   return (
@@ -116,9 +103,11 @@ export function ButtonsPage() {
           ))}
         </div>
 
-        <CodeBlock>{`<Button variant="primary" size="md">Button Text</Button>
+        <CodeBlock language="tsx" copyable syntaxHighlighting>
+{`<Button variant="primary" size="md">Button Text</Button>
 <Button variant="secondary" size="lg">Secondary</Button>
-<Button variant="outline" size="sm">Outline</Button>`}</CodeBlock>
+<Button variant="outline" size="sm">Outline</Button>`}
+        </CodeBlock>
       </Card>
 
       {/* Variant Showcase */}
@@ -163,11 +152,13 @@ export function ButtonsPage() {
           ))}
         </div>
 
-        <CodeBlock>{`<Button variant="primary">Primary Action</Button>
+        <CodeBlock language="tsx" copyable>
+{`<Button variant="primary">Primary Action</Button>
 <Button variant="secondary">Secondary Action</Button>
 <Button variant="outline">Outlined Button</Button>
 <Button variant="ghost">Ghost Button</Button>
-<Button variant="destructive">Delete</Button>`}</CodeBlock>
+<Button variant="destructive">Delete</Button>`}
+        </CodeBlock>
       </Card>
 
       {/* Icon Integration */}
@@ -256,7 +247,8 @@ export function ButtonsPage() {
           </div>
         </div>
 
-        <CodeBlock>{`<Button 
+        <CodeBlock language="tsx" copyable syntaxHighlighting>
+{`<Button 
   variant="primary" 
   icon={<Icon name="Plus" />}
   iconPosition="leading"
@@ -270,7 +262,8 @@ export function ButtonsPage() {
   iconPosition="trailing"
 >
   Next
-</Button>`}</CodeBlock>
+</Button>`}
+        </CodeBlock>
       </Card>
 
       {/* Loading States */}
@@ -330,7 +323,8 @@ export function ButtonsPage() {
           </div>
         </div>
 
-        <CodeBlock>{`// Manual loading
+        <CodeBlock language="tsx" copyable syntaxHighlighting>
+{`// Manual loading
 <Button variant="primary" loading>
   Loading...
 </Button>
@@ -343,7 +337,8 @@ export function ButtonsPage() {
   }}
 >
   Save
-</Button>`}</CodeBlock>
+</Button>`}
+        </CodeBlock>
       </Card>
 
       {/* Layout Options */}
@@ -415,13 +410,15 @@ export function ButtonsPage() {
           </div>
         </div>
 
-        <CodeBlock>{`<Button variant="primary" fullWidth>
+        <CodeBlock language="tsx" copyable>
+{`<Button variant="primary" fullWidth>
   Full Width Button
 </Button>
 
 <Button variant="secondary" rounded>
   Rounded Button
-</Button>`}</CodeBlock>
+</Button>`}
+        </CodeBlock>
       </Card>
 
       {/* Interactive Examples */}
@@ -613,13 +610,15 @@ export function ButtonsPage() {
           </div>
         </div>
 
-        <CodeBlock>{`<Badge variant="primary">Status</Badge>
+        <CodeBlock language="tsx" copyable>
+{`<Badge variant="primary">Status</Badge>
 <Badge variant="success" icon={<Icon name="CheckCircle" />}>
   Verified
 </Badge>
 <Badge variant="outline" removable onRemove={handleRemove}>
   Removable Tag
-</Badge>`}</CodeBlock>
+</Badge>`}
+        </CodeBlock>
       </Card>
 
       {/* Usage Guidelines */}
