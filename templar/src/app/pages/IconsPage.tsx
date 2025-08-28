@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useCSSVariables } from '../providers';
-import { Card, Icon } from '../components/atoms';
+import { Card, Icon, CodeBlock } from '../components/atoms';
 
 export function IconsPage() {
   const cssVars = useCSSVariables();
@@ -66,9 +66,7 @@ export function IconsPage() {
                   <p className="text-sm" style={mutedTextStyle}>Click any icon to see details</p>
                 </div>
               </div>
-              <div className="bg-gray-100 dark:bg-gray-800 p-3 rounded text-sm" style={mutedTextStyle}>
-                <code>{`<Icon name="${selectedIcon}" size="md" />`}</code>
-              </div>
+              <CodeBlock variant="inline" language="tsx">{`<Icon name="${selectedIcon}" size="md" />`}</CodeBlock>
             </div>
           )}
         </Card>
@@ -86,15 +84,13 @@ export function IconsPage() {
               </div>
             ))}
           </div>
-          <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mt-6">
-            <pre className="text-sm" style={mutedTextStyle}>
+          <CodeBlock language="tsx" copyable syntaxHighlighting>
 {`<Icon name="Star" size="xs" />
 <Icon name="Star" size="sm" />
 <Icon name="Star" size="md" />
 <Icon name="Star" size="lg" />
 <Icon name="Star" size="xl" />`}
-            </pre>
-          </div>
+          </CodeBlock>
         </Card>
       </section>
 
@@ -110,15 +106,13 @@ export function IconsPage() {
               </div>
             ))}
           </div>
-          <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mt-6">
-            <pre className="text-sm" style={mutedTextStyle}>
+          <CodeBlock language="tsx" copyable syntaxHighlighting>
 {`<Icon name="Heart" color="primary" />
 <Icon name="Heart" color="secondary" />
 <Icon name="Heart" color="success" />
 <Icon name="Heart" color="warning" />
 <Icon name="Heart" color="error" />`}
-            </pre>
-          </div>
+          </CodeBlock>
         </Card>
       </section>
 
@@ -136,12 +130,10 @@ export function IconsPage() {
               <span className="text-sm mt-2" style={mutedTextStyle}>Pulse</span>
             </div>
           </div>
-          <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mt-6">
-            <pre className="text-sm" style={mutedTextStyle}>
+          <CodeBlock language="tsx" copyable syntaxHighlighting>
 {`<Icon name="Settings" spin />
 <Icon name="Heart" pulse color="error" />`}
-            </pre>
-          </div>
+          </CodeBlock>
         </Card>
       </section>
 

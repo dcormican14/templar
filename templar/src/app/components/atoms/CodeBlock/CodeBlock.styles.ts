@@ -21,7 +21,7 @@ export const getVariantStyles = (variant: CodeBlockVariant, cssVars: any): React
         color: cssVars.mutedForeground,
         borderColor: cssVars.border,
         borderWidth: '1px',
-        borderRadius: '4px',
+        borderRadius: '8px',
         padding: '2px 6px',
         fontSize: '0.9em',
         fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
@@ -71,13 +71,13 @@ export const getSizeStyles = (size: CodeBlockSize): React.CSSProperties => {
       padding: '8px', 
       fontSize: '11px', 
       lineHeight: '1.4',
-      borderRadius: '4px'
+      borderRadius: '8px'
     },
     sm: { 
       padding: '12px', 
       fontSize: '12px', 
       lineHeight: '1.4',
-      borderRadius: '6px'
+      borderRadius: '8px'
     },
     md: { 
       padding: '16px', 
@@ -113,7 +113,7 @@ export const createBaseStyles = (
   overflowX: isInline ? 'visible' : 'auto',
   overflowY: maxHeight ? 'auto' : 'visible',
   maxHeight: maxHeight || 'none',
-  borderRadius: rounded ? '16px' : undefined,
+  borderRadius: rounded ? '24px' : undefined,
   transition: animationsEnabled ? 'all 0.2s ease' : 'none',
   position: 'relative',
   wordBreak: 'break-all',
@@ -127,7 +127,7 @@ export const getCopyButtonStyles = (cssVars: any, animationsEnabled: boolean): R
   backgroundColor: cssVars.getColorWithOpacity?.('background', 0.8) || cssVars.background,
   color: cssVars.mutedForeground,
   border: `1px solid ${cssVars.border}`,
-  borderRadius: '4px',
+  borderRadius: '8px',
   padding: '4px 8px',
   fontSize: '12px',
   cursor: 'pointer',

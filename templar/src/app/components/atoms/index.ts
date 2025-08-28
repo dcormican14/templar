@@ -5,6 +5,8 @@ export { Badge } from './Badge';
 export type { BadgeProps } from './Badge';
 export { Card } from './Card';
 export type { CardProps } from './Card';
+export { CheckBox } from './CheckBox';
+export type { CheckBoxProps } from './CheckBox';
 export { CodeBlock } from './CodeBlock';
 export type { CodeBlockProps } from './CodeBlock';
 export { Divider } from './Divider';

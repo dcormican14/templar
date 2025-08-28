@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useCSSVariables } from '../providers';
-import { Card, Divider } from '../components/atoms';
+import { Card, Divider, CodeBlock } from '../components/atoms';
 
 export function AtomicComponentsPage() {
   const cssVars = useCSSVariables();
@@ -48,14 +48,12 @@ export function AtomicComponentsPage() {
           </Card>
         </div>
 
-        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
-          <pre className="text-sm" style={mutedTextStyle}>
+        <CodeBlock language="tsx" copyable syntaxHighlighting>
 {`<Card className="p-6">
   <h3>Card Title</h3>
   <p>Card content goes here</p>
 </Card>`}
-          </pre>
-        </div>
+        </CodeBlock>
       </section>
 
       {/* Divider Component Demo */}
@@ -112,8 +110,7 @@ export function AtomicComponentsPage() {
           </div>
         </div>
 
-        <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg mt-6">
-          <pre className="text-sm" style={mutedTextStyle}>
+        <CodeBlock language="tsx" copyable syntaxHighlighting>
 {`// Basic divider
 <Divider />
 
@@ -125,8 +122,7 @@ export function AtomicComponentsPage() {
 
 // Vertical divider
 <Divider orientation="vertical" className="h-12" />`}
-          </pre>
-        </div>
+        </CodeBlock>
       </section>
 
       {/* Component Features */}

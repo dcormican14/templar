@@ -18,11 +18,10 @@ import {
   CSSVariablesPage, 
   ProgressPage, 
   AtomicComponentsPage, 
-  IconsPage, 
-  CardsPage, 
-  DividersPage, 
+  IconsPage,
   NavigationPage,
-  ButtonsPage
+  ButtonsPage,
+  InteractivePage,
 } from './pages';
 
 export default function Page() {
@@ -59,9 +58,8 @@ function PageContent() {
     { id: 'progress', label: 'Progress'},
     { id: 'atomic', label: 'Components'},
     { id: 'buttons', label: 'Buttons'},
+    { id: 'interactive', label: 'Interactive'},
     { id: 'icons', label: 'Icons'},
-    { id: 'cards', label: 'Cards'},
-    { id: 'dividers', label: 'Dividers'},
     { id: 'navigation', label: 'Navigation'}
   ];
 
@@ -116,12 +114,10 @@ function PageContent() {
         return <AtomicComponentsPage />;
       case 'buttons':
         return <ButtonsPage />;
+      case 'interactive':
+        return <InteractivePage />;
       case 'icons':
         return <IconsPage />;
-      case 'cards':
-        return <CardsPage />;
-      case 'dividers':
-        return <DividersPage />;
       case 'navigation':
         return <NavigationPage />;
       default:

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useCSSVariables } from '../providers';
-import { Card, Icon } from '../components/atoms';
+import { Card, Icon, CodeBlock } from '../components/atoms';
 import { Navigation } from '../components/molecules';
 
 export function NavigationPage() {
@@ -117,8 +117,7 @@ export function NavigationPage() {
         <div className="space-y-6">
           <Card className="p-6">
             <h3 className="font-semibold mb-3" style={headingStyle}>Basic Navigation</h3>
-            <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
-              <pre className="text-sm" style={mutedTextStyle}>
+            <CodeBlock language="tsx" copyable syntaxHighlighting>
 {`<Navigation
   brand={<span>My App</span>}
   tabs={[
@@ -128,14 +127,12 @@ export function NavigationPage() {
   activeTab={activeTab}
   onTabChange={setActiveTab}
 />`}
-              </pre>
-            </div>
+            </CodeBlock>
           </Card>
 
           <Card className="p-6">
             <h3 className="font-semibold mb-3" style={headingStyle}>With Content Slots</h3>
-            <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg">
-              <pre className="text-sm" style={mutedTextStyle}>
+            <CodeBlock language="tsx" copyable syntaxHighlighting>
 {`<Navigation
   brand={<Logo />}
   tabs={tabs}
@@ -144,8 +141,7 @@ export function NavigationPage() {
   leadingContent={<SearchBox />}
   trailingContent={<UserMenu />}
 />`}
-              </pre>
-            </div>
+            </CodeBlock>
           </Card>
         </div>
       </section>
