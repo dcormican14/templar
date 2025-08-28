@@ -16,12 +16,16 @@ export const getVariantStyles = (
         return cssVars.primary;
       case 'secondary':
         return cssVars.secondary;
-      case 'outline':
-        return cssVars.border;
-      case 'ghost':
-        return cssVars.mutedForeground;
+      case 'warning':
+        return cssVars.warning;
+      case 'destructive':
+        return cssVars.destructive || cssVars.error;
+      case 'success':
+        return cssVars.success;
       case 'default':
         return cssVars.border;
+      case 'inverted':
+        return cssVars.foreground;
       default:
         return cssVars.border;
     }

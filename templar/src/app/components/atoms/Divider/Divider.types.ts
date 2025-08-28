@@ -1,4 +1,4 @@
-export type DividerVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'default';
+export type DividerVariant = 'primary' | 'secondary' | 'warning' | 'destructive' | 'success' | 'default' | 'inverted';
 export type DividerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 export type DividerOrientation = 'horizontal' | 'vertical';
 export type DividerSpacing = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';

@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useCSSVariables } from '../providers';
-import { Card, CheckBox, CodeBlock, Divider } from '../components/atoms';
+import { useCSSVariables, useToast } from '../providers';
+import { Card, CheckBox, CodeBlock, Divider, Notification, Button } from '../components/atoms';
 
 export function InteractivePage() {
   const cssVars = useCSSVariables();
@@ -642,6 +642,205 @@ const [isLoading, setIsLoading] = useState(false);
           </Card>
         </div>
       </section>
+
+      {/* Notifications Section */}
+      <section>
+        <h2 className="text-3xl font-semibold mb-4" style={headingStyle}>Notification Components</h2>
+        <p className="text-base mb-6" style={mutedTextStyle}>
+          Toast notifications with card-like styling and theme integration, powered by the ToastProvider.
+        </p>
+      </section>
+
+      {/* Toast Examples */}
+      <section>
+        <h2 className="text-2xl font-semibold mb-6" style={headingStyle}>Toast Notifications</h2>
+        <Card className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <h3 className="font-semibold mb-4" style={headingStyle}>Try the Toast System</h3>
+              <div className="space-y-4">
+                <ToastDemoButtons />
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold mb-4" style={headingStyle}>Usage Code</h3>
+              <CodeBlock language="tsx" copyable syntaxHighlighting>
+{`import { useToast } from '@/providers';
+
+function Example() {
+  const toast = useToast();
+
+  const handleSuccess = () => {
+    toast.success("Success!", "Operation completed");
+  };
+
+  const handleError = () => {
+    toast.error("Error", "Something went wrong");
+  };
+
+  return (
+    <div>
+      <button onClick={handleSuccess}>Success</button>
+      <button onClick={handleError}>Error</button>
+    </div>
+  );
+}`}
+              </CodeBlock>
+            </div>
+          </div>
+        </Card>
+      </section>
+
+      {/* Static Notification Examples */}
+      <section>
+        <h2 className="text-2xl font-semibold mb-6" style={headingStyle}>Static Notifications</h2>
+        <Card className="p-6">
+          <div className="space-y-6">
+            <div>
+              <h3 className="font-semibold mb-4" style={headingStyle}>Different Types</h3>
+              <div className="space-y-4">
+                <Notification
+                  type="success"
+                  title="Success Notification"
+                  description="This is a success message with a solid card background"
+                  dismissible={false}
+                />
+                <Notification
+                  type="destructive"
+                  title="Error Notification"
+                  description="This is an error message with a red accent border"
+                  dismissible={false}
+                />
+                <Notification
+                  type="warning"
+                  title="Warning Notification"
+                  description="This is a warning message with an orange accent border"
+                  dismissible={false}
+                />
+                <Notification
+                  type="primary"
+                  title="Info Notification"
+                  description="This is an info message with a blue accent border"
+                  dismissible={false}
+                />
+                <Notification
+                  type="default"
+                  title="Default Notification"
+                  description="This is a default notification with standard card styling"
+                  dismissible={false}
+                />
+              </div>
+            </div>
+
+            <Divider />
+
+            <div>
+              <h3 className="font-semibold mb-4" style={headingStyle}>Different Sizes</h3>
+              <div className="space-y-4">
+                <Notification
+                  size="sm"
+                  type="primary"
+                  title="Small Notification"
+                  description="Compact size for subtle notifications"
+                  dismissible={false}
+                />
+                <Notification
+                  size="md"
+                  type="primary"
+                  title="Medium Notification"
+                  description="Default size for most use cases"
+                  dismissible={false}
+                />
+                <Notification
+                  size="lg"
+                  type="primary"
+                  title="Large Notification"
+                  description="Larger size for important notifications that need more attention"
+                  dismissible={false}
+                />
+              </div>
+            </div>
+
+            <Divider />
+
+            <div>
+              <h3 className="font-semibold mb-4" style={headingStyle}>With Actions</h3>
+              <Notification
+                type="default"
+                title="Confirm Action"
+                description="Are you sure you want to delete this item? This action cannot be undone."
+                actions={[
+                  {
+                    label: "Cancel",
+                    onClick: () => console.log("Cancelled"),
+                    variant: "secondary"
+                  },
+                  {
+                    label: "Delete",
+                    onClick: () => console.log("Deleted"),
+                    variant: "primary"
+                  }
+                ]}
+                dismissible={false}
+              />
+            </div>
+          </div>
+        </Card>
+      </section>
+    </div>
+  );
+}
+
+// Helper component for toast demo buttons
+function ToastDemoButtons() {
+  const toast = useToast();
+
+  return (
+    <div className="space-y-3">
+      <Button
+        variant="primary"
+        onClick={() => toast.success("Success!", "Your operation completed successfully")}
+        className="w-full"
+      >
+        Show Success Toast
+      </Button>
+      <Button
+        variant="destructive"
+        onClick={() => toast.error("Error!", "Something went wrong, please try again")}
+        className="w-full"
+      >
+        Show Error Toast
+      </Button>
+      <Button
+        variant="outline"
+        onClick={() => toast.warning("Warning!", "Please review your input before continuing")}
+        className="w-full"
+      >
+        Show Warning Toast
+      </Button>
+      <Button
+        variant="secondary"
+        onClick={() => toast.info("Info", "Here's some helpful information for you")}
+        className="w-full"
+      >
+        Show Info Toast
+      </Button>
+      <Button
+        variant="outline"
+        onClick={() => toast.addToast({
+          type: 'default',
+          title: 'With Action',
+          description: 'This notification has an action button. That button can be used to trigger any function you want. This is longer than normal just to show how it looks with more text.',
+          action: {
+            label: 'View Details',
+            onClick: () => alert('Action clicked!')
+          }
+        })}
+        className="w-full"
+      >
+        Show Toast with Action
+      </Button>
     </div>
   );
 }

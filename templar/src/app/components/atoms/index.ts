@@ -16,6 +16,13 @@ export {
   type IconProps, 
   type IconName 
 } from './Icon';
+export { Notification } from './Notification';
+export type { 
+  NotificationProps, 
+  NotificationType, 
+  NotificationSize,
+  NotificationAction 
+} from './Notification';
 export {
   ProgressIndicator,
   LoadingSpinner,
