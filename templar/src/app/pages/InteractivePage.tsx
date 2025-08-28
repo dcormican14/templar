@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useCSSVariables, useToast } from '../providers';
-import { Card, CheckBox, CodeBlock, Divider, Notification, Button } from '../components/atoms';
+import { Card, CheckBox, CodeBlock, Divider, Notification, Button, Dropdown, Search } from '../components/atoms';
 
 export function InteractivePage() {
   const cssVars = useCSSVariables();
@@ -21,6 +21,17 @@ export function InteractivePage() {
     { id: 2, label: 'Item 2', checked: false },
     { id: 3, label: 'Item 3', checked: false },
   ]);
+
+  // Dropdown state
+  const [singleValue, setSingleValue] = useState<string | undefined>(undefined);
+  const [multiValue, setMultiValue] = useState<string[]>([]);
+
+  const dropdownOptions = [
+    { value: 'option1', label: 'First Option' },
+    { value: 'option2', label: 'Second Option' },
+    { value: 'option3', label: 'Third Option' },
+    { value: 'option4', label: 'Fourth Option' },
+  ];
 
   const allChecked = items.every(item => item.checked);
   const someChecked = items.some(item => item.checked);
@@ -639,6 +650,298 @@ const [isLoading, setIsLoading] = useState(false);
               <li>• Don't forget to handle keyboard interactions</li>
               <li>• Don't manage state manually unless absolutely necessary</li>
             </ul>
+          </Card>
+        </div>
+      </section>
+
+      {/* Dropdown Section */}
+      <section>
+        <h2 className="text-3xl font-semibold mb-4" style={headingStyle}>Dropdown Components</h2>
+        <p className="text-base mb-6" style={mutedTextStyle}>
+          Flexible dropdown components with consistent width, search functionality, multi-select, and accessibility features.
+        </p>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <Card className="p-6">
+            <h3 className="text-xl font-semibold mb-4" style={headingStyle}>Basic Examples</h3>
+            
+            <div className="space-y-6">
+              <div className="max-w-xs">
+                <h4 className="font-medium mb-3" style={headingStyle}>Single Select - Fixed Width</h4>
+                <Dropdown
+                  options={dropdownOptions}
+                  value={singleValue}
+                  onChange={(value) => setSingleValue(value as string)}
+                  placeholder="Choose an option..."
+                  width="250px"
+                  portal={false}
+                />
+                <p className="text-sm mt-2" style={mutedTextStyle}>
+                  Selected: {singleValue || 'None'}
+                </p>
+              </div>
+
+              <div className="max-w-xs">
+                <h4 className="font-medium mb-3" style={headingStyle}>Multi Select - Consistent Width</h4>
+                <Dropdown
+                  options={dropdownOptions}
+                  value={multiValue}
+                  onChange={(value) => setMultiValue(value as string[])}
+                  placeholder="Choose options..."
+                  width="250px"
+                  multiple
+                  portal={false}
+                />
+                <p className="text-sm mt-2" style={mutedTextStyle}>
+                  Selected ({multiValue.length}): {multiValue.join(', ') || 'None'}
+                </p>
+              </div>
+
+              <div className="max-w-xs">
+                <h4 className="font-medium mb-3" style={headingStyle}>With Search - Styled Input</h4>
+                <Dropdown
+                  options={[
+                    ...dropdownOptions,
+                    { value: 'option5', label: 'Fifth Option' },
+                    { value: 'option6', label: 'Sixth Option' },
+                    { value: 'option7', label: 'Seventh Option' },
+                    { value: 'option8', label: 'Eighth Option' },
+                  ]}
+                  placeholder="Search options..."
+                  searchPlaceholder="Type to filter..."
+                  width="250px"
+                  searchable
+                  portal={false}
+                />
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-6">
+            <h3 className="text-xl font-semibold mb-4" style={headingStyle}>Variants & States</h3>
+            
+            <div className="space-y-6">
+              <div className="max-w-xs">
+                <h4 className="font-medium mb-3" style={headingStyle}>Themed Variants</h4>
+                <div className="space-y-3">
+                  <Dropdown
+                    options={dropdownOptions}
+                    placeholder="Primary - themed icons & text"
+                    variant="primary"
+                    width="250px"
+                    portal={false}
+                  />
+                  <Dropdown
+                    options={dropdownOptions}
+                    placeholder="Secondary - themed colors"
+                    variant="secondary"
+                    width="250px"
+                    portal={false}
+                  />
+                  <Dropdown
+                    options={dropdownOptions}
+                    placeholder="Ghost - subtle styling"
+                    variant="ghost"
+                    width="250px"
+                    portal={false}
+                  />
+                  <Dropdown
+                    options={dropdownOptions}
+                    placeholder="Destructive - error state"
+                    variant="destructive"
+                    width="250px"
+                    portal={false}
+                  />
+                </div>
+              </div>
+
+              <div className="max-w-xs">
+                <h4 className="font-medium mb-3" style={headingStyle}>Disabled State</h4>
+                <Dropdown
+                  options={dropdownOptions}
+                  placeholder="This dropdown is disabled"
+                  width="250px"
+                  disabled
+                  portal={false}
+                />
+              </div>
+
+              <div className="max-w-xs">
+                <h4 className="font-medium mb-3" style={headingStyle}>Loading State</h4>
+                <Dropdown
+                  options={[]}
+                  placeholder="Loading options..."
+                  width="250px"
+                  loading
+                  portal={false}
+                />
+              </div>
+            </div>
+          </Card>
+        </div>
+      </section>
+
+      {/* Search Section */}
+      <section>
+        <h2 className="text-3xl font-semibold mb-4" style={headingStyle}>Search Components</h2>
+        <p className="text-base mb-6" style={mutedTextStyle}>
+          Flexible search inputs with debouncing, validation, and accessibility features.
+        </p>
+        
+        <div className="space-y-8">
+          {/* Basic Search Examples */}
+          <Card className="p-6">
+            <h3 className="text-xl font-semibold mb-4" style={headingStyle}>Basic Search</h3>
+            <p className="mb-6" style={mutedTextStyle}>
+              Standard search inputs with different variants and sizes.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div>
+                <h4 className="font-medium mb-3" style={headingStyle}>Default Search</h4>
+                <Search 
+                  placeholder="Search..."
+                  onSearch={(value) => console.log('Search:', value)}
+                />
+              </div>
+
+              <div>
+                <h4 className="font-medium mb-3" style={headingStyle}>With Clear Button</h4>
+                <Search 
+                  placeholder="Type to search..."
+                  showClearButton={true}
+                  onSearch={(value) => console.log('Search:', value)}
+                  onClear={() => console.log('Cleared')}
+                />
+              </div>
+
+              <div>
+                <h4 className="font-medium mb-3" style={headingStyle}>Icon on Right</h4>
+                <Search 
+                  placeholder="Search here..."
+                  searchIconPosition="right"
+                  onSearch={(value) => console.log('Search:', value)}
+                />
+              </div>
+            </div>
+          </Card>
+
+          {/* Variants */}
+          <Card className="p-6">
+            <h3 className="text-xl font-semibold mb-4" style={headingStyle}>Variants</h3>
+            <p className="mb-6" style={mutedTextStyle}>
+              Different visual styles for various contexts.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+              <div>
+                <h4 className="font-medium mb-3" style={headingStyle}>Outline (Default)</h4>
+                <Search 
+                  variant="outline"
+                  placeholder="Search..."
+                />
+              </div>
+
+              <div>
+                <h4 className="font-medium mb-3" style={headingStyle}>Ghost</h4>
+                <Search 
+                  variant="ghost"
+                  placeholder="Search..."
+                />
+              </div>
+
+              <div>
+                <h4 className="font-medium mb-3" style={headingStyle}>Primary</h4>
+                <Search 
+                  variant="primary"
+                  placeholder="Search..."
+                />
+              </div>
+
+              <div>
+                <h4 className="font-medium mb-3" style={headingStyle}>Secondary</h4>
+                <Search 
+                  variant="secondary"
+                  placeholder="Search..."
+                />
+              </div>
+
+              <div>
+                <h4 className="font-medium mb-3" style={headingStyle}>Destructive</h4>
+                <Search 
+                  variant="destructive"
+                  placeholder="Search..."
+                />
+              </div>
+            </div>
+          </Card>
+
+          {/* Sizes */}
+          <Card className="p-6">
+            <h3 className="text-xl font-semibold mb-4" style={headingStyle}>Sizes</h3>
+            <p className="mb-6" style={mutedTextStyle}>
+              Different sizes for various layouts and contexts.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+              <div>
+                <h4 className="font-medium mb-3" style={headingStyle}>Small</h4>
+                <Search 
+                  size="sm"
+                  placeholder="Small search..."
+                />
+              </div>
+
+              <div>
+                <h4 className="font-medium mb-3" style={headingStyle}>Medium (Default)</h4>
+                <Search 
+                  size="md"
+                  placeholder="Medium search..."
+                />
+              </div>
+
+              <div>
+                <h4 className="font-medium mb-3" style={headingStyle}>Large</h4>
+                <Search 
+                  size="lg"
+                  placeholder="Large search..."
+                />
+              </div>
+            </div>
+          </Card>
+
+          {/* States */}
+          <Card className="p-6">
+            <h3 className="text-xl font-semibold mb-4" style={headingStyle}>States</h3>
+            <p className="mb-6" style={mutedTextStyle}>
+              Different states including loading, error, and disabled.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div>
+                <h4 className="font-medium mb-3" style={headingStyle}>Loading</h4>
+                <Search 
+                  placeholder="Loading..."
+                  loading={true}
+                />
+              </div>
+
+              <div>
+                <h4 className="font-medium mb-3" style={headingStyle}>Error State</h4>
+                <Search 
+                  placeholder="Search with error..."
+                  error={true}
+                />
+              </div>
+
+              <div>
+                <h4 className="font-medium mb-3" style={headingStyle}>Disabled</h4>
+                <Search 
+                  placeholder="Disabled search..."
+                  disabled={true}
+                />
+              </div>
+            </div>
           </Card>
         </div>
       </section>

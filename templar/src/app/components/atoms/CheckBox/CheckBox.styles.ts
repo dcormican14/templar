@@ -127,7 +127,7 @@ export const createBaseStyles = (
     cursor: disabled ? 'not-allowed' : 'pointer',
     opacity: disabled ? 0.6 : 1,
     borderRadius: getBorderRadius(),
-    transition: animationsEnabled ? 'all 0.2s ease' : 'none',
+    transition: animationsEnabled ? 'background-color 0.2s ease-in-out, color 0.2s ease-in-out, opacity 0.2s ease-in-out' : 'none',
     outline: 'none',
     flexShrink: 0,
   };

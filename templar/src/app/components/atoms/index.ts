@@ -11,6 +11,8 @@ export { CodeBlock } from './CodeBlock';
 export type { CodeBlockProps } from './CodeBlock';
 export { Divider } from './Divider';
 export type { DividerProps } from './Divider';
+export { Dropdown } from './Dropdown';
+export type { DropdownProps, DropdownOption } from './Dropdown';
 export { 
   Icon,
   type IconProps, 
@@ -23,7 +25,7 @@ export type {
   NotificationSize,
   NotificationAction 
 } from './Notification';
-export {
+export { 
   ProgressIndicator,
   LoadingSpinner,
   type ProgressIndicatorProps,
@@ -34,8 +36,8 @@ export {
   type LoadingSpinnerSize,
   type LoadingSpinnerVariant
 } from './ProgressIndicator';
-
-// Re-export all atomic components (with specific exports to avoid conflicts)
+export { Search } from './Search';
+export type { SearchProps } from './Search';// Re-export all atomic components (with specific exports to avoid conflicts)
 export * from './Button';
 export * from './Badge';
 export * from './Card';
