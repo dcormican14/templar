@@ -6,3 +6,4 @@ export { IconsPage } from './IconsPage';
 export { CardsPage } from './CardsPage';
 export { DividersPage } from './DividersPage';
 export { NavigationPage } from './NavigationPage';
+export { ButtonsPage } from './ButtonsPage';

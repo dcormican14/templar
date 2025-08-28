@@ -1,6 +1,8 @@
 // Atomic Components
 export { Button } from './Button';
 export type { ButtonProps } from './Button';
+export { Badge } from './Badge';
+export type { BadgeProps } from './Badge';
 export { Card } from './Card';
 export type { CardProps } from './Card';
 export { Divider } from './Divider';
@@ -24,6 +26,7 @@ export {
 
 // Re-export all atomic components (with specific exports to avoid conflicts)
 export * from './Button';
+export * from './Badge';
 export * from './Card';
 export * from './Divider';
 export * from './Icon';

@@ -21,7 +21,8 @@ import {
   IconsPage, 
   CardsPage, 
   DividersPage, 
-  NavigationPage 
+  NavigationPage,
+  ButtonsPage
 } from './pages';
 
 export default function Page() {
@@ -57,6 +58,7 @@ function PageContent() {
     { id: 'css-variables', label: 'CSS Variables'},
     { id: 'progress', label: 'Progress'},
     { id: 'atomic', label: 'Components'},
+    { id: 'buttons', label: 'Buttons'},
     { id: 'icons', label: 'Icons'},
     { id: 'cards', label: 'Cards'},
     { id: 'dividers', label: 'Dividers'},
@@ -112,6 +114,8 @@ function PageContent() {
         return <ProgressPage />;
       case 'atomic':
         return <AtomicComponentsPage />;
+      case 'buttons':
+        return <ButtonsPage />;
       case 'icons':
         return <IconsPage />;
       case 'cards':
