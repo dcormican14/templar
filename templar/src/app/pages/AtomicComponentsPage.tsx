@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useCSSVariables } from '../providers';
-import { Card, Divider, CodeBlock, FilePicker, Toggle } from '../components/atoms';
+import { Card, Divider, CodeBlock, FilePicker, Toggle, RadioButton, RadioButtonGroup } from '../components/atoms';
 
 export function AtomicComponentsPage() {
   const cssVars = useCSSVariables();
@@ -417,6 +417,223 @@ export function AtomicComponentsPage() {
   required
   label="Email notifications"
 />`}
+        </CodeBlock>
+      </section>
+
+      {/* RadioButton Component Demo */}
+      <section>
+        <h2 className="text-2xl font-semibold mb-4" style={headingStyle}>RadioButton</h2>
+        <p className="mb-6" style={mutedTextStyle}>
+          Accessible radio button component with variants, sizes, and grouping functionality.
+        </p>
+
+        <div className="space-y-8">
+          {/* Basic RadioButton */}
+          <div>
+            <h3 className="text-lg font-medium mb-4" style={headingStyle}>Basic RadioButton</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Simple</p>
+                <RadioButton name="basic-demo" value="option1" label="Option 1" />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>With Description</p>
+                <RadioButton 
+                  name="basic-demo" 
+                  value="option2" 
+                  label="Premium Plan"
+                  description="Get access to all features"
+                />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Pre-selected</p>
+                <RadioButton 
+                  name="basic-demo" 
+                  value="option3" 
+                  label="Selected Option"
+                  defaultChecked
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* RadioButton Variants */}
+          <div>
+            <h3 className="text-lg font-medium mb-4" style={headingStyle}>Variants</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Primary</p>
+                <RadioButton variant="primary" name="variant-demo" value="primary" label="Primary" defaultChecked />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Secondary</p>
+                <RadioButton variant="secondary" name="variant-demo" value="secondary" label="Secondary" />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Success</p>
+                <RadioButton variant="success" name="variant-demo" value="success" label="Success" />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Warning</p>
+                <RadioButton variant="warning" name="variant-demo" value="warning" label="Warning" />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Error</p>
+                <RadioButton variant="error" name="variant-demo" value="error" label="Error" />
+              </div>
+            </div>
+          </div>
+
+          {/* RadioButton Sizes */}
+          <div>
+            <h3 className="text-lg font-medium mb-4" style={headingStyle}>Sizes</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Small</p>
+                <RadioButton size="sm" name="size-demo" value="small" label="Small radio button" />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Medium (Default)</p>
+                <RadioButton size="md" name="size-demo" value="medium" label="Medium radio button" defaultChecked />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Large</p>
+                <RadioButton size="lg" name="size-demo" value="large" label="Large radio button" />
+              </div>
+            </div>
+          </div>
+
+          {/* RadioButton Group */}
+          <div>
+            <h3 className="text-lg font-medium mb-4" style={headingStyle}>RadioButton Group</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <p className="text-sm mb-4" style={mutedTextStyle}>Vertical Group (Default)</p>
+                <RadioButtonGroup
+                  name="plan-vertical"
+                  variant="primary"
+                  options={[
+                    {
+                      value: 'basic',
+                      label: 'Basic Plan',
+                      description: 'Perfect for getting started'
+                    },
+                    {
+                      value: 'premium',
+                      label: 'Premium Plan',
+                      description: 'For growing businesses'
+                    },
+                    {
+                      value: 'enterprise',
+                      label: 'Enterprise Plan',
+                      description: 'For large organizations'
+                    }
+                  ]}
+                />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-4" style={mutedTextStyle}>Horizontal Group</p>
+                <RadioButtonGroup
+                  name="preference-horizontal"
+                  orientation="horizontal"
+                  variant="secondary"
+                  options={[
+                    { value: 'email', label: 'Email' },
+                    { value: 'sms', label: 'SMS' },
+                    { value: 'push', label: 'Push' }
+                  ]}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* RadioButton States */}
+          <div>
+            <h3 className="text-lg font-medium mb-4" style={headingStyle}>States</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Normal</p>
+                <RadioButton name="state-demo" value="normal" label="Normal state" />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Checked</p>
+                <RadioButton name="state-demo" value="checked" label="Checked state" defaultChecked />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Disabled</p>
+                <RadioButton name="state-demo" value="disabled" label="Disabled state" disabled />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Invalid</p>
+                <RadioButton name="state-demo" value="invalid" label="Invalid state" invalid />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <CodeBlock language="tsx" copyable syntaxHighlighting>
+{`// Basic radio button
+<RadioButton 
+  name="choice"
+  value="option1"
+  label="Option 1"
+  onChange={(e) => console.log(e.target.value)}
+/>
+
+// With description
+<RadioButton
+  name="plan"
+  value="premium"
+  label="Premium Plan"
+  description="Get access to all features"
+  variant="primary"
+/>
+
+// Different variants
+<RadioButton variant="primary" name="variant" value="primary" label="Primary" />
+<RadioButton variant="success" name="variant" value="success" label="Success" />
+<RadioButton variant="error" name="variant" value="error" label="Error" />
+
+// Different sizes
+<RadioButton size="sm" name="size" value="sm" label="Small" />
+<RadioButton size="md" name="size" value="md" label="Medium" />
+<RadioButton size="lg" name="size" value="lg" label="Large" />
+
+// RadioButton Group
+<RadioButtonGroup
+  name="plan"
+  value={selectedPlan}
+  onChange={setSelectedPlan}
+  options={[
+    {
+      value: 'basic',
+      label: 'Basic Plan',
+      description: 'Perfect for getting started'
+    },
+    {
+      value: 'premium', 
+      label: 'Premium Plan',
+      description: 'For growing businesses'
+    }
+  ]}
+/>
+
+// States
+<RadioButton disabled label="Disabled" />
+<RadioButton invalid label="Invalid" />
+<RadioButton required label="Required" />`}
         </CodeBlock>
       </section>
 
