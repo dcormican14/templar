@@ -37,7 +37,9 @@ export {
   type LoadingSpinnerVariant
 } from './ProgressIndicator';
 export { Search } from './Search';
-export type { SearchProps } from './Search';// Re-export all atomic components (with specific exports to avoid conflicts)
+export type { SearchProps } from './Search';
+export { FilePicker } from './FilePicker';
+export type { FilePickerProps, FilePickerRef } from './FilePicker';// Re-export all atomic components (with specific exports to avoid conflicts)
 export * from './Button';
 export * from './Badge';
 export * from './Card';

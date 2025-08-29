@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useCSSVariables } from '../providers';
-import { Card, Divider, CodeBlock } from '../components/atoms';
+import { Card, Divider, CodeBlock, FilePicker } from '../components/atoms';
 
 export function AtomicComponentsPage() {
   const cssVars = useCSSVariables();
@@ -122,6 +122,155 @@ export function AtomicComponentsPage() {
 
 // Vertical divider
 <Divider orientation="vertical" className="h-12" />`}
+        </CodeBlock>
+      </section>
+
+      {/* FilePicker Component Demo */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-semibold mb-4" style={headingStyle}>FilePicker</h2>
+        <p className="mb-6" style={mutedTextStyle}>
+          Drag-and-drop file upload component with validation, multiple file support, and customizable styling.
+        </p>
+
+        <div className="space-y-8">
+          {/* Basic FilePicker */}
+          <div>
+            <h3 className="text-lg font-medium mb-4" style={headingStyle}>Basic Usage</h3>
+            <div className="space-y-6">
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Default (Outline)</p>
+                <FilePicker
+                  onFilesChange={(files) => console.log('Files selected:', files)}
+                  placeholder="Drop files here or click to browse"
+                />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Primary Variant</p>
+                <FilePicker
+                  variant="primary"
+                  onFilesChange={(files) => console.log('Files selected:', files)}
+                  placeholder="Upload your files"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Sizes */}
+          <div>
+            <h3 className="text-lg font-medium mb-4" style={headingStyle}>Sizes</h3>
+            <div className="space-y-6">
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Small</p>
+                <FilePicker
+                  size="sm"
+                  onFilesChange={(files) => console.log('Files selected:', files)}
+                  placeholder="Small file picker"
+                />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Medium (Default)</p>
+                <FilePicker
+                  size="md"
+                  onFilesChange={(files) => console.log('Files selected:', files)}
+                  placeholder="Medium file picker"
+                />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Large</p>
+                <FilePicker
+                  size="lg"
+                  onFilesChange={(files) => console.log('Files selected:', files)}
+                  placeholder="Large file picker"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* File Validation */}
+          <div>
+            <h3 className="text-lg font-medium mb-4" style={headingStyle}>File Validation</h3>
+            <div className="space-y-6">
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Images Only (Max 5MB)</p>
+                <FilePicker
+                  accept="image/*"
+                  maxSize={5 * 1024 * 1024}
+                  onFilesChange={(files) => console.log('Images selected:', files)}
+                  placeholder="Drop images here"
+                  helperText="PNG, JPG, GIF up to 5MB"
+                />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Multiple Documents</p>
+                <FilePicker
+                  multiple
+                  accept=".pdf,.doc,.docx"
+                  maxFiles={3}
+                  onFilesChange={(files) => console.log('Documents selected:', files)}
+                  placeholder="Upload documents"
+                  helperText="Select up to 3 documents (PDF, Word)"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* States */}
+          <div>
+            <h3 className="text-lg font-medium mb-4" style={headingStyle}>States</h3>
+            <div className="space-y-6">
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Disabled</p>
+                <FilePicker
+                  disabled
+                  onFilesChange={(files) => console.log('Files selected:', files)}
+                  placeholder="File upload not available"
+                  helperText="Please complete the previous step first"
+                />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>With Error</p>
+                <FilePicker
+                  errorText="File upload failed. Please try again."
+                  onFilesChange={(files) => console.log('Files selected:', files)}
+                  placeholder="Try uploading again"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <CodeBlock language="tsx" copyable syntaxHighlighting>
+{`// Basic file picker
+<FilePicker
+  onFilesChange={(files) => console.log('Files:', files)}
+  placeholder="Drop files here or click to browse"
+/>
+
+// Image upload with validation
+<FilePicker
+  accept="image/*"
+  maxSize={5 * 1024 * 1024} // 5MB
+  placeholder="Drop images here"
+  helperText="PNG, JPG, GIF up to 5MB"
+/>
+
+// Multiple file upload
+<FilePicker
+  multiple
+  maxFiles={5}
+  accept=".pdf,.doc,.docx"
+  placeholder="Upload documents"
+  helperText="Select up to 5 documents"
+/>
+
+// Different variants and sizes
+<FilePicker variant="primary" size="lg" />
+<FilePicker variant="secondary" size="sm" />`}
         </CodeBlock>
       </section>
 
