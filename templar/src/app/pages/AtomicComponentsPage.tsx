@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useCSSVariables } from '../providers';
-import { Card, Divider, CodeBlock, FilePicker } from '../components/atoms';
+import { Card, Divider, CodeBlock, FilePicker, Toggle } from '../components/atoms';
 
 export function AtomicComponentsPage() {
   const cssVars = useCSSVariables();
@@ -271,6 +271,152 @@ export function AtomicComponentsPage() {
 // Different variants and sizes
 <FilePicker variant="primary" size="lg" />
 <FilePicker variant="secondary" size="sm" />`}
+        </CodeBlock>
+      </section>
+
+      {/* Toggle Component Demo */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-semibold mb-4" style={headingStyle}>Toggle</h2>
+        <p className="mb-6" style={mutedTextStyle}>
+          Animated toggle component with bouncy bubble animation and multiple variants.
+        </p>
+
+        <div className="space-y-8">
+          {/* Basic Toggle */}
+          <div>
+            <h3 className="text-lg font-medium mb-4" style={headingStyle}>Basic Usage</h3>
+            <div className="space-y-6">
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Default (Primary)</p>
+                <Toggle label="Enable notifications" />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>With Description</p>
+                <Toggle 
+                  label="Auto-save"
+                  description="Automatically save your work every 5 minutes"
+                />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Label on Left</p>
+                <Toggle 
+                  label="Dark mode"
+                  labelPosition="left"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Variants */}
+          <div>
+            <h3 className="text-lg font-medium mb-4" style={headingStyle}>Variants</h3>
+            <div className="space-y-6">
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Primary</p>
+                <Toggle variant="primary" label="Primary toggle" defaultChecked />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Secondary</p>
+                <Toggle variant="secondary" label="Secondary toggle" defaultChecked />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Success</p>
+                <Toggle variant="success" label="Success toggle" defaultChecked />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Warning</p>
+                <Toggle variant="warning" label="Warning toggle" defaultChecked />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Error</p>
+                <Toggle variant="error" label="Error toggle" defaultChecked />
+              </div>
+            </div>
+          </div>
+
+          {/* Sizes */}
+          <div>
+            <h3 className="text-lg font-medium mb-4" style={headingStyle}>Sizes</h3>
+            <div className="space-y-6">
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Small</p>
+                <Toggle size="sm" label="Small toggle" />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Medium (Default)</p>
+                <Toggle size="md" label="Medium toggle" />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Large</p>
+                <Toggle size="lg" label="Large toggle" />
+              </div>
+            </div>
+          </div>
+
+          {/* States */}
+          <div>
+            <h3 className="text-lg font-medium mb-4" style={headingStyle}>States</h3>
+            <div className="space-y-6">
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Disabled (Off)</p>
+                <Toggle disabled label="Disabled toggle" />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Disabled (On)</p>
+                <Toggle disabled defaultChecked label="Disabled toggle (checked)" />
+              </div>
+              
+              <div>
+                <p className="text-sm mb-2" style={mutedTextStyle}>Without Label</p>
+                <Toggle aria-label="Toggle without visible label" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <CodeBlock language="tsx" copyable syntaxHighlighting>
+{`// Basic toggle
+<Toggle 
+  label="Enable notifications"
+  onChange={(checked) => console.log(checked)}
+/>
+
+// With description
+<Toggle
+  label="Auto-save"
+  description="Automatically save your work every 5 minutes"
+/>
+
+// Different variants
+<Toggle variant="primary" label="Primary" />
+<Toggle variant="success" label="Success" />
+<Toggle variant="error" label="Error" />
+
+// Different sizes
+<Toggle size="sm" label="Small" />
+<Toggle size="md" label="Medium" />
+<Toggle size="lg" label="Large" />
+
+// Label positioning
+<Toggle label="Right label" labelPosition="right" />
+<Toggle label="Left label" labelPosition="left" />
+
+// Form integration
+<Toggle 
+  name="notifications"
+  value="email"
+  required
+  label="Email notifications"
+/>`}
         </CodeBlock>
       </section>
 

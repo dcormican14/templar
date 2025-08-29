@@ -10,8 +10,8 @@
   --primary-hover: #d43b6d; /* lighter rose-red */
   
   /* Secondary colors */
-  --secondary: #90caf9; /* light-sky-blue */
-  --secondary-foreground: #171717; /* deep neutral */
+  --secondary: #6cb9f8; /* light-sky-blue */
+  --secondary-foreground: #ffffff; /* deep neutral */
   --secondary-hover: #add8ff; /* lighter blue */
   
   /* Accent colors */
@@ -28,11 +28,11 @@
   
   /* Success colors */
   --success: #6ee7b7; /* soft mint green */
-  --success-foreground: #171717; /* deep neutral */
+  --success-foreground: #ffffff; /* deep neutral */
   
   /* Warning colors (coral tone for brand harmony) */
   --warning: #ff7f7f; /* warm pink-coral */
-  --warning-foreground: #171717; /* deep neutral */
+  --warning-foreground: #ffffff; /* deep neutral */
   
   /* Error colors (magenta for brand harmony) */
   --error: #e84c88; /* magenta-red */
@@ -40,7 +40,7 @@
   
   /* Info colors (brand blue) */
   --info: #90caf9; /* light-sky-blue */
-  --info-foreground: #171717; /* deep neutral */
+  --info-foreground: #ffffff; /* deep neutral */
   
   /* Card and surface colors */
   --card: #ffffff; /* pure white for clarity */
