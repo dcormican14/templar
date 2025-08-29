@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Navigation } from './components/molecules/Navigation/Navigation';
-import { Icon, Button } from './components/atoms';
+import { Icon, Button, Scrollbar } from './components/atoms';
 import {
   useTheme,
   useToast,
@@ -35,7 +35,7 @@ export default function Page() {
   // Don't render until mounted to avoid SSR issues
   if (!mounted) {
     return (
-      <div className="min-h-screen transition-all duration-300" style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }}>
+      <div className="!h-screen transition-all duration-300" style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }}>
         <div className="h-16 animate-pulse" style={{ backgroundColor: 'var(--muted)' }}></div>
         <main className="container mx-auto px-6 py-8">
           <div className="h-32 animate-pulse rounded" style={{ backgroundColor: 'var(--muted)' }}></div>
@@ -127,27 +127,50 @@ function PageContent() {
 
   return (
     <div 
-      className="min-h-screen transition-all duration-300"
+      className="h-screen transition-all duration-300 overflow-hidden"
       style={{
         backgroundColor: cssVars.background,
         color: cssVars.foreground
       }}
     >
-      <Navigation
-        icon={<Icon name="HomeShield" size="lg" />}
-        appName="Templar Demo"
-        tabs={tabs}
-        activeTab={activeTab}
-        onTabChange={handleTabChange}
-        trailingContent={
-          <div className="flex items-center gap-2">
-            <span className="text-md" style={{color: 'var(--foreground)'}}>v1.0.0</span>
-          </div>
-        }
-      />
-      <main className="container mx-auto px-6 py-8">
-        {renderTabContent()}
-      </main>
+      {/* Floating Navigation */}
+      <div className="fixed top-0 left-0 right-0 z-40 bg-opacity-95 backdrop-blur-sm" style={{ backgroundColor: cssVars.background }}>
+        <Navigation
+          icon={<Icon name="HomeShield" size="lg" />}
+          appName="Templar Demo"
+          tabs={tabs}
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+          trailingContent={
+            <div className="flex items-center gap-2">
+              <span className="text-md" style={{color: 'var(--foreground)'}}>v1.0.0</span>
+            </div>
+          }
+        />
+        {/* Subtle shadow for floating effect */}
+        <div 
+          className="h-px" 
+          style={{ 
+            background: `linear-gradient(90deg, transparent, ${cssVars.border}, transparent)`,
+            opacity: 0.5
+          }}
+        />
+      </div>
+      
+      {/* Main content with custom scrollbar */}
+      <Scrollbar
+        height="calc(100vh - 48px)" // Full viewport minus nav height
+        variant="primary"
+        size="md"
+        visibility="hover"
+        trackSize="sm"
+        smoothScrolling={true}
+        style={{ marginTop: '48px' }}
+      >
+        <main className="container mx-auto px-6 py-8">
+          {renderTabContent()}
+        </main>
+      </Scrollbar>
       
       {/* Floating Theme Switcher */}
       <div className="fixed bottom-6 right-6 z-50">
