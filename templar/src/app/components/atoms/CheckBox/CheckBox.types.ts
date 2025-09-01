@@ -1,7 +1,8 @@
 import React from 'react';
 
 export type CheckBoxSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-export type CheckBoxVariant = 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'error';
+export type CheckBoxColor = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'custom';
+export type CheckBoxShape = 'sharp' | 'round' | 'pill';
 
 export interface CheckBoxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'type' | 'onChange'> {
   /**
@@ -11,10 +12,21 @@ export interface CheckBoxProps extends Omit<React.InputHTMLAttributes<HTMLInputE
   size?: CheckBoxSize;
   
   /**
-   * Visual variant of the checkbox
-   * @default 'default'
+   * Color scheme of the checkbox
+   * @default 'primary'
    */
-  variant?: CheckBoxVariant;
+  color?: CheckBoxColor;
+  
+  /**
+   * Custom color when color is set to 'custom'
+   */
+  customColor?: string;
+  
+  /**
+   * Shape of the checkbox corners
+   * @default 'round'
+   */
+  shape?: CheckBoxShape;
   
   /**
    * Whether the checkbox is checked (controlled mode)
@@ -56,6 +68,7 @@ export interface CheckBoxProps extends Omit<React.InputHTMLAttributes<HTMLInputE
   /**
    * Whether to use rounded corners
    * @default false
+   * @deprecated Use shape prop instead
    */
   rounded?: boolean;
   

@@ -1,0 +1,289 @@
+/* Templar Animation System */
+
+/* Animation Variables */
+:root {
+  /* Timing Functions */
+  --animation-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --animation-smooth: ease-in-out;
+  --animation-ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --animation-ease-in: cubic-bezier(0.55, 0.06, 0.68, 0.19);
+  
+  /* Durations */
+  --duration-fast: 0.2s;
+  --duration-medium: 0.4s;
+  --duration-slow: 0.6s;
+  
+  /* Component-specific timing */
+  --toggle-duration: 0.4s;
+  --segmented-control-duration: 0.4s;
+  --button-duration: 0.2s;
+  --card-duration: 0.2s;
+  --modal-duration: 0.3s;
+}
+
+/* Base Animation Classes */
+.animate-spring {
+  transition: all var(--duration-medium) var(--animation-spring);
+}
+
+.animate-smooth {
+  transition: all var(--duration-fast) var(--animation-smooth);
+}
+
+.animate-fast {
+  transition: all var(--duration-fast) var(--animation-smooth);
+}
+
+.animate-medium {
+  transition: all var(--duration-medium) var(--animation-spring);
+}
+
+.animate-slow {
+  transition: all var(--duration-slow) var(--animation-smooth);
+}
+
+/* Component-Specific Animation Utilities */
+
+/* Toggle Animations */
+.animate-toggle-track {
+  transition: 
+    background-color var(--toggle-duration) var(--animation-spring),
+    opacity var(--toggle-duration) var(--animation-spring);
+}
+
+.animate-toggle-bubble {
+  transition: all var(--toggle-duration) var(--animation-spring);
+}
+
+/* SegmentedControl Animations */
+.animate-segmented-indicator {
+  transition: transform var(--segmented-control-duration) var(--animation-spring);
+}
+
+.animate-segmented-text {
+  transition: 
+    color var(--duration-fast) var(--animation-smooth),
+    font-weight var(--duration-fast) var(--animation-smooth);
+}
+
+/* Button Animations */
+.animate-button {
+  transition: 
+    background-color var(--button-duration) var(--animation-smooth),
+    color var(--button-duration) var(--animation-smooth),
+    transform var(--button-duration) var(--animation-smooth),
+    box-shadow var(--button-duration) var(--animation-smooth);
+}
+
+.animate-button-hover {
+  transform: translateY(-1px);
+}
+
+.animate-button-active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Card Animations */
+.animate-card {
+  transition: 
+    background-color var(--card-duration) var(--animation-smooth),
+    border-color var(--card-duration) var(--animation-smooth),
+    box-shadow var(--card-duration) var(--animation-smooth),
+    transform var(--card-duration) var(--animation-smooth);
+}
+
+.animate-card-hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.animate-card-clickable {
+  cursor: pointer;
+}
+
+.animate-card-clickable:active {
+  transform: translateY(0) scale(0.99);
+}
+
+/* Focus Animations */
+.animate-focus {
+  transition: 
+    outline var(--duration-fast) var(--animation-smooth),
+    box-shadow var(--duration-fast) var(--animation-smooth);
+}
+
+/* Loading Animations */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slide-in-from-top {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-from-bottom {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Animation Utility Classes */
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+.pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.fade-in {
+  animation: fade-in var(--duration-medium) var(--animation-smooth);
+}
+
+.fade-out {
+  animation: fade-out var(--duration-medium) var(--animation-smooth);
+}
+
+.slide-in-from-top {
+  animation: slide-in-from-top var(--duration-medium) var(--animation-spring);
+}
+
+.slide-in-from-bottom {
+  animation: slide-in-from-bottom var(--duration-medium) var(--animation-spring);
+}
+
+.scale-in {
+  animation: scale-in var(--duration-medium) var(--animation-spring);
+}
+
+/* Modal and Overlay Animations */
+.animate-modal-backdrop {
+  transition: opacity var(--modal-duration) var(--animation-smooth);
+}
+
+.animate-modal-content {
+  transition: 
+    transform var(--modal-duration) var(--animation-spring),
+    opacity var(--modal-duration) var(--animation-smooth);
+}
+
+/* Dropdown Animations */
+.animate-dropdown {
+  transition: 
+    opacity var(--duration-fast) var(--animation-smooth),
+    transform var(--duration-fast) var(--animation-smooth);
+}
+
+.animate-dropdown-enter {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.95);
+}
+
+.animate-dropdown-enter-active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.animate-dropdown-exit {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.animate-dropdown-exit-active {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.95);
+}
+
+/* Theme Transition Override */
+.theme-transitioning *,
+.theme-transitioning *::before,
+.theme-transitioning *::after {
+  transition: 
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease !important;
+}
+
+/* Accessibility: Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  /* Disable spring animations specifically */
+  .animate-spring,
+  .animate-toggle-track,
+  .animate-toggle-bubble,
+  .animate-segmented-indicator {
+    transition: none !important;
+  }
+}
+
+/* High contrast mode adjustments */
+@media (prefers-contrast: high) {
+  .animate-button-hover,
+  .animate-card-hover {
+    transform: none; /* Disable subtle movements that might be hard to see */
+  }
+}

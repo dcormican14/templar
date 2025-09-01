@@ -1,5 +1,5 @@
 import React, { forwardRef, useRef, useImperativeHandle, useState, useId } from 'react';
-import { useCSSVariables } from '../../../providers';
+import { useCSSVariables, useSettings } from '../../../providers';
 import { RadioButtonProps, RadioButtonRef, RadioButtonGroupProps } from './RadioButton.types';
 import {
   getRadioButtonContainerStyles,
@@ -14,7 +14,7 @@ import {
 import {
   validateRadioButtonProps,
   getDefaultSize,
-  getDefaultVariant,
+  getDefaultColor,
   getValidationState,
   getAriaAttributes,
 } from './RadioButton.utils';
@@ -25,11 +25,13 @@ export const RadioButton = forwardRef<RadioButtonRef, RadioButtonProps>(({
   onChange,
   disabled = false,
   size = getDefaultSize(),
-  variant = getDefaultVariant(),
+  color = getDefaultColor(),
+  customColor,
+  shape = 'pill',
   label,
   description,
   labelPosition = 'right',
-  invalid = false,
+  error = false,
   contentToggleable = true,
   name,
   value,
@@ -41,8 +43,10 @@ export const RadioButton = forwardRef<RadioButtonRef, RadioButtonProps>(({
   id: providedId,
   ...rest
 }, ref) => {
-  // Get CSS variables for theming
+  // Get CSS variables for theming and settings
   const cssVars = useCSSVariables();
+  const { settings } = useSettings();
+  const animationsEnabled = settings.appearance.animations;
   
   // Generate unique ID if not provided
   const generatedId = useId();
@@ -58,7 +62,7 @@ export const RadioButton = forwardRef<RadioButtonRef, RadioButtonProps>(({
   // Determine if controlled or uncontrolled
   const isControlled = checked !== undefined;
   const isChecked = isControlled ? checked : internalChecked;
-  const isInvalid = getValidationState(invalid, required, isChecked);
+  const isError = getValidationState(error, required, isChecked);
   
   // Refs
   const inputRef = useRef<HTMLInputElement>(null);
@@ -121,7 +125,7 @@ export const RadioButton = forwardRef<RadioButtonRef, RadioButtonProps>(({
   const ariaAttributes = getAriaAttributes({
     checked: isChecked,
     disabled,
-    invalid: isInvalid,
+    invalid: isError,
     required,
     describedBy: ariaDescribedByValue,
     labelledBy: labelId,
@@ -138,14 +142,14 @@ export const RadioButton = forwardRef<RadioButtonRef, RadioButtonProps>(({
             <label
               id={labelId}
               htmlFor={id}
-              style={getLabelStyles(size, disabled, isInvalid, labelPosition, contentToggleable, cssVars)}
+              style={getLabelStyles(size, disabled, isError, labelPosition, contentToggleable, cssVars)}
             >
               {label}
             </label>
           )}
           <span
             id={descriptionId}
-            style={getDescriptionStyles(size, disabled, isInvalid, contentToggleable, cssVars)}
+            style={getDescriptionStyles(size, disabled, isError, contentToggleable, cssVars)}
           >
             {description}
           </span>
@@ -157,7 +161,7 @@ export const RadioButton = forwardRef<RadioButtonRef, RadioButtonProps>(({
       <label
         id={labelId}
         htmlFor={id}
-        style={getLabelStyles(size, disabled, isInvalid, labelPosition, contentToggleable, cssVars)}
+        style={getLabelStyles(size, disabled, isError, labelPosition, contentToggleable, cssVars)}
       >
         {label}
       </label>
@@ -195,12 +199,12 @@ export const RadioButton = forwardRef<RadioButtonRef, RadioButtonProps>(({
       {/* Radio button circle with dot */}
       <div
         role="presentation"
-        style={getRadioButtonCircleStyles(size, variant, isChecked, disabled, focused, isInvalid, cssVars)}
+        style={getRadioButtonCircleStyles(size, color, customColor, shape, isChecked, disabled, focused, isError, animationsEnabled, cssVars)}
       >
         {/* Radio button dot */}
         <div
           role="presentation"
-          style={getRadioButtonDotStyles(size, variant, isChecked, disabled, isInvalid, cssVars)}
+          style={getRadioButtonDotStyles(size, color, customColor, shape, isChecked, disabled, isError, animationsEnabled, cssVars)}
         />
       </div>
       
@@ -218,9 +222,11 @@ export const RadioButtonGroup: React.FC<RadioButtonGroupProps> = ({
   value,
   onChange,
   size = getDefaultSize(),
-  variant = getDefaultVariant(),
+  color = getDefaultColor(),
+  customColor,
+  shape = 'pill',
   disabled = false,
-  invalid = false,
+  error = false,
   options,
   labelPosition = 'right',
   orientation = 'vertical',
@@ -262,11 +268,13 @@ export const RadioButtonGroup: React.FC<RadioButtonGroupProps> = ({
           onChange={handleChange}
           disabled={disabled || option.disabled}
           size={size}
-          variant={variant}
+          color={color}
+          customColor={customColor}
+          shape={shape}
           label={option.label}
           description={option.description}
           labelPosition={labelPosition}
-          invalid={invalid}
+          error={error}
         />
       ))}
     </div>

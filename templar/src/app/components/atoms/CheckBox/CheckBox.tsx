@@ -19,7 +19,9 @@ import { createCheckIcon, getIconSize, handleKeyDown, getIconColor } from './Che
 export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>(
   ({
     size = 'md',
-    variant = 'default',
+    color = 'primary',
+    customColor,
+    shape = 'round',
     checked,
     defaultChecked = false,
     indeterminate = false,
@@ -27,7 +29,7 @@ export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>(
     error = false,
     label,
     description,
-    rounded = false,
+    rounded, // Legacy support
     contentToggleable = true,
     onChange,
     className,
@@ -85,17 +87,18 @@ export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>(
     // Styles
     const baseStyles = useMemo(() => createBaseStyles(
       disabled,
-      rounded,
-      size,
-      animationsEnabled
-    ), [disabled, rounded, size, animationsEnabled]);
+      shape,
+      animationsEnabled,
+      rounded // Legacy support
+    ), [disabled, shape, animationsEnabled, rounded]);
 
     const variantStyles = useMemo(() => getVariantStyles(
-      variant,
+      color,
+      customColor,
       cssVars,
       checkedValue || indeterminate,
       error
-    ), [variant, cssVars, checkedValue, indeterminate, error]);
+    ), [color, customColor, cssVars, checkedValue, indeterminate, error]);
 
     const sizeStyles = useMemo(() => getSizeStyles(size), [size]);
     const inputStyles = useMemo(() => getInputStyles(), []);
@@ -113,7 +116,7 @@ export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>(
 
     // Focus state
     const [focused, setFocused] = React.useState(false);
-    const focusStyles = focused ? getFocusStyles(cssVars, variant, error) : {};
+    const focusStyles = focused ? getFocusStyles(color, customColor, cssVars, error) : {};
 
     const finalCheckboxStyles = {
       ...combinedCheckboxStyles,
@@ -147,7 +150,7 @@ export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>(
               indeterminate,
               error,
               iconSize,
-              getIconColor(variant, error, checkedValue, cssVars)
+              getIconColor(color, customColor, error, checkedValue, cssVars)
             )}
           </div>
 

@@ -1,7 +1,7 @@
 import React from 'react';
 
-export type ToggleSize = 'sm' | 'md' | 'lg';
-export type ToggleVariant = 'primary' | 'secondary' | 'success' | 'warning' | 'error';
+export type ToggleSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export type ToggleColor = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info';
 
 export interface ToggleProps {
   /**
@@ -34,7 +34,7 @@ export interface ToggleProps {
    * Color variant of the toggle
    * @default 'primary'
    */
-  variant?: ToggleVariant;
+  color?: ToggleColor;
   
   /**
    * Label text for the toggle

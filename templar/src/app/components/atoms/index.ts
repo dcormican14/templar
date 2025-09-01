@@ -45,7 +45,14 @@ export type { RadioButtonProps, RadioButtonRef, RadioButtonGroupProps } from './
 export { Scrollbar } from './Scrollbar';
 export type { ScrollbarProps, ScrollbarRef } from './Scrollbar';
 export { Toggle } from './Toggle';
-export type { ToggleProps, ToggleRef } from './Toggle';// Re-export all atomic components (with specific exports to avoid conflicts)
+export type { ToggleProps, ToggleRef } from './Toggle';
+export { SegmentedControl } from './SegmentedControl';
+export type { SegmentedControlProps, SegmentedControlRef, SegmentedControlSize, SegmentedControlVariant } from './SegmentedControl';
+export { Slider } from './Slider';
+export type { SliderProps, SliderRef, SliderSize, SliderColor, SliderOrientation } from './Slider';
+export { TextArea } from './TextArea';
+export type { TextAreaProps, TextAreaRef, TextAreaSize, TextAreaColor, TextAreaVariant, TextAreaShape, TextAreaResize } from './TextArea';
+// Re-export all atomic components (with specific exports to avoid conflicts)
 export * from './Button';
 export * from './Badge';
 export * from './Card';

@@ -1,153 +1,339 @@
 import React from 'react';
-import type { CodeBlockVariant, CodeBlockSize } from './CodeBlock.types';
+import type { CodeBlockColor, CodeBlockVariant, CodeBlockSize, CodeBlockShape } from './CodeBlock.types';
 
-export const getVariantStyles = (variant: CodeBlockVariant, cssVars: any): React.CSSProperties => {
+// Get color variables based on color prop
+export const getColorVariables = (color: CodeBlockColor, customColor: string | undefined, cssVars: any) => {
+  if (color === 'custom' && customColor) {
+    return {
+      main: customColor,
+      foreground: '#ffffff',
+      background: customColor + '10',
+      border: customColor,
+      hover: customColor + '20',
+    };
+  }
+
+  const colorMap = {
+    primary: {
+      main: cssVars.primary,
+      background: cssVars.primaryBackground,
+      foreground: cssVars.primaryForeground,
+      hover: cssVars.primaryHover,
+      border: cssVars.primaryBorder,
+    },
+    secondary: {
+      main: cssVars.secondary,
+      background: cssVars.secondaryBackground,
+      foreground: cssVars.secondaryForeground,
+      hover: cssVars.secondaryHover,
+      border: cssVars.secondaryBorder,
+    },
+    success: {
+      main: cssVars.success,
+      background: cssVars.successBackground,
+      foreground: cssVars.successForeground,
+      hover: cssVars.successHover,
+      border: cssVars.successBorder,
+    },
+    warning: {
+      main: cssVars.warning,
+      background: cssVars.warningBackground,
+      foreground: cssVars.warningForeground,
+      hover: cssVars.warningHover,
+      border: cssVars.warningBorder,
+    },
+    destructive: {
+      main: cssVars.destructive,
+      background: cssVars.destructiveBackground,
+      foreground: cssVars.destructiveForeground,
+      hover: cssVars.destructiveHover,
+      border: cssVars.destructiveBorder,
+    },
+    info: {
+      main: cssVars.info,
+      background: cssVars.infoBackground,
+      foreground: cssVars.infoForeground,
+      hover: cssVars.infoHover,
+      border: cssVars.infoBorder,
+    },
+  };
+
+  return colorMap[color] || colorMap.primary;
+};
+
+// Get shape styles based on shape prop
+export const getShapeStyles = (shape: CodeBlockShape): React.CSSProperties => {
+  switch (shape) {
+    case 'sharp':
+      return { borderRadius: '0' };
+    case 'round':
+      return { borderRadius: '12px' };
+    case 'pill':
+      return { borderRadius: '9999px' };
+    default:
+      return { borderRadius: '12px' };
+  }
+};
+
+// Get variant styles
+export const getVariantStyles = (
+  color: CodeBlockColor,
+  customColor: string | undefined,
+  variant: CodeBlockVariant,
+  cssVars: any
+): React.CSSProperties => {
+  const colors = getColorVariables(color, customColor, cssVars);
+  
   const baseStyles = {
     borderWidth: '1px',
     borderStyle: 'solid' as const,
   };
 
   switch (variant) {
-    case 'default':
+    case 'solid':
       return {
-        backgroundColor: cssVars.getColorWithOpacity?.('muted', 0.8) || cssVars.muted,
-        color: cssVars.mutedForeground,
-        borderColor: cssVars.border,
+        backgroundColor: colors.main,
+        color: colors.foreground,
+        borderColor: colors.main,
         ...baseStyles,
       };
-    case 'inline':
+    case 'ghost':
       return {
-        backgroundColor: cssVars.getColorWithOpacity?.('muted', 0.6) || cssVars.muted,
-        color: cssVars.mutedForeground,
-        borderColor: cssVars.border,
-        borderWidth: '1px',
-        borderRadius: '8px',
-        padding: '2px 6px',
-        fontSize: '0.9em',
-        fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
-      };
-    case 'terminal':
-      return {
-        backgroundColor: '#1a1a1a',
-        color: '#00ff00',
-        borderColor: '#333333',
-        fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
+        backgroundColor: colors.background,
+        color: colors.main,
+        borderColor: 'transparent',
         ...baseStyles,
       };
-    case 'success':
-      return {
-        backgroundColor: cssVars.getColorWithOpacity?.('success', 0.1) || cssVars.success,
-        color: cssVars.successForeground,
-        borderColor: cssVars.getColorWithOpacity?.('success', 0.3) || cssVars.success,
-        ...baseStyles,
-      };
-    case 'error':
-      return {
-        backgroundColor: cssVars.getColorWithOpacity?.('error', 0.1) || cssVars.error,
-        color: cssVars.errorForeground,
-        borderColor: cssVars.getColorWithOpacity?.('error', 0.3) || cssVars.error,
-        ...baseStyles,
-      };
-    case 'warning':
-      return {
-        backgroundColor: cssVars.getColorWithOpacity?.('warning', 0.1) || cssVars.warning,
-        color: cssVars.warningForeground,
-        borderColor: cssVars.getColorWithOpacity?.('warning', 0.3) || cssVars.warning,
-        ...baseStyles,
-      };
+    case 'outline':
     default:
       return {
         backgroundColor: cssVars.muted,
         color: cssVars.mutedForeground,
-        borderColor: cssVars.border,
+        borderColor: colors.border || cssVars.border,
         ...baseStyles,
       };
   }
 };
 
+// Get size styles
 export const getSizeStyles = (size: CodeBlockSize): React.CSSProperties => {
   const sizeMap = {
     xs: { 
-      padding: '8px', 
+      padding: '8px 12px', 
       fontSize: '11px', 
-      lineHeight: '1.4',
-      borderRadius: '8px'
+      lineHeight: 1.4,
     },
     sm: { 
-      padding: '12px', 
+      padding: '12px 16px', 
       fontSize: '12px', 
-      lineHeight: '1.4',
-      borderRadius: '8px'
+      lineHeight: 1.4,
     },
     md: { 
-      padding: '16px', 
+      padding: '16px 20px', 
       fontSize: '13px', 
-      lineHeight: '1.5',
-      borderRadius: '8px'
+      lineHeight: 1.5,
     },
     lg: { 
-      padding: '20px', 
+      padding: '20px 24px', 
       fontSize: '14px', 
-      lineHeight: '1.5',
-      borderRadius: '8px'
+      lineHeight: 1.5,
     },
     xl: { 
-      padding: '24px', 
+      padding: '24px 28px', 
       fontSize: '15px', 
-      lineHeight: '1.6',
-      borderRadius: '8px'
+      lineHeight: 1.6,
     },
   };
   return sizeMap[size];
 };
 
+// Create base styles
 export const createBaseStyles = (
-  rounded: boolean,
-  isInline: boolean,
-  maxHeight?: string,
-  animationsEnabled?: boolean
-): React.CSSProperties => ({
-  display: isInline ? 'inline-block' : 'block',
-  fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
-  whiteSpace: isInline ? 'nowrap' : 'pre-wrap',
-  overflowX: isInline ? 'visible' : 'auto',
-  overflowY: maxHeight ? 'auto' : 'visible',
-  maxHeight: maxHeight || 'none',
-  borderRadius: rounded ? '24px' : undefined,
-  transition: animationsEnabled ? 'all 0.2s ease' : 'none',
-  position: 'relative',
-  wordBreak: 'break-all',
-  tabSize: 2,
-});
+  shape: CodeBlockShape,
+  maxHeight: string | undefined,
+  animationsEnabled: boolean,
+  // Legacy support
+  rounded?: boolean
+): React.CSSProperties => {
+  // Handle legacy rounded prop
+  const finalShape = rounded !== undefined ? (rounded ? 'pill' : 'round') : shape;
+  
+  return {
+    display: 'block',
+    fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
+    whiteSpace: 'pre-wrap',
+    overflowX: 'auto',
+    overflowY: maxHeight ? 'auto' : 'visible',
+    maxHeight: maxHeight || 'none',
+    transition: animationsEnabled 
+      ? 'background-color var(--duration-fast) var(--animation-smooth), color var(--duration-fast) var(--animation-smooth), border-color var(--duration-fast) var(--animation-smooth)'
+      : 'none',
+    position: 'relative',
+    wordBreak: 'break-all',
+    tabSize: 2,
+    ...getShapeStyles(finalShape),
+  };
+};
 
-export const getCopyButtonStyles = (cssVars: any, animationsEnabled: boolean): React.CSSProperties => ({
-  position: 'absolute',
-  top: '8px',
-  right: '8px',
-  backgroundColor: cssVars.getColorWithOpacity?.('background', 0.8) || cssVars.background,
-  color: cssVars.mutedForeground,
-  border: `1px solid ${cssVars.border}`,
-  borderRadius: '8px',
-  padding: '4px 8px',
-  fontSize: '12px',
-  cursor: 'pointer',
-  transition: animationsEnabled ? 'all 0.2s ease' : 'none',
-  fontFamily: 'inherit',
-  zIndex: 1,
-});
+// Inline code styles
+export const getInlineCodeStyles = (
+  color: CodeBlockColor,
+  customColor: string | undefined,
+  variant: CodeBlockVariant,
+  size: CodeBlockSize,
+  shape: CodeBlockShape,
+  cssVars: any
+): React.CSSProperties => {
+  const colors = getColorVariables(color, customColor, cssVars);
+  const shapeStyles = getShapeStyles(shape);
+  
+  // Inline code uses smaller border radius
+  const inlineShapeStyles = {
+    ...shapeStyles,
+    borderRadius: shape === 'sharp' ? '0' : shape === 'pill' ? '4px' : '4px'
+  };
+  
+  const variantStyles = (() => {
+    switch (variant) {
+      case 'solid':
+        return {
+          backgroundColor: colors.main,
+          color: colors.foreground,
+          borderColor: colors.main,
+        };
+      case 'ghost':
+        return {
+          backgroundColor: colors.background,
+          color: colors.main,
+          borderColor: 'transparent',
+        };
+      case 'outline':
+      default:
+        return {
+          backgroundColor: cssVars.muted,
+          color: cssVars.mutedForeground,
+          borderColor: colors.border || cssVars.border,
+        };
+    }
+  })();
+  
+  const sizeStyles = (() => {
+    switch (size) {
+      case 'xs': return { padding: '1px 4px', fontSize: '10px' };
+      case 'sm': return { padding: '2px 4px', fontSize: '11px' };
+      case 'md': return { padding: '2px 6px', fontSize: '12px' };
+      case 'lg': return { padding: '3px 6px', fontSize: '13px' };
+      case 'xl': return { padding: '4px 8px', fontSize: '14px' };
+      default: return { padding: '2px 6px', fontSize: '12px' };
+    }
+  })();
 
-export const getLineNumberStyles = (cssVars: any): React.CSSProperties => ({
-  position: 'absolute',
-  left: '0',
-  top: '0',
-  bottom: '0',
-  width: '40px',
-  backgroundColor: cssVars.getColorWithOpacity?.('muted', 0.5) || cssVars.muted,
-  borderRight: `1px solid ${cssVars.border}`,
-  padding: '16px 8px',
-  fontSize: '12px',
-  lineHeight: '1.5',
-  color: cssVars.getColorWithOpacity?.('mutedForeground', 0.7) || cssVars.mutedForeground,
-  userSelect: 'none',
-  textAlign: 'right',
-});
+  return {
+    display: 'inline-block',
+    fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
+    whiteSpace: 'nowrap',
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    verticalAlign: 'baseline',
+    ...inlineShapeStyles,
+    ...variantStyles,
+    ...sizeStyles,
+  };
+};
+
+// Copy button styles
+export const getCopyButtonStyles = (
+  size: CodeBlockSize,
+  cssVars: any, 
+  animationsEnabled: boolean
+): React.CSSProperties => {
+  const sizeConfig = (() => {
+    switch (size) {
+      case 'xs': return { padding: '4px 6px', fontSize: '10px', top: '4px', right: '4px' };
+      case 'sm': return { padding: '4px 8px', fontSize: '11px', top: '6px', right: '6px' };
+      case 'md': return { padding: '6px 8px', fontSize: '12px', top: '8px', right: '8px' };
+      case 'lg': return { padding: '6px 10px', fontSize: '12px', top: '10px', right: '10px' };
+      case 'xl': return { padding: '8px 12px', fontSize: '13px', top: '12px', right: '12px' };
+      default: return { padding: '6px 8px', fontSize: '12px', top: '8px', right: '8px' };
+    }
+  })();
+
+  return {
+    position: 'absolute',
+    top: sizeConfig.top,
+    right: sizeConfig.right,
+    backgroundColor: cssVars.background,
+    color: cssVars.mutedForeground,
+    border: `1px solid ${cssVars.border}`,
+    borderRadius: '8px',
+    padding: sizeConfig.padding,
+    fontSize: sizeConfig.fontSize,
+    cursor: 'pointer',
+    transition: animationsEnabled 
+      ? 'background-color var(--duration-fast) var(--animation-smooth), color var(--duration-fast) var(--animation-smooth)'
+      : 'none',
+    fontFamily: 'inherit',
+    zIndex: 2,
+    '&:hover': {
+      backgroundColor: cssVars.muted,
+      color: cssVars.foreground,
+    }
+  };
+};
+
+// Line number styles
+export const getLineNumberStyles = (
+  size: CodeBlockSize,
+  cssVars: any
+): React.CSSProperties => {
+  const sizeConfig = getSizeStyles(size);
+  
+  return {
+    position: 'absolute',
+    left: '0',
+    top: '0',
+    bottom: '0',
+    width: '44px',
+    backgroundColor: cssVars.muted,
+    borderRight: `1px solid ${cssVars.border}`,
+    padding: sizeConfig.padding.split(' ')[0] + ' 8px',
+    fontSize: sizeConfig.fontSize,
+    lineHeight: sizeConfig.lineHeight,
+    color: cssVars.mutedForeground,
+    userSelect: 'none',
+    textAlign: 'right',
+    fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
+  };
+};
+
+// Code content styles (when line numbers are shown)
+export const getCodeContentStyles = (
+  hasLineNumbers: boolean,
+  size: CodeBlockSize
+): React.CSSProperties => {
+  if (!hasLineNumbers) return {};
+  
+  return {
+    paddingLeft: '56px', // 44px + 12px margin
+  };
+};
+
+// Highlight line styles
+export const getHighlightLineStyles = (
+  lineNumber: number,
+  highlightedLines: number | number[],
+  cssVars: any
+): React.CSSProperties => {
+  const isHighlighted = Array.isArray(highlightedLines) 
+    ? highlightedLines.includes(lineNumber)
+    : lineNumber === highlightedLines;
+
+  if (!isHighlighted) return {};
+
+  return {
+    backgroundColor: cssVars.primary + '20',
+    borderLeft: `3px solid ${cssVars.primary}`,
+    paddingLeft: '8px',
+    marginLeft: '-8px',
+  };
+};

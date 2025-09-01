@@ -1,165 +1,302 @@
-import { CSSProperties } from 'react';
-import { ScrollbarSize, ScrollbarVariant, ScrollbarOrientation, ScrollbarTrackSize } from './Scrollbar.types';
+import React from 'react';
+import type { ScrollbarColor, ScrollbarVariant, ScrollbarSize, ScrollbarShape, ScrollbarOrientation } from './Scrollbar.types';
 
-// Size configurations
-export const getScrollbarDimensions = (size: ScrollbarSize) => {
-  switch (size) {
-    case 'sm':
-      return {
-        thickness: 6,
-        thumbThickness: 4,
-        borderRadius: 3,
-      };
-    case 'lg':
-      return {
-        thickness: 16,
-        thumbThickness: 12,
-        borderRadius: 8,
-      };
-    case 'md':
-    default:
-      return {
-        thickness: 12,
-        thumbThickness: 8,
-        borderRadius: 6,
-      };
-  }
-};
-
-// Get track thickness based on track size
-export const getTrackThickness = (trackSize: ScrollbarTrackSize, thumbThickness: number): number => {
-  if (trackSize === 'none') return 0;
-  
-  switch (trackSize) {
-    case 'sm': return Math.max(thumbThickness * 0.5, 2);
-    case 'md': return thumbThickness;
-    case 'lg': return thumbThickness * 1.5;
-    default: return thumbThickness;
-  }
-};
-
-// Get variant colors
-export const getScrollbarColors = (variant: ScrollbarVariant, disabled: boolean, cssVars: any) => {
-  if (disabled) {
+// Get color variables based on color prop
+export const getColorVariables = (color: ScrollbarColor, customColor: string | undefined, cssVars: any) => {
+  if (color === 'custom' && customColor) {
     return {
-      thumb: cssVars.mutedForeground,
-      thumbHover: cssVars.mutedForeground,
-      track: cssVars.muted,
-      variantColor: cssVars.mutedForeground,
+      main: customColor,
+      foreground: '#ffffff',
+      background: customColor + '10',
+      border: customColor,
+      hover: customColor + '20',
     };
   }
 
-  let variantColor;
-  let variantColorHover;
-  
-  switch (variant) {
-    case 'primary':
-      variantColor = cssVars.primary;
-      variantColorHover = cssVars.primary;
-      break;
-    case 'secondary':
-      variantColor = cssVars.secondary;
-      variantColorHover = cssVars.secondary;
-      break;
-    case 'success':
-      variantColor = cssVars.success || cssVars.primary;
-      variantColorHover = cssVars.success || cssVars.primary;
-      break;
-    case 'warning':
-      variantColor = cssVars.warning || cssVars.primary;
-      variantColorHover = cssVars.warning || cssVars.primary;
-      break;
-    case 'error':
-      variantColor = cssVars.error;
-      variantColorHover = cssVars.error;
-      break;
+  const colorMap = {
+    primary: {
+      main: cssVars.primary,
+      background: cssVars.primaryBackground,
+      foreground: cssVars.primaryForeground,
+      hover: cssVars.primaryHover,
+      border: cssVars.primaryBorder,
+    },
+    secondary: {
+      main: cssVars.secondary,
+      background: cssVars.secondaryBackground,
+      foreground: cssVars.secondaryForeground,
+      hover: cssVars.secondaryHover,
+      border: cssVars.secondaryBorder,
+    },
+    success: {
+      main: cssVars.success,
+      background: cssVars.successBackground,
+      foreground: cssVars.successForeground,
+      hover: cssVars.successHover,
+      border: cssVars.successBorder,
+    },
+    warning: {
+      main: cssVars.warning,
+      background: cssVars.warningBackground,
+      foreground: cssVars.warningForeground,
+      hover: cssVars.warningHover,
+      border: cssVars.warningBorder,
+    },
+    destructive: {
+      main: cssVars.destructive,
+      background: cssVars.destructiveBackground,
+      foreground: cssVars.destructiveForeground,
+      hover: cssVars.destructiveHover,
+      border: cssVars.destructiveBorder,
+    },
+    info: {
+      main: cssVars.info,
+      background: cssVars.infoBackground,
+      foreground: cssVars.infoForeground,
+      hover: cssVars.infoHover,
+      border: cssVars.infoBorder,
+    },
+  };
+
+  return colorMap[color] || colorMap.primary;
+};
+
+// Get shape styles based on shape prop
+export const getShapeStyles = (shape: ScrollbarShape): React.CSSProperties => {
+  switch (shape) {
+    case 'sharp':
+      return { borderRadius: '0' };
+    case 'round':
+      return { borderRadius: '12px' };
+    case 'pill':
+      return { borderRadius: '9999px' };
     default:
-      variantColor = cssVars.primary;
-      variantColorHover = cssVars.primary;
+      return { borderRadius: '12px' };
+  }
+};
+
+// Get size configuration
+export const getSizeConfig = (size: ScrollbarSize) => {
+  const configs = {
+    xs: {
+      thickness: 4,
+      thumbThickness: 2,
+      borderRadius: 2,
+      minThumbSize: 20,
+    },
+    sm: {
+      thickness: 6,
+      thumbThickness: 4,
+      borderRadius: 3,
+      minThumbSize: 30,
+    },
+    md: {
+      thickness: 8,
+      thumbThickness: 6,
+      borderRadius: 4,
+      minThumbSize: 40,
+    },
+    lg: {
+      thickness: 12,
+      thumbThickness: 8,
+      borderRadius: 6,
+      minThumbSize: 50,
+    },
+    xl: {
+      thickness: 16,
+      thumbThickness: 12,
+      borderRadius: 8,
+      minThumbSize: 60,
+    },
+  };
+
+  return configs[size];
+};
+
+// Container styles
+export const createScrollbarContainerStyles = (
+  shape: ScrollbarShape,
+  width: string | number | undefined,
+  height: string | number | undefined,
+  minWidth: string | number | undefined,
+  minHeight: string | number | undefined,
+  maxWidth: string | number | undefined,
+  maxHeight: string | number | undefined,
+  padding: string | number | undefined,
+  smoothScrolling: boolean,
+  hideNative: boolean,
+  momentum: boolean,
+  disabled: boolean,
+  animationsEnabled: boolean
+): React.CSSProperties => {
+  const formatDimension = (value: string | number | undefined) => {
+    if (value === undefined) return undefined;
+    return typeof value === 'number' ? `${value}px` : value;
+  };
+
+  return {
+    position: 'relative',
+    width: formatDimension(width),
+    height: formatDimension(height),
+    minWidth: formatDimension(minWidth),
+    minHeight: formatDimension(minHeight),
+    maxWidth: formatDimension(maxWidth),
+    maxHeight: formatDimension(maxHeight),
+    padding: formatDimension(padding),
+    overflow: disabled ? 'hidden' : 'auto',
+    scrollBehavior: smoothScrolling ? 'smooth' : 'auto',
+    WebkitOverflowScrolling: momentum ? 'touch' : 'auto',
+    cursor: disabled ? 'not-allowed' : 'default',
+    transition: animationsEnabled 
+      ? 'all var(--duration-fast) var(--animation-smooth)'
+      : 'none',
+    ...getShapeStyles(shape),
+    // Hide native scrollbars if requested
+    ...(hideNative && {
+      scrollbarWidth: 'none',
+      msOverflowStyle: 'none',
+      '&::-webkit-scrollbar': {
+        display: 'none',
+      },
+    }),
+  };
+};
+
+// Scrollable content area styles
+export const getScrollableContentStyles = (
+  orientation: ScrollbarOrientation,
+  animationsEnabled: boolean
+): React.CSSProperties => {
+  const baseStyles: React.CSSProperties = {
+    width: '100%',
+    height: '100%',
+    transition: animationsEnabled 
+      ? 'transform var(--duration-smooth) var(--animation-smooth)' 
+      : 'none',
+  };
+
+  switch (orientation) {
+    case 'horizontal':
+      return {
+        ...baseStyles,
+        overflowX: 'auto',
+        overflowY: 'hidden',
+        whiteSpace: 'nowrap',
+      };
+    case 'vertical':
+      return {
+        ...baseStyles,
+        overflowX: 'hidden',
+        overflowY: 'auto',
+      };
+    case 'both':
+    default:
+      return {
+        ...baseStyles,
+        overflowX: 'auto',
+        overflowY: 'auto',
+      };
+  }
+};
+
+// WebKit scrollbar styles
+export const getWebKitScrollbarStyles = (
+  color: ScrollbarColor,
+  customColor: string | undefined,
+  variant: ScrollbarVariant,
+  size: ScrollbarSize,
+  shape: ScrollbarShape,
+  orientation: ScrollbarOrientation,
+  visibility: string,
+  disabled: boolean,
+  animationsEnabled: boolean,
+  cssVars: any
+): Record<string, React.CSSProperties> => {
+  const colors = getColorVariables(color, customColor, cssVars);
+  const sizeConfig = getSizeConfig(size);
+  const shapeStyles = getShapeStyles(shape);
+
+  const isHoverOnly = visibility === 'hover';
+  const isHidden = visibility === 'hidden';
+
+  if (isHidden) {
+    return {
+      '&::-webkit-scrollbar': {
+        display: 'none',
+      },
+    };
+  }
+
+  // Variant-specific colors
+  const variantColors = (() => {
+    switch (variant) {
+      case 'solid':
+        return {
+          thumb: colors.main,
+          thumbHover: colors.hover,
+          track: colors.background,
+        };
+      case 'ghost':
+        return {
+          thumb: colors.main + '60',
+          thumbHover: colors.main + '80',
+          track: 'transparent',
+        };
+      case 'outline':
+      default:
+        return {
+          thumb: cssVars.muted,
+          thumbHover: colors.main,
+          track: cssVars.background,
+        };
+    }
+  })();
+
+  if (disabled) {
+    variantColors.thumb = cssVars.mutedForeground + '40';
+    variantColors.thumbHover = cssVars.mutedForeground + '40';
   }
 
   return {
-    thumb: `${variantColor}80`, // 50% opacity
-    thumbHover: variantColor,
-    track: cssVars.muted,
-    variantColor,
-  };
-};
-
-// Main scrollbar container styles
-export const getScrollbarContainerStyles = (
-  orientation: ScrollbarOrientation,
-  height?: number | string,
-  width?: number | string,
-  maxHeight?: number | string,
-  maxWidth?: number | string,
-  smoothScrolling: boolean = true,
-  disabled: boolean = false
-): CSSProperties => {
-  return {
-    position: 'relative',
-    overflow: disabled ? 'hidden' : 'auto',
-    height: typeof height === 'number' ? `${height}px` : height,
-    width: typeof width === 'number' ? `${width}px` : width,
-    maxHeight: typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight,
-    maxWidth: typeof maxWidth === 'number' ? `${maxWidth}px` : maxWidth,
-    scrollBehavior: smoothScrolling ? 'smooth' : 'auto',
-    cursor: disabled ? 'not-allowed' : 'default',
-  };
-};
-
-// Custom scrollbar styles (WebKit)
-export const getWebKitScrollbarStyles = (
-  size: ScrollbarSize,
-  variant: ScrollbarVariant,
-  orientation: ScrollbarOrientation,
-  trackSize: ScrollbarTrackSize,
-  visibility: 'always' | 'hover' | 'auto',
-  disabled: boolean,
-  cssVars: any
-): Record<string, CSSProperties> => {
-  const dimensions = getScrollbarDimensions(size);
-  const colors = getScrollbarColors(variant, disabled, cssVars);
-  const trackThickness = getTrackThickness(trackSize, dimensions.thumbThickness);
-  
-  const isHoverOnly = visibility === 'hover';
-  
-  return {
     // Main scrollbar
     '&::-webkit-scrollbar': {
-      width: orientation === 'vertical' ? `${dimensions.thickness}px` : 'auto',
-      height: orientation === 'horizontal' ? `${dimensions.thickness}px` : 'auto',
+      width: orientation === 'vertical' || orientation === 'both' ? `${sizeConfig.thickness}px` : '0px',
+      height: orientation === 'horizontal' || orientation === 'both' ? `${sizeConfig.thickness}px` : '0px',
       backgroundColor: 'transparent',
     },
-    
+
     // Track (background)
     '&::-webkit-scrollbar-track': {
-      backgroundColor: trackSize === 'none' ? 'transparent' : colors.track,
-      borderRadius: `${dimensions.borderRadius}px`,
-      margin: '2px',
+      backgroundColor: variantColors.track,
+      borderRadius: shapeStyles.borderRadius,
+      margin: '1px',
     },
-    
+
     // Thumb (draggable part)
     '&::-webkit-scrollbar-thumb': {
-      backgroundColor: colors.thumb,
-      borderRadius: `${dimensions.borderRadius}px`,
-      border: `${Math.max((dimensions.thickness - dimensions.thumbThickness) / 2, 0)}px solid transparent`,
+      backgroundColor: variantColors.thumb,
+      borderRadius: shapeStyles.borderRadius,
+      border: `${Math.max((sizeConfig.thickness - sizeConfig.thumbThickness) / 2, 0)}px solid transparent`,
       backgroundClip: 'padding-box',
-      transition: 'background-color 0.2s ease',
+      transition: animationsEnabled 
+        ? 'background-color var(--duration-fast) var(--animation-smooth), opacity var(--duration-fast) var(--animation-smooth)' 
+        : 'none',
       opacity: isHoverOnly ? 0 : 1,
+      cursor: disabled ? 'not-allowed' : 'pointer',
     },
-    
+
     // Thumb hover state
     '&::-webkit-scrollbar-thumb:hover': {
-      backgroundColor: colors.thumbHover,
+      backgroundColor: disabled ? variantColors.thumb : variantColors.thumbHover,
       opacity: 1,
     },
-    
+
     // Corner where scrollbars meet
     '&::-webkit-scrollbar-corner': {
-      backgroundColor: 'transparent',
+      backgroundColor: variantColors.track,
+      borderRadius: shapeStyles.borderRadius,
     },
-    
+
     // Show scrollbar on hover
     ...(isHoverOnly && {
       '&:hover::-webkit-scrollbar-thumb': {
@@ -169,86 +306,294 @@ export const getWebKitScrollbarStyles = (
   };
 };
 
-// Fallback scrollbar styles for non-WebKit browsers
-export const getFallbackScrollbarStyles = (
-  size: ScrollbarSize,
+// Firefox scrollbar styles
+export const getFirefoxScrollbarStyles = (
+  color: ScrollbarColor,
+  customColor: string | undefined,
   variant: ScrollbarVariant,
+  size: ScrollbarSize,
+  visibility: string,
+  disabled: boolean,
   cssVars: any
-): CSSProperties => {
-  const colors = getScrollbarColors(variant, false, cssVars);
-  
+): React.CSSProperties => {
+  const colors = getColorVariables(color, customColor, cssVars);
+
+  if (visibility === 'hidden') {
+    return {
+      scrollbarWidth: 'none',
+    };
+  }
+
+  // Variant-specific colors
+  const variantColors = (() => {
+    switch (variant) {
+      case 'solid':
+        return {
+          thumb: colors.main,
+          track: colors.background,
+        };
+      case 'ghost':
+        return {
+          thumb: colors.main + '60',
+          track: 'transparent',
+        };
+      case 'outline':
+      default:
+        return {
+          thumb: cssVars.muted,
+          track: cssVars.background,
+        };
+    }
+  })();
+
+  if (disabled) {
+    variantColors.thumb = cssVars.mutedForeground + '40';
+  }
+
   return {
-    scrollbarWidth: size === 'sm' ? 'thin' : 'auto',
-    scrollbarColor: `${colors.thumb} ${colors.track}`,
+    scrollbarWidth: size === 'xs' || size === 'sm' ? 'thin' : 'auto',
+    scrollbarColor: `${variantColors.thumb} ${variantColors.track}`,
   };
 };
-
-// Content wrapper styles
-export const getScrollbarContentStyles = (): CSSProperties => ({
-  width: '100%',
-  height: '100%',
-});
 
 // Custom scrollbar track styles (for custom implementation)
 export const getCustomScrollbarTrackStyles = (
   orientation: ScrollbarOrientation,
+  color: ScrollbarColor,
+  customColor: string | undefined,
+  variant: ScrollbarVariant,
   size: ScrollbarSize,
-  trackSize: ScrollbarTrackSize,
+  shape: ScrollbarShape,
+  disabled: boolean,
+  animationsEnabled: boolean,
   cssVars: any
-): CSSProperties => {
-  const dimensions = getScrollbarDimensions(size);
-  const trackThickness = getTrackThickness(trackSize, dimensions.thumbThickness);
-  
-  if (trackSize === 'none') {
-    return { display: 'none' };
-  }
-  
+): React.CSSProperties => {
+  const colors = getColorVariables(color, customColor, cssVars);
+  const sizeConfig = getSizeConfig(size);
+  const shapeStyles = getShapeStyles(shape);
+
   const isVertical = orientation === 'vertical';
-  
-  return {
+  const isHorizontal = orientation === 'horizontal';
+
+  const baseStyles: React.CSSProperties = {
     position: 'absolute',
-    right: isVertical ? '2px' : 'auto',
-    bottom: !isVertical ? '2px' : 'auto',
-    top: isVertical ? '2px' : 'auto',
-    left: !isVertical ? '2px' : 'auto',
-    width: isVertical ? `${trackThickness}px` : 'calc(100% - 4px)',
-    height: !isVertical ? `${trackThickness}px` : 'calc(100% - 4px)',
-    backgroundColor: cssVars.muted,
-    borderRadius: `${dimensions.borderRadius}px`,
     zIndex: 1,
+    transition: animationsEnabled 
+      ? 'background-color var(--duration-fast) var(--animation-smooth), opacity var(--duration-fast) var(--animation-smooth)' 
+      : 'none',
+    ...shapeStyles,
   };
+
+  // Variant-specific background
+  const variantStyles = (() => {
+    switch (variant) {
+      case 'solid':
+        return {
+          backgroundColor: colors.background,
+        };
+      case 'ghost':
+        return {
+          backgroundColor: 'transparent',
+        };
+      case 'outline':
+      default:
+        return {
+          backgroundColor: cssVars.muted,
+          border: `1px solid ${cssVars.border}`,
+        };
+    }
+  })();
+
+  if (disabled) {
+    baseStyles.opacity = 0.4;
+  }
+
+  if (isVertical) {
+    return {
+      ...baseStyles,
+      ...variantStyles,
+      right: '2px',
+      top: '2px',
+      bottom: '2px',
+      width: `${sizeConfig.thickness}px`,
+    };
+  }
+
+  if (isHorizontal) {
+    return {
+      ...baseStyles,
+      ...variantStyles,
+      bottom: '2px',
+      left: '2px',
+      right: '2px',
+      height: `${sizeConfig.thickness}px`,
+    };
+  }
+
+  // Both orientations
+  return baseStyles;
 };
 
-// Custom scrollbar thumb styles (for custom implementation)
+// Custom scrollbar thumb styles
 export const getCustomScrollbarThumbStyles = (
   orientation: ScrollbarOrientation,
-  size: ScrollbarSize,
+  color: ScrollbarColor,
+  customColor: string | undefined,
   variant: ScrollbarVariant,
-  position: number, // 0-1
-  thumbSize: number, // 0-1
+  size: ScrollbarSize,
+  shape: ScrollbarShape,
+  position: number,
+  thumbSize: number,
   disabled: boolean,
+  animationsEnabled: boolean,
   cssVars: any
-): CSSProperties => {
-  const dimensions = getScrollbarDimensions(size);
-  const colors = getScrollbarColors(variant, disabled, cssVars);
-  
+): React.CSSProperties => {
+  const colors = getColorVariables(color, customColor, cssVars);
+  const sizeConfig = getSizeConfig(size);
+  const shapeStyles = getShapeStyles(shape);
+
   const isVertical = orientation === 'vertical';
-  const thumbLength = `${thumbSize * 100}%`;
-  const thumbPosition = `${position * 100}%`;
-  
-  return {
+  const isHorizontal = orientation === 'horizontal';
+
+  const baseStyles: React.CSSProperties = {
     position: 'absolute',
-    right: isVertical ? '50%' : 'auto',
-    bottom: !isVertical ? '50%' : 'auto',
-    top: isVertical ? thumbPosition : '50%',
-    left: !isVertical ? thumbPosition : '50%',
-    width: isVertical ? `${dimensions.thumbThickness}px` : thumbLength,
-    height: !isVertical ? `${dimensions.thumbThickness}px` : thumbLength,
-    backgroundColor: colors.thumb,
-    borderRadius: `${dimensions.borderRadius}px`,
-    transform: isVertical ? 'translateX(50%)' : 'translateY(50%)',
-    transition: 'background-color 0.2s ease',
-    cursor: disabled ? 'not-allowed' : 'pointer',
     zIndex: 2,
+    cursor: disabled ? 'not-allowed' : 'grab',
+    transition: animationsEnabled 
+      ? 'background-color var(--duration-fast) var(--animation-smooth), transform var(--duration-fast) var(--animation-smooth)' 
+      : 'none',
+    ...shapeStyles,
+    '&:active': {
+      cursor: disabled ? 'not-allowed' : 'grabbing',
+    },
   };
+
+  // Variant-specific styling
+  const variantStyles = (() => {
+    switch (variant) {
+      case 'solid':
+        return {
+          backgroundColor: colors.main,
+          '&:hover': !disabled ? {
+            backgroundColor: colors.hover,
+          } : {},
+        };
+      case 'ghost':
+        return {
+          backgroundColor: colors.main + '60',
+          '&:hover': !disabled ? {
+            backgroundColor: colors.main + '80',
+          } : {},
+        };
+      case 'outline':
+      default:
+        return {
+          backgroundColor: cssVars.muted,
+          border: `1px solid ${colors.border || cssVars.border}`,
+          '&:hover': !disabled ? {
+            backgroundColor: colors.main,
+            borderColor: colors.main,
+          } : {},
+        };
+    }
+  })();
+
+  if (disabled) {
+    baseStyles.opacity = 0.4;
+    variantStyles.backgroundColor = cssVars.mutedForeground;
+  }
+
+  const thumbLength = Math.max(thumbSize * 100, sizeConfig.minThumbSize);
+  const thumbPosition = Math.min(position * 100, 100 - thumbLength);
+
+  if (isVertical) {
+    return {
+      ...baseStyles,
+      ...variantStyles,
+      right: '50%',
+      top: `${thumbPosition}%`,
+      width: `${sizeConfig.thumbThickness}px`,
+      height: `${thumbLength}%`,
+      transform: 'translateX(50%)',
+    };
+  }
+
+  if (isHorizontal) {
+    return {
+      ...baseStyles,
+      ...variantStyles,
+      bottom: '50%',
+      left: `${thumbPosition}%`,
+      width: `${thumbLength}%`,
+      height: `${sizeConfig.thumbThickness}px`,
+      transform: 'translateY(50%)',
+    };
+  }
+
+  return baseStyles;
+};
+
+// Scroll indicators styles
+export const getScrollIndicatorStyles = (
+  orientation: ScrollbarOrientation,
+  color: ScrollbarColor,
+  customColor: string | undefined,
+  size: ScrollbarSize,
+  position: 'top' | 'bottom' | 'left' | 'right',
+  visible: boolean,
+  animationsEnabled: boolean,
+  cssVars: any
+): React.CSSProperties => {
+  const colors = getColorVariables(color, customColor, cssVars);
+  const sizeConfig = getSizeConfig(size);
+
+  const baseStyles: React.CSSProperties = {
+    position: 'absolute',
+    backgroundColor: colors.main + '20',
+    opacity: visible ? 1 : 0,
+    transition: animationsEnabled 
+      ? 'opacity var(--duration-fast) var(--animation-smooth)' 
+      : 'none',
+    pointerEvents: 'none',
+    zIndex: 3,
+  };
+
+  const indicatorSize = sizeConfig.thickness;
+
+  switch (position) {
+    case 'top':
+      return {
+        ...baseStyles,
+        top: 0,
+        left: 0,
+        right: 0,
+        height: `${indicatorSize}px`,
+      };
+    case 'bottom':
+      return {
+        ...baseStyles,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: `${indicatorSize}px`,
+      };
+    case 'left':
+      return {
+        ...baseStyles,
+        top: 0,
+        bottom: 0,
+        left: 0,
+        width: `${indicatorSize}px`,
+      };
+    case 'right':
+      return {
+        ...baseStyles,
+        top: 0,
+        bottom: 0,
+        right: 0,
+        width: `${indicatorSize}px`,
+      };
+    default:
+      return baseStyles;
+  }
 };

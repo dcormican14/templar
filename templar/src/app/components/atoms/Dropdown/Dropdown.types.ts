@@ -1,7 +1,9 @@
 import React from 'react';
 
-export type DropdownSize = 'sm' | 'md' | 'lg';
-export type DropdownVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive';
+export type DropdownSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export type DropdownColor = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'custom';
+export type DropdownVariant = 'solid' | 'ghost' | 'outline';
+export type DropdownShape = 'sharp' | 'round' | 'pill';
 export type DropdownPosition = 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end' | 'left' | 'right';
 
 export interface DropdownOption {
@@ -20,6 +22,17 @@ export interface DropdownGroup {
 
 export interface DropdownProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
   /**
+   * Color scheme of the dropdown
+   * @default 'primary'
+   */
+  color?: DropdownColor;
+  
+  /**
+   * Custom color when color is set to 'custom'
+   */
+  customColor?: string;
+  
+  /**
    * Visual style variant of the dropdown
    * @default 'outline'
    */
@@ -30,6 +43,12 @@ export interface DropdownProps extends Omit<React.HTMLAttributes<HTMLDivElement>
    * @default 'md'
    */
   size?: DropdownSize;
+  
+  /**
+   * Shape of the dropdown corners
+   * @default 'round'
+   */
+  shape?: DropdownShape;
   
   /**
    * Width of the dropdown
@@ -152,6 +171,7 @@ export interface DropdownProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   /**
    * Whether to use rounded corners
    * @default false
+   * @deprecated Use shape prop instead
    */
   rounded?: boolean;
   

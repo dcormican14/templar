@@ -3,27 +3,31 @@
 import React, { forwardRef, useMemo } from 'react';
 import { useCSSVariables, useLoading, useSettings } from '../../../providers';
 import type { ButtonProps } from './Button.types';
-import { getVariantStyles, getSizeStyles, createBaseStyles } from './Button.styles';
+import { getVariantStyles, getSizeStyles, createBaseStyles, getShapeStyles } from './Button.styles';
 import { createCenteredContent, createTextContainer } from './Button.utils';
 import { ProgressIndicator } from '../ProgressIndicator';
 import { useAsyncClick, useButtonHover } from './hooks';
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ 
-    variant = 'primary',
+    color = 'primary',
+    customColor,
+    variant = 'solid',
     size = 'md',
+    shape = 'round',
     loading = false,
     loadingKey,
     icon,
     iconPosition = 'leading',
     fullWidth = false,
-    rounded = false,
     onAsyncClick,
     onClick,
     children,
     disabled,
     className,
     style,
+    // Legacy support
+    rounded,
     ...props 
   }, ref) => {
     // Hooks
@@ -40,6 +44,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     // Event handlers
     const handleAsyncClick = useAsyncClick({ loadingKey, onAsyncClick, onClick });
     const { handleMouseEnter, handleMouseLeave } = useButtonHover({
+      color,
       variant,
       isDisabled: Boolean(isDisabled),
       animationsEnabled,
@@ -51,11 +56,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       Boolean(fullWidth),
       Boolean(isDisabled),
       hasIcon,
-      Boolean(rounded),
-      animationsEnabled
-    ), [fullWidth, isDisabled, hasIcon, rounded, animationsEnabled]);
+      shape,
+      animationsEnabled,
+      rounded
+    ), [fullWidth, isDisabled, hasIcon, shape, animationsEnabled, rounded]);
 
-    const variantStyles = useMemo(() => getVariantStyles(variant, cssVars), [variant, cssVars]);
+    const variantStyles = useMemo(() => getVariantStyles(color, variant, customColor, cssVars), [color, variant, customColor, cssVars]);
     const sizeStyles = useMemo(() => getSizeStyles(size), [size]);
 
     const combinedStyles: React.CSSProperties = {
@@ -71,7 +77,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         // Map button size to spinner size
         const spinnerSize = size === 'xs' ? 'xs' : size === 'sm' ? 'xs' : 'sm';
         // Determine spinner color based on variant
-        const spinnerColor = variant === 'outline' || variant === 'ghost' ? 'primary' : 'inherit';
+        const spinnerColor = variant === 'outline' || variant === 'ghost' ? color : 'inherit';
         
         return (
           <ProgressIndicator 

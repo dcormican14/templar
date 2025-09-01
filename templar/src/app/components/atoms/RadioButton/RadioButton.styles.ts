@@ -1,12 +1,78 @@
 import { CSSProperties } from 'react';
-import { RadioButtonSize, RadioButtonVariant } from './RadioButton.types';
+import { RadioButtonSize, RadioButtonColor, RadioButtonShape } from './RadioButton.types';
+
+// Get color variables based on color prop
+export const getColorVariables = (color: RadioButtonColor, customColor: string | undefined, cssVars: any) => {
+  if (color === 'custom' && customColor) {
+    return {
+      main: customColor,
+      foreground: '#ffffff',
+      background: customColor + '10',
+      border: customColor,
+      hover: customColor + '20',
+    };
+  }
+
+  const colorMap = {
+    primary: {
+      main: cssVars.primary,
+      background: cssVars.primaryBackground,
+      foreground: cssVars.primaryForeground,
+      hover: cssVars.primaryHover,
+      border: cssVars.primaryBorder,
+    },
+    secondary: {
+      main: cssVars.secondary,
+      background: cssVars.secondaryBackground,
+      foreground: cssVars.secondaryForeground,
+      hover: cssVars.secondaryHover,
+      border: cssVars.secondaryBorder,
+    },
+    success: {
+      main: cssVars.success,
+      background: cssVars.successBackground,
+      foreground: cssVars.successForeground,
+      hover: cssVars.successHover,
+      border: cssVars.successBorder,
+    },
+    warning: {
+      main: cssVars.warning,
+      background: cssVars.warningBackground,
+      foreground: cssVars.warningForeground,
+      hover: cssVars.warningHover,
+      border: cssVars.warningBorder,
+    },
+    destructive: {
+      main: cssVars.destructive,
+      background: cssVars.destructiveBackground,
+      foreground: cssVars.destructiveForeground,
+      hover: cssVars.destructiveHover,
+      border: cssVars.destructiveBorder,
+    },
+    info: {
+      main: cssVars.info,
+      background: cssVars.infoBackground,
+      foreground: cssVars.infoForeground,
+      hover: cssVars.infoHover,
+      border: cssVars.infoBorder,
+    },
+  };
+
+  return colorMap[color] || colorMap.primary;
+};
 
 // Size configurations
 export const getRadioButtonDimensions = (size: RadioButtonSize) => {
   switch (size) {
-    case 'sm':
+    case 'xs':
       return {
         size: 16,
+        dotSize: 6,
+        padding: 2,
+      };
+    case 'sm':
+      return {
+        size: 18,
         dotSize: 6,
         padding: 2,
       };
@@ -14,6 +80,12 @@ export const getRadioButtonDimensions = (size: RadioButtonSize) => {
       return {
         size: 24,
         dotSize: 10,
+        padding: 3,
+      };
+    case 'xl':
+      return {
+        size: 28,
+        dotSize: 12,
         padding: 3,
       };
     case 'md':
@@ -26,62 +98,41 @@ export const getRadioButtonDimensions = (size: RadioButtonSize) => {
   }
 };
 
-// Get variant colors
-export const getRadioButtonColors = (variant: RadioButtonVariant, checked: boolean, disabled: boolean, invalid: boolean, cssVars: any) => {
-  // Handle invalid state first
-  if (invalid) {
+// Get radio button colors
+export const getRadioButtonColors = (
+  color: RadioButtonColor,
+  customColor: string | undefined,
+  checked: boolean,
+  disabled: boolean,
+  error: boolean,
+  cssVars: any
+) => {
+  // Handle error state first
+  if (error) {
     return {
-      border: cssVars.error,
-      background: checked ? cssVars.error : cssVars.background,
-      dot: cssVars.errorForeground || cssVars.background,
-      variantColor: cssVars.error,
+      border: cssVars.destructive,
+      background: checked ? cssVars.destructive : cssVars.background,
+      dot: cssVars.destructiveForeground || cssVars.background,
+      variantColor: cssVars.destructive,
     };
   }
 
-  // Get the variant's primary color
-  let variantColor;
-  let variantForeground;
-  
-  switch (variant) {
-    case 'primary':
-      variantColor = cssVars.primary;
-      variantForeground = cssVars.primaryForeground;
-      break;
-    case 'secondary':
-      variantColor = cssVars.secondary;
-      variantForeground = cssVars.secondaryForeground;
-      break;
-    case 'success':
-      variantColor = cssVars.success || cssVars.primary;
-      variantForeground = cssVars.successForeground || cssVars.primaryForeground;
-      break;
-    case 'warning':
-      variantColor = cssVars.warning || cssVars.primary;
-      variantForeground = cssVars.warningForeground || cssVars.primaryForeground;
-      break;
-    case 'error':
-      variantColor = cssVars.error;
-      variantForeground = cssVars.errorForeground;
-      break;
-    default:
-      variantColor = cssVars.primary;
-      variantForeground = cssVars.primaryForeground;
-  }
+  const colors = getColorVariables(color, customColor, cssVars);
 
   if (!checked) {
     return {
       border: cssVars.border,
       background: cssVars.background,
       dot: 'transparent',
-      variantColor,
+      variantColor: colors.main,
     };
   }
 
   return {
-    border: variantColor,
-    background: variantColor,
-    dot: variantForeground,
-    variantColor,
+    border: colors.main,
+    background: colors.main,
+    dot: colors.foreground,
+    variantColor: colors.main,
   };
 };
 
@@ -92,10 +143,18 @@ export const getRadioButtonContainerStyles = (
   contentToggleable: boolean,
   className?: string
 ): CSSProperties => {
+  const gapMap = {
+    xs: '6px',
+    sm: '8px',
+    md: '10px',
+    lg: '12px',
+    xl: '14px',
+  };
+
   return {
     display: 'inline-flex',
     alignItems: 'flex-start',
-    gap: size === 'sm' ? '8px' : size === 'lg' ? '12px' : '10px',
+    gap: gapMap[size],
     cursor: disabled ? 'not-allowed' : (contentToggleable ? 'pointer' : 'default'),
     fontFamily: 'inherit',
   };
@@ -104,45 +163,87 @@ export const getRadioButtonContainerStyles = (
 // Radio button circle styles
 export const getRadioButtonCircleStyles = (
   size: RadioButtonSize,
-  variant: RadioButtonVariant,
+  color: RadioButtonColor,
+  customColor: string | undefined,
+  shape: RadioButtonShape,
   checked: boolean,
   disabled: boolean,
   focused: boolean,
-  invalid: boolean,
+  error: boolean,
+  animationsEnabled: boolean,
   cssVars: any
 ): CSSProperties => {
   const dimensions = getRadioButtonDimensions(size);
-  const colors = getRadioButtonColors(variant, checked, disabled, invalid, cssVars);
+  const colors = getRadioButtonColors(color, customColor, checked, disabled, error, cssVars);
+  
+  const getBorderRadius = () => {
+    switch (shape) {
+      case 'sharp':
+        return '0';
+      case 'round':
+        return '12px';
+      case 'pill':
+      default:
+        return '50%';
+    }
+  };
+
+  const getMarginTop = () => {
+    const marginMap = {
+      xs: '1px',
+      sm: '1px',
+      md: '2px',
+      lg: '2px',
+      xl: '3px',
+    };
+    return marginMap[size];
+  };
   
   return {
     position: 'relative',
     width: `${dimensions.size}px`,
     height: `${dimensions.size}px`,
-    borderRadius: '50%',
+    borderRadius: getBorderRadius(),
     border: `2px solid ${colors.border}`,
     backgroundColor: colors.background,
-    transition: 'border-color 0.2s ease-in-out, background-color 0.2s ease-in-out, opacity 0.2s ease-in-out',
+    transition: animationsEnabled
+      ? 'border-color var(--duration-fast) var(--animation-smooth), background-color var(--duration-fast) var(--animation-smooth), opacity var(--duration-fast) var(--animation-smooth)'
+      : 'none',
     cursor: disabled ? 'not-allowed' : 'pointer',
-    opacity: disabled ? 0.4 : 1,
+    opacity: disabled ? 0.6 : 1,
     outline: focused ? `2px solid ${colors.variantColor}` : 'none',
     outlineOffset: '2px',
-    boxShadow: focused ? `0 0 0 2px ${colors.variantColor}20` : 'none',
     flexShrink: 0,
-    marginTop: size === 'sm' ? '1px' : size === 'lg' ? '2px' : '2px', // Align with first line of text
+    marginTop: getMarginTop(),
   };
 };
 
 // Radio button dot styles
 export const getRadioButtonDotStyles = (
   size: RadioButtonSize,
-  variant: RadioButtonVariant,
+  color: RadioButtonColor,
+  customColor: string | undefined,
+  shape: RadioButtonShape,
   checked: boolean,
   disabled: boolean,
-  invalid: boolean,
+  error: boolean,
+  animationsEnabled: boolean,
   cssVars: any
 ): CSSProperties => {
   const dimensions = getRadioButtonDimensions(size);
-  const colors = getRadioButtonColors(variant, checked, disabled, invalid, cssVars);
+  const colors = getRadioButtonColors(color, customColor, checked, disabled, error, cssVars);
+  
+  const getDotRadius = () => {
+    switch (shape) {
+      case 'sharp':
+        return '0';
+      case 'round':
+        return '6px';
+      case 'pill':
+      default:
+        return '50%';
+    }
+  };
   
   return {
     position: 'absolute',
@@ -150,10 +251,12 @@ export const getRadioButtonDotStyles = (
     left: '50%',
     width: `${dimensions.dotSize}px`,
     height: `${dimensions.dotSize}px`,
-    borderRadius: '50%',
+    borderRadius: getDotRadius(),
     backgroundColor: colors.dot,
     transform: `translate(-50%, -50%) scale(${checked ? 1 : 0})`,
-    transition: 'all 0.2s ease-in-out',
+    transition: animationsEnabled
+      ? 'all var(--duration-fast) var(--animation-spring)'
+      : 'none',
   };
 };
 
@@ -175,18 +278,25 @@ export const getHiddenInputStyles = (): CSSProperties => ({
 export const getLabelStyles = (
   size: RadioButtonSize,
   disabled: boolean,
-  invalid: boolean,
+  error: boolean,
   labelPosition: 'left' | 'right',
   contentToggleable: boolean,
   cssVars: any
 ): CSSProperties => {
-  const fontSize = size === 'sm' ? '14px' : size === 'lg' ? '16px' : '15px';
+  const fontSizeMap = {
+    xs: '12px',
+    sm: '14px',
+    md: '16px',
+    lg: '18px',
+    xl: '20px',
+  };
+  
   const order = labelPosition === 'left' ? -1 : 1;
   
   return {
-    fontSize,
+    fontSize: fontSizeMap[size],
     fontWeight: 500,
-    color: disabled ? cssVars.mutedForeground : (invalid ? cssVars.error : cssVars.foreground),
+    color: disabled ? cssVars.mutedForeground : (error ? cssVars.destructive : cssVars.foreground),
     order,
     userSelect: 'none',
     lineHeight: 1.4,
@@ -198,15 +308,21 @@ export const getLabelStyles = (
 export const getDescriptionStyles = (
   size: RadioButtonSize,
   disabled: boolean,
-  invalid: boolean,
+  error: boolean,
   contentToggleable: boolean,
   cssVars: any
 ): CSSProperties => {
-  const fontSize = size === 'sm' ? '12px' : size === 'lg' ? '14px' : '13px';
+  const fontSizeMap = {
+    xs: '10px',
+    sm: '12px',
+    md: '14px',
+    lg: '16px',
+    xl: '18px',
+  };
   
   return {
-    fontSize,
-    color: disabled ? cssVars.mutedForeground : (invalid ? cssVars.error : cssVars.mutedForeground),
+    fontSize: fontSizeMap[size],
+    color: disabled ? cssVars.mutedForeground : (error ? cssVars.destructive : cssVars.mutedForeground),
     marginTop: '2px',
     lineHeight: 1.3,
     userSelect: 'none',

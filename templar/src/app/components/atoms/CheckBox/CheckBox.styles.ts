@@ -1,67 +1,108 @@
 import React from 'react';
-import type { CheckBoxVariant, CheckBoxSize } from './CheckBox.types';
+import type { CheckBoxColor, CheckBoxSize, CheckBoxShape } from './CheckBox.types';
 
-export const getVariantStyles = (variant: CheckBoxVariant, cssVars: any, checked: boolean, error: boolean): React.CSSProperties => {
+// Get color variables based on color prop
+export const getColorVariables = (color: CheckBoxColor, customColor: string | undefined, cssVars: any) => {
+  if (color === 'custom' && customColor) {
+    return {
+      main: customColor,
+      foreground: '#ffffff',
+      background: customColor + '10',
+      border: customColor,
+      hover: customColor + '20',
+    };
+  }
+
+  const colorMap = {
+    primary: {
+      main: cssVars.primary,
+      background: cssVars.primaryBackground,
+      foreground: cssVars.primaryForeground,
+      hover: cssVars.primaryHover,
+      border: cssVars.primaryBorder,
+    },
+    secondary: {
+      main: cssVars.secondary,
+      background: cssVars.secondaryBackground,
+      foreground: cssVars.secondaryForeground,
+      hover: cssVars.secondaryHover,
+      border: cssVars.secondaryBorder,
+    },
+    success: {
+      main: cssVars.success,
+      background: cssVars.successBackground,
+      foreground: cssVars.successForeground,
+      hover: cssVars.successHover,
+      border: cssVars.successBorder,
+    },
+    warning: {
+      main: cssVars.warning,
+      background: cssVars.warningBackground,
+      foreground: cssVars.warningForeground,
+      hover: cssVars.warningHover,
+      border: cssVars.warningBorder,
+    },
+    destructive: {
+      main: cssVars.destructive,
+      background: cssVars.destructiveBackground,
+      foreground: cssVars.destructiveForeground,
+      hover: cssVars.destructiveHover,
+      border: cssVars.destructiveBorder,
+    },
+    info: {
+      main: cssVars.info,
+      background: cssVars.infoBackground,
+      foreground: cssVars.infoForeground,
+      hover: cssVars.infoHover,
+      border: cssVars.infoBorder,
+    },
+  };
+
+  return colorMap[color] || colorMap.primary;
+};
+
+// Get shape styles based on shape prop
+export const getShapeStyles = (shape: CheckBoxShape): React.CSSProperties => {
+  switch (shape) {
+    case 'sharp':
+      return { borderRadius: '0' };
+    case 'round':
+      return { borderRadius: '12px' };
+    case 'pill':
+      return { borderRadius: '9999px' };
+    default:
+      return { borderRadius: '12px' };
+  }
+};
+
+export const getVariantStyles = (
+  color: CheckBoxColor,
+  customColor: string | undefined,
+  cssVars: any, 
+  checked: boolean, 
+  error: boolean
+): React.CSSProperties => {
+  const colors = getColorVariables(color, customColor, cssVars);
+
+  // Error state override
   if (error) {
     return {
-      borderColor: checked ? cssVars.error : 'transparent',
-      backgroundColor: checked ? cssVars.error : cssVars.background,
-      color: cssVars.errorForeground,
-      borderWidth: checked ? '1px' : '0px',
+      borderColor: checked ? cssVars.destructive : cssVars.destructive,
+      backgroundColor: checked ? cssVars.destructive : cssVars.background,
+      color: cssVars.destructiveForeground,
+      borderWidth: '1px',
       borderStyle: 'solid' as const,
     };
   }
 
-  const baseStyles = {
-    borderWidth: checked ? '1px' : '0px',
+  // Normal state styles
+  return {
+    borderColor: checked ? colors.main : cssVars.border,
+    backgroundColor: checked ? colors.main : cssVars.background,
+    color: colors.foreground,
+    borderWidth: '1px',
     borderStyle: 'solid' as const,
   };
-
-  switch (variant) {
-    case 'primary':
-      return {
-        borderColor: checked ? cssVars.primary : 'transparent',
-        backgroundColor: checked ? cssVars.primary : cssVars.background,
-        color: cssVars.primaryForeground,
-        ...baseStyles,
-      };
-    case 'secondary':
-      return {
-        borderColor: checked ? cssVars.secondary : 'transparent',
-        backgroundColor: checked ? cssVars.secondary : cssVars.background,
-        color: cssVars.secondaryForeground,
-        ...baseStyles,
-      };
-    case 'success':
-      return {
-        borderColor: checked ? cssVars.success : 'transparent',
-        backgroundColor: checked ? cssVars.success : cssVars.background,
-        color: cssVars.successForeground,
-        ...baseStyles,
-      };
-    case 'warning':
-      return {
-        borderColor: checked ? cssVars.warning : 'transparent',
-        backgroundColor: checked ? cssVars.warning : cssVars.background,
-        color: cssVars.warningForeground,
-        ...baseStyles,
-      };
-    case 'error':
-      return {
-        borderColor: checked ? cssVars.error : 'transparent',
-        backgroundColor: checked ? cssVars.error : cssVars.background,
-        color: cssVars.errorForeground,
-        ...baseStyles,
-      };
-    case 'default':
-    default:
-      return {
-        borderColor: checked ? cssVars.primary : 'transparent',
-        backgroundColor: checked ? cssVars.primary : cssVars.background,
-        color: cssVars.primaryForeground,
-        ...baseStyles,
-      };
-  }
 };
 
 export const getSizeStyles = (size: CheckBoxSize): React.CSSProperties => {
@@ -97,28 +138,14 @@ export const getSizeStyles = (size: CheckBoxSize): React.CSSProperties => {
 
 export const createBaseStyles = (
   disabled: boolean,
-  rounded: boolean,
-  size: CheckBoxSize,
-  animationsEnabled: boolean
+  shape: CheckBoxShape,
+  animationsEnabled: boolean,
+  // Legacy support
+  rounded?: boolean
 ): React.CSSProperties => {
-  // Smaller radius for smaller checkboxes
-  const getBorderRadius = () => {
-    if (rounded) return '24px';
-    
-    switch (size) {
-      case 'xs':
-        return '4px';
-      case 'sm':
-      case 'md':
-        return '6px';
-      case 'lg':
-      case 'xl':
-        return '8px';
-      default:
-        return '8px';
-    }
-  };
-
+  // Handle legacy rounded prop
+  const finalShape = rounded !== undefined ? (rounded ? 'pill' : 'round') : shape;
+  
   return {
     position: 'relative',
     display: 'inline-flex',
@@ -126,10 +153,12 @@ export const createBaseStyles = (
     justifyContent: 'center',
     cursor: disabled ? 'not-allowed' : 'pointer',
     opacity: disabled ? 0.6 : 1,
-    borderRadius: getBorderRadius(),
-    transition: animationsEnabled ? 'background-color 0.2s ease-in-out, color 0.2s ease-in-out, opacity 0.2s ease-in-out' : 'none',
+    transition: animationsEnabled 
+      ? 'background-color var(--duration-fast) var(--animation-smooth), color var(--duration-fast) var(--animation-smooth), border-color var(--duration-fast) var(--animation-smooth), opacity var(--duration-fast) var(--animation-smooth)'
+      : 'none',
     outline: 'none',
     flexShrink: 0,
+    ...getShapeStyles(finalShape),
   };
 };
 
@@ -192,37 +221,18 @@ export const getCheckboxWrapperStyles = (): React.CSSProperties => ({
 });
 
 export const getFocusStyles = (
-  cssVars: any, 
-  variant: CheckBoxVariant, 
+  color: CheckBoxColor,
+  customColor: string | undefined,
+  cssVars: any,
   error: boolean
 ): React.CSSProperties => {
-  // Determine the focus outline color based on variant and error state
   let outlineColor = cssVars.primary; // default
 
   if (error) {
-    outlineColor = cssVars.error;
+    outlineColor = cssVars.destructive;
   } else {
-    switch (variant) {
-      case 'primary':
-        outlineColor = cssVars.primary;
-        break;
-      case 'secondary':
-        outlineColor = cssVars.secondary;
-        break;
-      case 'success':
-        outlineColor = cssVars.success;
-        break;
-      case 'warning':
-        outlineColor = cssVars.warning;
-        break;
-      case 'error':
-        outlineColor = cssVars.error;
-        break;
-      case 'default':
-      default:
-        outlineColor = cssVars.primary;
-        break;
-    }
+    const colors = getColorVariables(color, customColor, cssVars);
+    outlineColor = colors.main;
   }
 
   return {

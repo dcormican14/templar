@@ -1,5 +1,79 @@
 import React from 'react';
-import type { SearchVariant, SearchSize } from './Search.types';
+import type { SearchColor, SearchVariant, SearchSize, SearchShape } from './Search.types';
+
+// Get color variables based on color prop
+export const getColorVariables = (color: SearchColor, customColor: string | undefined, cssVars: any) => {
+  if (color === 'custom' && customColor) {
+    return {
+      main: customColor,
+      foreground: '#ffffff',
+      background: customColor + '10',
+      border: customColor,
+      hover: customColor + '20',
+    };
+  }
+
+  const colorMap = {
+    primary: {
+      main: cssVars.primary,
+      background: cssVars.primaryBackground,
+      foreground: cssVars.primaryForeground,
+      hover: cssVars.primaryHover,
+      border: cssVars.primaryBorder,
+    },
+    secondary: {
+      main: cssVars.secondary,
+      background: cssVars.secondaryBackground,
+      foreground: cssVars.secondaryForeground,
+      hover: cssVars.secondaryHover,
+      border: cssVars.secondaryBorder,
+    },
+    success: {
+      main: cssVars.success,
+      background: cssVars.successBackground,
+      foreground: cssVars.successForeground,
+      hover: cssVars.successHover,
+      border: cssVars.successBorder,
+    },
+    warning: {
+      main: cssVars.warning,
+      background: cssVars.warningBackground,
+      foreground: cssVars.warningForeground,
+      hover: cssVars.warningHover,
+      border: cssVars.warningBorder,
+    },
+    destructive: {
+      main: cssVars.destructive,
+      background: cssVars.destructiveBackground,
+      foreground: cssVars.destructiveForeground,
+      hover: cssVars.destructiveHover,
+      border: cssVars.destructiveBorder,
+    },
+    info: {
+      main: cssVars.info,
+      background: cssVars.infoBackground,
+      foreground: cssVars.infoForeground,
+      hover: cssVars.infoHover,
+      border: cssVars.infoBorder,
+    },
+  };
+
+  return colorMap[color] || colorMap.primary;
+};
+
+// Get shape styles based on shape prop
+export const getShapeStyles = (shape: SearchShape): React.CSSProperties => {
+  switch (shape) {
+    case 'sharp':
+      return { borderRadius: '0' };
+    case 'round':
+      return { borderRadius: '12px' };
+    case 'pill':
+      return { borderRadius: '9999px' };
+    default:
+      return { borderRadius: '12px' };
+  }
+};
 
 export const createSearchContainerStyles = (
   size: SearchSize,

@@ -1,7 +1,8 @@
 import { ComponentProps, ReactNode } from 'react';
 
-export type RadioButtonSize = 'sm' | 'md' | 'lg';
-export type RadioButtonVariant = 'primary' | 'secondary' | 'success' | 'warning' | 'error';
+export type RadioButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export type RadioButtonColor = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'custom';
+export type RadioButtonShape = 'sharp' | 'round' | 'pill';
 
 export interface RadioButtonProps extends Omit<ComponentProps<'input'>, 'size' | 'type'> {
   /**
@@ -11,10 +12,21 @@ export interface RadioButtonProps extends Omit<ComponentProps<'input'>, 'size' |
   size?: RadioButtonSize;
   
   /**
-   * The visual variant of the radio button
+   * Color scheme of the radio button
    * @default 'primary'
    */
-  variant?: RadioButtonVariant;
+  color?: RadioButtonColor;
+  
+  /**
+   * Custom color when color is set to 'custom'
+   */
+  customColor?: string;
+  
+  /**
+   * Shape of the radio button
+   * @default 'pill'
+   */
+  shape?: RadioButtonShape;
   
   /**
    * Label text for the radio button
@@ -33,10 +45,10 @@ export interface RadioButtonProps extends Omit<ComponentProps<'input'>, 'size' |
   labelPosition?: 'left' | 'right';
   
   /**
-   * Whether the radio button is in an invalid state
+   * Whether the radio button is in an error state
    * @default false
    */
-  invalid?: boolean;
+  error?: boolean;
   
   /**
    * Whether clicking on the label/description should toggle the radio button
@@ -74,10 +86,21 @@ export interface RadioButtonGroupProps {
   size?: RadioButtonSize;
   
   /**
-   * The variant of all radio buttons in the group
+   * Color scheme of all radio buttons in the group
    * @default 'primary'
    */
-  variant?: RadioButtonVariant;
+  color?: RadioButtonColor;
+  
+  /**
+   * Custom color when color is set to 'custom'
+   */
+  customColor?: string;
+  
+  /**
+   * Shape of all radio buttons in the group
+   * @default 'pill'
+   */
+  shape?: RadioButtonShape;
   
   /**
    * Whether all radio buttons in the group are disabled
@@ -86,10 +109,10 @@ export interface RadioButtonGroupProps {
   disabled?: boolean;
   
   /**
-   * Whether all radio buttons in the group are in an invalid state
+   * Whether all radio buttons in the group are in an error state
    * @default false
    */
-  invalid?: boolean;
+  error?: boolean;
   
   /**
    * The radio button options

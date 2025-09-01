@@ -1,0 +1,85 @@
+/* Dark Theme - Low-light environments, battery saving on OLED screens */
+[data-theme="dark-test"] {
+  /* Base colors */
+  --background: #1a1d29;
+  --background-hover: #2c2f3e;
+  --background-accent: #323345;
+  --background-shadow: rgba(0, 0, 0, 0.8);
+  --background-disabled: #0f1017;
+  --background-border: #3a3f53;
+  --background-font: #e2e5f0;
+  
+  --foreground: #e2e5f0;
+  --foreground-hover: #ffffff;
+  --foreground-accent: #b8bcc8;
+  --foreground-shadow: rgba(226, 229, 240, 0.1);
+  --foreground-disabled: #6d7a8b;
+  --foreground-border: #4f5570;
+  --foreground-font: #1a1d29;
+  
+  /* Primary colors */
+  --primary: #ff90e8;
+  --primary-background: #4a1844;
+  --primary-foreground: #ffffff;
+  --primary-hover: #ffb3ed;
+  --primary-accent: #e066cc;
+  --primary-shadow: rgba(255, 144, 232, 0.3);
+  --primary-disabled: #664d63;
+  --primary-border: #b366a4;
+  --primary-font: #ffffff;
+  
+  /* Secondary colors */
+  --secondary: #90caf9;
+  --secondary-background: #1a2332;
+  --secondary-foreground: #ffffff;
+  --secondary-hover: #add8ff;
+  --secondary-accent: #6bb6ff;
+  --secondary-shadow: rgba(144, 202, 249, 0.3);
+  --secondary-disabled: #4a5f73;
+  --secondary-border: #6bb6ff;
+  --secondary-font: #ffffff;
+  
+  /* Success colors */
+  --success: #6ee7b7;
+  --success-background: #1a2e23;
+  --success-foreground: #ffffff;
+  --success-hover: #8aedc7;
+  --success-accent: #4ade80;
+  --success-shadow: rgba(110, 231, 183, 0.3);
+  --success-disabled: #3d5447;
+  --success-border: #4ade80;
+  --success-font: #ffffff;
+  
+  /* Warning colors */
+  --warning: #ff7f7f;
+  --warning-background: #332020;
+  --warning-foreground: #ffffff;
+  --warning-hover: #ff9999;
+  --warning-accent: #ff5757;
+  --warning-shadow: rgba(255, 127, 127, 0.3);
+  --warning-disabled: #664040;
+  --warning-border: #ff5757;
+  --warning-font: #ffffff;
+  
+  /* Destructive colors */
+  --destructive: #e84c88;
+  --destructive-background: #3d1a2b;
+  --destructive-foreground: #ffffff;
+  --destructive-hover: #ed70a0;
+  --destructive-accent: #dc2464;
+  --destructive-shadow: rgba(232, 76, 136, 0.3);
+  --destructive-disabled: #5c3444;
+  --destructive-border: #dc2464;
+  --destructive-font: #ffffff;
+  
+  /* Info colors */
+  --info: #90caf9;
+  --info-background: #1a2332;
+  --info-foreground: #ffffff;
+  --info-hover: #add8ff;
+  --info-accent: #6bb6ff;
+  --info-shadow: rgba(144, 202, 249, 0.3);
+  --info-disabled: #4a5f73;
+  --info-border: #6bb6ff;
+  --info-font: #ffffff;
+}

@@ -1,22 +1,46 @@
 import { ComponentProps, ReactNode } from 'react';
 
-export type ScrollbarSize = 'sm' | 'md' | 'lg';
-export type ScrollbarVariant = 'primary' | 'secondary' | 'success' | 'warning' | 'error';
-export type ScrollbarOrientation = 'horizontal' | 'vertical';
-export type ScrollbarTrackSize = 'none' | 'sm' | 'md' | 'lg';
+export type ScrollbarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export type ScrollbarColor = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'custom';
+export type ScrollbarVariant = 'solid' | 'ghost' | 'outline';
+export type ScrollbarShape = 'sharp' | 'round' | 'pill';
+export type ScrollbarOrientation = 'horizontal' | 'vertical' | 'both';
 
 export interface ScrollbarProps extends Omit<ComponentProps<'div'>, 'size'> {
   /**
-   * The size of the scrollbar
+   * Color scheme of the scrollbar
+   * @default 'primary'
+   */
+  color?: ScrollbarColor;
+  
+  /**
+   * Custom color when color is set to 'custom'
+   */
+  customColor?: string;
+  
+  /**
+   * Visual style variant of the scrollbar
+   * @default 'solid'
+   */
+  variant?: ScrollbarVariant;
+  
+  /**
+   * Shape of the scrollbar
+   * @default 'round'
+   */
+  shape?: ScrollbarShape;
+  
+  /**
+   * Size of the scrollbar
    * @default 'md'
    */
   size?: ScrollbarSize;
   
   /**
-   * The visual variant of the scrollbar
-   * @default 'primary'
+   * Whether the scrollbar is disabled
+   * @default false
    */
-  variant?: ScrollbarVariant;
+  disabled?: boolean;
   
   /**
    * The orientation of the scrollbar
@@ -25,25 +49,29 @@ export interface ScrollbarProps extends Omit<ComponentProps<'div'>, 'size'> {
   orientation?: ScrollbarOrientation;
   
   /**
-   * The size of the track background
-   * @default 'md'
-   */
-  trackSize?: ScrollbarTrackSize;
-  
-  /**
    * The content to be scrolled
    */
   children?: ReactNode;
   
   /**
-   * The height of the scrollable container (for vertical scrollbars)
+   * The height of the scrollable container
    */
   height?: number | string;
   
   /**
-   * The width of the scrollable container (for horizontal scrollbars)
+   * The width of the scrollable container
    */
   width?: number | string;
+  
+  /**
+   * The minimum height of the scrollable container
+   */
+  minHeight?: number | string;
+  
+  /**
+   * The minimum width of the scrollable container
+   */
+  minWidth?: number | string;
   
   /**
    * The maximum height of the scrollable container
@@ -57,9 +85,9 @@ export interface ScrollbarProps extends Omit<ComponentProps<'div'>, 'size'> {
   
   /**
    * Whether to show the scrollbar always or only on hover
-   * @default 'hover'
+   * @default 'auto'
    */
-  visibility?: 'always' | 'hover' | 'auto';
+  visibility?: 'always' | 'hover' | 'auto' | 'hidden';
   
   /**
    * Whether to enable smooth scrolling
@@ -68,15 +96,68 @@ export interface ScrollbarProps extends Omit<ComponentProps<'div'>, 'size'> {
   smoothScrolling?: boolean;
   
   /**
-   * Whether the scrollbar should be disabled
+   * Whether to hide the native scrollbars
+   * @default true
+   */
+  hideNative?: boolean;
+  
+  /**
+   * Whether to enable scroll momentum on touch devices
+   * @default true
+   */
+  momentum?: boolean;
+  
+  /**
+   * Auto-hide delay in milliseconds
+   * @default 1000
+   */
+  autoHideDelay?: number;
+  
+  /**
+   * Whether to enable scroll indicators
    * @default false
    */
-  disabled?: boolean;
+  showIndicators?: boolean;
+  
+  /**
+   * Padding around the scrollable content
+   */
+  padding?: number | string;
   
   /**
    * Callback when scroll position changes
    */
   onScroll?: (event: React.UIEvent<HTMLDivElement>) => void;
+  
+  /**
+   * Callback when scrolling starts
+   */
+  onScrollStart?: () => void;
+  
+  /**
+   * Callback when scrolling ends
+   */
+  onScrollEnd?: () => void;
+  
+  /**
+   * Callback when reaching the top
+   */
+  onReachTop?: () => void;
+  
+  /**
+   * Callback when reaching the bottom
+   */
+  onReachBottom?: () => void;
+  
+  /**
+   * Callback when reaching the left edge
+   */
+  onReachLeft?: () => void;
+  
+  /**
+   * Callback when reaching the right edge
+   */
+  onReachRight?: () => void;
   
   /**
    * Custom scroll thumb size (0-1 representing percentage of track)
@@ -86,7 +167,22 @@ export interface ScrollbarProps extends Omit<ComponentProps<'div'>, 'size'> {
   /**
    * Custom scroll position (0-1 representing percentage of content)
    */
-  scrollPosition?: number;
+  scrollPosition?: { x?: number; y?: number };
+  
+  /**
+   * Additional CSS class names
+   */
+  className?: string;
+  
+  /**
+   * Additional inline styles
+   */
+  style?: React.CSSProperties;
+  
+  /**
+   * Unique identifier for the component
+   */
+  id?: string;
 }
 
 export interface ScrollbarRef {

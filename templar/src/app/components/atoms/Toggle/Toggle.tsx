@@ -17,7 +17,7 @@ export const Toggle = forwardRef<ToggleRef, ToggleProps>(({
   onChange,
   disabled = false,
   size = 'md',
-  variant = 'primary',
+  color = 'primary',
   label,
   description,
   labelPosition = 'right',
@@ -168,12 +168,12 @@ export const Toggle = forwardRef<ToggleRef, ToggleProps>(({
       {/* Toggle track with animated bubble */}
       <div
         role="presentation"
-        style={getToggleTrackStyles(size, variant, isChecked, disabled, focused, cssVars)}
+        style={getToggleTrackStyles(size, color, isChecked, disabled, focused, cssVars)}
       >
         {/* Main bubble */}
         <div
           role="presentation"
-          style={getBubbleStyles(size, variant, isChecked, disabled, cssVars)}
+          style={getBubbleStyles(size, color, isChecked, disabled, cssVars)}
         />
       </div>
       

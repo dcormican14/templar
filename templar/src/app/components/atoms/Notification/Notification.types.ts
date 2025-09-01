@@ -1,31 +1,59 @@
 import React from 'react';
 
-export type NotificationType = 'primary' | 'secondary' | 'warning' | 'destructive' | 'success' | 'default' | 'inverted';
-export type NotificationSize = 'sm' | 'md' | 'lg';
+export type NotificationSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export type NotificationColor = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'custom';
+export type NotificationVariant = 'solid' | 'ghost' | 'outline';
+export type NotificationShape = 'sharp' | 'round' | 'pill';
 
 export interface NotificationAction {
   label: string;
   onClick: () => void;
-  variant?: 'default' | 'primary' | 'secondary';
+  variant?: NotificationVariant;
+  disabled?: boolean;
 }
 
 export interface NotificationProps {
   /**
-   * Unique identifier for the notification
+   * Color scheme of the notification
+   * @default 'primary'
    */
-  id?: string;
+  color?: NotificationColor;
   
   /**
-   * Type of notification affecting visual styling
-   * @default 'default'
+   * Custom color when color is set to 'custom'
    */
-  type?: NotificationType;
+  customColor?: string;
+  
+  /**
+   * Visual style variant of the notification
+   * @default 'outline'
+   */
+  variant?: NotificationVariant;
+  
+  /**
+   * Shape of the notification
+   * @default 'round'
+   */
+  shape?: NotificationShape;
   
   /**
    * Size of the notification
    * @default 'md'
    */
   size?: NotificationSize;
+  
+  /**
+   * Whether the notification is disabled
+   * @default false
+   */
+  disabled?: boolean;
+  
+  /**
+   * Whether to use rounded corners
+   * @default false
+   * @deprecated Use shape prop instead
+   */
+  rounded?: boolean;
   
   /**
    * Main title/heading of the notification
@@ -44,15 +72,15 @@ export interface NotificationProps {
   dismissible?: boolean;
   
   /**
-   * Whether to show an icon based on the notification type
+   * Whether to show an icon based on the notification color
    * @default true
    */
   showIcon?: boolean;
   
   /**
-   * Custom icon to display instead of the default type icon
+   * Custom icon to display instead of the default color icon
    */
-  customIcon?: React.ReactNode;
+  icon?: React.ReactNode;
   
   /**
    * Optional action button(s)
@@ -71,10 +99,32 @@ export interface NotificationProps {
   duration?: number | null;
   
   /**
-   * Whether to use rounded corners
+   * Progress indicator for auto-dismiss
    * @default false
    */
-  rounded?: boolean;
+  showProgress?: boolean;
+  
+  /**
+   * Position of the notification for toast mode
+   * @default 'top-right'
+   */
+  position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top-center' | 'bottom-center';
+  
+  /**
+   * Whether to enable slide-in animation
+   * @default true
+   */
+  animate?: boolean;
+  
+  /**
+   * Custom width for the notification
+   */
+  width?: string | number;
+  
+  /**
+   * Custom height for the notification
+   */
+  height?: string | number;
   
   /**
    * Additional CSS class names
@@ -85,6 +135,11 @@ export interface NotificationProps {
    * Additional inline styles
    */
   style?: React.CSSProperties;
+  
+  /**
+   * Unique identifier for the notification
+   */
+  id?: string;
   
   /**
    * Children content for custom notification content

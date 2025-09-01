@@ -1,52 +1,28 @@
 import React from 'react';
 import { Icon } from '../Icon';
-import type { CheckBoxVariant } from './CheckBox.types';
+import type { CheckBoxColor } from './CheckBox.types';
+import { getColorVariables } from './CheckBox.styles';
 
 export const getIconColor = (
-  variant: CheckBoxVariant,
+  color: CheckBoxColor,
+  customColor: string | undefined,
   error: boolean,
   checked: boolean,
   cssVars: any
 ): string => {
-  // For checked states, use the variant's foreground color
+  // For checked states, use the color's foreground
   if (checked) {
-    if (error) return cssVars.errorForeground;
+    if (error) return cssVars.destructiveForeground;
     
-    switch (variant) {
-      case 'primary':
-        return cssVars.primaryForeground;
-      case 'secondary':
-        return cssVars.secondaryForeground;
-      case 'success':
-        return cssVars.successForeground;
-      case 'warning':
-        return cssVars.warningForeground;
-      case 'error':
-        return cssVars.errorForeground;
-      case 'default':
-      default:
-        return cssVars.primaryForeground;
-    }
+    const colors = getColorVariables(color, customColor, cssVars);
+    return colors.foreground;
   }
   
-  // For unchecked states with asterisk, use the variant's main color
-  if (error) return cssVars.error;
+  // For unchecked states with asterisk, use the color's main or destructive for errors
+  if (error) return cssVars.destructive;
   
-  switch (variant) {
-    case 'primary':
-      return cssVars.primary;
-    case 'secondary':
-      return cssVars.secondary;
-    case 'success':
-      return cssVars.success;
-    case 'warning':
-      return cssVars.warning;
-    case 'error':
-      return cssVars.error;
-    case 'default':
-    default:
-      return cssVars.primary;
-  }
+  const colors = getColorVariables(color, customColor, cssVars);
+  return colors.main;
 };
 
 export const createCheckIcon = (

@@ -1,9 +1,16 @@
 import React from 'react';
-import type { ToggleSize, ToggleVariant } from './Toggle.types';
+import type { ToggleSize, ToggleColor } from './Toggle.types';
 
 // Get size-specific dimensions
 export const getToggleDimensions = (size: ToggleSize) => {
   switch (size) {
+    case 'xs':
+      return {
+        width: 32,
+        height: 18,
+        bubbleSize: 14,
+        padding: 2,
+      };
     case 'sm':
       return {
         width: 36,
@@ -18,6 +25,13 @@ export const getToggleDimensions = (size: ToggleSize) => {
         bubbleSize: 28,
         padding: 2,
       };
+    case 'xl':
+      return {
+        width: 64,
+        height: 36,
+        bubbleSize: 32,
+        padding: 2,
+      };
     case 'md':
     default:
       return {
@@ -29,50 +43,55 @@ export const getToggleDimensions = (size: ToggleSize) => {
   }
 };
 
-// Get variant colors
-export const getToggleColors = (variant: ToggleVariant, checked: boolean, disabled: boolean, cssVars: any) => {
-  // Get the variant's primary color
-  let variantColor;
-  let variantForeground;
+// Get color variables based on color prop
+export const getToggleColors = (color: ToggleColor, checked: boolean, disabled: boolean, cssVars: any) => {
+  const colorMap = {
+    primary: {
+      main: cssVars.primary,
+      foreground: cssVars.primaryForeground,
+      hover: cssVars.primaryHover,
+    },
+    secondary: {
+      main: cssVars.secondary,
+      foreground: cssVars.secondaryForeground,
+      hover: cssVars.secondaryHover,
+    },
+    success: {
+      main: cssVars.success,
+      foreground: cssVars.successForeground,
+      hover: cssVars.successHover,
+    },
+    warning: {
+      main: cssVars.warning,
+      foreground: cssVars.warningForeground,
+      hover: cssVars.warningHover,
+    },
+    destructive: {
+      main: cssVars.destructive,
+      foreground: cssVars.destructiveForeground,
+      hover: cssVars.destructiveHover,
+    },
+    info: {
+      main: cssVars.info,
+      foreground: cssVars.infoForeground,
+      hover: cssVars.infoHover,
+    },
+  };
   
-  switch (variant) {
-    case 'primary':
-      variantColor = cssVars.primary;
-      variantForeground = cssVars.primaryForeground;
-      break;
-    case 'secondary':
-      variantColor = cssVars.secondary;
-      variantForeground = cssVars.secondaryForeground;
-      break;
-    case 'success':
-      variantColor = cssVars.success || cssVars.primary;
-      variantForeground = cssVars.successForeground || cssVars.primaryForeground;
-      break;
-    case 'warning':
-      variantColor = cssVars.warning || cssVars.primary;
-      variantForeground = cssVars.warningForeground || cssVars.primaryForeground;
-      break;
-    case 'error':
-      variantColor = cssVars.error;
-      variantForeground = cssVars.errorForeground;
-      break;
-    default:
-      variantColor = cssVars.primary;
-      variantForeground = cssVars.primaryForeground;
-  }
+  const colors = colorMap[color] || colorMap.primary;
 
   if (!checked) {
     return {
       background: cssVars.muted,
       bubble: cssVars.background,
-      variantColor, // Keep the variant color for focus outlines
+      variantColor: colors.main, // Keep the color for focus outlines
     };
   }
 
   return {
-    background: variantColor,
-    bubble: variantForeground,
-    variantColor,
+    background: colors.main,
+    bubble: colors.foreground,
+    variantColor: colors.main,
   };
 };
 
@@ -96,14 +115,14 @@ export const getToggleContainerStyles = (
 // Toggle track (background) styles
 export const getToggleTrackStyles = (
   size: ToggleSize,
-  variant: ToggleVariant,
+  color: ToggleColor,
   checked: boolean,
   disabled: boolean,
   focused: boolean,
   cssVars: any
 ): React.CSSProperties => {
   const dimensions = getToggleDimensions(size);
-  const colors = getToggleColors(variant, checked, disabled, cssVars);
+  const colors = getToggleColors(color, checked, disabled, cssVars);
   
   return {
     position: 'relative',
@@ -111,7 +130,7 @@ export const getToggleTrackStyles = (
     height: `${dimensions.height}px`,
     backgroundColor: colors.background,
     borderRadius: `${dimensions.height}px`,
-    transition: 'background-color 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+    transition: 'background-color var(--toggle-duration) var(--animation-spring), opacity var(--toggle-duration) var(--animation-spring)',
     outline: focused ? `2px solid ${colors.variantColor}` : 'none',
     outlineOffset: '2px',
     boxShadow: focused ? `0 0 0 2px ${colors.variantColor}20` : 'none',
@@ -122,13 +141,13 @@ export const getToggleTrackStyles = (
 // Main bubble styles
 export const getBubbleStyles = (
   size: ToggleSize,
-  variant: ToggleVariant,
+  color: ToggleColor,
   checked: boolean,
   disabled: boolean,
   cssVars: any
 ): React.CSSProperties => {
   const dimensions = getToggleDimensions(size);
-  const colors = getToggleColors(variant, checked, disabled, cssVars);
+  const colors = getToggleColors(color, checked, disabled, cssVars);
   
   // Calculate positions
   const uncheckedX = dimensions.padding;
@@ -143,7 +162,7 @@ export const getBubbleStyles = (
     backgroundColor: colors.bubble,
     borderRadius: '50%',
     transform: checked ? `translateX(${checkedX - uncheckedX}px) scale(1)` : 'translateX(0) scale(1)',
-    transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+    transition: 'all var(--toggle-duration) var(--animation-spring)',
     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
   };
 };
@@ -167,7 +186,14 @@ export const getLabelStyles = (
   position: 'left' | 'right',
   cssVars: any
 ): React.CSSProperties => {
-  const fontSize = size === 'sm' ? '14px' : size === 'lg' ? '18px' : '16px';
+  const fontSizeMap = {
+    xs: '12px',
+    sm: '14px',
+    md: '16px',
+    lg: '18px',
+    xl: '20px',
+  };
+  const fontSize = fontSizeMap[size] || fontSizeMap.md;
   const order = position === 'left' ? -1 : 1;
   
   return {
@@ -186,7 +212,14 @@ export const getDescriptionStyles = (
   disabled: boolean,
   cssVars: any
 ): React.CSSProperties => {
-  const fontSize = size === 'sm' ? '12px' : size === 'lg' ? '14px' : '13px';
+  const fontSizeMap = {
+    xs: '10px',
+    sm: '12px',
+    md: '13px',
+    lg: '14px',
+    xl: '16px',
+  };
+  const fontSize = fontSizeMap[size] || fontSizeMap.md;
   
   return {
     fontSize,

@@ -1,471 +1,442 @@
 import React from 'react';
-import type { FilePickerVariant, FilePickerSize } from './FilePicker.types';
+import type { FilePickerColor, FilePickerVariant, FilePickerSize, FilePickerShape } from './FilePicker.types';
 
+// Get color variables based on color prop
+export const getColorVariables = (color: FilePickerColor, customColor: string | undefined, cssVars: any) => {
+  if (color === 'custom' && customColor) {
+    return {
+      main: customColor,
+      foreground: '#ffffff',
+      background: customColor + '10',
+      border: customColor,
+      hover: customColor + '20',
+    };
+  }
+
+  const colorMap = {
+    primary: {
+      main: cssVars.primary,
+      background: cssVars.primaryBackground,
+      foreground: cssVars.primaryForeground,
+      hover: cssVars.primaryHover,
+      border: cssVars.primaryBorder,
+    },
+    secondary: {
+      main: cssVars.secondary,
+      background: cssVars.secondaryBackground,
+      foreground: cssVars.secondaryForeground,
+      hover: cssVars.secondaryHover,
+      border: cssVars.secondaryBorder,
+    },
+    success: {
+      main: cssVars.success,
+      background: cssVars.successBackground,
+      foreground: cssVars.successForeground,
+      hover: cssVars.successHover,
+      border: cssVars.successBorder,
+    },
+    warning: {
+      main: cssVars.warning,
+      background: cssVars.warningBackground,
+      foreground: cssVars.warningForeground,
+      hover: cssVars.warningHover,
+      border: cssVars.warningBorder,
+    },
+    destructive: {
+      main: cssVars.destructive,
+      background: cssVars.destructiveBackground,
+      foreground: cssVars.destructiveForeground,
+      hover: cssVars.destructiveHover,
+      border: cssVars.destructiveBorder,
+    },
+    info: {
+      main: cssVars.info,
+      background: cssVars.infoBackground,
+      foreground: cssVars.infoForeground,
+      hover: cssVars.infoHover,
+      border: cssVars.infoBorder,
+    },
+  };
+
+  return colorMap[color] || colorMap.primary;
+};
+
+// Get shape styles based on shape prop
+export const getShapeStyles = (shape: FilePickerShape): React.CSSProperties => {
+  switch (shape) {
+    case 'sharp':
+      return { borderRadius: '0' };
+    case 'round':
+      return { borderRadius: '12px' };
+    case 'pill':
+      return { borderRadius: '24px' };
+    default:
+      return { borderRadius: '12px' };
+  }
+};
+
+// Get size configuration
+export const getSizeConfig = (size: FilePickerSize) => {
+  const configs = {
+    xs: {
+      minHeight: '100px',
+      padding: '12px',
+      fontSize: '12px',
+      iconSize: '20px',
+    },
+    sm: {
+      minHeight: '120px',
+      padding: '16px',
+      fontSize: '14px',
+      iconSize: '24px',
+    },
+    md: {
+      minHeight: '160px',
+      padding: '20px',
+      fontSize: '16px',
+      iconSize: '32px',
+    },
+    lg: {
+      minHeight: '200px',
+      padding: '24px',
+      fontSize: '18px',
+      iconSize: '40px',
+    },
+    xl: {
+      minHeight: '240px',
+      padding: '28px',
+      fontSize: '20px',
+      iconSize: '48px',
+    },
+  };
+
+  return configs[size];
+};
+
+// Container styles
 export const createFilePickerContainerStyles = (
-  size: FilePickerSize,
-  rounded: boolean,
+  shape: FilePickerShape,
+  width: string | number | undefined,
+  height: string | number | undefined,
   animationsEnabled: boolean,
-  width?: string | number,
-  height?: string | number
+  // Legacy support
+  rounded?: boolean
 ): React.CSSProperties => {
-  const baseStyles: React.CSSProperties = {
+  // Handle legacy rounded prop
+  const finalShape = rounded !== undefined ? (rounded ? 'pill' : 'round') : shape;
+  
+  return {
     position: 'relative',
     display: 'flex',
     flexDirection: 'column',
     width: width || 'auto',
+    height: height || 'auto',
     minWidth: '300px',
-    transition: animationsEnabled ? 'border-color 0.2s ease-in-out, background-color 0.2s ease-in-out' : 'none',
+    transition: animationsEnabled 
+      ? 'border-color var(--duration-fast) var(--animation-smooth), background-color var(--duration-fast) var(--animation-smooth)'
+      : 'none',
+    ...getShapeStyles(finalShape),
   };
-
-  // Size-specific styles
-  const sizeStyles = (() => {
-    switch (size) {
-      case 'sm':
-        return {
-          minHeight: height || '120px',
-          borderRadius: rounded ? '12px' : '8px',
-        };
-      case 'lg':
-        return {
-          minHeight: height || '200px',
-          borderRadius: rounded ? '20px' : '12px',
-        };
-      case 'md':
-      default:
-        return {
-          minHeight: height || '160px',
-          borderRadius: rounded ? '16px' : '10px',
-        };
-    }
-  })();
-
-  return { ...baseStyles, ...sizeStyles };
 };
 
+// Drop zone styles
 export const getFilePickerDropZoneStyles = (
+  color: FilePickerColor,
+  customColor: string | undefined,
   variant: FilePickerVariant,
   size: FilePickerSize,
   disabled: boolean,
   error: boolean,
   isDragActive: boolean,
-  rounded: boolean,
-  cssVars: any,
-  animationsEnabled: boolean
+  animationsEnabled: boolean,
+  cssVars: any
 ): React.CSSProperties => {
-  // Base drop zone styles
+  const colors = getColorVariables(color, customColor, cssVars);
+  const sizeConfig = getSizeConfig(size);
+
+  // Base styles
   const baseStyles: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    cursor: disabled ? 'not-allowed' : 'pointer',
-    outline: 'none',
-    transition: animationsEnabled ? 'border-color 0.2s ease-in-out, background-color 0.2s ease-in-out, opacity 0.2s ease-in-out' : 'none',
+    minHeight: sizeConfig.minHeight,
+    padding: sizeConfig.padding,
     border: '2px dashed',
-    position: 'relative',
-    padding: '24px',
+    cursor: disabled ? 'not-allowed' : 'pointer',
     textAlign: 'center',
+    transition: animationsEnabled 
+      ? 'all var(--duration-fast) var(--animation-smooth)'
+      : 'none',
+    position: 'relative',
+    fontSize: sizeConfig.fontSize,
   };
 
-  // Size-specific styles
-  const sizeStyles = (() => {
-    switch (size) {
-      case 'sm':
-        return {
-          padding: '16px',
-          borderRadius: rounded ? '10px' : '6px',
-          minHeight: '100px',
-        };
-      case 'lg':
-        return {
-          padding: '32px',
-          borderRadius: rounded ? '16px' : '10px',
-          minHeight: '180px',
-        };
-      case 'md':
-      default:
-        return {
-          padding: '24px',
-          borderRadius: rounded ? '12px' : '8px',
-          minHeight: '140px',
-        };
-    }
-  })();
-
-  // Variant and state-specific styles
+  // Variant styles with error state override
   const variantStyles = (() => {
     if (error) {
       return {
-        borderColor: cssVars.error,
-        backgroundColor: isDragActive ? cssVars.error + '10' : cssVars.background,
-        color: cssVars.error,
+        borderColor: cssVars.destructive,
+        backgroundColor: cssVars.destructiveBackground,
+        color: cssVars.destructive,
       };
     }
 
     if (isDragActive) {
-      switch (variant) {
-        case 'primary':
-          return {
-            borderColor: cssVars.primary,
-            backgroundColor: cssVars.primary + '10',
-            color: cssVars.primary,
-          };
-        case 'secondary':
-          return {
-            borderColor: cssVars.secondary,
-            backgroundColor: cssVars.secondary + '10',
-            color: cssVars.secondary,
-          };
-        case 'outline':
-          return {
-            borderColor: cssVars.primary,
-            backgroundColor: cssVars.primary + '05',
-            color: cssVars.primary,
-          };
-        case 'ghost':
-          return {
-            borderColor: cssVars.primary,
-            backgroundColor: cssVars.primary + '05',
-            color: cssVars.primary,
-          };
-        default:
-          return {
-            borderColor: cssVars.primary,
-            backgroundColor: cssVars.primary + '05',
-            color: cssVars.primary,
-          };
-      }
+      return {
+        borderColor: colors.main,
+        backgroundColor: colors.background,
+        color: colors.main,
+        borderStyle: 'solid',
+      };
     }
 
-    // Default state
     switch (variant) {
-      case 'primary':
+      case 'solid':
         return {
-          borderColor: cssVars.primary + '40',
-          backgroundColor: cssVars.background,
-          color: cssVars.foreground,
-        };
-      case 'secondary':
-        return {
-          borderColor: cssVars.secondary + '40',
-          backgroundColor: cssVars.background,
-          color: cssVars.foreground,
-        };
-      case 'outline':
-        return {
-          borderColor: cssVars.border,
-          backgroundColor: cssVars.background,
-          color: cssVars.foreground,
+          borderColor: colors.main,
+          backgroundColor: colors.main,
+          color: colors.foreground,
         };
       case 'ghost':
         return {
-          borderColor: cssVars.mutedForeground + '40',
-          backgroundColor: 'transparent',
-          color: cssVars.foreground,
+          borderColor: colors.background,
+          backgroundColor: colors.background,
+          color: colors.main,
         };
+      case 'outline':
       default:
         return {
-          borderColor: cssVars.border,
+          borderColor: colors.border || cssVars.border,
           backgroundColor: cssVars.background,
           color: cssVars.foreground,
         };
     }
   })();
 
-  // State-specific styles
-  const stateStyles: React.CSSProperties = {};
-  
+  // Disabled styles
   if (disabled) {
-    stateStyles.opacity = 0.5;
-    stateStyles.cursor = 'not-allowed';
+    baseStyles.opacity = 0.6;
+    baseStyles.backgroundColor = cssVars.muted;
+    baseStyles.color = cssVars.mutedForeground;
+    baseStyles.borderColor = cssVars.border;
   }
 
   return {
     ...baseStyles,
-    ...sizeStyles,
     ...variantStyles,
-    ...stateStyles,
   };
 };
 
-export const getFilePickerContentStyles = (
+// Icon styles
+export const getIconStyles = (
   size: FilePickerSize,
   cssVars: any
 ): React.CSSProperties => {
-  const baseStyles: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    gap: '8px',
-    pointerEvents: 'none',
-  };
-
-  const sizeStyles = (() => {
-    switch (size) {
-      case 'sm':
-        return {
-          gap: '6px',
-        };
-      case 'lg':
-        return {
-          gap: '12px',
-        };
-      case 'md':
-      default:
-        return {
-          gap: '8px',
-        };
-    }
-  })();
-
-  return { ...baseStyles, ...sizeStyles };
-};
-
-export const getFilePickerTextStyles = (
-  size: FilePickerSize,
-  cssVars: any,
-  variant: FilePickerVariant = 'outline'
-): React.CSSProperties => {
-  const baseStyles: React.CSSProperties = {
-    color: 'inherit',
-    fontWeight: '500',
-    margin: 0,
-  };
-
-  const sizeStyles = (() => {
-    switch (size) {
-      case 'sm':
-        return {
-          fontSize: '14px',
-          lineHeight: '1.4',
-        };
-      case 'lg':
-        return {
-          fontSize: '18px',
-          lineHeight: '1.5',
-        };
-      case 'md':
-      default:
-        return {
-          fontSize: '16px',
-          lineHeight: '1.5',
-        };
-    }
-  })();
-
-  return { ...baseStyles, ...sizeStyles };
-};
-
-export const getFilePickerSubTextStyles = (
-  size: FilePickerSize,
-  cssVars: any
-): React.CSSProperties => {
-  const baseStyles: React.CSSProperties = {
-    color: cssVars.mutedForeground,
-    margin: 0,
-  };
-
-  const sizeStyles = (() => {
-    switch (size) {
-      case 'sm':
-        return {
-          fontSize: '12px',
-          lineHeight: '1.4',
-        };
-      case 'lg':
-        return {
-          fontSize: '14px',
-          lineHeight: '1.5',
-        };
-      case 'md':
-      default:
-        return {
-          fontSize: '13px',
-          lineHeight: '1.4',
-        };
-    }
-  })();
-
-  return { ...baseStyles, ...sizeStyles };
-};
-
-export const getFilePickerIconStyles = (
-  size: FilePickerSize,
-  cssVars: any
-): React.CSSProperties => {
-  const baseStyles: React.CSSProperties = {
-    color: 'inherit',
+  const sizeConfig = getSizeConfig(size);
+  
+  return {
+    fontSize: sizeConfig.iconSize,
+    marginBottom: '12px',
     opacity: 0.7,
+    color: 'currentColor',
   };
-
-  const sizeStyles = (() => {
-    switch (size) {
-      case 'sm':
-        return {
-          fontSize: '24px',
-        };
-      case 'lg':
-        return {
-          fontSize: '36px',
-        };
-      case 'md':
-      default:
-        return {
-          fontSize: '30px',
-        };
-    }
-  })();
-
-  return { ...baseStyles, ...sizeStyles };
 };
 
-export const getFileListStyles = (
+// Text styles
+export const getUploadTextStyles = (
   size: FilePickerSize,
   cssVars: any
 ): React.CSSProperties => {
-  const baseStyles: React.CSSProperties = {
-    marginTop: '16px',
-    padding: 0,
-    listStyle: 'none',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px',
+  const sizeConfig = getSizeConfig(size);
+  
+  return {
+    fontSize: sizeConfig.fontSize,
+    fontWeight: 500,
+    marginBottom: '4px',
+    color: 'currentColor',
   };
-
-  const sizeStyles = (() => {
-    switch (size) {
-      case 'sm':
-        return {
-          marginTop: '12px',
-          gap: '6px',
-        };
-      case 'lg':
-        return {
-          marginTop: '20px',
-          gap: '10px',
-        };
-      case 'md':
-      default:
-        return {
-          marginTop: '16px',
-          gap: '8px',
-        };
-    }
-  })();
-
-  return { ...baseStyles, ...sizeStyles };
 };
 
-export const getFileItemStyles = (
+// Sub text styles
+export const getSubTextStyles = (
   size: FilePickerSize,
-  variant: FilePickerVariant,
-  cssVars: any,
-  disabled?: boolean
+  cssVars: any
 ): React.CSSProperties => {
+  const fontSizeMap = {
+    xs: '10px',
+    sm: '12px',
+    md: '14px',
+    lg: '16px',
+    xl: '18px',
+  };
+  
+  return {
+    fontSize: fontSizeMap[size],
+    color: cssVars.mutedForeground,
+    marginBottom: '8px',
+  };
+};
+
+// Helper text styles
+export const getHelperTextStyles = (
+  size: FilePickerSize,
+  disabled: boolean,
+  error: boolean,
+  cssVars: any
+): React.CSSProperties => {
+  const fontSizeMap = {
+    xs: '10px',
+    sm: '12px',
+    md: '14px',
+    lg: '16px',
+    xl: '18px',
+  };
+  
+  return {
+    fontSize: fontSizeMap[size],
+    color: disabled 
+      ? cssVars.mutedForeground 
+      : error 
+        ? cssVars.destructive 
+        : cssVars.mutedForeground,
+    marginTop: '8px',
+    textAlign: 'left',
+  };
+};
+
+// File list styles
+export const getFileListStyles = (): React.CSSProperties => ({
+  marginTop: '16px',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '8px',
+});
+
+// File item styles
+export const getFileItemStyles = (
+  color: FilePickerColor,
+  customColor: string | undefined,
+  variant: FilePickerVariant,
+  size: FilePickerSize,
+  disabled: boolean,
+  animationsEnabled: boolean,
+  cssVars: any
+): React.CSSProperties => {
+  const colors = getColorVariables(color, customColor, cssVars);
+  const sizeConfig = getSizeConfig(size);
+
   const baseStyles: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '8px 12px',
-    borderRadius: '6px',
-    backgroundColor: cssVars.muted,
-    border: '1px solid ' + cssVars.border,
-    opacity: disabled ? 0.5 : 1,
+    borderRadius: '8px',
+    fontSize: sizeConfig.fontSize,
+    transition: animationsEnabled 
+      ? 'background-color var(--duration-fast) var(--animation-smooth)'
+      : 'none',
   };
 
-  const sizeStyles = (() => {
-    switch (size) {
-      case 'sm':
+  const variantStyles = (() => {
+    switch (variant) {
+      case 'solid':
         return {
-          padding: '6px 10px',
-          borderRadius: '4px',
-          fontSize: '12px',
+          backgroundColor: colors.background,
+          color: colors.main,
+          border: `1px solid ${colors.background}`,
         };
-      case 'lg':
+      case 'ghost':
         return {
-          padding: '10px 14px',
-          borderRadius: '8px',
-          fontSize: '14px',
+          backgroundColor: colors.background,
+          color: colors.main,
+          border: '1px solid transparent',
         };
-      case 'md':
+      case 'outline':
       default:
         return {
-          padding: '8px 12px',
-          borderRadius: '6px',
-          fontSize: '13px',
+          backgroundColor: cssVars.muted,
+          color: cssVars.foreground,
+          border: `1px solid ${cssVars.border}`,
         };
     }
   })();
 
-  return { ...baseStyles, ...sizeStyles };
+  if (disabled) {
+    baseStyles.opacity = 0.6;
+  }
+
+  return {
+    ...baseStyles,
+    ...variantStyles,
+  };
 };
 
-export const getFileInfoStyles = (cssVars: any): React.CSSProperties => ({
+// File info styles
+export const getFileInfoStyles = (): React.CSSProperties => ({
   display: 'flex',
-  flexDirection: 'column',
-  flex: 1,
+  alignItems: 'center',
+  gap: '8px',
   minWidth: 0,
+  flex: 1,
 });
 
+// File name styles
 export const getFileNameStyles = (cssVars: any): React.CSSProperties => ({
-  color: cssVars.foreground,
-  fontWeight: '500',
+  fontWeight: 500,
+  color: 'currentColor',
+  truncate: true,
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
-  margin: 0,
 });
 
+// File size styles
 export const getFileSizeStyles = (cssVars: any): React.CSSProperties => ({
+  fontSize: '0.875em',
   color: cssVars.mutedForeground,
-  fontSize: '11px',
-  margin: 0,
+  flexShrink: 0,
 });
 
+// Remove button styles
 export const getRemoveButtonStyles = (
   size: FilePickerSize,
-  cssVars: any,
-  disabled?: boolean
+  disabled: boolean,
+  animationsEnabled: boolean,
+  cssVars: any
 ): React.CSSProperties => {
-  const baseStyles: React.CSSProperties = {
+  const sizeMap = {
+    xs: '16px',
+    sm: '18px',
+    md: '20px',
+    lg: '22px',
+    xl: '24px',
+  };
+
+  return {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    background: 'none',
+    width: sizeMap[size],
+    height: sizeMap[size],
+    borderRadius: '50%',
     border: 'none',
-    cursor: disabled ? 'not-allowed' : 'pointer',
+    backgroundColor: 'transparent',
     color: cssVars.mutedForeground,
-    padding: '4px',
-    borderRadius: '4px',
-    transition: 'color 0.2s ease-in-out, background-color 0.2s ease-in-out',
-    marginLeft: '8px',
-    opacity: disabled ? 0.5 : 1,
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    transition: animationsEnabled 
+      ? 'color var(--duration-fast) var(--animation-smooth), background-color var(--duration-fast) var(--animation-smooth)'
+      : 'none',
+    fontSize: '12px',
+    padding: 0,
+    '&:hover': !disabled ? {
+      backgroundColor: cssVars.destructive,
+      color: cssVars.destructiveForeground,
+    } : {},
   };
-
-  const sizeStyles = (() => {
-    switch (size) {
-      case 'sm':
-        return {
-          padding: '2px',
-          fontSize: '12px',
-        };
-      case 'lg':
-        return {
-          padding: '6px',
-          fontSize: '16px',
-        };
-      case 'md':
-      default:
-        return {
-          padding: '4px',
-          fontSize: '14px',
-        };
-    }
-  })();
-
-  return { ...baseStyles, ...sizeStyles };
 };
 
+// Hidden input styles
 export const getHiddenInputStyles = (): React.CSSProperties => ({
   position: 'absolute',
   width: '1px',
@@ -478,113 +449,33 @@ export const getHiddenInputStyles = (): React.CSSProperties => ({
   border: 0,
 });
 
-export const getFocusStyles = (
-  cssVars: any, 
-  variant: FilePickerVariant, 
-  error?: boolean
+// Progress bar styles (for future upload progress feature)
+export const getProgressBarStyles = (
+  progress: number,
+  color: FilePickerColor,
+  customColor: string | undefined,
+  cssVars: any
 ): React.CSSProperties => {
-  // Determine the focus outline color based on variant and error state
-  let outlineColor = cssVars.primary; // default
-
-  if (error) {
-    outlineColor = cssVars.error;
-  } else {
-    switch (variant) {
-      case 'primary':
-        outlineColor = cssVars.primary;
-        break;
-      case 'secondary':
-        outlineColor = cssVars.secondary;
-        break;
-      case 'outline':
-      case 'ghost':
-      default:
-        outlineColor = cssVars.primary;
-        break;
-    }
-  }
-
+  const colors = getColorVariables(color, customColor, cssVars);
+  
   return {
-    outline: `2px solid ${outlineColor}`,
-    outlineOffset: '2px',
-  };
-};
-
-// Helper function for error styles
-export const getErrorStyles = (size: FilePickerSize): React.CSSProperties => ({
-  display: 'flex',
-  alignItems: 'center',
-  marginTop: size === 'lg' ? '8px' : size === 'sm' ? '4px' : '6px',
-  fontSize: size === 'lg' ? '13px' : size === 'sm' ? '11px' : '12px',
-  color: 'var(--error)',
-  lineHeight: 1.4,
-});
-
-// Helper function for helper text styles
-export const getHelperTextStyles = (size: FilePickerSize): React.CSSProperties => ({
-  fontSize: size === 'lg' ? '12px' : size === 'sm' ? '10px' : '11px',
-  color: 'var(--foreground-muted)',
-  marginTop: size === 'lg' ? '8px' : size === 'sm' ? '4px' : '6px',
-  lineHeight: 1.4,
-  textAlign: 'center' as const,
-});
-
-// Simplified wrapper functions for easier use
-export const dropZoneStyles = (props: {
-  variant: FilePickerVariant;
-  size: FilePickerSize;
-  disabled: boolean;
-  error: boolean;
-  isDragActive: boolean;
-}): React.CSSProperties => {
-  return getFilePickerDropZoneStyles(
-    props.variant,
-    props.size,
-    props.disabled,
-    props.error,
-    props.isDragActive,
-    false, // rounded
-    {
-      primary: 'var(--primary)',
-      secondary: 'var(--secondary)',
-      error: 'var(--error)',
-      background: 'var(--background)',
-      foreground: 'var(--foreground)',
-      foregroundMuted: 'var(--foreground-muted)',
-      border: 'var(--border)',
+    width: '100%',
+    height: '4px',
+    backgroundColor: cssVars.muted,
+    borderRadius: '2px',
+    overflow: 'hidden',
+    marginTop: '8px',
+    position: 'relative',
+    '::after': {
+      content: '""',
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      height: '100%',
+      width: `${progress}%`,
+      backgroundColor: colors.main,
+      borderRadius: '2px',
+      transition: 'width var(--duration-smooth) var(--animation-smooth)',
     },
-    true // animationsEnabled
-  );
-};
-
-export const fileListStyles = (props: { size: FilePickerSize }): React.CSSProperties => {
-  return getFileListStyles(props.size, {
-    muted: 'var(--muted)',
-    border: 'var(--border)',
-  });
-};
-
-export const fileItemStyles = (props: { size: FilePickerSize }): React.CSSProperties => {
-  return getFileItemStyles(props.size, 'outline', {
-    muted: 'var(--muted)',
-    border: 'var(--border)',
-    mutedForeground: 'var(--foreground-muted)',
-  });
-};
-
-export const removeButtonStyles = (props: { size: FilePickerSize }): React.CSSProperties => {
-  return getRemoveButtonStyles(props.size, {
-    mutedForeground: 'var(--foreground-muted)',
-    error: 'var(--error)',
-  });
-};
-
-export const hiddenInputStyles = getHiddenInputStyles();
-
-export const errorStyles = (props: { size: FilePickerSize }): React.CSSProperties => {
-  return getErrorStyles(props.size);
-};
-
-export const helperTextStyles = (props: { size: FilePickerSize }): React.CSSProperties => {
-  return getHelperTextStyles(props.size);
+  };
 };

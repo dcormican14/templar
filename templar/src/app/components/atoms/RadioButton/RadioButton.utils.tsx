@@ -1,4 +1,4 @@
-import { RadioButtonSize, RadioButtonVariant } from './RadioButton.types';
+import { RadioButtonSize, RadioButtonColor } from './RadioButton.types';
 
 /**
  * Generate a unique ID for radio button accessibility
@@ -46,9 +46,9 @@ export const validateRadioButtonProps = (props: {
 export const getDefaultSize = (): RadioButtonSize => 'md';
 
 /**
- * Get the default variant for consistency
+ * Get the default color for consistency
  */
-export const getDefaultVariant = (): RadioButtonVariant => 'primary';
+export const getDefaultColor = (): RadioButtonColor => 'primary';
 
 /**
  * Check if a radio button should be considered invalid

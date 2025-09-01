@@ -1,62 +1,120 @@
 import React from 'react';
-import type { BadgeVariant, BadgeSize } from './Badge.types';
+import type { BadgeColor, BadgeVariant, BadgeSize, BadgeShape } from './Badge.types';
 
-export const getVariantStyles = (variant: BadgeVariant, cssVars: any): React.CSSProperties => {
+// Get color variables based on color prop
+export const getColorVariables = (color: BadgeColor, customColor: string | undefined, cssVars: any) => {
+  if (color === 'custom' && customColor) {
+    return {
+      main: customColor,
+      foreground: '#ffffff',
+      background: customColor + '10',
+      border: customColor,
+      hover: customColor + '20',
+    };
+  }
+
+  const colorMap = {
+    primary: {
+      main: cssVars.primary,
+      background: cssVars.primaryBackground,
+      foreground: cssVars.primaryForeground,
+      hover: cssVars.primaryHover,
+      border: cssVars.primaryBorder,
+    },
+    secondary: {
+      main: cssVars.secondary,
+      background: cssVars.secondaryBackground,
+      foreground: cssVars.secondaryForeground,
+      hover: cssVars.secondaryHover,
+      border: cssVars.secondaryBorder,
+    },
+    success: {
+      main: cssVars.success,
+      background: cssVars.successBackground,
+      foreground: cssVars.successForeground,
+      hover: cssVars.successHover,
+      border: cssVars.successBorder,
+    },
+    warning: {
+      main: cssVars.warning,
+      background: cssVars.warningBackground,
+      foreground: cssVars.warningForeground,
+      hover: cssVars.warningHover,
+      border: cssVars.warningBorder,
+    },
+    destructive: {
+      main: cssVars.destructive,
+      background: cssVars.destructiveBackground,
+      foreground: cssVars.destructiveForeground,
+      hover: cssVars.destructiveHover,
+      border: cssVars.destructiveBorder,
+    },
+    info: {
+      main: cssVars.info,
+      background: cssVars.infoBackground,
+      foreground: cssVars.infoForeground,
+      hover: cssVars.infoHover,
+      border: cssVars.infoBorder,
+    },
+  };
+
+  return colorMap[color] || colorMap.primary;
+};
+
+// Get shape styles based on shape prop
+export const getShapeStyles = (shape: BadgeShape): React.CSSProperties => {
+  switch (shape) {
+    case 'sharp':
+      return { borderRadius: '0' };
+    case 'round':
+      return { borderRadius: '12px' };
+    case 'pill':
+      return { borderRadius: '9999px' };
+    default:
+      return { borderRadius: '9999px' }; // Default to pill for badges
+  }
+};
+
+export const getVariantStyles = (
+  color: BadgeColor,
+  variant: BadgeVariant,
+  customColor: string | undefined,
+  cssVars: any
+) => {
+  const colors = getColorVariables(color, customColor, cssVars);
+
   const baseStyles = {
-    borderWidth: '0',
+    borderWidth: '1px',
     borderStyle: 'solid' as const,
-    borderColor: 'transparent',
   };
 
   switch (variant) {
-    case 'primary':
+    case 'solid':
       return {
-        backgroundColor: cssVars.primary,
-        color: cssVars.primaryForeground,
-        ...baseStyles,
-      };
-    case 'secondary':
-      return {
-        backgroundColor: cssVars.secondary,
-        color: cssVars.secondaryForeground,
-        ...baseStyles,
-      };
-    case 'destructive':
-      return {
-        backgroundColor: cssVars.error,
-        color: cssVars.errorForeground,
-        ...baseStyles,
-      };
-    case 'success':
-      return {
-        backgroundColor: cssVars.success,
-        color: cssVars.successForeground,
-        ...baseStyles,
-      };
-    case 'warning':
-      return {
-        backgroundColor: cssVars.warning,
-        color: cssVars.warningForeground,
+        backgroundColor: colors.main,
+        color: colors.foreground,
+        borderColor: colors.main,
         ...baseStyles,
       };
     case 'outline':
       return {
         backgroundColor: 'transparent',
-        color: cssVars.primary,
-        borderWidth: '1px',
-        borderStyle: 'solid' as const,
-        borderColor: cssVars.primary,
+        color: colors.main,
+        borderColor: colors.border,
+        ...baseStyles,
       };
     case 'ghost':
       return {
-        backgroundColor: cssVars.muted,
-        color: cssVars.mutedForeground,
+        backgroundColor: colors.background,
+        color: colors.main,
+        borderColor: 'transparent',
         ...baseStyles,
       };
     default:
       return {
-        backgroundColor: cssVars.primary,
-        color: cssVars.primaryForeground,
+        backgroundColor: colors.main,
+        color: colors.foreground,
+        borderColor: colors.main,
         ...baseStyles,
       };
   }
@@ -115,20 +173,29 @@ export const getIconSize = (badgeSize: BadgeSize): 'xs' | 'sm' | 'md' | 'lg' | '
 };
 
 export const createBaseStyles = (
-  rounded: boolean,
+  shape: BadgeShape,
   isRemovable: boolean,
-  animationsEnabled: boolean
-): React.CSSProperties => ({
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  verticalAlign: 'top',
-  borderRadius: rounded ? '50px' : '6px',
-  fontWeight: '500',
-  fontFamily: 'inherit',
-  userSelect: 'none',
-  whiteSpace: 'nowrap',
-  transition: animationsEnabled ? 'all 0.2s ease' : 'none',
-  cursor: isRemovable ? 'default' : 'auto',
-  position: 'relative',
-});
+  animationsEnabled: boolean,
+  // Legacy support
+  rounded?: boolean
+): React.CSSProperties => {
+  // Handle legacy rounded prop
+  const finalShape = rounded !== undefined ? (rounded ? 'pill' : 'round') : shape;
+  
+  return {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    verticalAlign: 'top',
+    fontWeight: '500',
+    fontFamily: 'inherit',
+    userSelect: 'none',
+    whiteSpace: 'nowrap',
+    transition: animationsEnabled 
+      ? 'background-color var(--duration-fast) var(--animation-smooth), color var(--duration-fast) var(--animation-smooth), border-color var(--duration-fast) var(--animation-smooth), transform var(--duration-fast) var(--animation-smooth)'
+      : 'none',
+    cursor: isRemovable ? 'default' : 'auto',
+    position: 'relative',
+    ...getShapeStyles(finalShape),
+  };
+};

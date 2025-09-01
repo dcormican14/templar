@@ -1,14 +1,33 @@
 import React from 'react';
 
-export type FilePickerVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
-export type FilePickerSize = 'sm' | 'md' | 'lg';
+export type FilePickerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export type FilePickerColor = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'custom';
+export type FilePickerVariant = 'solid' | 'ghost' | 'outline';
+export type FilePickerShape = 'sharp' | 'round' | 'pill';
 
 export interface FilePickerProps {
+  /**
+   * Color scheme of the file picker
+   * @default 'primary'
+   */
+  color?: FilePickerColor;
+  
+  /**
+   * Custom color when color is set to 'custom'
+   */
+  customColor?: string;
+  
   /**
    * Visual style variant of the file picker
    * @default 'outline'
    */
   variant?: FilePickerVariant;
+  
+  /**
+   * Shape of the file picker
+   * @default 'round'
+   */
+  shape?: FilePickerShape;
   
   /**
    * Size of the file picker
@@ -31,6 +50,7 @@ export interface FilePickerProps {
   /**
    * Whether to use rounded corners
    * @default false
+   * @deprecated Use shape prop instead
    */
   rounded?: boolean;
   
@@ -137,7 +157,10 @@ export interface FilePickerFileItemProps {
   file: File;
   onRemove?: () => void;
   size: FilePickerSize;
+  color: FilePickerColor;
+  customColor?: string;
   variant: FilePickerVariant;
+  shape: FilePickerShape;
   disabled?: boolean;
 }
 

@@ -1,2 +1,10 @@
 export { FilePicker } from './FilePicker';
-export type { FilePickerProps, FilePickerRef, FilePickerVariant, FilePickerSize } from './FilePicker.types';
+export type { 
+  FilePickerProps, 
+  FilePickerRef, 
+  FilePickerFileItemProps,
+  FilePickerSize,
+  FilePickerColor,
+  FilePickerVariant,
+  FilePickerShape
+} from './FilePicker.types';

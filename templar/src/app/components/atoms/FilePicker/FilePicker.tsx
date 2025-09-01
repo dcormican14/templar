@@ -1,14 +1,21 @@
 import React, { forwardRef, useRef, useImperativeHandle } from 'react';
 import { Icon } from '../Icon';
+import { useCSSVariables, useAnimationSettings } from '../../../providers/RoundTable/hooks';
 import { FilePickerProps, FilePickerRef } from './FilePicker.types';
 import { 
-  dropZoneStyles,
-  fileListStyles, 
-  fileItemStyles, 
-  removeButtonStyles,
-  hiddenInputStyles,
-  errorStyles,
-  helperTextStyles
+  createFilePickerContainerStyles,
+  getFilePickerDropZoneStyles,
+  getIconStyles,
+  getUploadTextStyles,
+  getSubTextStyles,
+  getHelperTextStyles,
+  getFileListStyles,
+  getFileItemStyles,
+  getFileInfoStyles,
+  getFileNameStyles,
+  getFileSizeStyles,
+  getRemoveButtonStyles,
+  getHiddenInputStyles
 } from './FilePicker.styles';
 import { 
   useDragAndDrop, 
@@ -19,38 +26,62 @@ import {
 } from './FilePicker.utils';
 
 export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>(({
+  color = 'primary',
+  customColor,
   variant = 'outline',
+  shape = 'round',
   size = 'md',
-  multiple = false,
   disabled = false,
+  error = false,
+  rounded, // Legacy support
   accept,
+  multiple = false,
   maxSize,
   maxFiles,
+  uploadText,
+  subText,
   helperText,
   errorText,
   placeholder = 'Drop files here or click to browse',
-  showFileList = true,
+  icon,
   onFilesChange,
   onError,
+  files,
+  showFileList = true,
+  width,
+  height,
   className,
   style,
+  id,
   ...props
 }, ref) => {
-  const [files, setFiles] = React.useState<File[]>([]);
-  const [error, setError] = React.useState<string>('');
+  const cssVars = useCSSVariables();
+  const animationsEnabled = useAnimationSettings();
+  const [internalFiles, setInternalFiles] = React.useState<File[]>([]);
+  const [internalError, setInternalError] = React.useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const filePickerId = React.useMemo(() => generateFilePickerId(), []);
+  const filePickerId = React.useMemo(() => id || generateFilePickerId(), [id]);
+
+  // Use controlled or uncontrolled files
+  const currentFiles = files !== undefined ? files : internalFiles;
+  const setCurrentFiles = files !== undefined ? 
+    (newFiles: File[]) => onFilesChange?.(newFiles) : 
+    setInternalFiles;
+
+  // Handle error states
+  const currentError = errorText || internalError;
+  const isError = error || Boolean(currentError);
 
   // Expose methods through ref
   useImperativeHandle(ref, () => ({
     clear: () => {
-      setFiles([]);
-      setError('');
+      setCurrentFiles([]);
+      setInternalError('');
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
     },
-    getFiles: () => files,
+    getFiles: () => currentFiles,
     browse: () => {
       if (!disabled && fileInputRef.current) {
         fileInputRef.current.click();
@@ -58,20 +89,15 @@ export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>(({
     }
   }));
 
-  // Handle error states
-  const currentError = errorText || error;
-  const isError = Boolean(currentError);
-
   // Drag and drop functionality
   const { isDragActive, dragProps } = useDragAndDrop(
     (newFiles) => {
-      const updatedFiles = multiple ? [...files, ...newFiles] : newFiles;
-      setFiles(updatedFiles);
-      setError('');
-      onFilesChange?.(updatedFiles);
+      const updatedFiles = multiple ? [...currentFiles, ...newFiles] : newFiles;
+      setCurrentFiles(updatedFiles);
+      setInternalError('');
     },
     (errorMessage) => {
-      setError(errorMessage);
+      setInternalError(errorMessage);
       onError?.(errorMessage);
     },
     accept,
@@ -93,15 +119,14 @@ export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>(({
 
     if (errors.length > 0) {
       const errorMessage = errors.join(' ');
-      setError(errorMessage);
+      setInternalError(errorMessage);
       onError?.(errorMessage);
       return;
     }
 
-    const updatedFiles = multiple ? [...files, ...validFiles] : validFiles;
-    setFiles(updatedFiles);
-    setError('');
-    onFilesChange?.(updatedFiles);
+    const updatedFiles = multiple ? [...currentFiles, ...validFiles] : validFiles;
+    setCurrentFiles(updatedFiles);
+    setInternalError('');
   };
 
   // Handle clicking the drop zone
@@ -113,10 +138,9 @@ export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>(({
 
   // Handle removing a file
   const handleRemoveFile = (indexToRemove: number) => {
-    const updatedFiles = files.filter((_, index) => index !== indexToRemove);
-    setFiles(updatedFiles);
-    setError('');
-    onFilesChange?.(updatedFiles);
+    const updatedFiles = currentFiles.filter((_, index) => index !== indexToRemove);
+    setCurrentFiles(updatedFiles);
+    setInternalError('');
 
     // Clear the input value if no files remain
     if (updatedFiles.length === 0 && fileInputRef.current) {
@@ -142,59 +166,77 @@ export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>(({
   );
 
   return (
-    <div className={className} style={style}>
+    <div 
+      className={className} 
+      style={{
+        ...createFilePickerContainerStyles(shape, width, height, animationsEnabled, rounded),
+        ...style
+      }}
+    >
       {/* Drop Zone */}
       <div
         {...dragProps}
         {...accessibilityProps}
         onClick={handleDropZoneClick}
         onKeyDown={handleKeyDown}
-        style={{
-          ...dropZoneStyles({
-            variant,
-            size,
-            disabled,
-            error: isError,
-            isDragActive
-          }),
-        }}
+        style={getFilePickerDropZoneStyles(
+          color,
+          customColor,
+          variant,
+          size,
+          disabled,
+          isError,
+          isDragActive,
+          animationsEnabled,
+          cssVars
+        )}
         {...props}
       >
-        <Icon 
-          name="CloudUpload" 
-          size={size === 'lg' ? 24 : size === 'sm' ? 16 : 20}
-          style={{ 
-            marginBottom: size === 'lg' ? '12px' : size === 'sm' ? '6px' : '8px',
-            opacity: disabled ? 0.5 : 1 
-          }}
-        />
+        {/* Icon */}
+        <div style={getIconStyles(size, cssVars)}>
+          {icon || (
+            <Icon 
+              name="CloudUpload" 
+              size="inherit"
+            />
+          )}
+        </div>
         
-        <span style={{
-          fontSize: size === 'lg' ? '16px' : size === 'sm' ? '12px' : '14px',
-          opacity: disabled ? 0.5 : 1
-        }}>
-          {isDragActive ? 'Drop files here' : placeholder}
-        </span>
+        {/* Main upload text */}
+        <div style={getUploadTextStyles(size, cssVars)}>
+          {isDragActive 
+            ? 'Drop files here' 
+            : uploadText || placeholder || 'Drop files here or click to browse'
+          }
+        </div>
 
-        {/* Helper text */}
-        {helperText && !isError && (
-          <span 
-            id={`${filePickerId}-description`}
-            style={helperTextStyles({ size })}
-          >
-            {helperText}
-          </span>
+        {/* Sub text */}
+        {subText && (
+          <div style={getSubTextStyles(size, cssVars)}>
+            {subText}
+          </div>
         )}
       </div>
+
+      {/* Helper text */}
+      {helperText && !isError && (
+        <div 
+          id={`${filePickerId}-description`}
+          style={getHelperTextStyles(size, disabled, false, cssVars)}
+        >
+          {helperText}
+        </div>
+      )}
 
       {/* Hidden file input */}
       <input
         ref={fileInputRef}
         type="file"
+        id={filePickerId}
         multiple={multiple}
         accept={accept}
         onChange={handleInputChange}
-        style={hiddenInputStyles}
+        style={getHiddenInputStyles()}
         tabIndex={-1}
         aria-hidden="true"
       />
@@ -203,34 +245,37 @@ export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>(({
       {isError && (
         <div 
           id={`${filePickerId}-error`}
-          style={errorStyles({ size })}
+          style={getHelperTextStyles(size, disabled, true, cssVars)}
           role="alert"
           aria-live="polite"
         >
-          <Icon name="AlertCircle" size={14} style={{ marginRight: '6px' }} />
+          <Icon name="AlertCircle" size="inherit" style={{ marginRight: '6px' }} />
           {currentError}
         </div>
       )}
 
       {/* File list */}
-      {showFileList && files.length > 0 && (
-        <div style={fileListStyles({ size })}>
-          {files.map((file, index) => (
+      {showFileList && currentFiles.length > 0 && (
+        <div style={getFileListStyles()}>
+          {currentFiles.map((file, index) => (
             <div
               key={`${file.name}-${file.size}-${index}`}
-              style={fileItemStyles({ size })}
+              style={getFileItemStyles(
+                color,
+                customColor,
+                variant,
+                size,
+                disabled,
+                animationsEnabled,
+                cssVars
+              )}
             >
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                flex: 1,
-                minWidth: 0 // Allows text truncation
-              }}>
+              <div style={getFileInfoStyles()}>
                 <Icon 
                   name="Attachment" 
-                  size={size === 'lg' ? 16 : size === 'sm' ? 12 : 14}
+                  size="inherit"
                   style={{ 
-                    marginRight: size === 'lg' ? '8px' : '6px',
+                    marginRight: '8px',
                     flexShrink: 0
                   }}
                 />
@@ -240,20 +285,10 @@ export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>(({
                   display: 'flex',
                   flexDirection: 'column'
                 }}>
-                  <span style={{
-                    fontSize: size === 'lg' ? '14px' : size === 'sm' ? '11px' : '12px',
-                    fontWeight: 500,
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis'
-                  }}>
+                  <span style={getFileNameStyles(cssVars)}>
                     {file.name}
                   </span>
-                  <span style={{
-                    fontSize: size === 'lg' ? '12px' : size === 'sm' ? '10px' : '11px',
-                    opacity: 0.7,
-                    color: 'var(--foreground-muted)'
-                  }}>
+                  <span style={getFileSizeStyles(cssVars)}>
                     {formatFileSize(file.size)}
                   </span>
                 </div>
@@ -265,13 +300,13 @@ export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>(({
                   e.stopPropagation();
                   handleRemoveFile(index);
                 }}
-                style={removeButtonStyles({ size })}
+                style={getRemoveButtonStyles(size, disabled, animationsEnabled, cssVars)}
                 aria-label={`Remove ${file.name}`}
                 disabled={disabled}
               >
                 <Icon 
                   name="Cancel" 
-                  size={size === 'lg' ? 16 : size === 'sm' ? 12 : 14}
+                  size="inherit"
                 />
               </button>
             </div>

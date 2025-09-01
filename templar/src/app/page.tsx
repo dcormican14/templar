@@ -21,7 +21,6 @@ import {
   IconsPage,
   NavigationPage,
   ButtonsPage,
-  InteractivePage,
 } from './pages';
 
 export default function Page() {
@@ -114,8 +113,6 @@ function PageContent() {
         return <AtomicComponentsPage />;
       case 'buttons':
         return <ButtonsPage />;
-      case 'interactive':
-        return <InteractivePage />;
       case 'icons':
         return <IconsPage />;
       case 'navigation':
@@ -175,9 +172,9 @@ function PageContent() {
       {/* Floating Theme Switcher */}
       <div className="fixed bottom-6 right-6 z-50">
         <Button
-          variant="primary"
+          variant="solid"
           size="lg"
-          rounded
+          shape="pill"
           icon={<Icon name={getThemeIcon(theme)} size="md" />}
           onClick={cycleTheme}
           className="shadow-lg hover:shadow-xl transition-shadow duration-200"

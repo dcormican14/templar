@@ -1,33 +1,135 @@
 import React from 'react';
-import type { DropdownVariant, DropdownSize, DropdownPosition } from './Dropdown.types';
+import type { DropdownColor, DropdownVariant, DropdownSize, DropdownShape, DropdownPosition } from './Dropdown.types';
+
+// Get color variables based on color prop
+export const getColorVariables = (color: DropdownColor, customColor: string | undefined, cssVars: any) => {
+  if (color === 'custom' && customColor) {
+    return {
+      main: customColor,
+      foreground: '#ffffff',
+      background: customColor + '10',
+      border: customColor,
+      hover: customColor + '20',
+    };
+  }
+
+  const colorMap = {
+    primary: {
+      main: cssVars.primary,
+      background: cssVars.primaryBackground,
+      foreground: cssVars.primaryForeground,
+      hover: cssVars.primaryHover,
+      border: cssVars.primaryBorder,
+    },
+    secondary: {
+      main: cssVars.secondary,
+      background: cssVars.secondaryBackground,
+      foreground: cssVars.secondaryForeground,
+      hover: cssVars.secondaryHover,
+      border: cssVars.secondaryBorder,
+    },
+    success: {
+      main: cssVars.success,
+      background: cssVars.successBackground,
+      foreground: cssVars.successForeground,
+      hover: cssVars.successHover,
+      border: cssVars.successBorder,
+    },
+    warning: {
+      main: cssVars.warning,
+      background: cssVars.warningBackground,
+      foreground: cssVars.warningForeground,
+      hover: cssVars.warningHover,
+      border: cssVars.warningBorder,
+    },
+    destructive: {
+      main: cssVars.destructive,
+      background: cssVars.destructiveBackground,
+      foreground: cssVars.destructiveForeground,
+      hover: cssVars.destructiveHover,
+      border: cssVars.destructiveBorder,
+    },
+    info: {
+      main: cssVars.info,
+      background: cssVars.infoBackground,
+      foreground: cssVars.infoForeground,
+      hover: cssVars.infoHover,
+      border: cssVars.infoBorder,
+    },
+  };
+
+  return colorMap[color] || colorMap.primary;
+};
+
+// Get shape styles based on shape prop
+export const getShapeStyles = (shape: DropdownShape): React.CSSProperties => {
+  switch (shape) {
+    case 'sharp':
+      return { borderRadius: '0' };
+    case 'round':
+      return { borderRadius: '12px' };
+    case 'pill':
+      return { borderRadius: '9999px' };
+    default:
+      return { borderRadius: '12px' };
+  }
+};
 
 export const createBaseStyles = (
   size: DropdownSize,
-  rounded: boolean,
+  shape: DropdownShape,
   animationsEnabled: boolean,
-  width?: string | number
+  width?: string | number,
+  // Legacy support
+  rounded?: boolean
 ): React.CSSProperties => {
+  // Handle legacy rounded prop
+  const finalShape = rounded !== undefined ? (rounded ? 'pill' : 'round') : shape;
+  
   const baseStyles: React.CSSProperties = {
     position: 'relative',
     display: 'inline-block',
-    width: width || '200px', // Use provided width or default to 200px
+    width: width || '200px',
     minWidth: '120px',
-    transition: animationsEnabled ? 'width 0.2s ease-in-out, opacity 0.2s ease-in-out' : 'none',
+    transition: animationsEnabled 
+      ? 'width var(--duration-fast) var(--animation-smooth), opacity var(--duration-fast) var(--animation-smooth)' 
+      : 'none',
+    ...getShapeStyles(finalShape),
   };
 
   return baseStyles;
 };
 
+// Get size styles for dropdowns
+export const getSizeStyles = (size: DropdownSize): React.CSSProperties => {
+  const sizeMap = {
+    xs: { padding: '4px 12px', fontSize: '14px', minHeight: '40px' },
+    sm: { padding: '6px 12px', fontSize: '14px', minHeight: '40px' },
+    md: { padding: '8px 16px', fontSize: '16px', minHeight: '48px' },
+    lg: { padding: '10px 20px', fontSize: '16px', minHeight: '52px' },
+    xl: { padding: '12px 24px', fontSize: '18px', minHeight: '60px' },
+  };
+  return sizeMap[size] || sizeMap.md;
+};
+
 export const getTriggerStyles = (
+  color: DropdownColor,
   variant: DropdownVariant,
   size: DropdownSize,
+  shape: DropdownShape,
   disabled: boolean,
   error: boolean,
   open: boolean,
-  rounded: boolean,
+  customColor: string | undefined,
   cssVars: any,
-  animationsEnabled: boolean
+  animationsEnabled: boolean,
+  // Legacy support
+  rounded?: boolean
 ): React.CSSProperties => {
+  const colors = getColorVariables(color, customColor, cssVars);
+  const sizeStyles = getSizeStyles(size);
+  const finalShape = rounded !== undefined ? (rounded ? 'pill' : 'round') : shape;
+
   // Base trigger styles
   const baseStyles: React.CSSProperties = {
     display: 'flex',
@@ -36,118 +138,62 @@ export const getTriggerStyles = (
     width: '100%',
     cursor: disabled ? 'not-allowed' : 'pointer',
     outline: 'none',
-    backgroundColor: 'transparent',
     fontFamily: 'inherit',
-    fontSize: 'inherit',
-    transition: animationsEnabled ? 'background-color 0.2s ease-in-out, color 0.2s ease-in-out, opacity 0.2s ease-in-out' : 'none',
+    transition: animationsEnabled 
+      ? 'background-color var(--duration-fast) var(--animation-smooth), color var(--duration-fast) var(--animation-smooth), border-color var(--duration-fast) var(--animation-smooth)'
+      : 'none',
     position: 'relative',
-    // Reset browser focus styles
     boxShadow: 'none',
     WebkitAppearance: 'none',
     MozAppearance: 'none',
+    opacity: disabled ? 0.6 : 1,
+    ...sizeStyles,
+    ...getShapeStyles(finalShape),
   };
-
-  // Size-specific styles
-  const sizeStyles = (() => {
-    switch (size) {
-      case 'sm':
-        return {
-          padding: '8px 12px',
-          fontSize: '14px',
-          lineHeight: '1.4',
-          borderRadius: rounded ? '8px' : '4px',
-          minHeight: '32px',
-        };
-      case 'lg':
-        return {
-          padding: '12px 16px',
-          fontSize: '16px',
-          lineHeight: '1.5',
-          borderRadius: rounded ? '12px' : '8px',
-          minHeight: '48px',
-        };
-      case 'md':
-      default:
-        return {
-          padding: '10px 14px',
-          fontSize: '14px',
-          lineHeight: '1.5',
-          borderRadius: rounded ? '10px' : '6px',
-          minHeight: '40px',
-        };
-    }
-  })();
 
   // Variant-specific styles
   const variantStyles = (() => {
-    if (error) {
-      return {
-        borderColor: cssVars.error,
-        color: cssVars.error,
-        backgroundColor: cssVars.background,
-      };
-    }
-
     switch (variant) {
-      case 'primary':
+      case 'solid':
         return {
-          backgroundColor: cssVars.primary,
-          borderColor: cssVars.primary,
-          color: cssVars.primaryForeground,
-        };
-      case 'secondary':
-        return {
-          backgroundColor: cssVars.secondary,
-          borderColor: cssVars.secondary,
-          color: cssVars.secondaryForeground,
+          backgroundColor: colors.main,
+          color: colors.foreground,
+          border: `1px solid ${colors.border}`,
         };
       case 'outline':
         return {
-          backgroundColor: cssVars.background,
-          borderColor: cssVars.border,
-          color: cssVars.foreground,
+          backgroundColor: 'transparent',
+          color: colors.main,
+          border: `1px solid ${colors.border}`,
         };
       case 'ghost':
         return {
           backgroundColor: 'transparent',
-          borderColor: 'transparent',
-          color: cssVars.foreground,
-        };
-      case 'destructive':
-        return {
-          backgroundColor: cssVars.error,
-          borderColor: cssVars.error,
-          color: cssVars.errorForeground,
+          color: colors.main,
+          border: '1px solid transparent',
         };
       default:
         return {
-          backgroundColor: cssVars.background,
-          borderColor: cssVars.border,
+          backgroundColor: 'transparent',
           color: cssVars.foreground,
+          border: `1px solid ${cssVars.border}`,
         };
     }
   })();
 
-  // State-specific styles
-  const stateStyles: React.CSSProperties = {};
-  
-  if (disabled) {
-    stateStyles.opacity = 0.5;
-    stateStyles.cursor = 'not-allowed';
-  }
-
-  if (open && !disabled) {
-    if (variant === 'outline' || variant === 'ghost') {
-      stateStyles.borderColor = cssVars.primary;
-      // Focus outline is handled separately in the component
-    }
+  // Error state override
+  if (error) {
+    return {
+      ...baseStyles,
+      ...variantStyles(),
+      borderColor: cssVars.destructive,
+      color: cssVars.destructive,
+    };
   }
 
   return {
     ...baseStyles,
-    ...sizeStyles,
-    ...variantStyles,
-    ...stateStyles,
+    ...variantStyles(),
   };
 };
 

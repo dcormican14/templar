@@ -1,356 +1,478 @@
-import type { NotificationType, NotificationSize } from './Notification.types';
+import React from 'react';
+import type { NotificationColor, NotificationVariant, NotificationSize, NotificationShape } from './Notification.types';
 
-export const createBaseStyles = (
-  size: NotificationSize,
-  rounded: boolean,
-  animationsEnabled: boolean
+// Get color variables based on color prop
+export const getColorVariables = (color: NotificationColor, customColor: string | undefined, cssVars: any) => {
+  if (color === 'custom' && customColor) {
+    return {
+      main: customColor,
+      foreground: '#ffffff',
+      background: customColor + '10',
+      border: customColor,
+      hover: customColor + '20',
+    };
+  }
+
+  const colorMap = {
+    primary: {
+      main: cssVars.primary,
+      background: cssVars.primaryBackground,
+      foreground: cssVars.primaryForeground,
+      hover: cssVars.primaryHover,
+      border: cssVars.primaryBorder,
+    },
+    secondary: {
+      main: cssVars.secondary,
+      background: cssVars.secondaryBackground,
+      foreground: cssVars.secondaryForeground,
+      hover: cssVars.secondaryHover,
+      border: cssVars.secondaryBorder,
+    },
+    success: {
+      main: cssVars.success,
+      background: cssVars.successBackground,
+      foreground: cssVars.successForeground,
+      hover: cssVars.successHover,
+      border: cssVars.successBorder,
+    },
+    warning: {
+      main: cssVars.warning,
+      background: cssVars.warningBackground,
+      foreground: cssVars.warningForeground,
+      hover: cssVars.warningHover,
+      border: cssVars.warningBorder,
+    },
+    destructive: {
+      main: cssVars.destructive,
+      background: cssVars.destructiveBackground,
+      foreground: cssVars.destructiveForeground,
+      hover: cssVars.destructiveHover,
+      border: cssVars.destructiveBorder,
+    },
+    info: {
+      main: cssVars.info,
+      background: cssVars.infoBackground,
+      foreground: cssVars.infoForeground,
+      hover: cssVars.infoHover,
+      border: cssVars.infoBorder,
+    },
+  };
+
+  return colorMap[color] || colorMap.primary;
+};
+
+// Get shape styles based on shape prop
+export const getShapeStyles = (shape: NotificationShape): React.CSSProperties => {
+  switch (shape) {
+    case 'sharp':
+      return { borderRadius: '0' };
+    case 'round':
+      return { borderRadius: '12px' };
+    case 'pill':
+      return { borderRadius: '24px' };
+    default:
+      return { borderRadius: '12px' };
+  }
+};
+
+// Get size configuration
+export const getSizeConfig = (size: NotificationSize) => {
+  const configs = {
+    xs: {
+      padding: '8px 12px',
+      fontSize: '11px',
+      lineHeight: 1.4,
+      iconSize: '14px',
+      titleSize: '12px',
+      descriptionSize: '10px',
+      buttonPadding: '2px 6px',
+      buttonFontSize: '10px',
+      dismissButtonSize: '18px',
+      dismissIconSize: '12px',
+    },
+    sm: {
+      padding: '12px 16px',
+      fontSize: '12px',
+      lineHeight: 1.4,
+      iconSize: '16px',
+      titleSize: '14px',
+      descriptionSize: '11px',
+      buttonPadding: '4px 8px',
+      buttonFontSize: '11px',
+      dismissButtonSize: '20px',
+      dismissIconSize: '14px',
+    },
+    md: {
+      padding: '16px 20px',
+      fontSize: '14px',
+      lineHeight: 1.5,
+      iconSize: '20px',
+      titleSize: '16px',
+      descriptionSize: '13px',
+      buttonPadding: '6px 12px',
+      buttonFontSize: '12px',
+      dismissButtonSize: '24px',
+      dismissIconSize: '16px',
+    },
+    lg: {
+      padding: '20px 24px',
+      fontSize: '16px',
+      lineHeight: 1.5,
+      iconSize: '24px',
+      titleSize: '18px',
+      descriptionSize: '14px',
+      buttonPadding: '8px 16px',
+      buttonFontSize: '13px',
+      dismissButtonSize: '28px',
+      dismissIconSize: '18px',
+    },
+    xl: {
+      padding: '24px 28px',
+      fontSize: '18px',
+      lineHeight: 1.6,
+      iconSize: '28px',
+      titleSize: '20px',
+      descriptionSize: '16px',
+      buttonPadding: '10px 20px',
+      buttonFontSize: '14px',
+      dismissButtonSize: '32px',
+      dismissIconSize: '20px',
+    },
+  };
+
+  return configs[size];
+};
+
+// Container styles
+export const createNotificationContainerStyles = (
+  shape: NotificationShape,
+  width: string | number | undefined,
+  height: string | number | undefined,
+  animationsEnabled: boolean,
+  // Legacy support
+  rounded?: boolean
 ): React.CSSProperties => {
-  const baseStyles: React.CSSProperties = {
-    display: 'flex',
-    flexDirection: 'column',
+  // Handle legacy rounded prop
+  const finalShape = rounded !== undefined ? (rounded ? 'pill' : 'round') : shape;
+  
+  return {
     position: 'relative',
-    border: '1px solid',
+    display: 'flex',
+    width: width || 'auto',
+    height: height || 'auto',
+    minWidth: '300px',
+    maxWidth: '500px',
     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-    transition: animationsEnabled ? 'all 0.2s ease-in-out' : 'none',
+    transition: animationsEnabled 
+      ? 'all var(--duration-fast) var(--animation-smooth)'
+      : 'none',
+    ...getShapeStyles(finalShape),
   };
-
-  // Size-specific styles
-  switch (size) {
-    case 'sm':
-      return {
-        ...baseStyles,
-        padding: '12px',
-        borderRadius: rounded ? '12px' : '4px',
-        fontSize: '14px',
-        lineHeight: '1.4',
-      };
-    case 'lg':
-      return {
-        ...baseStyles,
-        padding: '20px',
-        borderRadius: rounded ? '16px' : '8px',
-        fontSize: '16px',
-        lineHeight: '1.5',
-      };
-    case 'md':
-    default:
-      return {
-        ...baseStyles,
-        padding: '16px',
-        borderRadius: rounded ? '12px' : '8px',
-        fontSize: '14px',
-        lineHeight: '1.5',
-      };
-  }
 };
 
-export const getTypeStyles = (
-  type: NotificationType,
+// Main notification styles
+export const getNotificationStyles = (
+  color: NotificationColor,
+  customColor: string | undefined,
+  variant: NotificationVariant,
+  size: NotificationSize,
+  disabled: boolean,
+  animationsEnabled: boolean,
   cssVars: any
 ): React.CSSProperties => {
-  // Base card-like styling for all notifications
-  const baseStyles = {
-    backgroundColor: cssVars.card,
-    color: cssVars.cardForeground,
-  };
+  const colors = getColorVariables(color, customColor, cssVars);
+  const sizeConfig = getSizeConfig(size);
 
-  switch (type) {
-    case 'primary':
-      return {
-        ...baseStyles,
-        borderColor: cssVars.primary,
-        borderLeftStyle: 'solid',
-      };
-    case 'secondary':
-      return {
-        ...baseStyles,
-        borderColor: cssVars.secondary,
-        borderLeftStyle: 'solid',
-      };
-    case 'warning':
-      return {
-        ...baseStyles,
-        borderColor: cssVars.warning,
-        borderLeftStyle: 'solid',
-      };
-    case 'destructive':
-      return {
-        ...baseStyles,
-        borderColor: cssVars.destructive || cssVars.error,
-        borderLeftStyle: 'solid',
-      };
-    case 'success':
-      return {
-        ...baseStyles,
-        borderColor: cssVars.success,
-        borderLeftStyle: 'solid',
-      };
-    case 'inverted':
-      return {
-        ...baseStyles,
-        backgroundColor: cssVars.foreground,
-        color: cssVars.background,
-        borderColor: cssVars.foreground,
-        borderLeftStyle: 'solid',
-      };
-    case 'default':
-    default:
-      return {
-        ...baseStyles,
-        borderColor: cssVars.border,
-      };
-  }
-};
-
-export const getIconContainerStyles = (size: NotificationSize): React.CSSProperties => {
-  const baseStyles: React.CSSProperties = {
-    flexShrink: 0,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  };
-
-  switch (size) {
-    case 'sm':
-      return {
-        ...baseStyles,
-        marginTop: '2px',
-      };
-    case 'lg':
-      return {
-        ...baseStyles,
-        marginTop: '2px',
-      };
-    case 'md':
-    default:
-      return {
-        ...baseStyles,
-        marginTop: '2px',
-      };
-  }
-};
-
-export const getContentStyles = (): React.CSSProperties => ({
-  flex: 1,
-  minWidth: 0, // Prevent flex item from overflowing
-});
-
-export const getTitleStyles = (
-  size: NotificationSize,
-  cssVars: any
-): React.CSSProperties => {
-  const baseStyles: React.CSSProperties = {
-    margin: 0,
-    fontWeight: 600,
-    color: 'inherit',
-  };
-
-  switch (size) {
-    case 'sm':
-      return {
-        ...baseStyles,
-        fontSize: '14px',
-        lineHeight: '1.4',
-      };
-    case 'lg':
-      return {
-        ...baseStyles,
-        fontSize: '18px',
-        lineHeight: '1.4',
-      };
-    case 'md':
-    default:
-      return {
-        ...baseStyles,
-        fontSize: '16px',
-        lineHeight: '1.4',
-      };
-  }
-};
-
-export const getDescriptionStyles = (
-  size: NotificationSize,
-  cssVars: any
-): React.CSSProperties => {
-  const baseStyles: React.CSSProperties = {
-    margin: '4px 0 0 0',
-    opacity: 0.8,
-    color: 'inherit',
-  };
-
-  switch (size) {
-    case 'sm':
-      return {
-        ...baseStyles,
-        fontSize: '12px',
-        lineHeight: '1.4',
-      };
-    case 'lg':
-      return {
-        ...baseStyles,
-        fontSize: '14px',
-        lineHeight: '1.5',
-      };
-    case 'md':
-    default:
-      return {
-        ...baseStyles,
-        fontSize: '13px',
-        lineHeight: '1.4',
-      };
-  }
-};
-
-export const getActionsStyles = (size: NotificationSize): React.CSSProperties => {
   const baseStyles: React.CSSProperties = {
     display: 'flex',
-    gap: '8px',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-  };
-
-  switch (size) {
-    case 'sm':
-      return {
-        ...baseStyles,
-        marginTop: '8px',
-      };
-    case 'lg':
-      return {
-        ...baseStyles,
-        marginTop: '12px',
-      };
-    case 'md':
-    default:
-      return {
-        ...baseStyles,
-        marginTop: '10px',
-      };
-  }
-};
-
-export const getDismissButtonStyles = (
-  size: NotificationSize,
-  cssVars: any,
-  animationsEnabled: boolean
-): React.CSSProperties => {
-  const baseStyles: React.CSSProperties = {
-    position: 'absolute',
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    opacity: 0.6,
-    color: 'inherit',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: '4px',
-    transition: animationsEnabled ? 'opacity 0.2s ease-in-out' : 'none',
-  };
-
-  switch (size) {
-    case 'sm':
-      return {
-        ...baseStyles,
-        top: '10px', // 8px padding + 2px to match icon alignment
-        right: '8px',
-        width: '20px',
-        height: '20px',
-        fontSize: '16px',
-      };
-    case 'lg':
-      return {
-        ...baseStyles,
-        top: '14px', // 12px padding + 2px to match icon alignment
-        right: '12px',
-        width: '28px',
-        height: '28px',
-        fontSize: '20px',
-      };
-    case 'md':
-    default:
-      return {
-        ...baseStyles,
-        top: '14px', // 12px padding + 2px to match icon alignment
-        right: '12px',
-        width: '24px',
-        height: '24px',
-        fontSize: '18px',
-      };
-  }
-};
-
-export const getActionButtonStyles = (
-  variant: 'default' | 'primary' | 'secondary',
-  size: NotificationSize,
-  cssVars: any,
-  animationsEnabled: boolean
-): React.CSSProperties => {
-  const baseStyles: React.CSSProperties = {
+    alignItems: 'flex-start',
+    gap: '12px',
+    width: '100%',
+    padding: sizeConfig.padding,
     border: '1px solid',
-    cursor: 'pointer',
-    fontWeight: 500,
-    textDecoration: 'none',
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: '4px',
-    transition: animationsEnabled ? 'all 0.2s ease-in-out' : 'none',
+    fontSize: sizeConfig.fontSize,
+    lineHeight: sizeConfig.lineHeight,
+    transition: animationsEnabled 
+      ? 'background-color var(--duration-fast) var(--animation-smooth), border-color var(--duration-fast) var(--animation-smooth)' 
+      : 'none',
+    position: 'relative',
   };
 
-  // Size-specific styles
-  const sizeStyles = (() => {
-    switch (size) {
-      case 'sm':
+  // Variant styles
+  const variantStyles = (() => {
+    switch (variant) {
+      case 'solid':
         return {
-          padding: '4px 8px',
-          fontSize: '12px',
-          lineHeight: '1.4',
+          backgroundColor: colors.main,
+          borderColor: colors.main,
+          color: colors.foreground,
         };
-      case 'lg':
+      case 'ghost':
         return {
-          padding: '8px 16px',
-          fontSize: '14px',
-          lineHeight: '1.5',
+          backgroundColor: colors.background,
+          borderColor: 'transparent',
+          color: colors.main,
         };
-      case 'md':
+      case 'outline':
       default:
         return {
-          padding: '6px 12px',
-          fontSize: '13px',
-          lineHeight: '1.4',
+          backgroundColor: cssVars.background,
+          borderColor: colors.border || cssVars.border,
+          color: cssVars.foreground,
+          borderLeftWidth: '4px',
+          borderLeftColor: colors.main,
         };
     }
   })();
 
-  // Variant-specific styles
+  // Disabled styles
+  if (disabled) {
+    baseStyles.opacity = 0.6;
+    baseStyles.cursor = 'not-allowed';
+  }
+
+  return {
+    ...baseStyles,
+    ...variantStyles,
+  };
+};
+
+// Icon styles
+export const getIconStyles = (
+  size: NotificationSize,
+  color: NotificationColor,
+  variant: NotificationVariant,
+  cssVars: any
+): React.CSSProperties => {
+  const sizeConfig = getSizeConfig(size);
+  
+  return {
+    fontSize: sizeConfig.iconSize,
+    flexShrink: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: '2px',
+    color: variant === 'solid' ? 'inherit' : 'currentColor',
+  };
+};
+
+// Content area styles
+export const getContentStyles = (): React.CSSProperties => ({
+  flex: 1,
+  minWidth: 0,
+  display: 'flex',
+  flexDirection: 'column',
+});
+
+// Title styles
+export const getTitleStyles = (
+  size: NotificationSize,
+  cssVars: any
+): React.CSSProperties => {
+  const sizeConfig = getSizeConfig(size);
+  
+  return {
+    fontSize: sizeConfig.titleSize,
+    fontWeight: 600,
+    margin: 0,
+    color: 'inherit',
+    lineHeight: 1.4,
+  };
+};
+
+// Description styles
+export const getDescriptionStyles = (
+  size: NotificationSize,
+  cssVars: any
+): React.CSSProperties => {
+  const sizeConfig = getSizeConfig(size);
+  
+  return {
+    fontSize: sizeConfig.descriptionSize,
+    margin: '4px 0 0 0',
+    opacity: 0.8,
+    color: 'inherit',
+    lineHeight: 1.4,
+  };
+};
+
+// Actions container styles
+export const getActionsStyles = (size: NotificationSize): React.CSSProperties => {
+  return {
+    display: 'flex',
+    gap: '8px',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    marginTop: '12px',
+  };
+};
+
+// Action button styles
+export const getActionButtonStyles = (
+  variant: NotificationVariant,
+  size: NotificationSize,
+  disabled: boolean,
+  animationsEnabled: boolean,
+  cssVars: any
+): React.CSSProperties => {
+  const sizeConfig = getSizeConfig(size);
+
+  const baseStyles: React.CSSProperties = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: sizeConfig.buttonPadding,
+    fontSize: sizeConfig.buttonFontSize,
+    fontWeight: 500,
+    border: '1px solid',
+    borderRadius: '8px',
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    textDecoration: 'none',
+    transition: animationsEnabled 
+      ? 'all var(--duration-fast) var(--animation-smooth)' 
+      : 'none',
+  };
+
   const variantStyles = (() => {
     switch (variant) {
-      case 'primary':
+      case 'solid':
         return {
-          backgroundColor: cssVars.primary,
-          borderColor: cssVars.primary,
-          color: cssVars.primaryForeground,
+          backgroundColor: cssVars.background,
+          borderColor: cssVars.border,
+          color: cssVars.foreground,
+          '&:hover': !disabled ? {
+            backgroundColor: cssVars.muted,
+          } : {},
         };
-      case 'secondary':
+      case 'ghost':
         return {
-          backgroundColor: cssVars.secondary,
-          borderColor: cssVars.secondary,
-          color: cssVars.secondaryForeground,
+          backgroundColor: 'transparent',
+          borderColor: 'transparent',
+          color: 'inherit',
+          '&:hover': !disabled ? {
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          } : {},
         };
-      case 'default':
+      case 'outline':
       default:
         return {
           backgroundColor: 'transparent',
           borderColor: 'currentColor',
           color: 'inherit',
+          '&:hover': !disabled ? {
+            backgroundColor: 'currentColor',
+            opacity: 0.1,
+          } : {},
         };
     }
   })();
 
+  if (disabled) {
+    baseStyles.opacity = 0.5;
+  }
+
   return {
     ...baseStyles,
-    ...sizeStyles,
     ...variantStyles,
   };
+};
+
+// Dismiss button styles
+export const getDismissButtonStyles = (
+  size: NotificationSize,
+  disabled: boolean,
+  animationsEnabled: boolean,
+  cssVars: any
+): React.CSSProperties => {
+  const sizeConfig = getSizeConfig(size);
+
+  return {
+    position: 'absolute',
+    top: '12px',
+    right: '12px',
+    width: sizeConfig.dismissButtonSize,
+    height: sizeConfig.dismissButtonSize,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'none',
+    border: 'none',
+    borderRadius: '50%',
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    opacity: disabled ? 0.3 : 0.6,
+    color: 'inherit',
+    fontSize: sizeConfig.dismissIconSize,
+    transition: animationsEnabled 
+      ? 'opacity var(--duration-fast) var(--animation-smooth), background-color var(--duration-fast) var(--animation-smooth)' 
+      : 'none',
+    '&:hover': !disabled ? {
+      opacity: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    } : {},
+  };
+};
+
+// Progress bar styles (for auto-dismiss)
+export const getProgressBarStyles = (
+  progress: number,
+  color: NotificationColor,
+  customColor: string | undefined,
+  cssVars: any
+): React.CSSProperties => {
+  const colors = getColorVariables(color, customColor, cssVars);
+  
+  return {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    height: '3px',
+    width: `${progress}%`,
+    backgroundColor: colors.main,
+    borderRadius: '0 0 12px 0',
+    transition: 'width var(--duration-smooth) linear',
+  };
+};
+
+// Toast animation styles
+export const getToastAnimationStyles = (
+  position: string,
+  isEntering: boolean,
+  animationsEnabled: boolean
+): React.CSSProperties => {
+  if (!animationsEnabled) return {};
+
+  const baseStyles: React.CSSProperties = {
+    transition: 'all var(--duration-fast) var(--animation-smooth)',
+  };
+
+  if (position.includes('right')) {
+    return {
+      ...baseStyles,
+      transform: isEntering ? 'translateX(0)' : 'translateX(100%)',
+    };
+  }
+
+  if (position.includes('left')) {
+    return {
+      ...baseStyles,
+      transform: isEntering ? 'translateX(0)' : 'translateX(-100%)',
+    };
+  }
+
+  if (position.includes('top')) {
+    return {
+      ...baseStyles,
+      transform: isEntering ? 'translateY(0)' : 'translateY(-100%)',
+    };
+  }
+
+  if (position.includes('bottom')) {
+    return {
+      ...baseStyles,
+      transform: isEntering ? 'translateY(0)' : 'translateY(100%)',
+    };
+  }
+
+  return baseStyles;
 };

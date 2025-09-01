@@ -1,14 +1,33 @@
 import React from 'react';
 
-export type SearchSize = 'sm' | 'md' | 'lg';
-export type SearchVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive';
+export type SearchSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export type SearchColor = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'custom';
+export type SearchVariant = 'solid' | 'ghost' | 'outline';
+export type SearchShape = 'sharp' | 'round' | 'pill';
 
 export interface SearchProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'onChange'> {
+  /**
+   * Color scheme of the search input
+   * @default 'primary'
+   */
+  color?: SearchColor;
+  
+  /**
+   * Custom color when color is set to 'custom'
+   */
+  customColor?: string;
+  
   /**
    * Visual style variant of the search input
    * @default 'outline'
    */
   variant?: SearchVariant;
+  
+  /**
+   * Shape of the search input
+   * @default 'round'
+   */
+  shape?: SearchShape;
   
   /**
    * Size of the search input

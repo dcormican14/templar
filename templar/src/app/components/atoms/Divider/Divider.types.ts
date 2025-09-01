@@ -1,14 +1,19 @@
-export type DividerVariant = 'primary' | 'secondary' | 'warning' | 'destructive' | 'success' | 'default' | 'inverted';
 export type DividerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export type DividerColor = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'muted' | 'custom';
 export type DividerOrientation = 'horizontal' | 'vertical';
 export type DividerSpacing = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 export interface DividerProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
-   * Visual style variant of the divider
-   * @default 'default'
+   * Color of the divider
+   * @default 'muted'
    */
-  variant?: DividerVariant;
+  color?: DividerColor;
+  
+  /**
+   * Custom color when color is set to 'custom'
+   */
+  customColor?: string;
   
   /**
    * Thickness/size of the divider line
