@@ -1,2 +1,2 @@
 export { CodeBlock } from './CodeBlock';
-export type { CodeBlockProps, CodeBlockVariant, CodeBlockSize } from './CodeBlock.types';
+export type { CodeBlockProps, CodeBlockColor, CodeBlockVariant, CodeBlockSize, CodeBlockShape } from './CodeBlock.types';

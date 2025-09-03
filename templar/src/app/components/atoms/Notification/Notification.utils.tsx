@@ -1,9 +1,9 @@
 import React from 'react';
 import { Icon } from '../Icon';
-import type { NotificationType, NotificationSize } from './Notification.types';
+import type { NotificationColor, NotificationSize } from './Notification.types';
 
-export const getTypeIcon = (type: NotificationType): string => {
-  switch (type) {
+export const getTypeIcon = (color: NotificationColor): string => {
+  switch (color) {
     case 'primary':
       return 'InfoCircle';
     case 'secondary':
@@ -14,9 +14,9 @@ export const getTypeIcon = (type: NotificationType): string => {
       return 'XmarkCircle';
     case 'success':
       return 'CheckCircle';
-    case 'inverted':
-      return 'Bell';
-    case 'default':
+    case 'info':
+      return 'InfoCircle';
+    case 'custom':
     default:
       return 'Bell';
   }
@@ -34,8 +34,8 @@ export const getIconSize = (notificationSize: NotificationSize): 'xs' | 'sm' | '
   }
 };
 
-export const getTypeColor = (type: NotificationType, cssVars: any): string => {
-  switch (type) {
+export const getTypeColor = (color: NotificationColor, cssVars: any): string => {
+  switch (color) {
     case 'primary':
       return cssVars.primary;
     case 'secondary':
@@ -46,16 +46,16 @@ export const getTypeColor = (type: NotificationType, cssVars: any): string => {
       return cssVars.destructive || cssVars.error;
     case 'success':
       return cssVars.success;
-    case 'inverted':
-      return cssVars.background;
-    case 'default':
+    case 'info':
+      return cssVars.info;
+    case 'custom':
     default:
       return cssVars.foreground;
   }
 };
 
 export const createTypeIcon = (
-  type: NotificationType,
+  color: NotificationColor,
   size: NotificationSize,
   cssVars: any,
   customIcon?: React.ReactNode
@@ -64,9 +64,9 @@ export const createTypeIcon = (
     return <span>{customIcon}</span>;
   }
 
-  const iconName = getTypeIcon(type);
+  const iconName = getTypeIcon(color);
   const iconSize = getIconSize(size);
-  const iconColor = getTypeColor(type, cssVars);
+  const iconColor = getTypeColor(color, cssVars);
 
   return (
     <Icon 
@@ -123,11 +123,11 @@ export const formatDuration = (duration: number): string => {
 };
 
 export const getAriaLabel = (
-  type: NotificationType,
+  color: NotificationColor,
   title: string,
   description?: string
 ): string => {
-  const typeLabel = type.charAt(0).toUpperCase() + type.slice(1);
+  const typeLabel = color.charAt(0).toUpperCase() + color.slice(1);
   const baseLabel = `${typeLabel} notification: ${title}`;
   
   if (description) {

@@ -1,60 +1,27 @@
 import React from 'react';
+import type { 
+  WithContainerProps, 
+  UniversalSize, 
+  UniversalColor, 
+  UniversalVariant, 
+  UniversalShape 
+} from '../types';
 
-export type NotificationSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-export type NotificationColor = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'custom';
-export type NotificationVariant = 'solid' | 'ghost' | 'outline';
-export type NotificationShape = 'sharp' | 'round' | 'pill';
+// Component-specific type aliases (for backward compatibility)
+export type NotificationSize = UniversalSize;
+export type NotificationColor = UniversalColor;
+export type NotificationVariant = UniversalVariant;
+export type NotificationShape = UniversalShape;
 
 export interface NotificationAction {
   label: string;
   onClick: () => void;
-  variant?: NotificationVariant;
+  variant?: UniversalVariant;
   disabled?: boolean;
 }
 
-export interface NotificationProps {
-  /**
-   * Color scheme of the notification
-   * @default 'primary'
-   */
-  color?: NotificationColor;
-  
-  /**
-   * Custom color when color is set to 'custom'
-   */
-  customColor?: string;
-  
-  /**
-   * Visual style variant of the notification
-   * @default 'outline'
-   */
-  variant?: NotificationVariant;
-  
-  /**
-   * Shape of the notification
-   * @default 'round'
-   */
-  shape?: NotificationShape;
-  
-  /**
-   * Size of the notification
-   * @default 'md'
-   */
-  size?: NotificationSize;
-  
-  /**
-   * Whether the notification is disabled
-   * @default false
-   */
-  disabled?: boolean;
-  
-  /**
-   * Whether to use rounded corners
-   * @default false
-   * @deprecated Use shape prop instead
-   */
-  rounded?: boolean;
-  
+// Component-specific props (not covered by universal props)
+export interface NotificationSpecificProps {
   /**
    * Main title/heading of the notification
    */
@@ -80,7 +47,7 @@ export interface NotificationProps {
   /**
    * Custom icon to display instead of the default color icon
    */
-  icon?: React.ReactNode;
+  customIcon?: React.ReactNode;
   
   /**
    * Optional action button(s)
@@ -105,44 +72,17 @@ export interface NotificationProps {
   showProgress?: boolean;
   
   /**
-   * Position of the notification for toast mode
+   * Toast position for notifications
    * @default 'top-right'
    */
-  position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top-center' | 'bottom-center';
+  toastPosition?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'top-center' | 'bottom-center';
   
   /**
-   * Whether to enable slide-in animation
-   * @default true
+   * @deprecated Use color prop instead. Legacy support for notification type
+   * Maps to: default -> primary, primary -> primary, success -> success, warning -> warning, destructive -> destructive, etc.
    */
-  animate?: boolean;
-  
-  /**
-   * Custom width for the notification
-   */
-  width?: string | number;
-  
-  /**
-   * Custom height for the notification
-   */
-  height?: string | number;
-  
-  /**
-   * Additional CSS class names
-   */
-  className?: string;
-  
-  /**
-   * Additional inline styles
-   */
-  style?: React.CSSProperties;
-  
-  /**
-   * Unique identifier for the notification
-   */
-  id?: string;
-  
-  /**
-   * Children content for custom notification content
-   */
-  children?: React.ReactNode;
+  type?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'inverted';
 }
+
+// Complete Notification props interface extending universal props
+export interface NotificationProps extends WithContainerProps<NotificationSpecificProps> {}

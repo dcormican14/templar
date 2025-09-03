@@ -1,26 +1,18 @@
-export type DividerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-export type DividerColor = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'muted' | 'custom';
-export type DividerOrientation = 'horizontal' | 'vertical';
-export type DividerSpacing = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+import React from 'react';
+import type { 
+  WithContainerProps, 
+  UniversalSize, 
+  UniversalColor 
+} from '../types';
 
-export interface DividerProps extends React.HTMLAttributes<HTMLDivElement> {
-  /**
-   * Color of the divider
-   * @default 'muted'
-   */
-  color?: DividerColor;
-  
-  /**
-   * Custom color when color is set to 'custom'
-   */
-  customColor?: string;
-  
-  /**
-   * Thickness/size of the divider line
-   * @default 'md'
-   */
-  size?: DividerSize;
-  
+// Component-specific type aliases (for backward compatibility)
+export type DividerColor = UniversalColor | 'muted';
+export type DividerSize = UniversalSize;
+export type DividerOrientation = 'horizontal' | 'vertical';
+export type DividerSpacing = 'none' | UniversalSize;
+
+// Component-specific props (not covered by universal props)
+export interface DividerSpecificProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * Orientation of the divider
    * @default 'horizontal'
@@ -32,12 +24,6 @@ export interface DividerProps extends React.HTMLAttributes<HTMLDivElement> {
    * @default 'md'
    */
   spacing?: DividerSpacing;
-  
-  /**
-   * Whether the divider should use rounded ends
-   * @default false
-   */
-  rounded?: boolean;
   
   /**
    * Whether the divider should take full width/height
@@ -74,3 +60,6 @@ export interface DividerProps extends React.HTMLAttributes<HTMLDivElement> {
    */
   dotted?: boolean;
 }
+
+// Complete Divider props interface extending universal props
+export interface DividerProps extends WithContainerProps<DividerSpecificProps> {}

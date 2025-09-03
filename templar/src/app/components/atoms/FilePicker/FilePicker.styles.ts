@@ -13,7 +13,7 @@ export const getColorVariables = (color: FilePickerColor, customColor: string | 
     };
   }
 
-  const colorMap = {
+  const colorMap: Record<string, any> = {
     primary: {
       main: cssVars.primary,
       background: cssVars.primaryBackground,
@@ -385,7 +385,6 @@ export const getFileInfoStyles = (): React.CSSProperties => ({
 export const getFileNameStyles = (cssVars: any): React.CSSProperties => ({
   fontWeight: 500,
   color: 'currentColor',
-  truncate: true,
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   whiteSpace: 'nowrap',
@@ -429,10 +428,7 @@ export const getRemoveButtonStyles = (
       : 'none',
     fontSize: '12px',
     padding: 0,
-    '&:hover': !disabled ? {
-      backgroundColor: cssVars.destructive,
-      color: cssVars.destructiveForeground,
-    } : {},
+    // Hover styles handled via event handlers
   };
 };
 
@@ -466,16 +462,6 @@ export const getProgressBarStyles = (
     overflow: 'hidden',
     marginTop: '8px',
     position: 'relative',
-    '::after': {
-      content: '""',
-      position: 'absolute',
-      left: 0,
-      top: 0,
-      height: '100%',
-      width: `${progress}%`,
-      backgroundColor: colors.main,
-      borderRadius: '2px',
-      transition: 'width var(--duration-smooth) var(--animation-smooth)',
-    },
+    // ::after pseudo-element styles handled separately
   };
 };

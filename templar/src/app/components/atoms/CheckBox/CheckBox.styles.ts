@@ -13,7 +13,7 @@ export const getColorVariables = (color: CheckBoxColor, customColor: string | un
     };
   }
 
-  const colorMap = {
+  const colorMap: Record<string, any> = {
     primary: {
       main: cssVars.primary,
       background: cssVars.primaryBackground,

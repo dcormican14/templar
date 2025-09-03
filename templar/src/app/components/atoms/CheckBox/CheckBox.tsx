@@ -2,6 +2,7 @@
 
 import React, { forwardRef, useMemo, useCallback, useEffect, useRef, useState } from 'react';
 import { useCSSVariables, useSettings } from '../../../providers';
+import { extractFormProps, UNIVERSAL_DEFAULTS } from '../types';
 import type { CheckBoxProps } from './CheckBox.types';
 import {
   getVariantStyles,
@@ -16,27 +17,41 @@ import {
 } from './CheckBox.styles';
 import { createCheckIcon, getIconSize, handleKeyDown, getIconColor } from './CheckBox.utils';
 
-export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>(
-  ({
-    size = 'md',
-    color = 'primary',
+export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>((allProps, ref) => {
+  // Extract CheckBox-specific onChange first
+  const { onChange, ...propsWithoutOnChange } = allProps;
+  
+  // Extract form props and component-specific props
+  const [formProps, componentProps] = extractFormProps(propsWithoutOnChange);
+  
+  // Destructure form props with defaults
+  const {
+    color = UNIVERSAL_DEFAULTS.color,
     customColor,
-    shape = 'round',
+    size = UNIVERSAL_DEFAULTS.size,
+    shape = UNIVERSAL_DEFAULTS.shape,
+    disabled = UNIVERSAL_DEFAULTS.disabled,
+    error,
+    label,
+    helperText,
+    className,
+    style,
+    id,
+    'data-testid': dataTestId,
+    animate = UNIVERSAL_DEFAULTS.animate,
+    rounded, // Legacy support
+    onKeyDown,
+  } = formProps;
+  
+  // Destructure component-specific props
+  const {
     checked,
     defaultChecked = false,
     indeterminate = false,
-    disabled = false,
-    error = false,
-    label,
     description,
-    rounded, // Legacy support
     contentToggleable = true,
-    onChange,
-    className,
-    style,
-    onKeyDown,
-    ...props
-  }, ref) => {
+    ...restProps
+  } = componentProps;
     // Determine if component is controlled or uncontrolled
     const isControlled = checked !== undefined;
     
@@ -52,7 +67,7 @@ export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>(
     const inputRef = (ref as React.RefObject<HTMLInputElement>) || internalRef;
 
     // Computed values
-    const animationsEnabled = settings.appearance.animations;
+    const animationsEnabled = (settings.appearance.animations ?? true) && animate;
     const iconSize = getIconSize(size);
 
     // Set indeterminate state
@@ -97,13 +112,13 @@ export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>(
       customColor,
       cssVars,
       checkedValue || indeterminate,
-      error
+      Boolean(error)
     ), [color, customColor, cssVars, checkedValue, indeterminate, error]);
 
     const sizeStyles = useMemo(() => getSizeStyles(size), [size]);
     const inputStyles = useMemo(() => getInputStyles(), []);
-    const labelStyles = useMemo(() => label ? getLabelStyles(cssVars, size, disabled, contentToggleable) : {}, [cssVars, size, disabled, contentToggleable, label]);
-    const descriptionStyles = useMemo(() => description ? getDescriptionStyles(cssVars, size, disabled, contentToggleable) : {}, [cssVars, size, disabled, contentToggleable, description]);
+    const labelStyles = useMemo(() => label ? getLabelStyles(cssVars, size, Boolean(disabled), Boolean(contentToggleable)) : {}, [cssVars, size, disabled, contentToggleable, label]);
+    const descriptionStyles = useMemo(() => description ? getDescriptionStyles(cssVars, size, Boolean(disabled), Boolean(contentToggleable)) : {}, [cssVars, size, disabled, contentToggleable, description]);
     const wrapperStyles = useMemo(() => getWrapperStyles(), []);
     const checkboxWrapperStyles = useMemo(() => getCheckboxWrapperStyles(), []);
 
@@ -116,7 +131,7 @@ export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>(
 
     // Focus state
     const [focused, setFocused] = React.useState(false);
-    const focusStyles = focused ? getFocusStyles(color, customColor, cssVars, error) : {};
+    const focusStyles = focused ? getFocusStyles(color, customColor, cssVars, Boolean(error)) : {};
 
     const finalCheckboxStyles = {
       ...combinedCheckboxStyles,
@@ -132,6 +147,7 @@ export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>(
             <input
               ref={inputRef}
               type="checkbox"
+              id={id}
               checked={checkedValue}
               disabled={disabled}
               onChange={handleChange}
@@ -139,25 +155,26 @@ export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>(
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
               style={inputStyles}
+              data-testid={dataTestId}
               aria-checked={indeterminate ? 'mixed' : checkedValue}
-              aria-describedby={description ? `${props.id}-description` : undefined}
-              {...props}
+              aria-describedby={description || helperText ? `${id}-description` : undefined}
+              {...restProps}
             />
             
             {/* Check icon */}
             {createCheckIcon(
               checkedValue,
               indeterminate,
-              error,
+              Boolean(error),
               iconSize,
-              getIconColor(color, customColor, error, checkedValue, cssVars)
+              getIconColor(color, customColor, Boolean(error), checkedValue, cssVars)
             )}
           </div>
 
           {/* Label */}
           {label && (
             <label 
-              htmlFor={contentToggleable ? props.id : undefined}
+              htmlFor={contentToggleable ? id : undefined}
               style={labelStyles}
             >
               {label}
@@ -165,10 +182,10 @@ export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>(
           )}
         </div>
 
-        {/* Description */}
-        {description && (
+        {/* Description or Helper Text */}
+        {(description || helperText) && (
           <div 
-            id={`${props.id}-description`}
+            id={`${id}-description`}
             style={descriptionStyles}
             onClick={contentToggleable ? () => {
               if (!disabled && inputRef.current) {
@@ -176,7 +193,7 @@ export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>(
               }
             } : undefined}
           >
-            {description}
+            {description || helperText}
           </div>
         )}
       </div>

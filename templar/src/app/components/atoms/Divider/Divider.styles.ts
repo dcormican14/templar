@@ -1,8 +1,60 @@
 import React from 'react';
-import type { DividerVariant, DividerSize, DividerOrientation, DividerSpacing } from './Divider.types';
+import type { DividerColor, DividerSize, DividerOrientation, DividerSpacing } from './Divider.types';
+
+// Get color variables based on color prop
+export const getColorVariables = (color: DividerColor, customColor: string | undefined, cssVars: any) => {
+  if (color === 'custom' && customColor) {
+    return {
+      main: customColor,
+      foreground: customColor,
+      border: customColor,
+    };
+  }
+
+  const colorMap: Record<string, any> = {
+    primary: {
+      main: cssVars.primary,
+      foreground: cssVars.primary,
+      border: cssVars.primary,
+    },
+    secondary: {
+      main: cssVars.secondary,
+      foreground: cssVars.secondary,
+      border: cssVars.secondary,
+    },
+    success: {
+      main: cssVars.success,
+      foreground: cssVars.success,
+      border: cssVars.success,
+    },
+    warning: {
+      main: cssVars.warning,
+      foreground: cssVars.warning,
+      border: cssVars.warning,
+    },
+    destructive: {
+      main: cssVars.destructive,
+      foreground: cssVars.destructive,
+      border: cssVars.destructive,
+    },
+    info: {
+      main: cssVars.info,
+      foreground: cssVars.info,
+      border: cssVars.info,
+    },
+    muted: {
+      main: cssVars.border,
+      foreground: cssVars.border,
+      border: cssVars.border,
+    },
+  };
+
+  return colorMap[color] || colorMap.muted;
+};
 
 export const getVariantStyles = (
-  variant: DividerVariant, 
+  color: DividerColor, 
+  customColor: string | undefined,
   cssVars: any, 
   useBorder: boolean = false,
   orientation: DividerOrientation = 'horizontal',
@@ -10,26 +62,8 @@ export const getVariantStyles = (
   dotted: boolean = false,
   size: DividerSize = 'md'
 ) => {
-  const colorValue = (() => {
-    switch (variant) {
-      case 'primary':
-        return cssVars.primary;
-      case 'secondary':
-        return cssVars.secondary;
-      case 'warning':
-        return cssVars.warning;
-      case 'destructive':
-        return cssVars.destructive || cssVars.error;
-      case 'success':
-        return cssVars.success;
-      case 'default':
-        return cssVars.border;
-      case 'inverted':
-        return cssVars.foreground;
-      default:
-        return cssVars.border;
-    }
-  })();
+  const colors = getColorVariables(color, customColor, cssVars);
+  const colorValue = colors.main;
 
   const sizeMap = {
     xs: 1,

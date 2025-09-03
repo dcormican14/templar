@@ -1,5 +1,6 @@
 import React from 'react';
-import type { CardColor, CardVariant, CardSize, CardShape, CardPadding } from './Card.types';
+import type { CardColor, CardVariant, CardSize, CardShape } from './Card.types';
+import type { UniversalSize } from '../types';
 
 // Get color variables based on color prop
 export const getColorVariables = (color: CardColor, customColor: string | undefined, cssVars: any) => {
@@ -13,7 +14,7 @@ export const getColorVariables = (color: CardColor, customColor: string | undefi
     };
   }
 
-  const colorMap = {
+  const colorMap: Record<string, any> = {
     primary: {
       main: cssVars.primary,
       background: cssVars.primaryBackground,
@@ -56,16 +57,15 @@ export const getColorVariables = (color: CardColor, customColor: string | undefi
       hover: cssVars.infoHover,
       border: cssVars.infoBorder,
     },
-    default: {
-      main: cssVars.card,
-      background: cssVars.card,
-      foreground: cssVars.cardForeground,
-      hover: cssVars.backgroundHover,
-      border: cssVars.border,
-    },
   };
 
-  return colorMap[color] || colorMap.default;
+  return colorMap[color] || {
+    main: cssVars.card,
+    background: cssVars.card,
+    foreground: cssVars.cardForeground,
+    hover: cssVars.backgroundHover,
+    border: cssVars.border,
+  };
 };
 
 export const getVariantStyles = (
@@ -125,7 +125,7 @@ export const getSizeStyles = (size: CardSize): React.CSSProperties => {
   return sizeMap[size];
 };
 
-export const getPaddingStyles = (padding: CardPadding): React.CSSProperties => {
+export const getPaddingStyles = (padding: UniversalSize | 'none'): React.CSSProperties => {
   const paddingMap = {
     none: { padding: '0px' },
     xs: { padding: '4px' },

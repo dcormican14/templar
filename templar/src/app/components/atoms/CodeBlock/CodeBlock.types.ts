@@ -1,38 +1,20 @@
-export type CodeBlockSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-export type CodeBlockColor = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'custom';
-export type CodeBlockVariant = 'solid' | 'ghost' | 'outline';
-export type CodeBlockShape = 'sharp' | 'round' | 'pill';
+import React from 'react';
+import type { 
+  WithContainerProps, 
+  UniversalSize, 
+  UniversalColor, 
+  UniversalVariant, 
+  UniversalShape 
+} from '../types';
 
-export interface CodeBlockProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onCopy'> {
-  /**
-   * Color scheme of the code block
-   * @default 'primary'
-   */
-  color?: CodeBlockColor;
-  
-  /**
-   * Custom color when color is set to 'custom'
-   */
-  customColor?: string;
-  
-  /**
-   * Visual style variant of the code block
-   * @default 'outline'
-   */
-  variant?: CodeBlockVariant;
-  
-  /**
-   * Shape of the code block
-   * @default 'round'
-   */
-  shape?: CodeBlockShape;
-  
-  /**
-   * Size of the code block
-   * @default 'md'
-   */
-  size?: CodeBlockSize;
-  
+// Component-specific type aliases (for backward compatibility)
+export type CodeBlockColor = UniversalColor;
+export type CodeBlockVariant = UniversalVariant;
+export type CodeBlockSize = UniversalSize;
+export type CodeBlockShape = UniversalShape;
+
+// Component-specific props (not covered by universal props)
+export interface CodeBlockSpecificProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onCopy'> {
   /**
    * Programming language for syntax highlighting
    */
@@ -45,13 +27,6 @@ export interface CodeBlockProps extends Omit<React.HTMLAttributes<HTMLElement>, 
   copyable?: boolean;
   
   /**
-   * Whether to use rounded corners
-   * @default false
-   * @deprecated Use shape prop instead
-   */
-  rounded?: boolean;
-  
-  /**
    * Whether to show line numbers
    * @default false
    */
@@ -61,11 +36,6 @@ export interface CodeBlockProps extends Omit<React.HTMLAttributes<HTMLElement>, 
    * Line numbers to highlight
    */
   highlight?: number | number[];
-  
-  /**
-   * Maximum height before scrolling
-   */
-  maxHeight?: string;
   
   /**
    * Whether to enable syntax highlighting
@@ -83,3 +53,6 @@ export interface CodeBlockProps extends Omit<React.HTMLAttributes<HTMLElement>, 
    */
   children: string | React.ReactNode;
 }
+
+// Complete CodeBlock props interface extending universal props
+export interface CodeBlockProps extends WithContainerProps<CodeBlockSpecificProps> {}

@@ -2,6 +2,7 @@
 
 import React, { forwardRef, useMemo, useState, useCallback } from 'react';
 import { useCSSVariables, useSettings, useToast } from '../../../providers';
+import { extractContainerProps, UNIVERSAL_DEFAULTS } from '../types';
 import type { CodeBlockProps } from './CodeBlock.types';
 import { 
   getVariantStyles, 
@@ -20,23 +21,45 @@ import {
 } from './CodeBlock.utils';
 import { highlightSyntax, createSyntaxTheme } from './CodeBlock.syntax';
 
-export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>(
-  ({ 
-    variant = 'default',
-    size = 'md',
-    language,
-    copyable = false,
-    rounded = false,
-    lineNumbers = false,
-    highlight,
-    maxHeight,
-    syntaxHighlighting = true,
-    onCopy,
-    children,
+export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>((allProps, ref) => {
+  // Extract container props and component-specific props
+  const [containerProps, componentProps] = extractContainerProps(allProps);
+  
+  // Destructure container props with defaults
+  const {
+    color = UNIVERSAL_DEFAULTS.color,
+    customColor,
+    variant = UNIVERSAL_DEFAULTS.variant,
+    shape = UNIVERSAL_DEFAULTS.shape,
+    size = UNIVERSAL_DEFAULTS.size,
+    disabled = UNIVERSAL_DEFAULTS.disabled,
+    loading = UNIVERSAL_DEFAULTS.loading,
+    loadingKey,
+    width,
+    height,
     className,
     style,
-    ...props 
-  }, ref) => {
+    id,
+    'data-testid': dataTestId,
+    animate = UNIVERSAL_DEFAULTS.animate,
+    rounded, // Legacy support
+    children,
+    clickable,
+    onClick,
+    onAsyncClick,
+    maxHeight,
+  } = containerProps;
+  
+  // Destructure component-specific props
+  const {
+    language,
+    copyable = false,
+    lineNumbers = false,
+    highlight,
+    syntaxHighlighting = true,
+    onCopy,
+    ...restProps
+  } = componentProps;
     // Hooks
     const cssVars = useCSSVariables();
     const { settings } = useSettings();
@@ -46,8 +69,8 @@ export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>(
     const [copied, setCopied] = useState(false);
 
     // Computed values
-    const isInline = variant === 'inline';
-    const animationsEnabled = settings.appearance.animations;
+    const isInline = variant === 'ghost'; // Using 'ghost' as inline variant
+    const animationsEnabled = (settings.appearance.animations ?? true) && animate;
     const textContent = extractTextContent(children);
     const syntaxTheme = useMemo(() => createSyntaxTheme(cssVars), [cssVars]);
 
@@ -66,13 +89,13 @@ export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>(
 
     // Styles
     const baseStyles = useMemo(() => createBaseStyles(
-      Boolean(rounded),
-      isInline,
-      maxHeight,
-      animationsEnabled
-    ), [rounded, isInline, maxHeight, animationsEnabled]);
+      shape,
+      typeof maxHeight === 'string' ? maxHeight : maxHeight?.toString(),
+      animationsEnabled,
+      rounded // Legacy support
+    ), [shape, maxHeight, animationsEnabled, rounded]);
 
-    const variantStyles = useMemo(() => getVariantStyles(variant, cssVars), [variant, cssVars]);
+    const variantStyles = useMemo(() => getVariantStyles(color, customColor, variant, cssVars), [color, customColor, variant, cssVars]);
     const sizeStyles = useMemo(() => getSizeStyles(size), [size]);
 
     const combinedStyles: React.CSSProperties = {
@@ -81,11 +104,13 @@ export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>(
       ...variantStyles,
       paddingTop: language ? '24px' : sizeStyles.padding,
       paddingLeft: lineNumbers ? '52px' : '16px',
+      width,
+      height,
       ...style,
     };
 
-    const copyButtonStyles = useMemo(() => getCopyButtonStyles(cssVars, animationsEnabled), [cssVars, animationsEnabled]);
-    const lineNumberStyles = useMemo(() => getLineNumberStyles(cssVars), [cssVars]);
+    const copyButtonStyles = useMemo(() => getCopyButtonStyles(size, cssVars, animationsEnabled), [size, cssVars, animationsEnabled]);
+    const lineNumberStyles = useMemo(() => getLineNumberStyles(size, cssVars), [size, cssVars]);
 
     // Content rendering
     const renderContent = () => {
@@ -139,9 +164,11 @@ export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>(
       return (
         <code
           ref={ref as React.Ref<HTMLElement>}
+          id={id}
           style={variantStyles}
           className={className}
-          {...props}
+          data-testid={dataTestId}
+          {...restProps}
         >
           {children}
         </code>
@@ -178,9 +205,11 @@ export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>(
         {/* Main code block */}
         <pre
           ref={ref as React.Ref<HTMLPreElement>}
+          id={id}
           style={combinedStyles}
           className={className}
-          {...props}
+          data-testid={dataTestId}
+          {...restProps}
         >
           <code>
             {renderContent()}

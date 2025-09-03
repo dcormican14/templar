@@ -1,87 +1,27 @@
 import { ComponentProps, ReactNode } from 'react';
+import type { 
+  WithContainerProps, 
+  UniversalSize, 
+  UniversalColor, 
+  UniversalVariant, 
+  UniversalShape 
+} from '../types';
 
-export type ScrollbarSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-export type ScrollbarColor = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'custom';
-export type ScrollbarVariant = 'solid' | 'ghost' | 'outline';
-export type ScrollbarShape = 'sharp' | 'round' | 'pill';
+// Component-specific type aliases (for backward compatibility)
+export type ScrollbarSize = UniversalSize;
+export type ScrollbarColor = UniversalColor;
+export type ScrollbarVariant = UniversalVariant;
+export type ScrollbarShape = UniversalShape;
 export type ScrollbarOrientation = 'horizontal' | 'vertical' | 'both';
 
-export interface ScrollbarProps extends Omit<ComponentProps<'div'>, 'size'> {
-  /**
-   * Color scheme of the scrollbar
-   * @default 'primary'
-   */
-  color?: ScrollbarColor;
-  
-  /**
-   * Custom color when color is set to 'custom'
-   */
-  customColor?: string;
-  
-  /**
-   * Visual style variant of the scrollbar
-   * @default 'solid'
-   */
-  variant?: ScrollbarVariant;
-  
-  /**
-   * Shape of the scrollbar
-   * @default 'round'
-   */
-  shape?: ScrollbarShape;
-  
-  /**
-   * Size of the scrollbar
-   * @default 'md'
-   */
-  size?: ScrollbarSize;
-  
-  /**
-   * Whether the scrollbar is disabled
-   * @default false
-   */
-  disabled?: boolean;
+// Component-specific props (not covered by universal props)
+export interface ScrollbarSpecificProps extends Omit<ComponentProps<'div'>, 'size' | 'color' | 'style' | 'className' | 'id' | 'children' | 'onClick' | 'width' | 'height'> {
   
   /**
    * The orientation of the scrollbar
    * @default 'vertical'
    */
   orientation?: ScrollbarOrientation;
-  
-  /**
-   * The content to be scrolled
-   */
-  children?: ReactNode;
-  
-  /**
-   * The height of the scrollable container
-   */
-  height?: number | string;
-  
-  /**
-   * The width of the scrollable container
-   */
-  width?: number | string;
-  
-  /**
-   * The minimum height of the scrollable container
-   */
-  minHeight?: number | string;
-  
-  /**
-   * The minimum width of the scrollable container
-   */
-  minWidth?: number | string;
-  
-  /**
-   * The maximum height of the scrollable container
-   */
-  maxHeight?: number | string;
-  
-  /**
-   * The maximum width of the scrollable container
-   */
-  maxWidth?: number | string;
   
   /**
    * Whether to show the scrollbar always or only on hover
@@ -118,11 +58,6 @@ export interface ScrollbarProps extends Omit<ComponentProps<'div'>, 'size'> {
    * @default false
    */
   showIndicators?: boolean;
-  
-  /**
-   * Padding around the scrollable content
-   */
-  padding?: number | string;
   
   /**
    * Callback when scroll position changes
@@ -168,22 +103,10 @@ export interface ScrollbarProps extends Omit<ComponentProps<'div'>, 'size'> {
    * Custom scroll position (0-1 representing percentage of content)
    */
   scrollPosition?: { x?: number; y?: number };
-  
-  /**
-   * Additional CSS class names
-   */
-  className?: string;
-  
-  /**
-   * Additional inline styles
-   */
-  style?: React.CSSProperties;
-  
-  /**
-   * Unique identifier for the component
-   */
-  id?: string;
 }
+
+// Complete Scrollbar props interface extending universal props
+export interface ScrollbarProps extends WithContainerProps<ScrollbarSpecificProps> {}
 
 export interface ScrollbarRef {
   scrollTo: (position: { top?: number; left?: number; behavior?: 'auto' | 'smooth' }) => void;

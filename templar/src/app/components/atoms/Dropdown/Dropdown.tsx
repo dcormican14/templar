@@ -2,6 +2,7 @@
 
 import React, { forwardRef, useState, useRef, useMemo, useCallback, useEffect } from 'react';
 import { useCSSVariables, useSettings } from '../../../providers';
+import { extractFormProps, UNIVERSAL_DEFAULTS } from '../types';
 import { Icon } from '../Icon';
 import type { DropdownProps, DropdownOption, DropdownGroup } from './Dropdown.types';
 import {
@@ -40,46 +41,65 @@ import {
   getNextSelectableIndex,
 } from './Dropdown.utils';
 
-export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
-  ({
-    variant = 'outline',
-    size = 'md',
+export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref) => {
+  // Extract Dropdown-specific onChange and value first
+  const { onChange, value, ...propsWithoutSpecific } = allProps;
+  
+  // Extract form props and component-specific props
+  const [formProps, componentProps] = extractFormProps(propsWithoutSpecific);
+  
+  // Destructure form props with defaults
+  const {
+    color = UNIVERSAL_DEFAULTS.color,
+    customColor,
+    variant = 'outline', // Dropdown-specific default
+    shape = UNIVERSAL_DEFAULTS.shape,
+    size = UNIVERSAL_DEFAULTS.size,
+    disabled = UNIVERSAL_DEFAULTS.disabled,
+    loading = UNIVERSAL_DEFAULTS.loading,
+    loadingKey,
+    error,
+    label,
+    helperText,
+    placeholder = 'Select option...',
     width,
+    height,
+    className,
+    style,
+    id,
+    'data-testid': dataTestId,
+    animate = UNIVERSAL_DEFAULTS.animate,
+    rounded, // Legacy support
+  } = formProps;
+  
+  // Destructure component-specific props
+  const {
     position = 'bottom-start',
     options = [],
-    value,
-    onChange,
-    placeholder = 'Select option...',
     multiple = false,
-    disabled = false,
-    error = false,
     searchable = false,
     searchPlaceholder = 'Search...',
     filterFunction,
     closeOnSelect = true,
     maxHeight = '300px',
-    loading = false,
     trigger,
     portal = false,
     emptyMessage = 'No options available',
     noResultsMessage = 'No results found',
     open: controlledOpen,
     onOpenChange,
-    rounded = false,
     icon,
     showArrow = true,
     menuClassName,
     menuStyle,
     onClose,
     onOpen,
-    className,
-    style,
-    ...props
-  }, ref) => {
+    ...restProps
+  } = componentProps;
     // Hooks
     const cssVars = useCSSVariables();
     const { settings } = useSettings();
-    const animationsEnabled = settings.appearance.animations;
+    const animationsEnabled = (settings.appearance.animations ?? true) && animate;
 
     // State
     const [internalOpen, setInternalOpen] = useState(false);
@@ -199,16 +219,16 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
 
     // Styles
     const baseStyles = useMemo(() => 
-      createBaseStyles(size, rounded, animationsEnabled, width),
-      [size, rounded, animationsEnabled, width]
+      createBaseStyles(size, shape, animationsEnabled, width, rounded),
+      [size, shape, animationsEnabled, width, rounded]
     );
 
     const triggerStyles = useMemo(() => {
-      const baseStyles = getTriggerStyles(variant, size, disabled, error, isOpen, rounded, cssVars, animationsEnabled);
+      const baseStyles = getTriggerStyles(color, variant, size, shape, Boolean(disabled), Boolean(error), isOpen, customColor, cssVars, animationsEnabled, rounded);
       const shouldShowFocus = (isFocused || isOpen) && !disabled;
-      const focusStyles = shouldShowFocus ? getFocusStyles(cssVars, variant, error) : {};
+      const focusStyles = shouldShowFocus ? getFocusStyles(cssVars, variant, Boolean(error)) : {};
       return { ...baseStyles, ...focusStyles };
-    }, [variant, size, disabled, error, isOpen, rounded, cssVars, animationsEnabled, isFocused]);
+    }, [color, customColor, variant, size, disabled, error, isOpen, shape, rounded, cssVars, animationsEnabled, isFocused]);
 
     const arrowStyles = useMemo(() => 
       getArrowStyles(size, isOpen, animationsEnabled, cssVars, variant),
@@ -216,13 +236,13 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
     );
 
     const menuStyles = useMemo(() => 
-      getMenuStyles(position, maxHeight, rounded, cssVars, animationsEnabled),
-      [position, maxHeight, rounded, cssVars, animationsEnabled]
+      getMenuStyles(position, maxHeight, Boolean(rounded) || (shape === 'round'), cssVars, animationsEnabled),
+      [position, maxHeight, shape, rounded, cssVars, animationsEnabled]
     );
 
     const searchStyles = useMemo(() => 
-      getSearchStyles(size, rounded, cssVars, variant),
-      [size, rounded, cssVars, variant]
+      getSearchStyles(size, Boolean(rounded) || (shape === 'round'), cssVars, variant),
+      [size, shape, rounded, cssVars, variant]
     );
 
     const combinedStyles: React.CSSProperties = {
@@ -236,7 +256,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
     };
 
     // Accessibility props
-    const accessibilityProps = createAccessibilityProps(dropdownId, isOpen, highlightedIndex, error);
+    const accessibilityProps = createAccessibilityProps(dropdownId, isOpen, highlightedIndex, Boolean(error));
     const menuAccessibilityProps = createMenuAccessibilityProps(dropdownId);
 
     // Render trigger
@@ -271,13 +291,13 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
                   const option = flatOptions.find(opt => opt.value === val);
                   const label = typeof option?.label === 'string' ? option.label : val.toString();
                   return (
-                    <span key={val} style={getMultiValueStyles(size, rounded, cssVars, variant)}>
+                    <span key={val} style={getMultiValueStyles(size, Boolean(rounded) || (shape === 'round'), cssVars, variant)}>
                       {label}
                     </span>
                   );
                 })}
                 {value.length > 3 && (
-                  <span style={getMultiValueStyles(size, rounded, cssVars, variant)}>
+                  <span style={getMultiValueStyles(size, Boolean(rounded) || (shape === 'round'), cssVars, variant)}>
                     +{value.length - 3}
                   </span>
                 )}
@@ -417,8 +437,10 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>(
       <div
         ref={ref || containerRef}
         style={combinedStyles}
+        id={id}
         className={className}
-        {...props}
+        data-testid={dataTestId}
+        {...restProps}
       >
         {renderTrigger()}
         {renderMenu()}

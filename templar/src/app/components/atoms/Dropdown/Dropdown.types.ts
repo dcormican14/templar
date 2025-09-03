@@ -1,9 +1,17 @@
 import React from 'react';
+import type { 
+  WithFormProps, 
+  UniversalSize, 
+  UniversalColor, 
+  UniversalVariant, 
+  UniversalShape 
+} from '../types';
 
-export type DropdownSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-export type DropdownColor = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'custom';
-export type DropdownVariant = 'solid' | 'ghost' | 'outline';
-export type DropdownShape = 'sharp' | 'round' | 'pill';
+// Component-specific type aliases (for backward compatibility)
+export type DropdownColor = UniversalColor;
+export type DropdownVariant = UniversalVariant;
+export type DropdownSize = UniversalSize;
+export type DropdownShape = UniversalShape;
 export type DropdownPosition = 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end' | 'left' | 'right';
 
 export interface DropdownOption {
@@ -20,42 +28,8 @@ export interface DropdownGroup {
   options: DropdownOption[];
 }
 
-export interface DropdownProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
-  /**
-   * Color scheme of the dropdown
-   * @default 'primary'
-   */
-  color?: DropdownColor;
-  
-  /**
-   * Custom color when color is set to 'custom'
-   */
-  customColor?: string;
-  
-  /**
-   * Visual style variant of the dropdown
-   * @default 'outline'
-   */
-  variant?: DropdownVariant;
-  
-  /**
-   * Size of the dropdown
-   * @default 'md'
-   */
-  size?: DropdownSize;
-  
-  /**
-   * Shape of the dropdown corners
-   * @default 'round'
-   */
-  shape?: DropdownShape;
-  
-  /**
-   * Width of the dropdown
-   * @default '200px'
-   */
-  width?: string | number;
-  
+// Component-specific props (not covered by universal props)
+export interface DropdownSpecificProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
   /**
    * Position of the dropdown menu relative to trigger
    * @default 'bottom-start'
@@ -73,32 +47,10 @@ export interface DropdownProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   value?: string | number | (string | number)[];
   
   /**
-   * Callback when selection changes
-   */
-  onChange?: (value: string | number | (string | number)[]) => void;
-  
-  /**
-   * Placeholder text when no selection
-   */
-  placeholder?: string;
-  
-  /**
    * Whether multiple selection is allowed
    * @default false
    */
   multiple?: boolean;
-  
-  /**
-   * Whether the dropdown is disabled
-   * @default false
-   */
-  disabled?: boolean;
-  
-  /**
-   * Whether the dropdown is in an error state
-   * @default false
-   */
-  error?: boolean;
   
   /**
    * Whether to show search/filter input
@@ -128,12 +80,6 @@ export interface DropdownProps extends Omit<React.HTMLAttributes<HTMLDivElement>
    * @default '300px'
    */
   maxHeight?: string;
-  
-  /**
-   * Loading state
-   * @default false
-   */
-  loading?: boolean;
   
   /**
    * Custom trigger element
@@ -169,13 +115,6 @@ export interface DropdownProps extends Omit<React.HTMLAttributes<HTMLDivElement>
   onOpenChange?: (open: boolean) => void;
   
   /**
-   * Whether to use rounded corners
-   * @default false
-   * @deprecated Use shape prop instead
-   */
-  rounded?: boolean;
-  
-  /**
    * Custom icon for the dropdown trigger
    */
   icon?: React.ReactNode;
@@ -205,4 +144,12 @@ export interface DropdownProps extends Omit<React.HTMLAttributes<HTMLDivElement>
    * Callback when dropdown is about to open
    */
   onOpen?: () => void;
+}
+
+// Complete Dropdown props interface extending universal props
+export interface DropdownProps extends Omit<WithFormProps<DropdownSpecificProps>, 'onChange'> {
+  /**
+   * Callback when selection changes
+   */
+  onChange?: (value: string | number | (string | number)[]) => void;
 }

@@ -1,6 +1,7 @@
 import React, { forwardRef, useRef, useImperativeHandle } from 'react';
 import { Icon } from '../Icon';
-import { useCSSVariables, useAnimationSettings } from '../../../providers/RoundTable/hooks';
+import { useCSSVariables } from '@/app/providers';
+import { extractFormProps, UNIVERSAL_DEFAULTS } from '../types';
 import { FilePickerProps, FilePickerRef } from './FilePicker.types';
 import { 
   createFilePickerContainerStyles,
@@ -25,38 +26,51 @@ import {
   createFilePickerAccessibilityProps 
 } from './FilePicker.utils';
 
-export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>(({
-  color = 'primary',
-  customColor,
-  variant = 'outline',
-  shape = 'round',
-  size = 'md',
-  disabled = false,
-  error = false,
-  rounded, // Legacy support
-  accept,
-  multiple = false,
-  maxSize,
-  maxFiles,
-  uploadText,
-  subText,
-  helperText,
-  errorText,
-  placeholder = 'Drop files here or click to browse',
-  icon,
-  onFilesChange,
-  onError,
-  files,
-  showFileList = true,
-  width,
-  height,
-  className,
-  style,
-  id,
-  ...props
-}, ref) => {
+export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>((allProps, ref) => {
+  // Extract form props and component-specific props
+  const [formProps, componentProps] = extractFormProps(allProps);
+  
+  // Destructure form props with defaults
+  const {
+    color = UNIVERSAL_DEFAULTS.color,
+    customColor,
+    variant = UNIVERSAL_DEFAULTS.variant,
+    shape = UNIVERSAL_DEFAULTS.shape,
+    size = UNIVERSAL_DEFAULTS.size,
+    disabled = UNIVERSAL_DEFAULTS.disabled,
+    loading = UNIVERSAL_DEFAULTS.loading,
+    loadingKey,
+    width,
+    height,
+    className,
+    style,
+    id,
+    'data-testid': dataTestId,
+    animate = UNIVERSAL_DEFAULTS.animate,
+    rounded, // Legacy support
+    helperText,
+    errorText,
+    error,
+  } = formProps;
+  
+  // Destructure component-specific props
+  const {
+    accept,
+    multiple = false,
+    maxSize,
+    maxFiles,
+    uploadText,
+    subText,
+    icon,
+    onFilesChange,
+    onError,
+    files,
+    showFileList = true,
+    ...restProps
+  } = componentProps;
+  
   const cssVars = useCSSVariables();
-  const animationsEnabled = useAnimationSettings();
+  const animationsEnabled = animate;
   const [internalFiles, setInternalFiles] = React.useState<File[]>([]);
   const [internalError, setInternalError] = React.useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -172,6 +186,7 @@ export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>(({
         ...createFilePickerContainerStyles(shape, width, height, animationsEnabled, rounded),
         ...style
       }}
+      data-testid={dataTestId}
     >
       {/* Drop Zone */}
       <div
@@ -190,14 +205,14 @@ export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>(({
           animationsEnabled,
           cssVars
         )}
-        {...props}
+        {...restProps}
       >
         {/* Icon */}
         <div style={getIconStyles(size, cssVars)}>
           {icon || (
             <Icon 
               name="CloudUpload" 
-              size="inherit"
+              size="lg"
             />
           )}
         </div>
@@ -206,7 +221,7 @@ export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>(({
         <div style={getUploadTextStyles(size, cssVars)}>
           {isDragActive 
             ? 'Drop files here' 
-            : uploadText || placeholder || 'Drop files here or click to browse'
+            : uploadText || 'Drop files here or click to browse'
           }
         </div>
 
@@ -249,7 +264,7 @@ export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>(({
           role="alert"
           aria-live="polite"
         >
-          <Icon name="AlertCircle" size="inherit" style={{ marginRight: '6px' }} />
+          <Icon name="WarningCircle" size="sm" style={{ marginRight: '6px' }} />
           {currentError}
         </div>
       )}
@@ -273,7 +288,7 @@ export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>(({
               <div style={getFileInfoStyles()}>
                 <Icon 
                   name="Attachment" 
-                  size="inherit"
+                  size="sm"
                   style={{ 
                     marginRight: '8px',
                     flexShrink: 0
@@ -305,8 +320,8 @@ export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>(({
                 disabled={disabled}
               >
                 <Icon 
-                  name="Cancel" 
-                  size="inherit"
+                  name="Xmark" 
+                  size="xs"
                 />
               </button>
             </div>

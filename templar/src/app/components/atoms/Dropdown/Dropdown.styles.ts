@@ -13,7 +13,7 @@ export const getColorVariables = (color: DropdownColor, customColor: string | un
     };
   }
 
-  const colorMap = {
+  const colorMap: Record<string, any> = {
     primary: {
       main: cssVars.primary,
       background: cssVars.primaryBackground,
@@ -185,7 +185,7 @@ export const getTriggerStyles = (
   if (error) {
     return {
       ...baseStyles,
-      ...variantStyles(),
+      ...variantStyles,
       borderColor: cssVars.destructive,
       color: cssVars.destructive,
     };
@@ -193,7 +193,7 @@ export const getTriggerStyles = (
 
   return {
     ...baseStyles,
-    ...variantStyles(),
+    ...variantStyles,
   };
 };
 
@@ -208,20 +208,14 @@ export const getArrowStyles = (
   let arrowColor = cssVars.foreground; // default
   
   switch (variant) {
-    case 'primary':
-      arrowColor = cssVars.primaryForeground;
-      break;
-    case 'secondary':
-      arrowColor = cssVars.secondaryForeground;
+    case 'solid':
+      arrowColor = cssVars.foreground;
       break;
     case 'outline':
       arrowColor = cssVars.foreground;
       break;
     case 'ghost':
       arrowColor = cssVars.foreground;
-      break;
-    case 'destructive':
-      arrowColor = cssVars.errorForeground;
       break;
     default:
       arrowColor = cssVars.foreground;
@@ -351,27 +345,9 @@ export const getOptionStyles = (
     stateStyles.opacity = 0.5;
     stateStyles.cursor = 'not-allowed';
   } else if (selected) {
-    // Use variant-specific colors for selected state
-    switch (variant) {
-      case 'primary':
-        stateStyles.backgroundColor = cssVars.primary + '20';
-        stateStyles.color = cssVars.primary;
-        break;
-      case 'secondary':
-        stateStyles.backgroundColor = cssVars.secondary + '20';
-        stateStyles.color = cssVars.secondary;
-        break;
-      case 'destructive':
-        stateStyles.backgroundColor = cssVars.error + '20';
-        stateStyles.color = cssVars.error;
-        break;
-      case 'outline':
-      case 'ghost':
-      default:
-        stateStyles.backgroundColor = cssVars.primary + '20';
-        stateStyles.color = cssVars.primary;
-        break;
-    }
+    // Use primary color for selected state regardless of variant
+    stateStyles.backgroundColor = cssVars.primary + '20';
+    stateStyles.color = cssVars.primary;
     stateStyles.fontWeight = '500';
   } else if (highlighted) {
     stateStyles.backgroundColor = cssVars.muted || cssVars.secondary + '30';
@@ -390,36 +366,9 @@ export const getSearchStyles = (
   cssVars: any,
   variant: DropdownVariant = 'outline'
 ): React.CSSProperties => {
-  // Determine placeholder and text colors based on variant
-  let textColor = cssVars.foreground;
-  let placeholderColor = cssVars.mutedForeground;
-  
-  switch (variant) {
-    case 'primary':
-      textColor = cssVars.primaryForeground;
-      placeholderColor = cssVars.primaryForeground;
-      break;
-    case 'secondary':
-      textColor = cssVars.secondaryForeground;
-      placeholderColor = cssVars.secondaryForeground;
-      break;
-    case 'outline':
-      textColor = cssVars.foreground;
-      placeholderColor = cssVars.mutedForeground;
-      break;
-    case 'ghost':
-      textColor = cssVars.foreground;
-      placeholderColor = cssVars.mutedForeground;
-      break;
-    case 'destructive':
-      textColor = cssVars.errorForeground;
-      placeholderColor = cssVars.errorForeground;
-      break;
-    default:
-      textColor = cssVars.foreground;
-      placeholderColor = cssVars.mutedForeground;
-      break;
-  }
+  // Use standard foreground colors
+  const textColor = cssVars.foreground;
+  const placeholderColor = cssVars.mutedForeground;
 
   const baseStyles: React.CSSProperties = {
     width: '100%',
@@ -543,32 +492,8 @@ export const getGroupLabelStyles = (
 };
 
 export const getPlaceholderStyles = (cssVars: any, variant: DropdownVariant = 'outline'): React.CSSProperties => {
-  // Determine placeholder color based on variant
-  let placeholderColor = cssVars.mutedForeground; // default
-  
-  switch (variant) {
-    case 'primary':
-      placeholderColor = cssVars.primaryForeground;
-      break;
-    case 'secondary':
-      placeholderColor = cssVars.secondaryForeground;
-      break;
-    case 'destructive':
-      placeholderColor = cssVars.errorForeground;
-      break;
-    case 'outline':
-      placeholderColor = cssVars.mutedForeground;
-      break;
-    case 'ghost':
-      placeholderColor = cssVars.mutedForeground;
-      break;
-    default:
-      placeholderColor = cssVars.mutedForeground;
-      break;
-  }
-
   return {
-    color: placeholderColor,
+    color: cssVars.mutedForeground,
     opacity: 0.7,
   };
 };
@@ -595,33 +520,11 @@ export const getMultiValueStyles = (
     overflow: 'hidden',
   };
 
-  // Variant-specific colors for multi-value tags
-  const variantStyles = (() => {
-    switch (variant) {
-      case 'primary':
-        return {
-          backgroundColor: cssVars.primary + '20',
-          color: cssVars.primary,
-        };
-      case 'secondary':
-        return {
-          backgroundColor: cssVars.secondary + '20',
-          color: cssVars.secondary,
-        };
-      case 'destructive':
-        return {
-          backgroundColor: cssVars.error + '20',
-          color: cssVars.error,
-        };
-      case 'outline':
-      case 'ghost':
-      default:
-        return {
-          backgroundColor: cssVars.primary + '20',
-          color: cssVars.primary,
-        };
-    }
-  })();
+  // Use primary colors for multi-value tags
+  const variantStyles = {
+    backgroundColor: cssVars.primary + '20',
+    color: cssVars.primary,
+  };
 
   const sizeStyles = (() => {
     switch (size) {
@@ -659,24 +562,9 @@ export const getFocusStyles = (
   let outlineColor = cssVars.primary; // default
 
   if (error) {
-    outlineColor = cssVars.error;
+    outlineColor = cssVars.destructive;
   } else {
-    switch (variant) {
-      case 'primary':
-        outlineColor = cssVars.primary;
-        break;
-      case 'secondary':
-        outlineColor = cssVars.secondary;
-        break;
-      case 'destructive':
-        outlineColor = cssVars.error;
-        break;
-      case 'outline':
-      case 'ghost':
-      default:
-        outlineColor = cssVars.primary;
-        break;
-    }
+    outlineColor = cssVars.primary;
   }
 
   return {

@@ -5,17 +5,20 @@ import { useCSSVariables, useSettings } from '../../../providers';
 import { Button } from '../Button';
 import { Icon } from '../Icon';
 import { Divider } from '../Divider';
+import { extractContainerProps, UNIVERSAL_DEFAULTS } from '../types';
 import type { NotificationProps } from './Notification.types';
 import {
-  createBaseStyles,
-  getTypeStyles,
-  getIconContainerStyles,
+  createNotificationContainerStyles,
+  getNotificationStyles,
+  getIconStyles,
   getContentStyles,
   getTitleStyles,
   getDescriptionStyles,
   getActionsStyles,
   getDismissButtonStyles,
   getActionButtonStyles,
+  getSizeConfig,
+  getShapeStyles,
 } from './Notification.styles';
 import {
   createTypeIcon,
@@ -25,11 +28,35 @@ import {
   getAriaLabel,
 } from './Notification.utils';
 
-export const Notification = forwardRef<HTMLDivElement, NotificationProps>(
-  ({
+export const Notification = forwardRef<HTMLDivElement, NotificationProps>((allProps, ref) => {
+  // Extract container props and component-specific props
+  const [containerProps, componentProps] = extractContainerProps(allProps);
+  
+  // Destructure container props with defaults
+  const {
+    color = UNIVERSAL_DEFAULTS.color,
+    customColor,
+    variant = UNIVERSAL_DEFAULTS.variant,
+    shape = UNIVERSAL_DEFAULTS.shape,
+    size = UNIVERSAL_DEFAULTS.size,
+    disabled = UNIVERSAL_DEFAULTS.disabled,
+    loading = UNIVERSAL_DEFAULTS.loading,
+    loadingKey,
+    width,
+    height,
+    className,
+    style,
     id,
-    type = 'default',
-    size = 'md',
+    'data-testid': dataTestId,
+    animate = UNIVERSAL_DEFAULTS.animate,
+    rounded, // Legacy support
+    children,
+    onClick,
+    onAsyncClick,
+  } = containerProps;
+  
+  // Destructure component-specific props
+  const {
     title,
     description,
     dismissible = true,
@@ -38,16 +65,22 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(
     actions,
     onDismiss,
     duration,
-    rounded = false,
-    className,
-    style,
-    children,
-    ...props
-  }, ref) => {
-    // Hooks
-    const cssVars = useCSSVariables();
-    const { settings } = useSettings();
-    const animationsEnabled = settings.appearance.animations;
+    showProgress,
+    toastPosition,
+    type, // Legacy prop
+    ...restProps
+  } = componentProps;
+  
+  // Map legacy type prop to color if color is not explicitly set
+  const effectiveColor = type && allProps.color === undefined ? 
+    (type === 'default' ? 'primary' : 
+     type === 'inverted' ? 'secondary' : 
+     type) : color;
+
+  // Hooks
+  const cssVars = useCSSVariables();
+  const { settings } = useSettings();
+  const animationsEnabled = (settings.appearance.animations ?? true) && animate;
 
     // Generate ID if not provided
     const notificationId = useMemo(() => id || generateNotificationId(), [id]);
@@ -69,18 +102,18 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(
 
     // Styles
     const baseStyles = useMemo(() => 
-      createBaseStyles(size, rounded, animationsEnabled),
-      [size, rounded, animationsEnabled]
+      createNotificationContainerStyles(size, shape === 'pill' || Boolean(rounded), animationsEnabled),
+      [size, shape, rounded, animationsEnabled]
     );
 
-    const typeStyles = useMemo(() => 
-      getTypeStyles(type, cssVars),
-      [type, cssVars]
+    const notificationStyles = useMemo(() => 
+      getNotificationStyles(effectiveColor, customColor, variant, size, disabled, cssVars),
+      [effectiveColor, customColor, variant, size, disabled, cssVars]
     );
 
     const iconContainerStyles = useMemo(() => 
-      getIconContainerStyles(size),
-      [size]
+      getIconStyles(size, effectiveColor, cssVars),
+      [size, effectiveColor, cssVars]
     );
 
     const contentStyles = useMemo(() => 
@@ -110,24 +143,28 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(
 
     const combinedStyles: React.CSSProperties = {
       ...baseStyles,
-      ...typeStyles,
+      ...notificationStyles,
+      width,
+      height,
       ...style,
     };
 
     // Accessibility
-    const ariaLabel = getAriaLabel(type, title, description);
+    const ariaLabel = getAriaLabel(effectiveColor, title, description);
 
     return (
       <div
         ref={ref}
-        id={notificationId}
+        id={id || notificationId}
         role="alert"
         aria-label={ariaLabel}
         className={className}
         style={combinedStyles}
         onKeyDown={handleKeyDownInternal}
         tabIndex={dismissible ? 0 : undefined}
-        {...props}
+        data-testid={dataTestId}
+        onClick={onClick}
+        {...restProps}
       >
         {/* Top Row: Icon + Title (left) | Close Button (right) */}
         <div style={{ 
@@ -140,7 +177,7 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
             {showIcon && (
               <div style={iconContainerStyles}>
-                {createTypeIcon(type, size, cssVars, customIcon)}
+                {createTypeIcon(effectiveColor, size, cssVars, customIcon)}
               </div>
             )}
             <h4 style={titleStyles}>{title}</h4>
@@ -190,18 +227,17 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(
             {/* the color of the variation should match the color of the border 
             type DividerVariant = 'primary' | 'secondary' | 'warning' | 'destructive' | 'success' | 'outline'
             */}
-            <Divider variant={
-                type === 'primary' ? 'primary' :
-                type === 'secondary' ? 'secondary' :
-                type === 'warning' ? 'warning' :
-                type === 'destructive' ? 'destructive' :
-                type === 'success' ? 'success' :
-                type === 'inverted' ? 'inverted' :
-                type === 'default' ? 'inverted' :
-                'default'
+            <Divider color={
+                effectiveColor === 'primary' ? 'primary' :
+                effectiveColor === 'secondary' ? 'secondary' :
+                effectiveColor === 'warning' ? 'warning' :
+                effectiveColor === 'destructive' ? 'destructive' :
+                effectiveColor === 'success' ? 'success' :
+                effectiveColor === 'info' ? 'info' :
+                'primary'
               }
-              rounded
-              size='sm'
+              rounded={shape === 'pill' || Boolean(rounded)}
+              size="sm"
             />
           </div>
         )}
@@ -246,7 +282,7 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>(
                     key={index}
                     onClick={action.onClick}
                     style={getActionButtonStyles(
-                      action.variant || 'default',
+                      action.variant || 'outline',
                       size,
                       cssVars,
                       animationsEnabled

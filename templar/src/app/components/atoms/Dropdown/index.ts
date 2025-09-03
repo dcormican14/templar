@@ -1,5 +1,14 @@
 export { Dropdown } from './Dropdown';
-export type { DropdownProps, DropdownOption } from './Dropdown.types';
+export type { 
+  DropdownProps, 
+  DropdownOption, 
+  DropdownGroup,
+  DropdownColor, 
+  DropdownVariant, 
+  DropdownSize, 
+  DropdownShape,
+  DropdownPosition 
+} from './Dropdown.types';
 export { 
   createBaseStyles,
   getTriggerStyles,

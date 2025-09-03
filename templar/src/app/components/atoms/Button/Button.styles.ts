@@ -12,7 +12,7 @@ export const getColorVariables = (color: ButtonColor, customColor: string | unde
     };
   }
 
-  const colorMap = {
+  const colorMap: Record<string, any> = {
     primary: {
       main: cssVars.primary,
       background: cssVars.primaryBackground,

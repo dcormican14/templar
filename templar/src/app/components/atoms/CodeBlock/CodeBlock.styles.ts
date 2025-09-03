@@ -13,7 +13,7 @@ export const getColorVariables = (color: CodeBlockColor, customColor: string | u
     };
   }
 
-  const colorMap = {
+  const colorMap: Record<string, any> = {
     primary: {
       main: cssVars.primary,
       background: cssVars.primaryBackground,
@@ -274,10 +274,7 @@ export const getCopyButtonStyles = (
       : 'none',
     fontFamily: 'inherit',
     zIndex: 2,
-    '&:hover': {
-      backgroundColor: cssVars.muted,
-      color: cssVars.foreground,
-    }
+    // Note: Hover styles should be handled via event handlers in the component
   };
 };
 
@@ -296,7 +293,7 @@ export const getLineNumberStyles = (
     width: '44px',
     backgroundColor: cssVars.muted,
     borderRight: `1px solid ${cssVars.border}`,
-    padding: sizeConfig.padding.split(' ')[0] + ' 8px',
+    padding: (typeof sizeConfig.padding === 'string' ? sizeConfig.padding.split(' ')[0] : '12px') + ' 8px',
     fontSize: sizeConfig.fontSize,
     lineHeight: sizeConfig.lineHeight,
     color: cssVars.mutedForeground,

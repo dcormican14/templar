@@ -13,7 +13,7 @@ export const getColorVariables = (color: BadgeColor, customColor: string | undef
     };
   }
 
-  const colorMap = {
+  const colorMap: Record<string, any> = {
     primary: {
       main: cssVars.primary,
       background: cssVars.primaryBackground,
@@ -77,8 +77,9 @@ export const getShapeStyles = (shape: BadgeShape): React.CSSProperties => {
 
 export const getVariantStyles = (
   color: BadgeColor,
-  variant: BadgeVariant,
   customColor: string | undefined,
+  variant: BadgeVariant,
+  disabled: boolean,
   cssVars: any
 ) => {
   const colors = getColorVariables(color, customColor, cssVars);
@@ -86,6 +87,8 @@ export const getVariantStyles = (
   const baseStyles = {
     borderWidth: '1px',
     borderStyle: 'solid' as const,
+    opacity: disabled ? 0.6 : 1,
+    cursor: disabled ? 'not-allowed' : 'default',
   };
 
   switch (variant) {
@@ -173,14 +176,12 @@ export const getIconSize = (badgeSize: BadgeSize): 'xs' | 'sm' | 'md' | 'lg' | '
 };
 
 export const createBaseStyles = (
-  shape: BadgeShape,
+  rounded: boolean,
   isRemovable: boolean,
-  animationsEnabled: boolean,
-  // Legacy support
-  rounded?: boolean
+  animationsEnabled: boolean
 ): React.CSSProperties => {
-  // Handle legacy rounded prop
-  const finalShape = rounded !== undefined ? (rounded ? 'pill' : 'round') : shape;
+  // Handle legacy rounded prop - now just a boolean
+  const finalShape = rounded ? 'pill' : 'round';
   
   return {
     display: 'inline-flex',

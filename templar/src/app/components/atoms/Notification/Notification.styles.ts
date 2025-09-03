@@ -13,7 +13,7 @@ export const getColorVariables = (color: NotificationColor, customColor: string 
     };
   }
 
-  const colorMap = {
+  const colorMap: Record<string, any> = {
     primary: {
       main: cssVars.primary,
       background: cssVars.primaryBackground,
@@ -145,21 +145,19 @@ export const getSizeConfig = (size: NotificationSize) => {
 
 // Container styles
 export const createNotificationContainerStyles = (
-  shape: NotificationShape,
-  width: string | number | undefined,
-  height: string | number | undefined,
-  animationsEnabled: boolean,
-  // Legacy support
-  rounded?: boolean
+  size: NotificationSize,
+  rounded: boolean,
+  animationsEnabled: boolean
 ): React.CSSProperties => {
   // Handle legacy rounded prop
-  const finalShape = rounded !== undefined ? (rounded ? 'pill' : 'round') : shape;
+  const finalShape = rounded ? 'pill' : 'round';
   
   return {
     position: 'relative',
     display: 'flex',
-    width: width || 'auto',
-    height: height || 'auto',
+    flexDirection: 'column',
+    width: 'auto',
+    height: 'auto',
     minWidth: '300px',
     maxWidth: '500px',
     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
@@ -177,7 +175,6 @@ export const getNotificationStyles = (
   variant: NotificationVariant,
   size: NotificationSize,
   disabled: boolean,
-  animationsEnabled: boolean,
   cssVars: any
 ): React.CSSProperties => {
   const colors = getColorVariables(color, customColor, cssVars);
@@ -192,9 +189,7 @@ export const getNotificationStyles = (
     border: '1px solid',
     fontSize: sizeConfig.fontSize,
     lineHeight: sizeConfig.lineHeight,
-    transition: animationsEnabled 
-      ? 'background-color var(--duration-fast) var(--animation-smooth), border-color var(--duration-fast) var(--animation-smooth)' 
-      : 'none',
+    transition: 'background-color var(--duration-fast) var(--animation-smooth), border-color var(--duration-fast) var(--animation-smooth)',
     position: 'relative',
   };
 
@@ -241,7 +236,6 @@ export const getNotificationStyles = (
 export const getIconStyles = (
   size: NotificationSize,
   color: NotificationColor,
-  variant: NotificationVariant,
   cssVars: any
 ): React.CSSProperties => {
   const sizeConfig = getSizeConfig(size);
@@ -253,7 +247,7 @@ export const getIconStyles = (
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: '2px',
-    color: variant === 'solid' ? 'inherit' : 'currentColor',
+    color: 'currentColor',
   };
 };
 
@@ -312,9 +306,8 @@ export const getActionsStyles = (size: NotificationSize): React.CSSProperties =>
 export const getActionButtonStyles = (
   variant: NotificationVariant,
   size: NotificationSize,
-  disabled: boolean,
-  animationsEnabled: boolean,
-  cssVars: any
+  cssVars: any,
+  animationsEnabled: boolean
 ): React.CSSProperties => {
   const sizeConfig = getSizeConfig(size);
 
@@ -327,7 +320,7 @@ export const getActionButtonStyles = (
     fontWeight: 500,
     border: '1px solid',
     borderRadius: '8px',
-    cursor: disabled ? 'not-allowed' : 'pointer',
+    cursor: 'pointer',
     textDecoration: 'none',
     transition: animationsEnabled 
       ? 'all var(--duration-fast) var(--animation-smooth)' 
@@ -341,18 +334,12 @@ export const getActionButtonStyles = (
           backgroundColor: cssVars.background,
           borderColor: cssVars.border,
           color: cssVars.foreground,
-          '&:hover': !disabled ? {
-            backgroundColor: cssVars.muted,
-          } : {},
         };
       case 'ghost':
         return {
           backgroundColor: 'transparent',
           borderColor: 'transparent',
           color: 'inherit',
-          '&:hover': !disabled ? {
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
-          } : {},
         };
       case 'outline':
       default:
@@ -360,17 +347,9 @@ export const getActionButtonStyles = (
           backgroundColor: 'transparent',
           borderColor: 'currentColor',
           color: 'inherit',
-          '&:hover': !disabled ? {
-            backgroundColor: 'currentColor',
-            opacity: 0.1,
-          } : {},
         };
     }
   })();
-
-  if (disabled) {
-    baseStyles.opacity = 0.5;
-  }
 
   return {
     ...baseStyles,
@@ -381,9 +360,8 @@ export const getActionButtonStyles = (
 // Dismiss button styles
 export const getDismissButtonStyles = (
   size: NotificationSize,
-  disabled: boolean,
-  animationsEnabled: boolean,
-  cssVars: any
+  cssVars: any,
+  animationsEnabled: boolean
 ): React.CSSProperties => {
   const sizeConfig = getSizeConfig(size);
 
@@ -399,17 +377,13 @@ export const getDismissButtonStyles = (
     background: 'none',
     border: 'none',
     borderRadius: '50%',
-    cursor: disabled ? 'not-allowed' : 'pointer',
-    opacity: disabled ? 0.3 : 0.6,
+    cursor: 'pointer',
+    opacity: 0.6,
     color: 'inherit',
     fontSize: sizeConfig.dismissIconSize,
     transition: animationsEnabled 
       ? 'opacity var(--duration-fast) var(--animation-smooth), background-color var(--duration-fast) var(--animation-smooth)' 
       : 'none',
-    '&:hover': !disabled ? {
-      opacity: 1,
-      backgroundColor: 'rgba(0, 0, 0, 0.1)',
-    } : {},
   };
 };
 

@@ -1,3 +1,6 @@
+// Universal Types for All Atomic Components
+export * from './types';
+
 // Atomic Components
 export { Button } from './Button';
 export type { ButtonProps } from './Button';
@@ -21,7 +24,9 @@ export {
 export { Notification } from './Notification';
 export type { 
   NotificationProps, 
-  NotificationType, 
+  NotificationColor, 
+  NotificationVariant,
+  NotificationShape,
   NotificationSize,
   NotificationAction 
 } from './Notification';

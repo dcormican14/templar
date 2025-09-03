@@ -1,59 +1,20 @@
 import React from 'react';
+import type { 
+  WithFormProps, 
+  UniversalSize, 
+  UniversalColor, 
+  UniversalVariant, 
+  UniversalShape 
+} from '../types';
 
-export type FilePickerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-export type FilePickerColor = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'custom';
-export type FilePickerVariant = 'solid' | 'ghost' | 'outline';
-export type FilePickerShape = 'sharp' | 'round' | 'pill';
+// Component-specific type aliases (for backward compatibility)
+export type FilePickerSize = UniversalSize;
+export type FilePickerColor = UniversalColor;
+export type FilePickerVariant = UniversalVariant;
+export type FilePickerShape = UniversalShape;
 
-export interface FilePickerProps {
-  /**
-   * Color scheme of the file picker
-   * @default 'primary'
-   */
-  color?: FilePickerColor;
-  
-  /**
-   * Custom color when color is set to 'custom'
-   */
-  customColor?: string;
-  
-  /**
-   * Visual style variant of the file picker
-   * @default 'outline'
-   */
-  variant?: FilePickerVariant;
-  
-  /**
-   * Shape of the file picker
-   * @default 'round'
-   */
-  shape?: FilePickerShape;
-  
-  /**
-   * Size of the file picker
-   * @default 'md'
-   */
-  size?: FilePickerSize;
-  
-  /**
-   * Whether the file picker is disabled
-   * @default false
-   */
-  disabled?: boolean;
-  
-  /**
-   * Whether the file picker has an error state
-   * @default false
-   */
-  error?: boolean;
-  
-  /**
-   * Whether to use rounded corners
-   * @default false
-   * @deprecated Use shape prop instead
-   */
-  rounded?: boolean;
-  
+// Component-specific props (not covered by universal props)
+export interface FilePickerSpecificProps {
   /**
    * Accept attribute for file input (file types)
    * @example "image/*", ".pdf,.doc,.docx", "image/png,image/jpeg"
@@ -87,16 +48,6 @@ export interface FilePickerProps {
   subText?: string;
   
   /**
-   * Helper text displayed below the drop zone
-   */
-  helperText?: string;
-  
-  /**
-   * Error text to display (overrides internal error state)
-   */
-  errorText?: string;
-  
-  /**
    * Placeholder text for the drop zone
    */
   placeholder?: string;
@@ -126,32 +77,10 @@ export interface FilePickerProps {
    * @default true
    */
   showFileList?: boolean;
-  
-  /**
-   * Custom width for the file picker
-   */
-  width?: string | number;
-  
-  /**
-   * Custom height for the file picker
-   */
-  height?: string | number;
-  
-  /**
-   * Additional CSS class name
-   */
-  className?: string;
-  
-  /**
-   * Custom inline styles
-   */
-  style?: React.CSSProperties;
-  
-  /**
-   * Custom ID for the component
-   */
-  id?: string;
 }
+
+// Complete FilePicker props interface extending universal props
+export interface FilePickerProps extends WithFormProps<FilePickerSpecificProps> {}
 
 export interface FilePickerFileItemProps {
   file: File;

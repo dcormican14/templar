@@ -1,7 +1,9 @@
 export { Notification } from './Notification';
 export type { 
   NotificationProps, 
-  NotificationType, 
   NotificationSize,
+  NotificationColor,
+  NotificationVariant,
+  NotificationShape,
   NotificationAction 
 } from './Notification.types';
