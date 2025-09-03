@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 type Theme = 'light' | 'dark' | 'high-contrast' | 'sepia-light' | 'sepia-dark' | 'solarized-dark' | 'system' | 'auto';
-type ResolvedTheme = 'light' | 'dark' | 'high-contrast' | 'sepia-light' | 'sepia-dark' | 'solarized-dark';
+type ResolvedTheme = 'light' | 'dark' |  'high-contrast' | 'sepia-light' | 'sepia-dark' | 'solarized-dark';
 
 interface ThemeContextType {
   theme: Theme;
@@ -115,6 +115,7 @@ interface ThemeVariables {
   input: string;
   inputBorder: string;
   inputPlaceholder: string;
+  inputForeground: string;
   shadowSm: string;
   shadow: string;
   shadowMd: string;
@@ -253,6 +254,7 @@ export function ThemeProvider({
       input: getCSSVariable('input'),
       inputBorder: getCSSVariable('input-border'),
       inputPlaceholder: getCSSVariable('input-placeholder'),
+      inputForeground: getCSSVariable('input-foreground'),
       shadowSm: getCSSVariable('shadow-sm'),
       shadow: getCSSVariable('shadow'),
       shadowMd: getCSSVariable('shadow-md'),
@@ -422,6 +424,12 @@ export function useTheme() {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;
+}
+
+// Dedicated hook for CSS variables access (as mentioned in CSS_VARIABLES.md)
+export function useCSSVariables(): ThemeVariables {
+  const { themeVariables } = useTheme();
+  return themeVariables;
 }
 
 // Alias for backward compatibility

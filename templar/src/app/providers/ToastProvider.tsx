@@ -2,8 +2,9 @@
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { Notification } from '../components/atoms';
+import type { NotificationAction } from '../components/atoms/Notification/Notification.types';
 
-export type ToastType = 'primary' | 'secondary' | 'warning' | 'destructive' | 'success' | 'default' | 'inverted';
+export type ToastType = 'primary' | 'secondary' | 'warning' | 'destructive' | 'success' | 'default' | 'inverted' | 'info';
 
 export interface Toast {
   id: string;
@@ -11,10 +12,15 @@ export interface Toast {
   title: string;
   description?: string;
   duration?: number;
-  action?: {
+  actions?: Array<{
     label: string;
     onClick: () => void;
-  };
+    variant?: string; // Flexible to support both legacy and new variants
+    disabled?: boolean;
+  }>;
+  showIcon?: boolean;
+  dismissible?: boolean;
+  showProgress?: boolean;
 }
 
 interface ToastContextType {
@@ -54,6 +60,9 @@ export function ToastProvider({
   const addToast = useCallback((toast: Omit<Toast, 'id'>) => {
     const id = Math.random().toString(36).substr(2, 9);
     const newToast: Toast = {
+      showIcon: true,
+      dismissible: true,
+      showProgress: false,
       ...toast,
       id,
       duration: toast.duration ?? defaultDuration,
@@ -68,12 +77,12 @@ export function ToastProvider({
       return updated;
     });
 
-    // Auto-remove toast after duration
-    if (newToast.duration && newToast.duration > 0) {
-      setTimeout(() => {
-        removeToast(id);
-      }, newToast.duration);
-    }
+    // Auto-remove toast after duration (handled by Notification component now)
+    // if (newToast.duration && newToast.duration > 0) {
+    //   setTimeout(() => {
+    //     removeToast(id);
+    //   }, newToast.duration);
+    // }
 
     return id;
   }, [defaultDuration, maxToasts, removeToast]);
@@ -141,21 +150,46 @@ export function ToastProvider({
 function ToastContainer() {
   const { toasts, removeToast } = useToast();
 
+  // Map legacy action variants to UniversalVariant
+  const mapActionVariant = (variant?: string): 'solid' | 'ghost' | 'outline' => {
+    switch (variant) {
+      case 'primary':
+      case 'secondary': 
+      case 'success':
+      case 'warning':
+      case 'destructive':
+      case 'info':
+        return 'solid';
+      case 'ghost':
+        return 'ghost';
+      case 'outline':
+      default:
+        return 'outline';
+    }
+  };
+
   return (
     <div className="fixed top-4 right-4 z-50 flex flex-col gap-3 max-w-md">
       {toasts.map((toast) => (
         <Notification
           key={toast.id}
           id={toast.id}
-          type={toast.type}
+          color={toast.type === 'default' ? 'primary' : 
+                 toast.type === 'inverted' ? 'secondary' : 
+                 toast.type === 'info' ? 'info' :
+                 toast.type}
           title={toast.title}
           description={toast.description}
-          duration={toast.duration}
-          actions={toast.action ? [{
-            label: toast.action.label,
-            onClick: toast.action.onClick,
-            variant: 'primary' as const
-          }] : undefined}
+          duration={toast.duration || undefined}
+          actions={toast.actions?.map(action => ({
+            label: action.label,
+            onClick: action.onClick,
+            variant: mapActionVariant(action.variant),
+            disabled: action.disabled
+          })) as NotificationAction[] | undefined}
+          showIcon={toast.showIcon}
+          dismissible={toast.dismissible}
+          showProgress={toast.showProgress}
           onDismiss={() => removeToast(toast.id)}
           style={{
             minWidth: '320px',
