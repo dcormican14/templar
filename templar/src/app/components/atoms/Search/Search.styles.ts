@@ -13,7 +13,7 @@ export const getColorVariables = (color: SearchColor, customColor: string | unde
     };
   }
 
-  const colorMap = {
+  const colorMap: Record<string, any> = {
     primary: {
       main: cssVars.primary,
       background: cssVars.primaryBackground,
@@ -102,7 +102,9 @@ export const getSearchInputStyles = (
   cssVars: any,
   animationsEnabled: boolean,
   hasLeftIcon: boolean,
-  hasRightIcon: boolean
+  hasRightIcon: boolean,
+  color: SearchColor = 'primary',
+  customColor?: string
 ): React.CSSProperties => {
   // Base input styles
   const baseStyles: React.CSSProperties = {
@@ -176,28 +178,16 @@ export const getSearchInputStyles = (
     }
 
     switch (variant) {
-      case 'primary':
+      case 'solid':
         return {
-          backgroundColor: cssVars.primary,
-          borderColor: cssVars.primary,
-          color: cssVars.primaryForeground,
-        };
-      case 'secondary':
-        return {
-          backgroundColor: cssVars.secondary,
-          borderColor: cssVars.secondary,
-          color: cssVars.secondaryForeground,
-        };
-      case 'destructive':
-        return {
-          backgroundColor: cssVars.error,
-          borderColor: cssVars.error,
-          color: cssVars.errorForeground,
+          backgroundColor: getColorVariables(color, customColor, cssVars).main,
+          borderColor: getColorVariables(color, customColor, cssVars).border,
+          color: getColorVariables(color, customColor, cssVars).foreground,
         };
       case 'outline':
         return {
           backgroundColor: cssVars.background,
-          borderColor: cssVars.border,
+          borderColor: getColorVariables(color, customColor, cssVars).border,
           color: cssVars.foreground,
         };
       case 'ghost':
@@ -227,14 +217,8 @@ export const getSearchInputStyles = (
   let placeholderColor = cssVars.mutedForeground; // default
   
   switch (variant) {
-    case 'primary':
+    case 'solid':
       placeholderColor = cssVars.primaryForeground;
-      break;
-    case 'secondary':
-      placeholderColor = cssVars.secondaryForeground;
-      break;
-    case 'destructive':
-      placeholderColor = cssVars.errorForeground;
       break;
     case 'outline':
       placeholderColor = cssVars.mutedForeground;
@@ -258,12 +242,8 @@ export const getSearchInputStyles = (
 // Separate function to get placeholder color for use in component
 export const getPlaceholderColor = (cssVars: any, variant: SearchVariant = 'outline'): string => {
   switch (variant) {
-    case 'primary':
+    case 'solid':
       return cssVars.primaryForeground;
-    case 'secondary':
-      return cssVars.secondaryForeground;
-    case 'destructive':
-      return cssVars.errorForeground;
     case 'outline':
       return cssVars.mutedForeground;
     case 'ghost':
@@ -285,14 +265,8 @@ export const getSearchIconStyles = (
   let iconColor = cssVars.mutedForeground; // default
   
   switch (variant) {
-    case 'primary':
+    case 'solid':
       iconColor = cssVars.primaryForeground;
-      break;
-    case 'secondary':
-      iconColor = cssVars.secondaryForeground;
-      break;
-    case 'destructive':
-      iconColor = cssVars.errorForeground;
       break;
     case 'outline':
       iconColor = cssVars.foreground;
@@ -397,14 +371,8 @@ export const getFocusStyles = (
     outlineColor = cssVars.error;
   } else {
     switch (variant) {
-      case 'primary':
+      case 'solid':
         outlineColor = cssVars.primary;
-        break;
-      case 'secondary':
-        outlineColor = cssVars.secondary;
-        break;
-      case 'destructive':
-        outlineColor = cssVars.error;
         break;
       case 'outline':
       case 'ghost':
@@ -426,14 +394,8 @@ export const getPlaceholderStyles = (cssVars: any, variant: SearchVariant = 'out
   let placeholderColor = cssVars.mutedForeground; // default
   
   switch (variant) {
-    case 'primary':
+    case 'solid':
       placeholderColor = cssVars.primaryForeground;
-      break;
-    case 'secondary':
-      placeholderColor = cssVars.secondaryForeground;
-      break;
-    case 'destructive':
-      placeholderColor = cssVars.errorForeground;
       break;
     case 'outline':
       placeholderColor = cssVars.mutedForeground;

@@ -108,7 +108,7 @@ export function ProgressPage() {
               <span style={mutedTextStyle}>Warning</span>
             </div>
             <div style={demoItemStyle}>
-              <ProgressIndicator type="spinner" color="error" />
+              <ProgressIndicator type="spinner" color="destructive" />
               <span style={mutedTextStyle}>Error</span>
             </div>
             <div style={demoItemStyle}>
@@ -326,7 +326,7 @@ export function ProgressPage() {
                 type="progressBar" 
                 value={25} 
                 width={350}
-                color="error"
+                color="destructive"
                 showPercentage={true}
               />
             </div>
@@ -399,7 +399,7 @@ export function ProgressPage() {
                 type="progressBar" 
                 value={15} 
                 width={250}
-                color="error"
+                color="destructive"
                 showPercentage={true}
               />
             </div>

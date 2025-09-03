@@ -71,7 +71,7 @@ export const getDefaultSize = (): ScrollbarSize => 'md';
 /**
  * Get default variant for consistency
  */
-export const getDefaultVariant = (): ScrollbarVariant => 'primary';
+export const getDefaultVariant = (): ScrollbarVariant => 'outline';
 
 /**
  * Get default orientation for consistency
@@ -138,7 +138,7 @@ export const getScrollbarAriaAttributes = (
   const scrollPercentage = maxScroll > 0 ? Math.round((scrollPosition / maxScroll) * 100) : 0;
   
   return {
-    'aria-orientation': orientation,
+    'aria-orientation': orientation === 'both' ? 'vertical' : orientation,
     'aria-valuenow': scrollPercentage,
     'aria-valuemin': 0,
     'aria-valuemax': 100,

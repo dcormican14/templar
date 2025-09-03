@@ -66,7 +66,7 @@ export function IconsPage() {
                   <p className="text-sm" style={mutedTextStyle}>Click any icon to see details</p>
                 </div>
               </div>
-              <CodeBlock variant="inline" language="tsx">{`<Icon name="${selectedIcon}" size="md" />`}</CodeBlock>
+              <CodeBlock variant="outline" language="tsx">{`<Icon name="${selectedIcon}" size="md" />`}</CodeBlock>
             </div>
           )}
         </Card>

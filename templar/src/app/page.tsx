@@ -157,10 +157,9 @@ function PageContent() {
       {/* Main content with custom scrollbar */}
       <Scrollbar
         height="calc(100vh - 48px)" // Full viewport minus nav height
-        variant="primary"
+        color="secondary"
         size="md"
         visibility="hover"
-        trackSize="sm"
         smoothScrolling={true}
         style={{ marginTop: '48px' }}
       >

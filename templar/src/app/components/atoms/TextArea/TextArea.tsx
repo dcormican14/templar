@@ -2,6 +2,7 @@
 
 import React, { forwardRef, useRef, useImperativeHandle, useState, useCallback, useId, useEffect } from 'react';
 import { useCSSVariables, useSettings } from '../../../providers';
+import { extractFormProps, UNIVERSAL_DEFAULTS } from '../types';
 import type { TextAreaProps, TextAreaRef } from './TextArea.types';
 import {
   getTextAreaContainerStyles,
@@ -34,18 +35,51 @@ import {
   getCursorInfo,
 } from './TextArea.utils';
 
-export const TextArea = forwardRef<TextAreaRef, TextAreaProps>(
-  ({
-    color = getDefaultColor(),
+export const TextArea = forwardRef<TextAreaRef, TextAreaProps>((allProps, ref) => {
+  // Extract onPaste separately since it's not part of universal form props
+  const { onPaste, ...propsForExtraction } = allProps;
+  
+  // Extract form props and component-specific props
+  const [formProps, componentProps] = extractFormProps(propsForExtraction);
+  
+  // Destructure form props with defaults
+  const {
+    color = UNIVERSAL_DEFAULTS.color,
     customColor,
-    variant = 'outline',
-    shape = 'round',
-    size = getDefaultSize(),
-    resize = 'vertical',
-    error = false,
+    variant = 'outline', // TextArea-specific default
+    shape = UNIVERSAL_DEFAULTS.shape,
+    size = UNIVERSAL_DEFAULTS.size,
+    disabled = UNIVERSAL_DEFAULTS.disabled,
+    loading = UNIVERSAL_DEFAULTS.loading,
+    error,
     label,
-    description,
     helperText,
+    placeholder,
+    width,
+    height,
+    className,
+    style,
+    id: providedId,
+    'data-testid': dataTestId,
+    animate = UNIVERSAL_DEFAULTS.animate,
+    // Form-specific props
+    name,
+    value,
+    defaultValue,
+    required,
+    readOnly,
+    autoComplete,
+    autoFocus = false,
+    onChange,
+    onKeyDown,
+    onFocus,
+    onBlur,
+  } = formProps;
+  
+  // Destructure component-specific props
+  const {
+    resize = 'vertical',
+    description,
     errorMessage,
     showCharacterCount = false,
     maxLength,
@@ -53,31 +87,17 @@ export const TextArea = forwardRef<TextAreaRef, TextAreaProps>(
     maxRows,
     autoResize = false,
     showLineNumbers = false,
-    loading = false,
     clearOnEscape = false,
     icon,
     iconPosition = 'top-right',
     iconClickable = false,
     onIconClick,
-    width,
-    height,
-    value,
-    defaultValue = '',
-    onChange,
-    onKeyDown,
-    onPaste,
-    onFocus,
-    onBlur,
-    disabled = false,
-    className,
-    style,
-    id: providedId,
     ...rest
-  }, ref) => {
+  } = componentProps;
     // Get CSS variables and settings
     const cssVars = useCSSVariables();
     const { settings } = useSettings();
-    const animationsEnabled = settings.appearance.animations;
+    const animationsEnabled = (settings.appearance.animations ?? true) && animate;
     
     // Generate unique ID if not provided
     const generatedId = useId();
@@ -88,7 +108,7 @@ export const TextArea = forwardRef<TextAreaRef, TextAreaProps>(
     
     // Determine if controlled or uncontrolled
     const isControlled = value !== undefined;
-    const [internalValue, setInternalValue] = useState(defaultValue);
+    const [internalValue, setInternalValue] = useState(defaultValue || '');
     const currentValue = isControlled ? value : internalValue;
     
     // State
@@ -257,8 +277,8 @@ export const TextArea = forwardRef<TextAreaRef, TextAreaProps>(
     
     // Get ARIA attributes
     const ariaAttributes = getAriaAttributes({
-      error,
-      disabled,
+      error: error || false,
+      disabled: disabled || false,
       label,
       description,
       helperText,
@@ -279,7 +299,7 @@ export const TextArea = forwardRef<TextAreaRef, TextAreaProps>(
         {label && (
           <label
             htmlFor={id}
-            style={getLabelStyles(size, disabled, error, cssVars)}
+            style={getLabelStyles(size, disabled || false, error || false, cssVars)}
           >
             {label}
           </label>
@@ -289,7 +309,7 @@ export const TextArea = forwardRef<TextAreaRef, TextAreaProps>(
         {description && (
           <div
             id="textarea-description"
-            style={getDescriptionStyles(size, disabled, cssVars)}
+            style={getDescriptionStyles(size, disabled || false, cssVars)}
           >
             {description}
           </div>
@@ -299,7 +319,7 @@ export const TextArea = forwardRef<TextAreaRef, TextAreaProps>(
         <div style={getInputWrapperStyles()}>
           {/* Line numbers */}
           {showLineNumbers && (
-            <div style={getLineNumbersStyles(size, disabled, cssVars)}>
+            <div style={getLineNumbersStyles(size, disabled || false, cssVars)}>
               {lineNumbers}
             </div>
           )}
@@ -322,8 +342,8 @@ export const TextArea = forwardRef<TextAreaRef, TextAreaProps>(
               shape,
               size,
               resize,
-              disabled,
-              error,
+              disabled || false,
+              error || false,
               focused,
               minRows,
               maxRows,
@@ -333,13 +353,19 @@ export const TextArea = forwardRef<TextAreaRef, TextAreaProps>(
               cssVars
             )}
             {...ariaAttributes}
+            name={name}
+            required={required}
+            readOnly={readOnly}
+            autoComplete={autoComplete}
+            autoFocus={autoFocus}
+            data-testid={dataTestId}
             {...rest}
           />
           
           {/* Icon */}
           {icon && (
             <div
-              style={getIconStyles(size, iconPosition, iconClickable, disabled, cssVars)}
+              style={getIconStyles(size, iconPosition, iconClickable, disabled || false, cssVars)}
               onClick={handleIconClick}
             >
               {icon}
@@ -347,7 +373,7 @@ export const TextArea = forwardRef<TextAreaRef, TextAreaProps>(
           )}
           
           {/* Resize handle */}
-          <div style={getResizeHandleStyles(resize, disabled, cssVars)} />
+          <div style={getResizeHandleStyles(resize, disabled || false, cssVars)} />
           
           {/* Loading overlay */}
           {loading && (
@@ -372,7 +398,7 @@ export const TextArea = forwardRef<TextAreaRef, TextAreaProps>(
               {(helperText || (error && errorMessage)) && (
                 <div
                   id={error && errorMessage ? "textarea-error" : "textarea-helper"}
-                  style={getHelperTextStyles(size, disabled, error, cssVars)}
+                  style={getHelperTextStyles(size, disabled || false, error || false, cssVars)}
                 >
                   {error && errorMessage ? errorMessage : helperText}
                 </div>
@@ -381,7 +407,7 @@ export const TextArea = forwardRef<TextAreaRef, TextAreaProps>(
             
             {/* Character count */}
             {showCharacterCount && (
-              <div style={getCharacterCountStyles(size, disabled, isOverLimit, cssVars)}>
+              <div style={getCharacterCountStyles(size, disabled || false, isOverLimit, cssVars)}>
                 {formatCharacterCount(characterCount, maxLength)}
               </div>
             )}
@@ -389,12 +415,12 @@ export const TextArea = forwardRef<TextAreaRef, TextAreaProps>(
         )}
         
         {/* Add spinner animation styles */}
-        <style jsx>{`
+        <style dangerouslySetInnerHTML={{__html: `
           @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
           }
-        `}</style>
+        `}} />
       </div>
     );
   }

@@ -1,41 +1,21 @@
 import React from 'react';
+import type { 
+  WithFormProps, 
+  UniversalSize, 
+  UniversalColor, 
+  UniversalVariant,
+  UniversalShape 
+} from '../types';
 
-export type TextAreaSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-export type TextAreaColor = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'custom';
-export type TextAreaVariant = 'solid' | 'ghost' | 'outline';
-export type TextAreaShape = 'sharp' | 'round' | 'pill';
+// Component-specific type aliases (for backward compatibility)
+export type TextAreaSize = UniversalSize;
+export type TextAreaColor = UniversalColor;
+export type TextAreaVariant = UniversalVariant;
+export type TextAreaShape = UniversalShape;
 export type TextAreaResize = 'none' | 'both' | 'horizontal' | 'vertical';
 
-export interface TextAreaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'size'> {
-  /**
-   * Color scheme of the textarea
-   * @default 'primary'
-   */
-  color?: TextAreaColor;
-  
-  /**
-   * Custom color when color is set to 'custom'
-   */
-  customColor?: string;
-  
-  /**
-   * Visual style variant of the textarea
-   * @default 'outline'
-   */
-  variant?: TextAreaVariant;
-  
-  /**
-   * Shape of the textarea
-   * @default 'round'
-   */
-  shape?: TextAreaShape;
-  
-  /**
-   * Size of the textarea
-   * @default 'md'
-   */
-  size?: TextAreaSize;
-  
+// Component-specific props (not covered by universal props)
+export interface TextAreaSpecificProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'size' | 'color'> {
   /**
    * Resize behavior
    * @default 'vertical'
@@ -43,25 +23,9 @@ export interface TextAreaProps extends Omit<React.TextareaHTMLAttributes<HTMLTex
   resize?: TextAreaResize;
   
   /**
-   * Whether the textarea is in an error state
-   * @default false
-   */
-  error?: boolean;
-  
-  /**
-   * Label for the textarea
-   */
-  label?: string;
-  
-  /**
    * Description text shown below the textarea
    */
   description?: string;
-  
-  /**
-   * Helper text shown below the textarea
-   */
-  helperText?: string;
   
   /**
    * Error message shown when error is true
@@ -136,25 +100,11 @@ export interface TextAreaProps extends Omit<React.TextareaHTMLAttributes<HTMLTex
    */
   onIconClick?: () => void;
   
-  /**
-   * Custom width
-   */
-  width?: string | number;
-  
-  /**
-   * Custom height
-   */
-  height?: string | number;
-  
-  /**
-   * Additional CSS class names
-   */
-  className?: string;
-  
-  /**
-   * Additional inline styles
-   */
-  style?: React.CSSProperties;
+}
+
+// Complete TextArea props interface extending universal props
+export interface TextAreaProps extends WithFormProps<TextAreaSpecificProps> {
+  // No additional overrides needed since TextArea uses standard onChange signature
 }
 
 export interface TextAreaRef {

@@ -13,7 +13,7 @@ export const getColorVariables = (color: ProgressIndicatorColor, customColor: st
     };
   }
 
-  const colorMap = {
+  const colorMap: Record<string, any> = {
     primary: {
       main: cssVars.primary,
       background: cssVars.primaryBackground,

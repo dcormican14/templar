@@ -28,8 +28,8 @@ export const getColorValue = (color: IconColor | string, cssVars: any): string =
       return cssVars.success;
     case 'warning':
       return cssVars.warning;
-    case 'error':
-      return cssVars.error;
+    case 'destructive':
+      return cssVars.destructive;
     case 'info':
       return cssVars.info;
     case 'muted':

@@ -1,13 +1,15 @@
 import React, { forwardRef, useRef, useImperativeHandle, useState, useEffect, useCallback } from 'react';
-import { useCSSVariables } from '../../../providers';
+import { useCSSVariables, useSettings } from '../../../providers';
+import { extractContainerProps, UNIVERSAL_DEFAULTS } from '../types';
 import { ScrollbarProps, ScrollbarRef } from './Scrollbar.types';
 import {
-  getScrollbarContainerStyles,
+  createScrollbarContainerStyles,
+  getScrollableContentStyles,
   getWebKitScrollbarStyles,
-  getFallbackScrollbarStyles,
-  getScrollbarContentStyles,
+  getFirefoxScrollbarStyles,
   getCustomScrollbarTrackStyles,
   getCustomScrollbarThumbStyles,
+  getScrollIndicatorStyles,
 } from './Scrollbar.styles';
 import {
   supportsWebKitScrollbar,
@@ -15,43 +17,68 @@ import {
   calculateThumbPosition,
   getScrollPositionFromThumb,
   isScrollingNeeded,
-  getDefaultSize,
-  getDefaultVariant,
-  getDefaultOrientation,
   validateScrollbarProps,
   getScrollbarAriaAttributes,
   throttleScrollEvent,
 } from './Scrollbar.utils';
 
-export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(({
-  size = getDefaultSize(),
-  variant = getDefaultVariant(),
-  orientation = getDefaultOrientation(),
-  trackSize = 'md',
-  children,
-  height,
-  width,
-  maxHeight,
-  maxWidth,
-  visibility = 'hover',
-  smoothScrolling = true,
-  disabled = false,
-  onScroll,
-  thumbSize: customThumbSize,
-  scrollPosition: customScrollPosition,
-  className,
-  style,
-  ...rest
-}, ref) => {
-  // Get CSS variables for theming
+export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref) => {
+  // Extract container props and component-specific props
+  const [containerProps, componentProps] = extractContainerProps(allProps);
+  
+  // Destructure container props with defaults
+  const {
+    color = UNIVERSAL_DEFAULTS.color,
+    customColor,
+    variant = 'outline', // Scrollbar-specific default
+    shape = UNIVERSAL_DEFAULTS.shape,
+    size = UNIVERSAL_DEFAULTS.size,
+    disabled = UNIVERSAL_DEFAULTS.disabled,
+    width,
+    height,
+    className,
+    style,
+    id,
+    animate = UNIVERSAL_DEFAULTS.animate,
+    children,
+  } = containerProps;
+  
+  // Destructure component-specific props
+  const {
+    orientation = 'vertical',
+    visibility = 'hover',
+    smoothScrolling = true,
+    hideNative = true,
+    momentum = true,
+    autoHideDelay = 1000,
+    showIndicators = false,
+    onScroll,
+    onScrollStart,
+    onScrollEnd,
+    onReachTop,
+    onReachBottom,
+    onReachLeft,
+    onReachRight,
+    thumbSize: customThumbSize,
+    scrollPosition: customScrollPosition,
+    ...rest
+  } = componentProps;
+
+  // Get CSS variables for theming and settings
   const cssVars = useCSSVariables();
+  const { settings } = useSettings();
+  const animationsEnabled = (settings.appearance.animations ?? true) && animate;
   
   // Validate props in development
-  validateScrollbarProps({ height, width, maxHeight, maxWidth, orientation });
+  validateScrollbarProps({ height, width, orientation });
   
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const verticalTrackRef = useRef<HTMLDivElement>(null);
+  const verticalThumbRef = useRef<HTMLDivElement>(null);
+  const horizontalTrackRef = useRef<HTMLDivElement>(null);
+  const horizontalThumbRef = useRef<HTMLDivElement>(null);
   
   // State for custom scrollbar implementation
   const [scrollState, setScrollState] = useState({
@@ -65,6 +92,8 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(({
   
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0, scrollTop: 0, scrollLeft: 0 });
+  const [isScrolling, setIsScrolling] = useState(false);
+  const [scrollTimeout, setScrollTimeout] = useState<NodeJS.Timeout | null>(null);
   
   // Update scroll state
   const updateScrollState = useCallback(() => {
@@ -86,21 +115,53 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(({
     throttleScrollEvent((event: React.UIEvent<HTMLDivElement>) => {
       updateScrollState();
       onScroll?.(event);
-    }),
-    [updateScrollState, onScroll]
+      
+      // Detect scroll boundaries
+      const element = event.currentTarget;
+      const { scrollTop, scrollLeft, scrollHeight, scrollWidth, clientHeight, clientWidth } = element;
+      
+      if (scrollTop === 0) onReachTop?.();
+      if (scrollTop + clientHeight >= scrollHeight) onReachBottom?.();
+      if (scrollLeft === 0) onReachLeft?.();
+      if (scrollLeft + clientWidth >= scrollWidth) onReachRight?.();
+    }, 16),
+    [updateScrollState, onScroll, onReachTop, onReachBottom, onReachLeft, onReachRight]
   );
   
-  // Handle scroll
-  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
-    if (disabled) return;
-    throttledScrollHandler(event);
-  };
+  // Handle scroll start/end
+  const handleScrollStart = useCallback(() => {
+    if (!isScrolling) {
+      setIsScrolling(true);
+      onScrollStart?.();
+    }
+    
+    if (scrollTimeout) {
+      clearTimeout(scrollTimeout);
+    }
+    
+    const timeout = setTimeout(() => {
+      setIsScrolling(false);
+      onScrollEnd?.();
+    }, 150);
+    
+    setScrollTimeout(timeout);
+  }, [isScrolling, scrollTimeout, onScrollStart, onScrollEnd]);
   
-  // Expose imperative methods
+  // Handle scroll events
+  const handleScroll = useCallback(
+    (event: React.UIEvent<HTMLDivElement>) => {
+      handleScrollStart();
+      throttledScrollHandler(event);
+    },
+    [handleScrollStart, throttledScrollHandler]
+  );
+  
+  // Imperative API
   useImperativeHandle(ref, () => ({
-    scrollTo: ({ top, left, behavior = 'auto' }) => {
-      if (!containerRef.current) return;
-      containerRef.current.scrollTo({ top, left, behavior });
+    scrollTo: ({ top, left, behavior = 'smooth' }) => {
+      if (containerRef.current) {
+        containerRef.current.scrollTo({ top, left, behavior });
+      }
     },
     scrollIntoView: (element: Element, options?: ScrollIntoViewOptions) => {
       element.scrollIntoView(options);
@@ -111,182 +172,232 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>(({
     }),
   }));
   
-  // Calculate thumb properties for custom scrollbar
-  const verticalThumbSize = customThumbSize ?? calculateThumbSize(scrollState.scrollHeight, scrollState.clientHeight);
-  const horizontalThumbSize = customThumbSize ?? calculateThumbSize(scrollState.scrollWidth, scrollState.clientWidth);
+  // Update scroll state on mount and when content changes
+  useEffect(() => {
+    updateScrollState();
+  }, [updateScrollState, children]);
   
-  const verticalThumbPosition = customScrollPosition ?? calculateThumbPosition(
+  // Handle custom scroll position
+  useEffect(() => {
+    if (customScrollPosition && containerRef.current) {
+      const { x, y } = customScrollPosition;
+      if (typeof y === 'number') {
+        containerRef.current.scrollTop = y * (scrollState.scrollHeight - scrollState.clientHeight);
+      }
+      if (typeof x === 'number') {
+        containerRef.current.scrollLeft = x * (scrollState.scrollWidth - scrollState.clientWidth);
+      }
+    }
+  }, [customScrollPosition, scrollState]);
+  
+  // Styles
+  const containerStyles = createScrollbarContainerStyles(
+    shape,
+    width,
+    height,
+    undefined, // minWidth
+    undefined, // minHeight
+    undefined, // maxWidth
+    undefined, // maxHeight
+    undefined, // padding
+    smoothScrolling,
+    hideNative,
+    momentum,
+    Boolean(disabled),
+    animationsEnabled
+  );
+  
+  const contentStyles = getScrollableContentStyles(
+    orientation,
+    animationsEnabled
+  );
+  
+  const needsVerticalScrollbar = isScrollingNeeded(scrollState.scrollHeight, scrollState.clientHeight);
+  const needsHorizontalScrollbar = isScrollingNeeded(scrollState.scrollWidth, scrollState.clientWidth);
+  
+  const verticalThumbSize = calculateThumbSize(scrollState.clientHeight, scrollState.scrollHeight);
+  const horizontalThumbSize = calculateThumbSize(scrollState.clientWidth, scrollState.scrollWidth);
+  
+  const verticalThumbPosition = calculateThumbPosition(
     scrollState.scrollTop,
     scrollState.scrollHeight,
     scrollState.clientHeight,
     verticalThumbSize
   );
   
-  const horizontalThumbPosition = customScrollPosition ?? calculateThumbPosition(
+  const horizontalThumbPosition = calculateThumbPosition(
     scrollState.scrollLeft,
     scrollState.scrollWidth,
     scrollState.clientWidth,
     horizontalThumbSize
   );
   
-  // Check if scrolling is needed
-  const needsVerticalScroll = isScrollingNeeded(scrollState.scrollHeight, scrollState.clientHeight);
-  const needsHorizontalScroll = isScrollingNeeded(scrollState.scrollWidth, scrollState.clientWidth);
+  // Custom scrollbar track styles
+  const verticalTrackStyles = getCustomScrollbarTrackStyles(
+    'vertical',
+    color,
+    customColor,
+    variant,
+    size,
+    shape,
+    Boolean(disabled),
+    animationsEnabled,
+    cssVars
+  );
   
-  // Update scroll state on mount and resize
-  useEffect(() => {
-    updateScrollState();
-    
-    const resizeObserver = new ResizeObserver(updateScrollState);
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
-    }
-    
-    return () => resizeObserver.disconnect();
-  }, [updateScrollState]);
+  const horizontalTrackStyles = getCustomScrollbarTrackStyles(
+    'horizontal',
+    color,
+    customColor,
+    variant,
+    size,
+    shape,
+    Boolean(disabled),
+    animationsEnabled,
+    cssVars
+  );
   
-  // Handle thumb drag (for custom scrollbar)
-  const handleThumbMouseDown = (event: React.MouseEvent, scrollOrientation: 'vertical' | 'horizontal') => {
-    if (disabled) return;
-    
-    event.preventDefault();
-    setIsDragging(true);
-    setDragStart({
-      x: event.clientX,
-      y: event.clientY,
-      scrollTop: scrollState.scrollTop,
-      scrollLeft: scrollState.scrollLeft,
-    });
-    
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current) return;
-      
-      const deltaY = e.clientY - dragStart.y;
-      const deltaX = e.clientX - dragStart.x;
-      
-      if (scrollOrientation === 'vertical') {
-        const scrollRange = scrollState.scrollHeight - scrollState.clientHeight;
-        const thumbRange = scrollState.clientHeight * (1 - verticalThumbSize);
-        const scrollDelta = (deltaY / thumbRange) * scrollRange;
-        containerRef.current.scrollTop = dragStart.scrollTop + scrollDelta;
-      } else {
-        const scrollRange = scrollState.scrollWidth - scrollState.clientWidth;
-        const thumbRange = scrollState.clientWidth * (1 - horizontalThumbSize);
-        const scrollDelta = (deltaX / thumbRange) * scrollRange;
-        containerRef.current.scrollLeft = dragStart.scrollLeft + scrollDelta;
-      }
-    };
-    
-    const handleMouseUp = () => {
-      setIsDragging(false);
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-    
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-  };
+  // Custom scrollbar thumb styles
+  const verticalThumbStyles = getCustomScrollbarThumbStyles(
+    'vertical',
+    color,
+    customColor,
+    variant,
+    size,
+    shape,
+    verticalThumbPosition,
+    verticalThumbSize,
+    Boolean(disabled),
+    isDragging,
+    animationsEnabled
+  );
   
-  // Generate scrollbar styles
-  const webkitStyles = getWebKitScrollbarStyles(size, variant, orientation, trackSize, visibility, disabled, cssVars);
-  const fallbackStyles = getFallbackScrollbarStyles(size, variant, cssVars);
+  const horizontalThumbStyles = getCustomScrollbarThumbStyles(
+    'horizontal',
+    color,
+    customColor,
+    variant,
+    size,
+    shape,
+    horizontalThumbPosition,
+    horizontalThumbSize,
+    Boolean(disabled),
+    isDragging,
+    animationsEnabled
+  );
   
-  // Combine container styles
-  const containerStyles = {
-    ...getScrollbarContainerStyles(orientation, height, width, maxHeight, maxWidth, smoothScrolling, disabled),
-    ...fallbackStyles,
+  const combinedStyles: React.CSSProperties = {
+    ...containerStyles,
     ...style,
   };
   
-  // Apply webkit styles via CSS custom properties (requires CSS support)
-  const cssVarsForWebkit = Object.entries(webkitStyles).reduce((acc, [key, styles]) => {
-    // Convert webkit styles to CSS custom properties that can be used in CSS
-    if (key === '&::-webkit-scrollbar' && styles.width) {
-      acc['--scrollbar-width'] = styles.width;
-    }
-    if (key === '&::-webkit-scrollbar' && styles.height) {
-      acc['--scrollbar-height'] = styles.height;
-    }
-    return acc;
-  }, {} as Record<string, any>);
-  
-  const finalContainerStyles = {
-    ...containerStyles,
-    ...cssVarsForWebkit,
-  };
-  
-  // Get ARIA attributes
-  const verticalAriaAttributes = getScrollbarAriaAttributes(
-    'vertical',
-    scrollState.scrollTop,
-    scrollState.scrollHeight - scrollState.clientHeight,
-    disabled
-  );
-  
-  const horizontalAriaAttributes = getScrollbarAriaAttributes(
-    'horizontal',
-    scrollState.scrollLeft,
-    scrollState.scrollWidth - scrollState.clientWidth,
-    disabled
+  // Accessibility attributes
+  const ariaAttributes = getScrollbarAriaAttributes(
+    orientation,
+    orientation === 'vertical' ? scrollState.scrollTop : scrollState.scrollLeft,
+    orientation === 'vertical' ? scrollState.scrollHeight - scrollState.clientHeight : scrollState.scrollWidth - scrollState.clientWidth,
+    Boolean(disabled)
   );
   
   return (
     <div
-      ref={containerRef}
-      className={`scrollbar-container ${className || ''}`}
-      style={finalContainerStyles}
-      onScroll={handleScroll}
+      className={className}
+      style={combinedStyles}
+      id={id}
+      {...ariaAttributes}
       {...rest}
     >
-      {/* Content */}
       <div
-        ref={contentRef}
-        style={getScrollbarContentStyles()}
+        ref={containerRef}
+        style={contentStyles}
+        onScroll={handleScroll}
+        tabIndex={disabled ? -1 : 0}
       >
-        {children}
+        <div ref={contentRef}>
+          {children}
+        </div>
       </div>
       
-      {/* Custom scrollbar implementation for better control */}
-      {visibility === 'always' && !supportsWebKitScrollbar() && (
+      {/* Custom vertical scrollbar */}
+      {!hideNative && needsVerticalScrollbar && (orientation === 'vertical' || orientation === 'both') && (
+        <div
+          ref={verticalTrackRef}
+          style={verticalTrackStyles}
+          onClick={(e) => {
+            // Handle track click to jump to position
+            const rect = e.currentTarget.getBoundingClientRect();
+            const clickY = e.clientY - rect.top;
+            const trackHeight = rect.height;
+            const scrollPercentage = clickY / trackHeight;
+            const newScrollTop = scrollPercentage * (scrollState.scrollHeight - scrollState.clientHeight);
+            
+            if (containerRef.current) {
+              containerRef.current.scrollTop = newScrollTop;
+            }
+          }}
+        >
+          <div
+            ref={verticalThumbRef}
+            style={verticalThumbStyles}
+          />
+        </div>
+      )}
+      
+      {/* Custom horizontal scrollbar */}
+      {!hideNative && needsHorizontalScrollbar && (orientation === 'horizontal' || orientation === 'both') && (
+        <div
+          ref={horizontalTrackRef}
+          style={horizontalTrackStyles}
+          onClick={(e) => {
+            // Handle track click to jump to position
+            const rect = e.currentTarget.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const trackWidth = rect.width;
+            const scrollPercentage = clickX / trackWidth;
+            const newScrollLeft = scrollPercentage * (scrollState.scrollWidth - scrollState.clientWidth);
+            
+            if (containerRef.current) {
+              containerRef.current.scrollLeft = newScrollLeft;
+            }
+          }}
+        >
+          <div
+            ref={horizontalThumbRef}
+            style={horizontalThumbStyles}
+          />
+        </div>
+      )}
+      
+      {/* Scroll indicators */}
+      {showIndicators && (
         <>
-          {/* Vertical scrollbar */}
-          {needsVerticalScroll && (
-            <>
-              <div style={getCustomScrollbarTrackStyles('vertical', size, trackSize, cssVars)} />
-              <div
-                style={getCustomScrollbarThumbStyles(
-                  'vertical',
-                  size,
-                  variant,
-                  verticalThumbPosition,
-                  verticalThumbSize,
-                  disabled,
-                  cssVars
-                )}
-                onMouseDown={(e) => handleThumbMouseDown(e, 'vertical')}
-                {...verticalAriaAttributes}
-              />
-            </>
+          {needsVerticalScrollbar && (
+            <div
+              style={getScrollIndicatorStyles(
+                'vertical',
+                color,
+                customColor,
+                size,
+                scrollState.scrollTop > 0 ? 'top' : 'bottom',
+                Boolean(disabled),
+                animationsEnabled,
+                cssVars
+              )}
+            />
           )}
-          
-          {/* Horizontal scrollbar */}
-          {needsHorizontalScroll && (
-            <>
-              <div style={getCustomScrollbarTrackStyles('horizontal', size, trackSize, cssVars)} />
-              <div
-                style={getCustomScrollbarThumbStyles(
-                  'horizontal',
-                  size,
-                  variant,
-                  horizontalThumbPosition,
-                  horizontalThumbSize,
-                  disabled,
-                  cssVars
-                )}
-                onMouseDown={(e) => handleThumbMouseDown(e, 'horizontal')}
-                {...horizontalAriaAttributes}
-              />
-            </>
+          {needsHorizontalScrollbar && (
+            <div
+              style={getScrollIndicatorStyles(
+                'horizontal',
+                color,
+                customColor,
+                size,
+                scrollState.scrollLeft > 0 ? 'left' : 'right',
+                Boolean(disabled),
+                animationsEnabled,
+                cssVars
+              )}
+            />
           )}
         </>
       )}

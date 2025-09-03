@@ -519,7 +519,6 @@ export function AtomicComponentsPage() {
                 <p className="text-sm mb-4" style={mutedTextStyle}>Vertical Group (Default)</p>
                 <RadioButtonGroup
                   name="plan-vertical"
-                  variant="primary"
                   options={[
                     {
                       value: 'basic',
@@ -545,7 +544,6 @@ export function AtomicComponentsPage() {
                 <RadioButtonGroup
                   name="preference-horizontal"
                   orientation="horizontal"
-                  variant="secondary"
                   options={[
                     { value: 'email', label: 'Email' },
                     { value: 'sms', label: 'SMS' },
@@ -577,7 +575,7 @@ export function AtomicComponentsPage() {
               
               <div>
                 <p className="text-sm mb-2" style={mutedTextStyle}>Invalid</p>
-                <RadioButton name="state-demo" value="invalid" label="Invalid state" invalid />
+                <RadioButton name="state-demo" value="invalid" label="Invalid state" error />
               </div>
             </div>
           </div>

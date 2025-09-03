@@ -1,60 +1,105 @@
 /* Solarized Dark Theme */
 [data-theme="solarized-dark"] {
   /* Base colors */
-  --background: #002b36; /* base03 */
-  --foreground: #eee8d5; /* base2 */
+  --background: #002b36;
+  --background-hover: #073642;
+  --background-accent: #03262f;
+  --background-shadow: rgba(0, 0, 0, 0.8);
+  --background-disabled: #001922;
+  --background-border: #586e75;
+  --background-font: #eee8d5;
+  
+  --foreground: #eee8d5;
+  --foreground-hover: #fdf6e3;
+  --foreground-accent: #93a1a1;
+  --foreground-shadow: rgba(238, 232, 213, 0.1);
+  --foreground-disabled: #586e75;
+  --foreground-border: #657b83;
+  --foreground-font: #002b36;
   
   /* Primary colors */
-  --primary: #ff90e8; /* brand violet-web-color */
-  --primary-foreground: #073642; /* base02 - dark teal */
-  --primary-hover: #ffb3ed; /* lighter violet */
+  --primary: #ff90e8;
+  --primary-background: #4a1844;
+  --primary-foreground: #073642;
+  --primary-hover: #ffb3ed;
+  --primary-accent: #e066cc;
+  --primary-shadow: rgba(255, 144, 232, 0.3);
+  --primary-disabled: #664d63;
+  --primary-border: #b366a4;
+  --primary-font: #073642;
   
   /* Secondary colors */
-  --secondary: #90caf9; /* brand light-sky-blue */
+  --secondary: #90caf9;
+  --secondary-background: #073642;
   --secondary-foreground: #073642;
   --secondary-hover: #add8ff;
-  
-  /* Accent colors */
-  --accent: #b58900; /* yellow */
-  --accent-foreground: #002b36;
-  
-  /* Border and dividers */
-  --border: #586e75; /* base01 */
-  --border-hover: #93a1a1; /* base1 */
-  
-  /* Muted elements */
-  --muted: #073642; /* base02 */
-  --muted-foreground: #93a1a1; /* base1 */
+  --secondary-accent: #6bb6ff;
+  --secondary-shadow: rgba(144, 202, 249, 0.3);
+  --secondary-disabled: #4a5f73;
+  --secondary-border: #6bb6ff;
+  --secondary-font: #073642;
   
   /* Success colors */
-  --success: #859900; /* green */
+  --success: #859900;
+  --success-background: #1a2e1a;
   --success-foreground: #002b36;
+  --success-hover: #a6bf00;
+  --success-accent: #719900;
+  --success-shadow: rgba(133, 153, 0, 0.3);
+  --success-disabled: #424d00;
+  --success-border: #719900;
+  --success-font: #002b36;
   
   /* Warning colors */
-  --warning: #cb4b16; /* orange */
+  --warning: #cb4b16;
+  --warning-background: #332014;
   --warning-foreground: #002b36;
+  --warning-hover: #d6621f;
+  --warning-accent: #b5420f;
+  --warning-shadow: rgba(203, 75, 22, 0.3);
+  --warning-disabled: #663812;
+  --warning-border: #b5420f;
+  --warning-font: #002b36;
   
-  /* Error colors */
-  --error: #dc322f; /* red */
-  --error-foreground: #eee8d5;
+  /* Destructive colors */
+  --destructive: #dc322f;
+  --destructive-background: #3d1918;
+  --destructive-foreground: #eee8d5;
+  --destructive-hover: #e55450;
+  --destructive-accent: #c52825;
+  --destructive-shadow: rgba(220, 50, 47, 0.3);
+  --destructive-disabled: #5c2622;
+  --destructive-border: #c52825;
+  --destructive-font: #eee8d5;
   
   /* Info colors */
-  --info: #268bd2; /* blue */
+  --info: #268bd2;
+  --info-background: #1a2332;
   --info-foreground: #eee8d5;
+  --info-hover: #4da3db;
+  --info-accent: #2176c4;
+  --info-shadow: rgba(38, 139, 210, 0.3);
+  --info-disabled: #1f3f59;
+  --info-border: #2176c4;
+  --info-font: #eee8d5;
   
-  /* Card and surface colors */
-  --card: #073642; /* base02 */
+  /* Legacy compatibility */
+  --accent: #b58900;
+  --accent-foreground: #002b36;
+  --border: #586e75;
+  --border-hover: #93a1a1;
+  --muted: #073642;
+  --muted-foreground: #93a1a1;
+  --error: #dc322f;
+  --error-foreground: #eee8d5;
+  --card: #073642;
   --card-foreground: #eee8d5;
-  
-  /* Input colors */
   --input: #073642;
   --input-border: #586e75;
   --input-placeholder: #93a1a1;
   --input-foreground: #eee8d5;
-  
-  /* Progress indicator colors */
-  --progress-track: #586e75; /* solarized base01 for track */
-  --progress-track-text: #93a1a1; /* solarized base1 for percentage text */
+  --progress-track: #586e75;
+  --progress-track-text: #93a1a1;
   
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);

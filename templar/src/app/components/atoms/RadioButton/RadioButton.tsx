@@ -1,5 +1,6 @@
 import React, { forwardRef, useRef, useImperativeHandle, useState, useId } from 'react';
 import { useCSSVariables, useSettings } from '../../../providers';
+import { UNIVERSAL_DEFAULTS } from '../types';
 import { RadioButtonProps, RadioButtonRef, RadioButtonGroupProps } from './RadioButton.types';
 import {
   getRadioButtonContainerStyles,
@@ -13,40 +14,47 @@ import {
 } from './RadioButton.styles';
 import {
   validateRadioButtonProps,
-  getDefaultSize,
-  getDefaultColor,
   getValidationState,
   getAriaAttributes,
 } from './RadioButton.utils';
 
 export const RadioButton = forwardRef<RadioButtonRef, RadioButtonProps>(({
-  checked,
-  defaultChecked = false,
-  onChange,
-  disabled = false,
-  size = getDefaultSize(),
-  color = getDefaultColor(),
+  // Universal props
+  color = UNIVERSAL_DEFAULTS.color,
   customColor,
-  shape = 'pill',
-  label,
-  description,
-  labelPosition = 'right',
-  error = false,
-  contentToggleable = true,
-  name,
-  value,
-  required = false,
-  'aria-label': ariaLabel,
-  'aria-describedby': ariaDescribedBy,
+  shape = UNIVERSAL_DEFAULTS.shape,
+  size = UNIVERSAL_DEFAULTS.size,
+  disabled = UNIVERSAL_DEFAULTS.disabled,
+  error,
   className,
   style,
   id: providedId,
+  animate = UNIVERSAL_DEFAULTS.animate,
+  rounded, // Legacy support
+  // Form-specific props
+  name,
+  value,
+  required = false,
+  label,
+  onChange,
+  onFocus,
+  onBlur,
+  'aria-label': ariaLabel,
+  'aria-describedby': ariaDescribedBy,
+  'data-testid': dataTestId,
+  // Component-specific props
+  checked,
+  defaultChecked = false,
+  description,
+  labelPosition = 'right',
+  contentToggleable = true,
   ...rest
 }, ref) => {
+
   // Get CSS variables for theming and settings
   const cssVars = useCSSVariables();
   const { settings } = useSettings();
-  const animationsEnabled = settings.appearance.animations;
+  const animationsEnabled = (settings.appearance.animations ?? true) && animate;
   
   // Generate unique ID if not provided
   const generatedId = useId();
@@ -62,7 +70,10 @@ export const RadioButton = forwardRef<RadioButtonRef, RadioButtonProps>(({
   // Determine if controlled or uncontrolled
   const isControlled = checked !== undefined;
   const isChecked = isControlled ? checked : internalChecked;
-  const isError = getValidationState(error, required, isChecked);
+  const isError = getValidationState(Boolean(error), required, isChecked);
+  
+  // Handle legacy rounded prop
+  const finalShape = rounded !== undefined ? (rounded ? 'pill' : 'round') : shape;
   
   // Refs
   const inputRef = useRef<HTMLInputElement>(null);
@@ -82,149 +93,164 @@ export const RadioButton = forwardRef<RadioButtonRef, RadioButtonProps>(({
       setInternalChecked(newChecked);
     }
     
-    // Focus the radio button after change
-    setTimeout(() => {
-      inputRef.current?.focus();
-    }, 0);
-    
     onChange?.(event);
   };
   
-  // Handle focus
-  const handleFocus = () => {
+  // Handle focus/blur
+  const handleFocus = (event: React.FocusEvent<HTMLInputElement>) => {
     setFocused(true);
+    onFocus?.(event);
   };
   
-  // Handle blur
-  const handleBlur = () => {
+  const handleBlur = (event: React.FocusEvent<HTMLInputElement>) => {
     setFocused(false);
+    onBlur?.(event);
   };
   
-  // Handle container click
-  const handleContainerClick = (event: React.MouseEvent) => {
-    if (!contentToggleable || disabled) return;
-    
-    // Prevent double triggering when clicking the input directly
-    if (event.target !== inputRef.current) {
+  // Handle label/description click
+  const handleContentClick = () => {
+    if (contentToggleable && !disabled) {
       inputRef.current?.click();
-      // Ensure focus after click
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 0);
     }
   };
   
-  // Generate IDs for accessibility
-  const labelId = label ? `${id}-label` : undefined;
-  const descriptionId = description ? `${id}-description` : undefined;
+  // Generate styles
+  const containerStyles = getRadioButtonContainerStyles(
+    size,
+    Boolean(disabled),
+    contentToggleable
+  );
   
-  // Build aria-describedby
-  const ariaDescribedByValue = [ariaDescribedBy, descriptionId].filter(Boolean).join(' ') || undefined;
+  const circleStyles = getRadioButtonCircleStyles(
+    size,
+    color,
+    customColor,
+    finalShape,
+    isChecked,
+    Boolean(disabled),
+    focused,
+    isError,
+    animationsEnabled,
+    cssVars
+  );
   
-  // Get ARIA attributes
+  const dotStyles = getRadioButtonDotStyles(
+    size,
+    color,
+    customColor,
+    finalShape,
+    isChecked,
+    Boolean(disabled),
+    isError,
+    animationsEnabled,
+    cssVars
+  );
+  
+  const hiddenInputStyles = getHiddenInputStyles();
+  
+  const labelStyles = getLabelStyles(
+    size,
+    Boolean(disabled),
+    isError,
+    labelPosition,
+    contentToggleable,
+    cssVars
+  );
+  
+  const descriptionStyles = getDescriptionStyles(
+    size,
+    Boolean(disabled),
+    isError,
+    contentToggleable,
+    cssVars
+  );
+  
+  const labelContainerStyles = getLabelContainerStyles(
+    labelPosition
+  );
+  
+  // ARIA attributes
   const ariaAttributes = getAriaAttributes({
     checked: isChecked,
-    disabled,
+    disabled: Boolean(disabled),
     invalid: isError,
-    required,
-    describedBy: ariaDescribedByValue,
-    labelledBy: labelId,
+    required: required,
+    describedBy: ariaDescribedBy,
+    labelledBy: label ? `${id}-label` : undefined,
   });
   
-  // Render label content
-  const renderLabelContent = () => {
-    if (!label && !description) return null;
-    
-    if (description) {
-      return (
-        <div style={getLabelContainerStyles(labelPosition)}>
-          {label && (
-            <label
-              id={labelId}
-              htmlFor={id}
-              style={getLabelStyles(size, disabled, isError, labelPosition, contentToggleable, cssVars)}
-            >
-              {label}
-            </label>
-          )}
-          <span
-            id={descriptionId}
-            style={getDescriptionStyles(size, disabled, isError, contentToggleable, cssVars)}
-          >
-            {description}
-          </span>
-        </div>
-      );
-    }
-    
-    return (
-      <label
-        id={labelId}
-        htmlFor={id}
-        style={getLabelStyles(size, disabled, isError, labelPosition, contentToggleable, cssVars)}
-      >
-        {label}
-      </label>
-    );
+  // Combine styles
+  const combinedStyles = {
+    ...containerStyles,
+    ...style,
   };
   
   return (
     <div
       className={className}
-      style={{
-        ...getRadioButtonContainerStyles(size, disabled, contentToggleable),
-        ...style,
-      }}
-      onClick={handleContainerClick}
+      style={combinedStyles}
+      data-testid={dataTestId}
     >
-      {/* Hidden input for form integration and accessibility */}
-      <input
-        ref={inputRef}
-        type="radio"
-        id={id}
-        name={name}
-        value={value}
-        checked={isChecked}
-        onChange={handleChange}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        disabled={disabled}
-        required={required}
-        aria-label={ariaLabel}
-        style={getHiddenInputStyles()}
-        {...ariaAttributes}
-        {...rest}
-      />
-      
-      {/* Radio button circle with dot */}
-      <div
-        role="presentation"
-        style={getRadioButtonCircleStyles(size, color, customColor, shape, isChecked, disabled, focused, isError, animationsEnabled, cssVars)}
-      >
-        {/* Radio button dot */}
-        <div
-          role="presentation"
-          style={getRadioButtonDotStyles(size, color, customColor, shape, isChecked, disabled, isError, animationsEnabled, cssVars)}
-        />
+      <div style={{ position: 'relative', display: 'flex', alignItems: 'flex-start' }}>
+        <div style={{ position: 'relative' }}>
+          <input
+            ref={inputRef}
+            type="radio"
+            id={id}
+            name={name}
+            value={value}
+            checked={isChecked}
+            onChange={handleChange}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            disabled={disabled}
+            required={required}
+            aria-label={ariaLabel}
+            style={hiddenInputStyles}
+            {...ariaAttributes}
+            {...rest}
+          />
+          <div style={circleStyles}>
+            {isChecked && <div style={dotStyles} />}
+          </div>
+        </div>
+        
+        {(label || description) && (
+          <div style={labelContainerStyles} onClick={handleContentClick}>
+            {label && (
+              <label
+                id={`${id}-label`}
+                htmlFor={id}
+                style={labelStyles}
+              >
+                {label}
+              </label>
+            )}
+            {description && (
+              <div
+                id={`${id}-description`}
+                style={descriptionStyles}
+              >
+                {description}
+              </div>
+            )}
+          </div>
+        )}
       </div>
-      
-      {/* Label and description */}
-      {renderLabelContent()}
     </div>
   );
 });
 
 RadioButton.displayName = 'RadioButton';
 
-// RadioButton Group Component
 export const RadioButtonGroup: React.FC<RadioButtonGroupProps> = ({
   name,
   value,
   onChange,
-  size = getDefaultSize(),
-  color = getDefaultColor(),
+  size = UNIVERSAL_DEFAULTS.size,
+  color = UNIVERSAL_DEFAULTS.color,
   customColor,
-  shape = 'pill',
+  shape = UNIVERSAL_DEFAULTS.shape,
   disabled = false,
   error = false,
   options,
@@ -233,30 +259,27 @@ export const RadioButtonGroup: React.FC<RadioButtonGroupProps> = ({
   className,
   style,
 }) => {
-  // Internal state for uncontrolled mode
-  const [internalValue, setInternalValue] = useState<string | undefined>(undefined);
+  const cssVars = useCSSVariables();
+  const { settings } = useSettings();
+  const animationsEnabled = settings.appearance.animations ?? true;
   
-  // Determine if controlled or uncontrolled
-  const isControlled = value !== undefined;
-  const currentValue = isControlled ? value : internalValue;
+  const groupStyles = getRadioButtonGroupStyles(
+    orientation
+  );
+  
+  const combinedStyles = {
+    ...groupStyles,
+    ...style,
+  };
   
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value;
-    
-    if (!isControlled) {
-      setInternalValue(newValue);
-    }
-    
-    onChange?.(newValue);
+    onChange?.(event.target.value);
   };
   
   return (
     <div
       className={className}
-      style={{
-        ...getRadioButtonGroupStyles(orientation),
-        ...style,
-      }}
+      style={combinedStyles}
       role="radiogroup"
     >
       {options.map((option) => (
@@ -264,9 +287,10 @@ export const RadioButtonGroup: React.FC<RadioButtonGroupProps> = ({
           key={option.value}
           name={name}
           value={option.value}
-          checked={currentValue === option.value}
+          checked={value === option.value}
           onChange={handleChange}
           disabled={disabled || option.disabled}
+          error={error}
           size={size}
           color={color}
           customColor={customColor}
@@ -274,7 +298,7 @@ export const RadioButtonGroup: React.FC<RadioButtonGroupProps> = ({
           label={option.label}
           description={option.description}
           labelPosition={labelPosition}
-          error={error}
+          animate={animationsEnabled}
         />
       ))}
     </div>

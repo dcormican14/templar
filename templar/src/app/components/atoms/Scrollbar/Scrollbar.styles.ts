@@ -13,7 +13,7 @@ export const getColorVariables = (color: ScrollbarColor, customColor: string | u
     };
   }
 
-  const colorMap = {
+  const colorMap: Record<string, any> = {
     primary: {
       main: cssVars.primary,
       background: cssVars.primaryBackground,
@@ -463,9 +463,7 @@ export const getCustomScrollbarThumbStyles = (
       ? 'background-color var(--duration-fast) var(--animation-smooth), transform var(--duration-fast) var(--animation-smooth)' 
       : 'none',
     ...shapeStyles,
-    '&:active': {
-      cursor: disabled ? 'not-allowed' : 'grabbing',
-    },
+    // Active styles handled via event handlers
   };
 
   // Variant-specific styling

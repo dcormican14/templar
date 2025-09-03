@@ -1,10 +1,3 @@
-export { Navigation } from './Navigation';
-export type { 
-  NavigationProps, 
-  NavigationTab,
-  NavigationTabProps,
-  NavigationBrandProps 
-} from './Navigation';
 export { CollapsibleMenu } from './CollapsibleMenu';
 export type { 
   CollapsibleMenuProps, 
@@ -13,4 +6,4 @@ export type {
   CollapsibleMenuColor, 
   CollapsibleMenuShape,
   CollapsibleMenuPosition
-} from './CollapsibleMenu';
+} from './CollapsibleMenu.types';

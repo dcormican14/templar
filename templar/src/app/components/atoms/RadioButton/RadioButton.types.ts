@@ -1,33 +1,20 @@
-import { ComponentProps, ReactNode } from 'react';
+import React, { ComponentProps, ReactNode } from 'react';
+import type { 
+  WithFormProps, 
+  UniversalSize, 
+  UniversalColor, 
+  UniversalVariant,
+  UniversalShape 
+} from '../types';
 
-export type RadioButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-export type RadioButtonColor = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'custom';
-export type RadioButtonShape = 'sharp' | 'round' | 'pill';
+// Component-specific type aliases (for backward compatibility)
+export type RadioButtonSize = UniversalSize;
+export type RadioButtonColor = UniversalColor;
+export type RadioButtonVariant = UniversalVariant;
+export type RadioButtonShape = UniversalShape;
 
-export interface RadioButtonProps extends Omit<ComponentProps<'input'>, 'size' | 'type'> {
-  /**
-   * The size of the radio button
-   * @default 'md'
-   */
-  size?: RadioButtonSize;
-  
-  /**
-   * Color scheme of the radio button
-   * @default 'primary'
-   */
-  color?: RadioButtonColor;
-  
-  /**
-   * Custom color when color is set to 'custom'
-   */
-  customColor?: string;
-  
-  /**
-   * Shape of the radio button
-   * @default 'pill'
-   */
-  shape?: RadioButtonShape;
-  
+// Component-specific props (not covered by universal props)
+export interface RadioButtonSpecificProps extends Omit<ComponentProps<'input'>, 'size' | 'type' | 'color'> {
   /**
    * Label text for the radio button
    */
@@ -45,16 +32,18 @@ export interface RadioButtonProps extends Omit<ComponentProps<'input'>, 'size' |
   labelPosition?: 'left' | 'right';
   
   /**
-   * Whether the radio button is in an error state
-   * @default false
-   */
-  error?: boolean;
-  
-  /**
    * Whether clicking on the label/description should toggle the radio button
    * @default true
    */
   contentToggleable?: boolean;
+}
+
+// Complete RadioButton props interface extending universal props with label override
+export interface RadioButtonProps extends Omit<WithFormProps<RadioButtonSpecificProps>, 'label'> {
+  /**
+   * Label text for the radio button (can be ReactNode)
+   */
+  label?: ReactNode;
 }
 
 export interface RadioButtonRef {

@@ -1,43 +1,22 @@
 import React from 'react';
+import type { 
+  WithFormProps, 
+  UniversalSize, 
+  UniversalColor 
+} from '../types';
 
-export type SliderSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-export type SliderColor = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'custom';
+// Component-specific type aliases (for backward compatibility)
+export type SliderSize = UniversalSize;
+export type SliderColor = UniversalColor;
 export type SliderOrientation = 'horizontal' | 'vertical';
 
-export interface SliderProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'onChange'> {
-  /**
-   * Color scheme of the slider
-   * @default 'primary'
-   */
-  color?: SliderColor;
-  
-  /**
-   * Custom color when color is set to 'custom'
-   */
-  customColor?: string;
-  
-  /**
-   * Size of the slider
-   * @default 'md'
-   */
-  size?: SliderSize;
-  
+// Component-specific props (not covered by universal props)
+export interface SliderSpecificProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'onChange' | 'color' | 'onInput'> {
   /**
    * Orientation of the slider
    * @default 'horizontal'
    */
   orientation?: SliderOrientation;
-  
-  /**
-   * Current value of the slider (controlled mode)
-   */
-  value?: number;
-  
-  /**
-   * Default value for uncontrolled mode
-   * @default 0
-   */
-  defaultValue?: number;
   
   /**
    * Minimum value
@@ -56,23 +35,6 @@ export interface SliderProps extends Omit<React.InputHTMLAttributes<HTMLInputEle
    * @default 1
    */
   step?: number;
-  
-  /**
-   * Whether the slider is disabled
-   * @default false
-   */
-  disabled?: boolean;
-  
-  /**
-   * Whether the slider is in an error state
-   * @default false
-   */
-  error?: boolean;
-  
-  /**
-   * Callback fired when the value changes
-   */
-  onChange?: (value: number, event: React.ChangeEvent<HTMLInputElement>) => void;
   
   /**
    * Callback fired when the slider is clicked/moved
@@ -135,15 +97,14 @@ export interface SliderProps extends Omit<React.InputHTMLAttributes<HTMLInputEle
    */
   formatValue?: (value: number) => string;
   
+}
+
+// Complete Slider props interface extending universal props with custom onChange
+export interface SliderProps extends Omit<WithFormProps<SliderSpecificProps>, 'onChange'> {
   /**
-   * Additional CSS class names
+   * Callback fired when the value changes
    */
-  className?: string;
-  
-  /**
-   * Additional inline styles
-   */
-  style?: React.CSSProperties;
+  onChange?: (value: number, event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export interface SliderRef {

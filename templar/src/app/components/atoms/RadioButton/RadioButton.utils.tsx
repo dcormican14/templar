@@ -51,6 +51,11 @@ export const getDefaultSize = (): RadioButtonSize => 'md';
 export const getDefaultColor = (): RadioButtonColor => 'primary';
 
 /**
+ * Get the default variant for consistency (RadioButton doesn't use variants, but needed for compatibility)
+ */
+export const getDefaultVariant = () => 'solid';
+
+/**
  * Check if a radio button should be considered invalid
  */
 export const getValidationState = (

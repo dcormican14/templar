@@ -1,10 +1,13 @@
 import React from 'react';
 import type { IconName } from './iconRegistry';
+import type { UniversalSize, UniversalColor } from '../types';
 
-export type IconSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-export type IconColor = 'inherit' | 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'muted' | 'custom';
+// Component-specific type aliases (for backward compatibility)
+export type IconSize = UniversalSize;
+export type IconColor = UniversalColor | 'inherit' | 'muted';
 
-export interface IconProps extends Omit<React.SVGProps<SVGSVGElement>, 'name' | 'color'> {
+// Component-specific props (not covered by universal props)
+export interface IconSpecificProps extends Omit<React.SVGProps<SVGSVGElement>, 'name' | 'color' | 'size'> {
   /**
    * Icon name from the icon registry or custom component
    */
@@ -38,12 +41,10 @@ export interface IconProps extends Omit<React.SVGProps<SVGSVGElement>, 'name' | 
    * @default false
    */
   pulse?: boolean;
-  
-  /**
-   * Additional CSS class names
-   */
-  className?: string;
 }
+
+// Complete Icon props interface (no universal props inheritance needed as Icon is simple)
+export interface IconProps extends IconSpecificProps {}
 
 // Re-export IconName for convenience
 export type { IconName };

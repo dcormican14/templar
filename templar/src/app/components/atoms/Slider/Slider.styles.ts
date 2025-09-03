@@ -13,48 +13,48 @@ export const getColorVariables = (color: SliderColor, customColor: string | unde
     };
   }
 
-  const colorMap = {
+  const colorMap: Record<string, any> = {
     primary: {
       main: cssVars.primary,
-      background: cssVars.primaryBackground,
+      background: cssVars.primaryBackground || cssVars.primary + '10',
       foreground: cssVars.primaryForeground,
-      hover: cssVars.primaryHover,
-      border: cssVars.primaryBorder,
+      hover: cssVars.primaryHover || cssVars.primary + '20',
+      border: cssVars.primaryBorder || cssVars.primary,
     },
     secondary: {
       main: cssVars.secondary,
-      background: cssVars.secondaryBackground,
+      background: cssVars.secondaryBackground || cssVars.secondary + '10',
       foreground: cssVars.secondaryForeground,
-      hover: cssVars.secondaryHover,
-      border: cssVars.secondaryBorder,
+      hover: cssVars.secondaryHover || cssVars.secondary + '20',
+      border: cssVars.secondaryBorder || cssVars.secondary,
     },
     success: {
       main: cssVars.success,
-      background: cssVars.successBackground,
+      background: cssVars.successBackground || cssVars.success + '10',
       foreground: cssVars.successForeground,
-      hover: cssVars.successHover,
-      border: cssVars.successBorder,
+      hover: cssVars.successHover || cssVars.success + '20',
+      border: cssVars.successBorder || cssVars.success,
     },
     warning: {
       main: cssVars.warning,
-      background: cssVars.warningBackground,
+      background: cssVars.warningBackground || cssVars.warning + '10',
       foreground: cssVars.warningForeground,
-      hover: cssVars.warningHover,
-      border: cssVars.warningBorder,
+      hover: cssVars.warningHover || cssVars.warning + '20',
+      border: cssVars.warningBorder || cssVars.warning,
     },
     destructive: {
-      main: cssVars.destructive,
-      background: cssVars.destructiveBackground,
-      foreground: cssVars.destructiveForeground,
-      hover: cssVars.destructiveHover,
-      border: cssVars.destructiveBorder,
+      main: cssVars.error,
+      background: cssVars.errorBackground || cssVars.error + '10',
+      foreground: cssVars.errorForeground || '#ffffff',
+      hover: cssVars.errorHover || cssVars.error + '20',
+      border: cssVars.errorBorder || cssVars.error,
     },
     info: {
       main: cssVars.info,
-      background: cssVars.infoBackground,
+      background: cssVars.infoBackground || cssVars.info + '10',
       foreground: cssVars.infoForeground,
-      hover: cssVars.infoHover,
-      border: cssVars.infoBorder,
+      hover: cssVars.infoHover || cssVars.info + '20',
+      border: cssVars.infoBorder || cssVars.info,
     },
   };
 
@@ -187,7 +187,7 @@ export const getTrackFillStyles = (
   const colors = getColorVariables(color, customColor, cssVars);
   const percentage = ((value - min) / (max - min)) * 100;
   
-  const fillColor = error ? cssVars.destructive : colors.main;
+  const fillColor = error ? cssVars.error : colors.main;
   
   return {
     position: 'absolute',
@@ -232,7 +232,7 @@ export const getThumbStyles = (
   const colors = getColorVariables(color, customColor, cssVars);
   const percentage = ((value - min) / (max - min)) * 100;
   
-  const thumbColor = error ? cssVars.destructive : colors.main;
+  const thumbColor = error ? cssVars.error : colors.main;
   
   const baseStyles: React.CSSProperties = {
     position: 'absolute',
@@ -277,7 +277,7 @@ export const getLabelStyles = (
   return {
     fontSize: config.fontSize,
     fontWeight: 500,
-    color: disabled ? cssVars.mutedForeground : (error ? cssVars.destructive : cssVars.foreground),
+    color: disabled ? cssVars.mutedForeground : (error ? cssVars.error : cssVars.foreground),
     marginBottom: '4px',
     userSelect: 'none',
   };
@@ -300,7 +300,7 @@ export const getDescriptionStyles = (
   
   return {
     fontSize: fontSizeMap[size],
-    color: disabled ? cssVars.mutedForeground : (error ? cssVars.destructive : cssVars.mutedForeground),
+    color: disabled ? cssVars.mutedForeground : (error ? cssVars.error : cssVars.mutedForeground),
     marginTop: '4px',
     lineHeight: 1.4,
     userSelect: 'none',
@@ -352,8 +352,8 @@ export const getTooltipStyles = (
   
   const baseStyles: React.CSSProperties = {
     position: 'absolute',
-    backgroundColor: cssVars.popover,
-    color: cssVars.popoverForeground,
+    backgroundColor: cssVars.card || cssVars.background,
+    color: cssVars.cardForeground || cssVars.foreground,
     padding: '4px 8px',
     borderRadius: '6px',
     fontSize: '12px',

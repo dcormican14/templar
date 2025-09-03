@@ -45,7 +45,7 @@ export const getToggleDimensions = (size: ToggleSize) => {
 
 // Get color variables based on color prop
 export const getToggleColors = (color: ToggleColor, checked: boolean, disabled: boolean, cssVars: any) => {
-  const colorMap = {
+  const colorMap: Record<string, any> = {
     primary: {
       main: cssVars.primary,
       foreground: cssVars.primaryForeground,
@@ -67,14 +67,19 @@ export const getToggleColors = (color: ToggleColor, checked: boolean, disabled: 
       hover: cssVars.warningHover,
     },
     destructive: {
-      main: cssVars.destructive,
-      foreground: cssVars.destructiveForeground,
-      hover: cssVars.destructiveHover,
+      main: cssVars.error,
+      foreground: cssVars.errorForeground || '#ffffff',
+      hover: cssVars.errorHover,
     },
     info: {
       main: cssVars.info,
       foreground: cssVars.infoForeground,
       hover: cssVars.infoHover,
+    },
+    custom: {
+      main: cssVars.primary,
+      foreground: cssVars.primaryForeground,
+      hover: cssVars.primaryHover,
     },
   };
   

@@ -1,50 +1,20 @@
 import React from 'react';
+import type { 
+  WithFormProps, 
+  UniversalSize, 
+  UniversalColor, 
+  UniversalVariant, 
+  UniversalShape 
+} from '../types';
 
-export type SearchSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-export type SearchColor = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'custom';
-export type SearchVariant = 'solid' | 'ghost' | 'outline';
-export type SearchShape = 'sharp' | 'round' | 'pill';
+// Component-specific type aliases (for backward compatibility)
+export type SearchSize = UniversalSize;
+export type SearchColor = UniversalColor;
+export type SearchVariant = UniversalVariant;
+export type SearchShape = UniversalShape;
 
-export interface SearchProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'onChange'> {
-  /**
-   * Color scheme of the search input
-   * @default 'primary'
-   */
-  color?: SearchColor;
-  
-  /**
-   * Custom color when color is set to 'custom'
-   */
-  customColor?: string;
-  
-  /**
-   * Visual style variant of the search input
-   * @default 'outline'
-   */
-  variant?: SearchVariant;
-  
-  /**
-   * Shape of the search input
-   * @default 'round'
-   */
-  shape?: SearchShape;
-  
-  /**
-   * Size of the search input
-   * @default 'md'
-   */
-  size?: SearchSize;
-  
-  /**
-   * Current search value
-   */
-  value?: string;
-  
-  /**
-   * Callback fired when search value changes
-   */
-  onChange?: (value: string) => void;
-  
+// Component-specific props (not covered by universal props)
+export interface SearchSpecificProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'onChange' | 'color'> {
   /**
    * Callback fired when search is submitted (Enter key or search icon click)
    */
@@ -54,18 +24,6 @@ export interface SearchProps extends Omit<React.InputHTMLAttributes<HTMLInputEle
    * Callback fired when clear button is clicked
    */
   onClear?: () => void;
-  
-  /**
-   * Whether the search input is disabled
-   * @default false
-   */
-  disabled?: boolean;
-  
-  /**
-   * Whether the search input is in an error state
-   * @default false
-   */
-  error?: boolean;
   
   /**
    * Whether to show a search icon
@@ -86,18 +44,6 @@ export interface SearchProps extends Omit<React.InputHTMLAttributes<HTMLInputEle
   searchIconPosition?: 'left' | 'right';
   
   /**
-   * Whether to use rounded corners
-   * @default false
-   */
-  rounded?: boolean;
-  
-  /**
-   * Loading state
-   * @default false
-   */
-  loading?: boolean;
-  
-  /**
    * Debounce delay for onChange in milliseconds
    * @default 300
    */
@@ -114,13 +60,16 @@ export interface SearchProps extends Omit<React.InputHTMLAttributes<HTMLInputEle
   clearIcon?: React.ReactNode;
   
   /**
-   * Width of the search input
-   */
-  width?: string | number;
-  
-  /**
    * Whether to clear on escape key
    * @default true
    */
   clearOnEscape?: boolean;
+}
+
+// Complete Search props interface extending universal props with custom onChange
+export interface SearchProps extends Omit<WithFormProps<SearchSpecificProps>, 'onChange'> {
+  /**
+   * Callback fired when search value changes
+   */
+  onChange?: (value: string) => void;
 }

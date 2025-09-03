@@ -2,21 +2,23 @@ export { Scrollbar } from './Scrollbar';
 export type { 
   ScrollbarProps, 
   ScrollbarRef, 
-  ScrollbarSize, 
+  ScrollbarSize,
+  ScrollbarColor,
   ScrollbarVariant,
-  ScrollbarOrientation,
-  ScrollbarTrackSize 
+  ScrollbarShape,
+  ScrollbarOrientation
 } from './Scrollbar.types';
 export {
-  getScrollbarDimensions,
-  getTrackThickness,
-  getScrollbarColors,
-  getScrollbarContainerStyles,
+  getColorVariables,
+  getShapeStyles,
+  getSizeConfig,
+  createScrollbarContainerStyles,
+  getScrollableContentStyles,
   getWebKitScrollbarStyles,
-  getFallbackScrollbarStyles,
-  getScrollbarContentStyles,
+  getFirefoxScrollbarStyles,
   getCustomScrollbarTrackStyles,
   getCustomScrollbarThumbStyles,
+  getScrollIndicatorStyles,
 } from './Scrollbar.styles';
 export {
   supportsWebKitScrollbar,

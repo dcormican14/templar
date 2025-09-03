@@ -6,5 +6,6 @@ export type {
   TextAreaColor, 
   TextAreaVariant, 
   TextAreaShape, 
-  TextAreaResize 
+  TextAreaResize,
+  TextAreaSpecificProps
 } from './TextArea.types';

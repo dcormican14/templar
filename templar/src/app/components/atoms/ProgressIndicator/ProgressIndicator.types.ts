@@ -1,5 +1,6 @@
+import React from 'react';
 import type { 
-  WithUniversalProps, 
+  WithContainerProps, 
   UniversalSize, 
   UniversalColor, 
   UniversalVariant, 
@@ -11,14 +12,13 @@ export type ProgressIndicatorSize = UniversalSize;
 export type ProgressIndicatorColor = UniversalColor;
 export type ProgressIndicatorVariant = UniversalVariant;
 export type ProgressIndicatorShape = UniversalShape;
-export type ProgressIndicatorType = 'spinner' | 'bar' | 'circular' | 'dots';
+export type ProgressIndicatorType = 'spinner' | 'bar' | 'progressBar' | 'circular' | 'dots';
 
 // Component-specific props (not covered by universal props)
-export interface ProgressIndicatorSpecificProps {
-  
+export interface ProgressIndicatorSpecificProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * Type of progress indicator to display
-   * @default 'bar'
+   * @default 'spinner'
    */
   type?: ProgressIndicatorType;
   
@@ -74,7 +74,11 @@ export interface ProgressIndicatorSpecificProps {
    * @default false
    */
   indeterminate?: boolean;
+  
+  // Legacy props for backward compatibility
+  preset?: string;
+  trackSize?: UniversalSize;
 }
 
 // Complete ProgressIndicator props interface extending universal props
-export interface ProgressIndicatorProps extends WithUniversalProps<ProgressIndicatorSpecificProps> {}
+export interface ProgressIndicatorProps extends WithContainerProps<ProgressIndicatorSpecificProps> {}

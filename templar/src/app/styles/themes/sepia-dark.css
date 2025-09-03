@@ -1,60 +1,105 @@
 /* Sepia Dark Theme - Warm, vintage dark mode */
 [data-theme="sepia-dark"] {
   /* Base colors */
-  --background: #2b1e14; /* deep coffee brown */
-  --foreground: #f4ecd8; /* warm parchment */
+  --background: #2b1e14;
+  --background-hover: #3e2b1f;
+  --background-accent: #332419;
+  --background-shadow: rgba(244, 236, 216, 0.1);
+  --background-disabled: #1f150e;
+  --background-border: #9c7c55;
+  --background-font: #f4ecd8;
+  
+  --foreground: #f4ecd8;
+  --foreground-hover: #ffffff;
+  --foreground-accent: #d9c8aa;
+  --foreground-shadow: rgba(244, 236, 216, 0.1);
+  --foreground-disabled: #bfa27d;
+  --foreground-border: #8a6f47;
+  --foreground-font: #2b1e14;
   
   /* Primary colors */
-  --primary: #c86b8f; /* muted rose-red for sepia look */
-  --primary-foreground: #f4ecd8; /* parchment text */
-  --primary-hover: #d98da7; /* lighter muted rose */
+  --primary: #c86b8f;
+  --primary-background: #4a2033;
+  --primary-foreground: #f4ecd8;
+  --primary-hover: #d98da7;
+  --primary-accent: #b85076;
+  --primary-shadow: rgba(200, 107, 143, 0.3);
+  --primary-disabled: #664350;
+  --primary-border: #b85076;
+  --primary-font: #f4ecd8;
   
   /* Secondary colors */
-  --secondary: #7ab1d6; /* softened light-sky-blue */
-  --secondary-foreground: #2b1e14; /* deep coffee brown */
+  --secondary: #7ab1d6;
+  --secondary-background: #1e2b33;
+  --secondary-foreground: #2b1e14;
   --secondary-hover: #99c9eb;
-  
-  /* Accent colors */
-  --accent: #d5b48c; /* muted warm tan */
-  --accent-foreground: #2b1e14;
-  
-  /* Border and dividers */
-  --border: #9c7c55; /* warm medium brown */
-  --border-hover: #bfa27d;
-  
-  /* Muted elements */
-  --muted: #3e2b1f; /* faded brown */
-  --muted-foreground: #d9c8aa; /* lighter brown */
+  --secondary-accent: #5a9bc4;
+  --secondary-shadow: rgba(122, 177, 214, 0.3);
+  --secondary-disabled: #4a5866;
+  --secondary-border: #5a9bc4;
+  --secondary-font: #2b1e14;
   
   /* Success colors */
-  --success: #7dbb8c; /* muted green */
+  --success: #7dbb8c;
+  --success-background: #1e2e23;
   --success-foreground: #2b1e14;
+  --success-hover: #96c7a2;
+  --success-accent: #659e72;
+  --success-shadow: rgba(125, 187, 140, 0.3);
+  --success-disabled: #3d5447;
+  --success-border: #659e72;
+  --success-font: #2b1e14;
   
   /* Warning colors */
-  --warning: #e6a96b; /* golden amber */
+  --warning: #e6a96b;
+  --warning-background: #332920;
   --warning-foreground: #2b1e14;
+  --warning-hover: #ebba84;
+  --warning-accent: #d99551;
+  --warning-shadow: rgba(230, 169, 107, 0.3);
+  --warning-disabled: #664640;
+  --warning-border: #d99551;
+  --warning-font: #2b1e14;
   
-  /* Error colors */
-  --error: #a8525d; /* warm dusty red */
-  --error-foreground: #f4ecd8;
+  /* Destructive colors */
+  --destructive: #a8525d;
+  --destructive-background: #3e1f25;
+  --destructive-foreground: #f4ecd8;
+  --destructive-hover: #b86d76;
+  --destructive-accent: #9a3b47;
+  --destructive-shadow: rgba(168, 82, 93, 0.3);
+  --destructive-disabled: #5c3444;
+  --destructive-border: #9a3b47;
+  --destructive-font: #f4ecd8;
   
   /* Info colors */
-  --info: #7ab1d6; /* softened light-sky-blue */
+  --info: #7ab1d6;
+  --info-background: #1e2b33;
   --info-foreground: #2b1e14;
+  --info-hover: #99c9eb;
+  --info-accent: #5a9bc4;
+  --info-shadow: rgba(122, 177, 214, 0.3);
+  --info-disabled: #4a5866;
+  --info-border: #5a9bc4;
+  --info-font: #2b1e14;
   
-  /* Card and surface colors */
-  --card: #3e2b1f; /* slightly lighter brown */
+  /* Legacy compatibility */
+  --accent: #d5b48c;
+  --accent-foreground: #2b1e14;
+  --border: #9c7c55;
+  --border-hover: #bfa27d;
+  --muted: #3e2b1f;
+  --muted-foreground: #d9c8aa;
+  --error: #a8525d;
+  --error-foreground: #f4ecd8;
+  --card: #3e2b1f;
   --card-foreground: #f4ecd8;
-  
-  /* Input colors */
   --input: #3e2b1f;
   --input-border: #9c7c55;
   --input-placeholder: #bfa27d;
   --input-foreground: #f4ecd8;
-  
-  /* Progress indicator colors */
-  --progress-track: #5c4332; /* warm dark brown track */
-  --progress-track-text: #d9c8aa; /* warm light brown for percentage text */
+  --progress-track: #5c4332;
+  --progress-track-text: #d9c8aa;
   
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(244 236 216 / 0.1);

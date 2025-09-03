@@ -13,7 +13,7 @@ export const getColorVariables = (color: RadioButtonColor, customColor: string |
     };
   }
 
-  const colorMap = {
+  const colorMap: Record<string, any> = {
     primary: {
       main: cssVars.primary,
       background: cssVars.primaryBackground,

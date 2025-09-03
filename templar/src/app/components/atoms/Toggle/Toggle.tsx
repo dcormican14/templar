@@ -1,5 +1,6 @@
 import React, { forwardRef, useRef, useImperativeHandle, useState, useId } from 'react';
 import { useCSSVariables } from '../../../providers';
+import { extractFormProps, UNIVERSAL_DEFAULTS } from '../types';
 import { ToggleProps, ToggleRef } from './Toggle.types';
 import {
   getToggleContainerStyles,
@@ -11,25 +12,37 @@ import {
   getLabelContainerStyles,
 } from './Toggle.styles';
 
-export const Toggle = forwardRef<ToggleRef, ToggleProps>(({
-  checked,
-  defaultChecked = false,
-  onChange,
-  disabled = false,
-  size = 'md',
-  color = 'primary',
-  label,
-  description,
-  labelPosition = 'right',
-  name,
-  value,
-  required = false,
-  'aria-label': ariaLabel,
-  'aria-describedby': ariaDescribedBy,
-  className,
-  style,
-  id: providedId,
-}, ref) => {
+export const Toggle = forwardRef<ToggleRef, ToggleProps>((allProps, ref) => {
+  // Extract onChange separately since it has custom signature
+  const { onChange, ...propsForExtraction } = allProps;
+  
+  // Extract form props and component-specific props
+  const [formProps, componentProps] = extractFormProps(propsForExtraction);
+  
+  // Destructure form props with defaults
+  const {
+    color = UNIVERSAL_DEFAULTS.color,
+    size = UNIVERSAL_DEFAULTS.size,
+    disabled = UNIVERSAL_DEFAULTS.disabled,
+    label,
+    className,
+    style,
+    id: providedId,
+    // Form-specific props
+    name,
+    value,
+    required,
+    'aria-label': ariaLabel,
+    'aria-describedby': ariaDescribedBy,
+  } = formProps;
+  
+  // Destructure component-specific props
+  const {
+    checked,
+    defaultChecked = false,
+    description,
+    labelPosition = 'right',
+  } = componentProps;
   // Get CSS variables for theming
   const cssVars = useCSSVariables();
   
@@ -111,14 +124,14 @@ export const Toggle = forwardRef<ToggleRef, ToggleProps>(({
             <label
               id={labelId}
               htmlFor={id}
-              style={getLabelStyles(size, disabled, labelPosition, cssVars)}
+              style={getLabelStyles(size, disabled || false, labelPosition, cssVars)}
             >
               {label}
             </label>
           )}
           <span
             id={descriptionId}
-            style={getDescriptionStyles(size, disabled, cssVars)}
+            style={getDescriptionStyles(size, disabled || false, cssVars)}
           >
             {description}
           </span>
@@ -130,7 +143,7 @@ export const Toggle = forwardRef<ToggleRef, ToggleProps>(({
       <label
         id={labelId}
         htmlFor={id}
-        style={getLabelStyles(size, disabled, labelPosition, cssVars)}
+        style={getLabelStyles(size, disabled || false, labelPosition, cssVars)}
       >
         {label}
       </label>
@@ -141,7 +154,7 @@ export const Toggle = forwardRef<ToggleRef, ToggleProps>(({
     <div
       className={className}
       style={{
-        ...getToggleContainerStyles(size, disabled),
+        ...getToggleContainerStyles(size, disabled || false),
         ...style,
       }}
       onClick={handleContainerClick}
@@ -168,12 +181,12 @@ export const Toggle = forwardRef<ToggleRef, ToggleProps>(({
       {/* Toggle track with animated bubble */}
       <div
         role="presentation"
-        style={getToggleTrackStyles(size, color, isChecked, disabled, focused, cssVars)}
+        style={getToggleTrackStyles(size, color, isChecked, disabled || false, focused, cssVars)}
       >
         {/* Main bubble */}
         <div
           role="presentation"
-          style={getBubbleStyles(size, color, isChecked, disabled, cssVars)}
+          style={getBubbleStyles(size, color, isChecked, disabled || false, cssVars)}
         />
       </div>
       
