@@ -142,7 +142,7 @@ export const getCollapsibleMenuContainerStyles = (
     zIndex,
     display: 'flex',
     flexDirection: 'column',
-    overflow: 'hidden',
+    overflow: 'visible', // Changed from 'hidden' to 'visible' to prevent toggle button cutoff
     opacity: disabled ? 0.6 : 1,
     pointerEvents: disabled ? 'none' : 'auto',
   };

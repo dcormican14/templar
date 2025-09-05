@@ -29,3 +29,6 @@ export {
   generateCodeString,
   getComponentName,
 } from './InteractiveComponentDisplay';
+
+export { ReadmeDisplay } from './ReadmeDisplay';
+export type { ReadmeDisplayProps } from './ReadmeDisplay';

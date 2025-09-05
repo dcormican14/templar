@@ -19,7 +19,7 @@ export const CollapsibleMenu = forwardRef<CollapsibleMenuRef, CollapsibleMenuPro
     onToggle,
     position = 'left',
     expandedWidth = '250px',
-    collapsedWidth = '60px',
+    collapsedWidth = '20px',
     children,
     toggleContent,
     showToggle = true,
@@ -163,7 +163,7 @@ export const CollapsibleMenu = forwardRef<CollapsibleMenuRef, CollapsibleMenuPro
   const renderToggle = () => {
     if (!showToggle) return null;
     
-    const iconName = position === 'left' ? 'NavArrowRight' : 'NavArrowLeft';
+    const iconName = position === 'right' ? 'NavArrowRight' : 'NavArrowLeft';
     
     return (
       <button

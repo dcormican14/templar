@@ -3,7 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { useCSSVariables } from '../../providers';
 import { InteractiveComponentDisplay } from '../molecules/InteractiveComponentDisplay/InteractiveComponentDisplay';
-import { Scrollbar, Icon, Button, SegmentedControl } from '../atoms';
+import { ReadmeDisplay } from '../molecules/ReadmeDisplay/ReadmeDisplay';
+import { Scrollbar, Icon, Button, SegmentedControl, CodeBlock, Card } from '../atoms';
+import { generateCodeString, getComponentName } from '../molecules/InteractiveComponentDisplay/InteractiveComponentDisplay.utils';
 import { getComponentType, getReadmePath } from '../../utils/componentUtils';
 import { getComponentInteractiveConfig } from './componentConfigs';
 
@@ -16,6 +18,7 @@ export function ComponentShowcase({ componentName }: ComponentShowcaseProps) {
   const [activeTab, setActiveTab] = useState<'overview' | 'interactive'>('overview');
   const [readmeContent, setReadmeContent] = useState<string>('');
   const [loading, setLoading] = useState(true);
+  const [componentProps, setComponentProps] = useState<Record<string, any>>({});
 
   const componentType = getComponentType(componentName);
 
@@ -105,119 +108,16 @@ For more detailed documentation, examples, and API reference, visit the [Templar
   };
 
   const renderOverview = () => {
-    if (loading) {
-      return (
-        <div style={{ 
-          padding: '40px', 
-          display: 'flex', 
-          flexDirection: 'column',
-          alignItems: 'center', 
-          gap: '16px' 
-        }}>
-          <Icon name="Loading" spin size="lg" style={{ color: cssVars.primary }} />
-          <p style={{ color: cssVars.foregroundAccent }}>Loading documentation...</p>
-        </div>
-      );
-    }
-
     return (
       <div style={{ 
         padding: '32px',
-        maxWidth: '800px',
-        margin: '0 auto'
+        maxWidth: 'none',
+        textAlign: 'left'
       }}>
-        <div 
-          style={{
-            color: cssVars.foreground,
-            lineHeight: '1.6',
-            fontSize: '14px'
-          }}
-        >
-          {/* Parse and render markdown-style content */}
-          {readmeContent.split('\n').map((line, index) => {
-            if (line.startsWith('# ')) {
-              return (
-                <h1 
-                  key={index}
-                  style={{ 
-                    color: cssVars.primary, 
-                    fontSize: '28px', 
-                    fontWeight: '700',
-                    marginBottom: '16px',
-                    marginTop: index === 0 ? '0' : '32px'
-                  }}
-                >
-                  {line.replace('# ', '')}
-                </h1>
-              );
-            }
-            if (line.startsWith('## ')) {
-              return (
-                <h2 
-                  key={index}
-                  style={{ 
-                    color: cssVars.foreground, 
-                    fontSize: '22px', 
-                    fontWeight: '600',
-                    marginBottom: '12px',
-                    marginTop: '24px'
-                  }}
-                >
-                  {line.replace('## ', '')}
-                </h2>
-              );
-            }
-            if (line.startsWith('### ')) {
-              return (
-                <h3 
-                  key={index}
-                  style={{ 
-                    color: cssVars.foreground, 
-                    fontSize: '18px', 
-                    fontWeight: '600',
-                    marginBottom: '8px',
-                    marginTop: '20px'
-                  }}
-                >
-                  {line.replace('### ', '')}
-                </h3>
-              );
-            }
-            if (line.startsWith('```')) {
-              return null; // Handle code blocks separately
-            }
-            if (line.startsWith('- ')) {
-              return (
-                <li 
-                  key={index}
-                  style={{ 
-                    color: cssVars.foregroundAccent,
-                    marginBottom: '4px',
-                    listStyleType: 'disc',
-                    marginLeft: '20px'
-                  }}
-                >
-                  {line.replace('- ', '')}
-                </li>
-              );
-            }
-            if (line.trim() === '') {
-              return <br key={index} />;
-            }
-            return (
-              <p 
-                key={index}
-                style={{ 
-                  color: cssVars.foregroundAccent,
-                  marginBottom: '12px',
-                  lineHeight: '1.6'
-                }}
-              >
-                {line}
-              </p>
-            );
-          })}
-        </div>
+        <ReadmeDisplay
+          content={readmeContent}
+          loading={loading}
+        />
       </div>
     );
   };
@@ -239,20 +139,67 @@ For more detailed documentation, examples, and API reference, visit the [Templar
       );
     }
 
+    // Generate code string for the separate CodeBlock
+    const componentNameForCode = getComponentName(config.component);
+    const codeString = generateCodeString(componentNameForCode, componentProps, (config.component as any).props?.children);
+
     return (
-      <div style={{ padding: '24px' }}>
+      <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        {/* Interactive Component Display */}
         <InteractiveComponentDisplay
-          title={`${componentName} Interactive Example`}
-          description={`Explore the ${componentName} component with live controls`}
           leftControls={config.leftControls}
           rightControls={config.rightControls}
           initialProps={config.initialProps}
-          showCode={true}
+          onPropsChange={setComponentProps}
           showControls={true}
           size="lg"
         >
           {config.component}
         </InteractiveComponentDisplay>
+
+        {/* Code Block in separate Card matching InteractiveComponentDisplay styling */}
+        <div style={{
+          width: '100%',
+          maxWidth: '1200px', // Match lg size from InteractiveComponentDisplay
+          margin: '0 auto',
+          backgroundColor: cssVars.card,
+          borderRadius: '12px',
+          border: `1px solid ${cssVars.border}`,
+          overflow: 'hidden',
+          boxShadow: cssVars.shadowMd
+        }}>
+          <div style={{
+            padding: '16px 24px',
+            borderBottom: `1px solid ${cssVars.border}`,
+            backgroundColor: cssVars.backgroundAccent,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            <Icon name="Code" size="sm" style={{ color: cssVars.foreground }} />
+            <h4 style={{
+              margin: 0,
+              fontSize: '18px',
+              fontWeight: '600',
+              color: cssVars.foreground
+            }}>
+              Code Preview
+            </h4>
+          </div>
+          <div style={{ padding: '24px' }}>
+            <CodeBlock
+              language="tsx"
+              size="sm"
+              lineNumbers={false}
+              copyable={true}
+              color="primary"
+              variant="outline"
+              style={{ margin: 0 }}
+            >
+              {codeString}
+            </CodeBlock>
+          </div>
+        </div>
       </div>
     );
   };

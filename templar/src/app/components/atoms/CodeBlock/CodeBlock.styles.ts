@@ -61,18 +61,30 @@ export const getColorVariables = (color: CodeBlockColor, customColor: string | u
   return colorMap[color] || colorMap.primary;
 };
 
-// Get shape styles based on shape prop
-export const getShapeStyles = (shape: CodeBlockShape): React.CSSProperties => {
-  switch (shape) {
-    case 'sharp':
-      return { borderRadius: '0' };
-    case 'round':
-      return { borderRadius: '12px' };
-    case 'pill':
-      return { borderRadius: '9999px' };
-    default:
-      return { borderRadius: '12px' };
+// Get shape styles based on shape prop and line numbers
+export const getShapeStyles = (shape: CodeBlockShape, hasLineNumbers: boolean = false): React.CSSProperties => {
+  const getRadius = () => {
+    switch (shape) {
+      case 'sharp':
+        return '0';
+      case 'round':
+        return '12px';
+      case 'pill':
+        return '9999px';
+      default:
+        return '12px';
+    }
+  };
+  
+  const radius = getRadius();
+  
+  if (hasLineNumbers) {
+    return { 
+      borderRadius: `${radius}`
+    };
   }
+  
+  return { borderRadius: radius };
 };
 
 // Get variant styles
@@ -80,7 +92,8 @@ export const getVariantStyles = (
   color: CodeBlockColor,
   customColor: string | undefined,
   variant: CodeBlockVariant,
-  cssVars: any
+  cssVars: any,
+  hasLineNumbers: boolean = false
 ): React.CSSProperties => {
   const colors = getColorVariables(color, customColor, cssVars);
   
@@ -107,9 +120,9 @@ export const getVariantStyles = (
     case 'outline':
     default:
       return {
-        backgroundColor: cssVars.muted,
-        color: cssVars.mutedForeground,
-        borderColor: colors.border || cssVars.border,
+        backgroundColor: colors.background || cssVars.backgroundAccent,
+        color: cssVars.foreground,
+        borderColor: colors.border || colors.main,
         ...baseStyles,
       };
   }
@@ -152,6 +165,7 @@ export const createBaseStyles = (
   shape: CodeBlockShape,
   maxHeight: string | undefined,
   animationsEnabled: boolean,
+  hasLineNumbers: boolean = false,
   // Legacy support
   rounded?: boolean
 ): React.CSSProperties => {
@@ -171,7 +185,7 @@ export const createBaseStyles = (
     position: 'relative',
     wordBreak: 'break-all',
     tabSize: 2,
-    ...getShapeStyles(finalShape),
+    ...getShapeStyles(finalShape, hasLineNumbers),
   };
 };
 
@@ -210,8 +224,8 @@ export const getInlineCodeStyles = (
       case 'outline':
       default:
         return {
-          backgroundColor: cssVars.muted,
-          color: cssVars.mutedForeground,
+          backgroundColor: cssVars.backgroundAccent,
+          color: cssVars.foreground,
           borderColor: colors.border || cssVars.border,
         };
     }
@@ -281,9 +295,27 @@ export const getCopyButtonStyles = (
 // Line number styles
 export const getLineNumberStyles = (
   size: CodeBlockSize,
-  cssVars: any
+  cssVars: any,
+  color: string,
+  customColor: string | undefined,
+  shape: string
 ): React.CSSProperties => {
   const sizeConfig = getSizeStyles(size);
+  const colors = getColorVariables(color, customColor, cssVars);
+  
+  // Get border radius based on shape, but only apply to left corners
+  const getBorderRadius = () => {
+    switch (shape) {
+      case 'sharp':
+        return '0';
+      case 'round':
+        return '12px 0 0 12px'; // Only left corners rounded
+      case 'pill':
+        return '9999px 0 0 9999px'; // Only left corners rounded
+      default:
+        return '12px 0 0 12px'; // Only left corners rounded
+    }
+  };
   
   return {
     position: 'absolute',
@@ -291,15 +323,21 @@ export const getLineNumberStyles = (
     top: '0',
     bottom: '0',
     width: '44px',
-    backgroundColor: cssVars.muted,
-    borderRight: `1px solid ${cssVars.border}`,
+    backgroundColor: cssVars.backgroundAccent,
+    borderRight: `1px solid ${colors.border || colors.main}`,
+    borderTop: `1px solid ${colors.border || colors.main}`,
+    borderBottom: `1px solid ${colors.border || colors.main}`,
+    borderLeft: `1px solid ${colors.border || colors.main}`,
+    borderRadius: getBorderRadius(),
     padding: (typeof sizeConfig.padding === 'string' ? sizeConfig.padding.split(' ')[0] : '12px') + ' 8px',
+    paddingTop: '24px', // Account for language label
     fontSize: sizeConfig.fontSize,
     lineHeight: sizeConfig.lineHeight,
-    color: cssVars.mutedForeground,
+    color: colors.main, // Same color as title/language label
     userSelect: 'none',
     textAlign: 'right',
     fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
+    zIndex: 1,
   };
 };
 

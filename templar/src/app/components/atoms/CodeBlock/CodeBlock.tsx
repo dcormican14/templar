@@ -9,7 +9,8 @@ import {
   getSizeStyles, 
   createBaseStyles, 
   getCopyButtonStyles,
-  getLineNumberStyles
+  getLineNumberStyles,
+  getColorVariables
 } from './CodeBlock.styles';
 import { 
   extractTextContent, 
@@ -20,6 +21,7 @@ import {
   getLanguageLabel 
 } from './CodeBlock.utils';
 import { highlightSyntax, createSyntaxTheme } from './CodeBlock.syntax';
+import { Button, Icon } from '../';
 
 export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>((allProps, ref) => {
   // Extract container props and component-specific props
@@ -58,6 +60,9 @@ export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>((allProps, ref)
     highlight,
     syntaxHighlighting = true,
     onCopy,
+    // Filter out props that shouldn't be passed to DOM
+    showLineNumbers, // Legacy prop that should not be passed to DOM
+    code, // Legacy prop that should not be passed to DOM
     ...restProps
   } = componentProps;
     // Hooks
@@ -92,17 +97,18 @@ export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>((allProps, ref)
       shape,
       typeof maxHeight === 'string' ? maxHeight : maxHeight?.toString(),
       animationsEnabled,
+      lineNumbers, // Pass line numbers flag
       rounded // Legacy support
-    ), [shape, maxHeight, animationsEnabled, rounded]);
+    ), [shape, maxHeight, animationsEnabled, lineNumbers, rounded]);
 
-    const variantStyles = useMemo(() => getVariantStyles(color, customColor, variant, cssVars), [color, customColor, variant, cssVars]);
+    const variantStyles = useMemo(() => getVariantStyles(color, customColor, variant, cssVars, lineNumbers), [color, customColor, variant, cssVars, lineNumbers]);
     const sizeStyles = useMemo(() => getSizeStyles(size), [size]);
 
     const combinedStyles: React.CSSProperties = {
       ...baseStyles,
       ...sizeStyles,
       ...variantStyles,
-      paddingTop: language ? '24px' : sizeStyles.padding,
+      paddingTop: language ? '28px' : sizeStyles.padding,
       paddingLeft: lineNumbers ? '52px' : '16px',
       width,
       height,
@@ -110,7 +116,7 @@ export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>((allProps, ref)
     };
 
     const copyButtonStyles = useMemo(() => getCopyButtonStyles(size, cssVars, animationsEnabled), [size, cssVars, animationsEnabled]);
-    const lineNumberStyles = useMemo(() => getLineNumberStyles(size, cssVars), [size, cssVars]);
+    const lineNumberStyles = useMemo(() => getLineNumberStyles(size, cssVars, color, customColor, shape), [size, cssVars, color, customColor, shape]);
 
     // Content rendering
     const renderContent = () => {
@@ -183,13 +189,14 @@ export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>((allProps, ref)
             style={{
               position: 'absolute',
               top: '8px',
-              left: '16px',
+              left: lineNumbers ? '52px' : '16px', // Move right when line numbers are present
               fontSize: '12px',
-              color: cssVars.mutedForeground,
+              color: getColorVariables(color, customColor, cssVars).main,
               fontFamily: 'inherit',
-              zIndex: 1,
-              opacity: 0.7,
+              zIndex: 2, // Higher z-index to appear above line numbers
+              opacity: 0.8,
               userSelect: 'none',
+              fontWeight: '500',
             }}
           >
             {getLanguageLabel(language)}
@@ -197,7 +204,31 @@ export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>((allProps, ref)
         )}
 
         {/* Copy button */}
-        {copyable && createCopyButton(handleCopy, copied, copyButtonStyles, animationsEnabled)}
+        {copyable && (
+          <div style={{
+            position: 'absolute',
+            top: '8px',
+            right: '8px',
+            zIndex: 2
+          }}>
+            <Button
+              size="sm"
+              variant="ghost"
+              color={color}
+              onClick={handleCopy}
+              animate={animationsEnabled}
+              style={{
+                minWidth: 'auto',
+                padding: '6px 8px'
+              }}
+            >
+              <Icon 
+                name={copied ? "CheckCircle" : "Copy"} 
+                size="sm" 
+              />
+            </Button>
+          </div>
+        )}
 
         {/* Line numbers */}
         {lineNumbers && createLineNumbers(textContent, lineNumberStyles)}

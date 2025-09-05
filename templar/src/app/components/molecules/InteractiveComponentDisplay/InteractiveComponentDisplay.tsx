@@ -2,6 +2,7 @@
 
 import React, { forwardRef, useState, useEffect, useImperativeHandle, useCallback } from 'react';
 import { useCSSVariables } from '../../../providers';
+import { Dropdown, CheckBox } from '../../atoms';
 import type { 
   InteractiveComponentDisplayProps, 
   InteractiveComponentDisplayRef,
@@ -97,42 +98,38 @@ export const InteractiveComponentDisplay = forwardRef<
     },
   }), [componentProps, leftControls, rightControls, initialProps, onPropsChange]);
 
-  // Render control input based on type
+  // Render control input based on type using atomic components
   const renderControlInput = (control: PropControl, groupTitle: string) => {
     const controlId = generateControlId(control.key, groupTitle);
     const currentValue = componentProps[control.key];
 
+    // Skip custom color fields
+    if (control.key === 'customColor') {
+      return null;
+    }
+
     switch (control.type) {
       case 'select':
         return (
-          <select
-            id={controlId}
+          <Dropdown
+            options={control.options || []}
             value={currentValue || ''}
-            onChange={(e) => handlePropChange(control.key, e.target.value, control)}
-            style={getSelectStyles(cssVars)}
-          >
-            {control.options?.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
+            onChange={(value) => handlePropChange(control.key, value, control)}
+            size="sm"
+            color="primary"
+            shape="default"
+          />
         );
 
       case 'checkbox':
         return (
-          <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-            <input
-              type="checkbox"
-              id={controlId}
-              checked={Boolean(currentValue)}
-              onChange={(e) => handlePropChange(control.key, e.target.checked, control)}
-              style={getCheckboxStyles()}
-            />
-            <span style={{ fontSize: '12px', color: cssVars.foregroundAccent }}>
-              {control.label}
-            </span>
-          </label>
+          <CheckBox
+            checked={Boolean(currentValue)}
+            onChange={(checked) => handlePropChange(control.key, checked, control)}
+            label={control.label}
+            size="sm"
+            color="primary"
+          />
         );
 
       case 'number':
@@ -146,17 +143,6 @@ export const InteractiveComponentDisplay = forwardRef<
             step={control.step || 1}
             onChange={(e) => handlePropChange(control.key, e.target.value, control)}
             style={getInputStyles(cssVars)}
-          />
-        );
-
-      case 'color':
-        return (
-          <input
-            type="color"
-            id={controlId}
-            value={currentValue || '#000000'}
-            onChange={(e) => handlePropChange(control.key, e.target.value, control)}
-            style={getColorInputStyles(cssVars)}
           />
         );
 
@@ -175,24 +161,36 @@ export const InteractiveComponentDisplay = forwardRef<
   };
 
   // Render control group
-  const renderControlGroup = (group: PropControlGroup, groupTitle: string) => (
-    <div key={groupTitle} style={getControlGroupStyles(cssVars)}>
-      <h4 style={getControlGroupTitleStyles(cssVars)}>{group.title}</h4>
-      {group.controls.map(control => (
-        <div key={control.key} style={getControlItemStyles()}>
-          {control.type !== 'checkbox' && (
-            <label 
-              htmlFor={generateControlId(control.key, groupTitle)}
-              style={getControlLabelStyles(cssVars)}
-            >
-              {control.label}
-            </label>
-          )}
-          {renderControlInput(control, groupTitle)}
-        </div>
-      ))}
-    </div>
-  );
+  const renderControlGroup = (group: PropControlGroup, groupTitle: string) => {
+    // Filter out custom color controls
+    const filteredControls = group.controls.filter(control => control.key !== 'customColor');
+    
+    if (filteredControls.length === 0) return null;
+    
+    return (
+      <div key={groupTitle} style={getControlGroupStyles(cssVars)}>
+        <h4 style={getControlGroupTitleStyles(cssVars)}>{group.title}</h4>
+        {filteredControls.map(control => {
+          const controlInput = renderControlInput(control, groupTitle);
+          if (!controlInput) return null;
+          
+          return (
+            <div key={control.key} style={getControlItemStyles()}>
+              {control.type !== 'checkbox' && (
+                <label 
+                  htmlFor={generateControlId(control.key, groupTitle)}
+                  style={getControlLabelStyles(cssVars)}
+                >
+                  {control.label}
+                </label>
+              )}
+              {controlInput}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
 
   // Render control panel
   const renderControlPanel = (controls: PropControlGroup[], side: 'left' | 'right') => {
@@ -205,54 +203,44 @@ export const InteractiveComponentDisplay = forwardRef<
     );
   };
 
-  // Generate code preview
-  const componentName = getComponentName(children);
-  const codeString = generateCodeString(componentName, componentProps, (children as any).props?.children);
-
   // Clone element with new props
   const enhancedElement = cloneElementWithProps(children, componentProps);
 
   // Styles
   const containerStyles = createContainerStyles(size, layout, cssVars);
-  const headerStyles = createHeaderStyles(cssVars);
-  const titleStyles = getTitleStyles(cssVars);
-  const descriptionStyles = getDescriptionStyles(cssVars);
-  const mainContentStyles = createMainContentStyles(layout, showControls);
   const displayAreaStyles = createDisplayAreaStyles(padded, background, cssVars, displayStyle);
-  const codePreviewStyles = createCodePreviewStyles(cssVars);
 
   return (
     <div style={containerStyles} {...restProps}>
-      {/* Header */}
-      {(title || description) && (
-        <div style={headerStyles}>
-          {title && <h3 style={titleStyles}>{title}</h3>}
-          {description && <p style={descriptionStyles}>{description}</p>}
+      {/* Main Content - Controls and Component Display */}
+      <div style={{
+        display: 'flex',
+        gap: '24px'
+      }}>
+        {/* Controls Panel - All controls in one column */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '16px',
+          minWidth: '240px',
+          flexShrink: 0
+        }}>
+          {renderControlPanel(leftControls, 'left')}
+          {renderControlPanel(rightControls, 'right')}
         </div>
-      )}
 
-      {/* Main Content */}
-      <div style={mainContentStyles}>
-        {/* Left Controls */}
-        {renderControlPanel(leftControls, 'left')}
-
-        {/* Display Area */}
-        <div style={displayAreaStyles} className={displayClassName}>
+        {/* Display Area - Component preview */}
+        <div style={{
+          ...displayAreaStyles,
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '200px'
+        }} className={displayClassName}>
           {enhancedElement}
         </div>
-
-        {/* Right Controls */}
-        {renderControlPanel(rightControls, 'right')}
       </div>
-
-      {/* Code Preview */}
-      {showCode && (
-        <div style={codePreviewStyles}>
-          <pre style={{ margin: 0, whiteSpace: 'pre-wrap', wordBreak: 'break-all' }}>
-            {codeString}
-          </pre>
-        </div>
-      )}
     </div>
   );
 });

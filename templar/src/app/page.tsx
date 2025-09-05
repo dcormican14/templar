@@ -98,6 +98,8 @@ function PageContent() {
     }
   };
 
+  const isComponentsPage = activeTab === 'components';
+
 
   return (
     <div 
@@ -132,18 +134,24 @@ function PageContent() {
       </div>
       
       {/* Main content with custom scrollbar */}
-      <Scrollbar
-        height="calc(100vh - 48px)" // Full viewport minus nav height
-        color="secondary"
-        size="md"
-        visibility="hover"
-        smoothScrolling={true}
-        style={{ marginTop: '48px' }}
-      >
-        <main className="container mx-auto px-6 py-8">
+      {isComponentsPage ? (
+        <div style={{ marginTop: '48px', height: 'calc(100vh - 48px)' }}>
           {renderTabContent()}
-        </main>
-      </Scrollbar>
+        </div>
+      ) : (
+        <Scrollbar
+          height="calc(100vh - 48px)" // Full viewport minus nav height
+          color="secondary"
+          size="md"
+          visibility="hover"
+          smoothScrolling={true}
+          style={{ marginTop: '48px' }}
+        >
+          <main className="container mx-auto px-6 py-8">
+            {renderTabContent()}
+          </main>
+        </Scrollbar>
+      )}
       
       {/* Floating Theme Switcher */}
       <div className="fixed bottom-6 right-6 z-50">

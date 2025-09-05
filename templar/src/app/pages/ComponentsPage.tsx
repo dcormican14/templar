@@ -174,16 +174,23 @@ export function ComponentsPage() {
   };
 
   return (
-    <div style={{ display: 'flex', height: 'calc(100vh - 48px)', overflow: 'hidden' }}>
+    <div style={{ 
+      display: 'flex', 
+      height: '100%', // Use full available height from parent container
+      overflow: 'hidden',
+      position: 'relative'
+    }}>
       <CollapsibleMenu
         collapsed={menuCollapsed}
         onToggle={setMenuCollapsed}
         expandedWidth="280px"
-        collapsedWidth="60px"
+        collapsedWidth="34px"
         position="left"
         style={{
           borderRight: `1px solid ${cssVars.border}`,
           backgroundColor: cssVars.background,
+          position: 'relative',
+          zIndex: 10,
         }}
       >
         {renderComponentTree()}
@@ -194,6 +201,7 @@ export function ComponentsPage() {
           flex: 1, 
           overflow: 'auto',
           backgroundColor: cssVars.background,
+          height: '100%',
         }}
       >
         {renderMainContent()}
