@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef, useImperativeHandle, useState, useEffect, useCallback } from 'react';
+import React, { forwardRef, useRef, useImperativeHandle, useState, useEffect, useCallback, useMemo } from 'react';
 import { useCSSVariables, useSettings } from '../../../providers';
 import { extractContainerProps, UNIVERSAL_DEFAULTS } from '../types';
 import { ScrollbarProps, ScrollbarRef } from './Scrollbar.types';
@@ -21,6 +21,57 @@ import {
   getScrollbarAriaAttributes,
   throttleScrollEvent,
 } from './Scrollbar.utils';
+
+// Utility to inject webkit scrollbar styles as CSS
+const createWebkitScrollbarCSS = (
+  uniqueId: string, 
+  webkitStyles: Record<string, React.CSSProperties>
+): string => {
+  let css = '';
+  
+  Object.entries(webkitStyles).forEach(([selector, styles]) => {
+    if (selector.includes('::-webkit-scrollbar')) {
+      const cleanSelector = selector.replace('&', `#${uniqueId}`);
+      const cssProps = Object.entries(styles as Record<string, any>)
+        .map(([prop, value]) => {
+          // Convert camelCase to kebab-case
+          const kebabProp = prop.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+          return `${kebabProp}: ${value};`;
+        })
+        .join(' ');
+      
+      css += `${cleanSelector} { ${cssProps} }`;
+    }
+  });
+  
+  return css;
+};
+
+// Utility to inject or update CSS styles in the document head
+const injectCSS = (uniqueId: string, css: string) => {
+  if (typeof document === 'undefined') return;
+  
+  const existingStyle = document.getElementById(`scrollbar-${uniqueId}`);
+  
+  if (existingStyle) {
+    existingStyle.textContent = css;
+  } else {
+    const style = document.createElement('style');
+    style.id = `scrollbar-${uniqueId}`;
+    style.textContent = css;
+    document.head.appendChild(style);
+  }
+};
+
+// Cleanup injected CSS
+const cleanupCSS = (uniqueId: string) => {
+  if (typeof document === 'undefined') return;
+  
+  const style = document.getElementById(`scrollbar-${uniqueId}`);
+  if (style) {
+    style.remove();
+  }
+};
 
 export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref) => {
   // Extract container props and component-specific props
@@ -67,6 +118,12 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
   // Get CSS variables for theming and settings
   const cssVars = useCSSVariables();
   const { settings } = useSettings();
+  
+  // Generate unique ID for this scrollbar instance
+  const uniqueId = useMemo(() => 
+    id || `scrollbar-${Math.random().toString(36).substr(2, 9)}`, 
+    [id]
+  );
   const animationsEnabled = (settings.appearance.animations ?? true) && animate;
   
   // Validate props in development
@@ -118,6 +175,8 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
       
       // Detect scroll boundaries
       const element = event.currentTarget;
+      if (!element) return;
+      
       const { scrollTop, scrollLeft, scrollHeight, scrollWidth, clientHeight, clientWidth } = element;
       
       if (scrollTop === 0) onReachTop?.();
@@ -291,6 +350,42 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
     ...style,
   };
   
+  // Handle webkit scrollbar styles via CSS injection
+  const webkitStyles = getWebKitScrollbarStyles(
+    color,
+    customColor,
+    variant,
+    size,
+    shape,
+    orientation,
+    visibility,
+    Boolean(disabled),
+    animationsEnabled,
+    cssVars
+  );
+  
+  useEffect(() => {
+    if (supportsWebKitScrollbar()) {
+      let css = '';
+      
+      if (hideNative) {
+        // Hide native webkit scrollbars
+        css = `#${uniqueId}::-webkit-scrollbar { display: none; }`;
+      } else {
+        // Apply custom webkit scrollbar styles
+        css = createWebkitScrollbarCSS(uniqueId, webkitStyles);
+      }
+      
+      if (css) {
+        injectCSS(uniqueId, css);
+      }
+    }
+    
+    return () => {
+      cleanupCSS(uniqueId);
+    };
+  }, [uniqueId, webkitStyles, hideNative]);
+  
   // Accessibility attributes
   const ariaAttributes = getScrollbarAriaAttributes(
     orientation,
@@ -303,7 +398,7 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
     <div
       className={className}
       style={combinedStyles}
-      id={id}
+      id={uniqueId}
       {...ariaAttributes}
       {...rest}
     >

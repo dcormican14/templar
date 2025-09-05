@@ -155,9 +155,6 @@ export const createScrollbarContainerStyles = (
     ...(hideNative && {
       scrollbarWidth: 'none',
       msOverflowStyle: 'none',
-      '&::-webkit-scrollbar': {
-        display: 'none',
-      },
     }),
   };
 };
