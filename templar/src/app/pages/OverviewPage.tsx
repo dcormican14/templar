@@ -1,64 +1,73 @@
 'use client';
 
 import React from 'react';
-import { Card } from '../components/atoms';
+import { Icon } from '../components/atoms';
 import { useCSSVariables } from '../providers';
 
-interface OverviewPageProps {
-  onNavigate: (tabId: string) => void;
-  availableTabs: Array<{ id: string; label: string }>;
-}
-
-export function OverviewPage({ onNavigate, availableTabs }: OverviewPageProps) {
+export function OverviewPage() {
   const cssVars = useCSSVariables();
 
-  const headingStyle = {
-    color: cssVars.foreground
-  };
-
-  const mutedTextStyle = {
-    color: cssVars.mutedForeground
-  };
-
   return (
-    <div>
-      <h1 
-        className="text-3xl font-bold mb-2"
+    <div className="max-w-4xl mx-auto">
+      <div 
+        className="text-center py-20"
         style={{ color: cssVars.foreground }}
       >
-        Templar Demo Overview
-      </h1>
-      <p 
-        className="mb-6"
-        style={mutedTextStyle}
-      >
-        Welcome to the Templar design system demo. Use the navigation tabs above to explore different components and features.
-      </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {availableTabs.slice(1).map(tab => (
-          <Card 
-            key={tab.id}
-            className="p-6 cursor-pointer hover:shadow-lg transition-shadow"
-            onClick={() => onNavigate(tab.id)}
+        <Icon name="HomeShield" size="xl" className="mx-auto mb-6" />
+        <h1 
+          className="text-4xl font-bold mb-4"
+          style={{ color: cssVars.primary }}
+        >
+          Welcome to Templar
+        </h1>
+        <p 
+          className="text-lg mb-8"
+          style={{ color: cssVars.foregroundAccent }}
+        >
+          A comprehensive React component library and design system
+        </p>
+        <div className="grid md:grid-cols-3 gap-6 mt-12">
+          <div 
+            className="p-6 rounded-lg border"
+            style={{ 
+              backgroundColor: cssVars.card,
+              borderColor: cssVars.border 
+            }}
           >
-            <h3 className="font-semibold mb-2" style={headingStyle}>{tab.label}</h3>
-            <p style={mutedTextStyle}>Click to explore this section</p>
-          </Card>
-        ))}
+            <Icon name="Atom" size="lg" className="mx-auto mb-4" style={{ color: cssVars.primary }} />
+            <h3 className="text-xl font-semibold mb-2">Atomic Design</h3>
+            <p style={{ color: cssVars.foregroundAccent }}>
+              Built on atomic design principles with comprehensive component architecture
+            </p>
+          </div>
+          <div 
+            className="p-6 rounded-lg border"
+            style={{ 
+              backgroundColor: cssVars.card,
+              borderColor: cssVars.border 
+            }}
+          >
+            <Icon name="Palette" size="lg" className="mx-auto mb-4" style={{ color: cssVars.secondary }} />
+            <h3 className="text-xl font-semibold mb-2">Theme System</h3>
+            <p style={{ color: cssVars.foregroundAccent }}>
+              Advanced theming with 80+ CSS variables and multiple theme options
+            </p>
+          </div>
+          <div 
+            className="p-6 rounded-lg border"
+            style={{ 
+              backgroundColor: cssVars.card,
+              borderColor: cssVars.border 
+            }}
+          >
+            <Icon name="Code" size="lg" className="mx-auto mb-4" style={{ color: cssVars.success }} />
+            <h3 className="text-xl font-semibold mb-2">TypeScript</h3>
+            <p style={{ color: cssVars.foregroundAccent }}>
+              Full TypeScript support with comprehensive type safety
+            </p>
+          </div>
+        </div>
       </div>
-      
-      <Card className="p-6 mt-16">
-          <h3 className="font-semibold mb-3" style={headingStyle}>🎨 Design System</h3>
-          <p style={mutedTextStyle} className="mb-4">
-            Templar provides a comprehensive design system with atomic components, theming support, and provider-based state management.
-          </p>
-          <ul className="space-y-2 text-sm" style={mutedTextStyle}>
-            <li>• Atomic design methodology</li>
-            <li>• Dynamic theming with CSS variables</li>
-            <li>• Provider-based architecture</li>
-            <li>• TypeScript-first development</li>
-          </ul>
-        </Card>
     </div>
   );
 }
