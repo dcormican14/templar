@@ -187,7 +187,7 @@ export const CollapsibleMenu = forwardRef<CollapsibleMenuRef, CollapsibleMenuPro
           <div style={toggleIconStyles}>
             <Icon 
               name={iconName} 
-              size={sizeConfig.toggleIconSize}
+              size={size as any}
             />
           </div>
         )}

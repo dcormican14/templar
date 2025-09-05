@@ -1,10 +1,14 @@
 'use client';
 
 import React from 'react';
-import { Icon } from '../components/atoms';
+import { Icon, Button } from '../components/atoms';
 import { useCSSVariables } from '../providers';
 
-export function DocumentationPage() {
+interface DocumentationPageProps {
+  onNavigateToComponents?: () => void;
+}
+
+export function DocumentationPage({ onNavigateToComponents }: DocumentationPageProps = {}) {
   const cssVars = useCSSVariables();
 
   return (
@@ -43,9 +47,9 @@ export function DocumentationPage() {
               Learn how to install and set up Templar in your project. Quick start guides and basic usage examples.
             </p>
             <ul className="space-y-2" style={{ color: cssVars.foregroundAccent }}>
-              <li>" Installation instructions</li>
-              <li>" Basic setup and configuration</li>
-              <li>" Your first component</li>
+              <li>• Installation instructions</li>
+              <li>• Basic setup and configuration</li>
+              <li>• Your first component</li>
             </ul>
           </div>
           
@@ -61,11 +65,20 @@ export function DocumentationPage() {
             <p className="mb-4" style={{ color: cssVars.foregroundAccent }}>
               Explore all available components with interactive examples, props documentation, and usage patterns.
             </p>
-            <ul className="space-y-2" style={{ color: cssVars.foregroundAccent }}>
-              <li>" 18+ Atomic components</li>
-              <li>" Molecule combinations</li>
-              <li>" Interactive examples</li>
+            <ul className="space-y-2 mb-6" style={{ color: cssVars.foregroundAccent }}>
+              <li>• 18+ Atomic components</li>
+              <li>• Molecule combinations</li>
+              <li>• Interactive examples</li>
             </ul>
+            <Button 
+              variant="solid" 
+              color="secondary" 
+              size="sm"
+              icon={<Icon name="Component" size="sm" />}
+              onClick={onNavigateToComponents}
+            >
+              Explore Components
+            </Button>
           </div>
           
           <div 
@@ -81,9 +94,9 @@ export function DocumentationPage() {
               Master the theming system with detailed guides on customization, CSS variables, and design tokens.
             </p>
             <ul className="space-y-2" style={{ color: cssVars.foregroundAccent }}>
-              <li>" Theme customization</li>
-              <li>" CSS variable system</li>
-              <li>" Design tokens</li>
+              <li>• Theme customization</li>
+              <li>• CSS variable system</li>
+              <li>• Design tokens</li>
             </ul>
           </div>
           
@@ -100,9 +113,9 @@ export function DocumentationPage() {
               Complete API documentation for all components, hooks, and utilities with TypeScript definitions.
             </p>
             <ul className="space-y-2" style={{ color: cssVars.foregroundAccent }}>
-              <li>" Component APIs</li>
-              <li>" Hook references</li>
-              <li>" Utility functions</li>
+              <li>• Component APIs</li>
+              <li>• Hook references</li>
+              <li>• Utility functions</li>
             </ul>
           </div>
         </div>

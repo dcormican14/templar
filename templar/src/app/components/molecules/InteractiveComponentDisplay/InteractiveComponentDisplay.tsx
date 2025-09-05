@@ -207,7 +207,7 @@ export const InteractiveComponentDisplay = forwardRef<
 
   // Generate code preview
   const componentName = getComponentName(children);
-  const codeString = generateCodeString(componentName, componentProps, children.props.children);
+  const codeString = generateCodeString(componentName, componentProps, (children as any).props?.children);
 
   // Clone element with new props
   const enhancedElement = cloneElementWithProps(children, componentProps);

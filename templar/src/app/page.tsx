@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Navigation } from './components/molecules/Navigation/Navigation';
 import { Icon, Button, Scrollbar } from './components/atoms';
-import { OverviewPage, DocumentationPage, ContactPage } from './pages';
+import { OverviewPage, DocumentationPage, ContactPage, ComponentsPage } from './pages';
 import {
   useTheme,
   useCSSVariables
@@ -40,6 +40,7 @@ function PageContent() {
   const tabs = [
     { id: 'overview', label: 'Overview'},
     { id: 'docs', label: 'Docs'},
+    { id: 'components', label: 'Components'},
     { id: 'contact', label: 'Contact'}
   ];
 
@@ -87,7 +88,9 @@ function PageContent() {
       case 'overview':
         return <OverviewPage />;
       case 'docs':
-        return <DocumentationPage />;
+        return <DocumentationPage onNavigateToComponents={() => setActiveTab('components')} />;
+      case 'components':
+        return <ComponentsPage />;
       case 'contact':
         return <ContactPage />;
       default:

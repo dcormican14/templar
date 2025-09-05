@@ -57,7 +57,7 @@ export const getComponentName = (element: React.ReactElement): string => {
     return element.type;
   }
   if (typeof element.type === 'function') {
-    return element.type.displayName || element.type.name || 'Component';
+    return (element.type as any).displayName || (element.type as any).name || 'Component';
   }
   return 'Component';
 };
