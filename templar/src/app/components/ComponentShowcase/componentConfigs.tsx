@@ -160,15 +160,44 @@ export function getComponentInteractiveConfig(componentName: string): ComponentC
     case 'Card':
       return {
         component: <Card>Card Content</Card>,
-        leftControls: [universalColorControls, universalSizeShapeControls],
+        leftControls: [
+          universalColorControls, 
+          universalSizeShapeControls,
+          universalStateControls
+        ],
         rightControls: [
           {
             title: 'Content',
             controls: [
               {
+                key: 'header',
+                label: 'Header Content',
+                type: 'text'
+              },
+              {
                 key: 'children',
                 label: 'Card Content',
                 type: 'text'
+              },
+              {
+                key: 'footer',
+                label: 'Footer Content',
+                type: 'text'
+              }
+            ]
+          },
+          {
+            title: 'Layout & Style',
+            controls: [
+              {
+                key: 'clickable',
+                label: 'Clickable',
+                type: 'checkbox'
+              },
+              {
+                key: 'animate',
+                label: 'Animations',
+                type: 'checkbox'
               }
             ]
           }
@@ -178,7 +207,11 @@ export function getComponentInteractiveConfig(componentName: string): ComponentC
           variant: 'outline',
           size: 'md',
           shape: 'round',
-          children: 'Card Content'
+          children: 'Card Content',
+          disabled: false,
+          loading: false,
+          clickable: false,
+          animate: true
         }
       };
 

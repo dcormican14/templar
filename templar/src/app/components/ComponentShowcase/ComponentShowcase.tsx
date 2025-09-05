@@ -36,9 +36,7 @@ export function ComponentShowcase({ componentName }: ComponentShowcaseProps) {
   }, [componentName, componentType]);
 
   const generatePlaceholderReadme = (name: string, type: string | null) => {
-    return `# ${name} Component
-
-## Overview
+    return `## Overview
 The ${name} component is a ${type} component in the Templar design system. It provides a consistent and accessible interface for ${name.toLowerCase()} functionality.
 
 ## Features

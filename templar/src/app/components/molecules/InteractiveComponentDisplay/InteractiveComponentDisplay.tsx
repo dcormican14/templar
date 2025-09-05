@@ -2,7 +2,7 @@
 
 import React, { forwardRef, useState, useEffect, useImperativeHandle, useCallback } from 'react';
 import { useCSSVariables } from '../../../providers';
-import { Dropdown, CheckBox } from '../../atoms';
+import { Dropdown, CheckBox, TextArea } from '../../atoms';
 import type { 
   InteractiveComponentDisplayProps, 
   InteractiveComponentDisplayRef,
@@ -149,12 +149,16 @@ export const InteractiveComponentDisplay = forwardRef<
       case 'text':
       default:
         return (
-          <input
-            type="text"
+          <TextArea
             id={controlId}
             value={currentValue || ''}
-            onChange={(e) => handlePropChange(control.key, e.target.value, control)}
-            style={getInputStyles(cssVars)}
+            onChange={(value) => handlePropChange(control.key, value, control)}
+            placeholder={`Enter ${control.label.toLowerCase()}...`}
+            size="sm"
+            color="primary"
+            variant="outline"
+            autoResize={true}
+            maxRows={3}
           />
         );
     }
@@ -197,9 +201,9 @@ export const InteractiveComponentDisplay = forwardRef<
     if (!showControls || controls.length === 0) return null;
 
     return (
-      <div style={createControlPanelStyles(side, size, cssVars)}>
+      <>
         {controls.map(group => renderControlGroup(group, group.title))}
-      </div>
+      </>
     );
   };
 
@@ -211,35 +215,55 @@ export const InteractiveComponentDisplay = forwardRef<
   const displayAreaStyles = createDisplayAreaStyles(padded, background, cssVars, displayStyle);
 
   return (
-    <div style={containerStyles} {...restProps}>
-      {/* Main Content - Controls and Component Display */}
+    <div style={{
+      ...containerStyles,
+      display: 'flex',
+      flexDirection: 'row',
+      gap: '0',
+      minHeight: '400px', // Ensure minimum height
+      height: 'auto'
+    }} {...restProps}>
+      {/* Left Controls Panel */}
       <div style={{
         display: 'flex',
-        gap: '24px'
+        flexDirection: 'column',
+        gap: '16px',
+        width: '240px',
+        flexShrink: 0,
+        backgroundColor: cssVars.backgroundAccent,
+        padding: '16px',
+        borderRight: `1px solid ${cssVars.border}`,
+        minHeight: '100%'
       }}>
-        {/* Controls Panel - All controls in one column */}
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '16px',
-          minWidth: '240px',
-          flexShrink: 0
-        }}>
-          {renderControlPanel(leftControls, 'left')}
-          {renderControlPanel(rightControls, 'right')}
-        </div>
+        {renderControlPanel(leftControls, 'left')}
+      </div>
 
-        {/* Display Area - Component preview */}
-        <div style={{
-          ...displayAreaStyles,
-          flex: 1,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          minHeight: '200px'
-        }} className={displayClassName}>
-          {enhancedElement}
-        </div>
+      {/* Display Area - Component preview */}
+      <div style={{
+        ...displayAreaStyles,
+        flex: 1,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '400px',
+        backgroundColor: cssVars.background
+      }} className={displayClassName}>
+        {enhancedElement}
+      </div>
+
+      {/* Right Controls Panel */}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+        width: '240px',
+        flexShrink: 0,
+        backgroundColor: cssVars.backgroundAccent,
+        padding: '16px',
+        borderLeft: `1px solid ${cssVars.border}`,
+        minHeight: '100%'
+      }}>
+        {renderControlPanel(rightControls, 'right')}
       </div>
     </div>
   );
