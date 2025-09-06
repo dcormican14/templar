@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { CollapsibleMenu } from '../components/molecules/CollapsibleMenu/CollapsibleMenu';
 import { Icon, Button } from '../components/atoms';
 import { useCSSVariables } from '../providers';
@@ -9,10 +10,37 @@ import { getAvailableComponents } from '../utils/componentUtils';
 
 export function ComponentsPage() {
   const cssVars = useCSSVariables();
-  const [selectedComponent, setSelectedComponent] = useState<string | null>(null);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  
   const [menuCollapsed, setMenuCollapsed] = useState(false);
   
   const components = getAvailableComponents();
+
+  // Get selected component directly from URL - no local state
+  const getSelectedComponentFromURL = () => {
+    const componentParam = searchParams.get('component');
+    if (!componentParam) return null;
+    
+    // Convert URL parameter to proper case (first letter uppercase)
+    const properCaseComponent = componentParam.charAt(0).toUpperCase() + componentParam.slice(1).toLowerCase();
+    
+    // Validate component exists
+    if (components.atoms.includes(properCaseComponent) || components.molecules.includes(properCaseComponent)) {
+      return properCaseComponent;
+    }
+    
+    return null;
+  };
+
+  const selectedComponent = getSelectedComponentFromURL();
+
+  // Handle component selection from UI - only update URL
+  const handleComponentSelect = useCallback((component: string) => {
+    const params = new URLSearchParams();
+    params.set('component', component.toLowerCase());
+    router.push(`/components?${params.toString()}`, { scroll: false });
+  }, [router]);
 
   const renderComponentTree = () => {
     return (
@@ -46,7 +74,7 @@ export function ComponentsPage() {
             {components.atoms.map(component => (
               <button
                 key={component}
-                onClick={() => setSelectedComponent(component)}
+                onClick={() => handleComponentSelect(component)}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -103,7 +131,7 @@ export function ComponentsPage() {
               {components.molecules.map(component => (
                 <button
                   key={component}
-                  onClick={() => setSelectedComponent(component)}
+                  onClick={() => handleComponentSelect(component)}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -170,7 +198,7 @@ export function ComponentsPage() {
       );
     }
 
-    return <ComponentShowcase componentName={selectedComponent} />;
+    return <ComponentShowcase key={selectedComponent} componentName={selectedComponent} />;
   };
 
   return (

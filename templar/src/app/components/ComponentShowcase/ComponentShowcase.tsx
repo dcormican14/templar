@@ -35,6 +35,19 @@ export function ComponentShowcase({ componentName }: ComponentShowcaseProps) {
     return () => clearTimeout(timer);
   }, [componentName, componentType]);
 
+  // Reset component props when component name changes
+  useEffect(() => {
+    const config = getComponentInteractiveConfig(componentName);
+    if (config) {
+      setComponentProps(config.initialProps);
+    }
+  }, [componentName]);
+
+  // Handle mode changes
+  const handleModeChange = (mode: 'overview' | 'interactive') => {
+    setActiveTab(mode);
+  };
+
   const generatePlaceholderReadme = (name: string, type: string | null) => {
     return `## Overview
 The ${name} component is a ${type} component in the Templar design system. It provides a consistent and accessible interface for ${name.toLowerCase()} functionality.
@@ -137,14 +150,14 @@ For more detailed documentation, examples, and API reference, visit the [Templar
       );
     }
 
-    // Generate code string for the separate CodeBlock
-    const componentNameForCode = getComponentName(config.component);
-    const codeString = generateCodeString(componentNameForCode, componentProps, (config.component as any).props?.children);
+    // Generate code string for the separate CodeBlock using the actual component name
+    const codeString = generateCodeString(componentName, componentProps, (config.component as any).props?.children, config.initialProps);
 
     return (
       <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
         {/* Interactive Component Display */}
         <InteractiveComponentDisplay
+          key={componentName} // Force re-render when component changes
           leftControls={config.leftControls}
           rightControls={config.rightControls}
           initialProps={config.initialProps}
@@ -246,7 +259,7 @@ For more detailed documentation, examples, and API reference, visit the [Templar
           <SegmentedControl
             items={['Overview', 'Interactive']}
             selectedIndex={activeTab === 'overview' ? 0 : 1}
-            onChange={(index) => setActiveTab(index === 0 ? 'overview' : 'interactive')}
+            onChange={(index) => handleModeChange(index === 0 ? 'overview' : 'interactive')}
             size="sm"
           />
         </div>

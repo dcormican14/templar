@@ -7,13 +7,31 @@ import type { PropControl } from './InteractiveComponentDisplay.types';
 export const generateCodeString = (
   componentName: string,
   props: Record<string, any>,
-  children?: React.ReactNode
+  children?: React.ReactNode,
+  initialProps?: Record<string, any>
 ): string => {
   const propStrings = Object.entries(props)
-    .filter(([_, value]) => value !== undefined && value !== null && value !== '')
+    .filter(([key, value]) => {
+      // Filter out undefined, null, and empty string values
+      if (value === undefined || value === null || value === '') {
+        return false;
+      }
+      
+      // Filter out boolean props set to false
+      if (typeof value === 'boolean' && value === false) {
+        return false;
+      }
+      
+      // Filter out props that match their default/initial values
+      if (initialProps && initialProps[key] === value) {
+        return false;
+      }
+      
+      return true;
+    })
     .map(([key, value]) => {
       if (typeof value === 'boolean') {
-        return value ? key : `${key}={false}`;
+        return key; // Since we filtered out false values, this will always be true
       }
       if (typeof value === 'string') {
         return `${key}="${value}"`;

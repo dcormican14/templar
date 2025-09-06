@@ -159,7 +159,7 @@ export function getComponentInteractiveConfig(componentName: string): ComponentC
 
     case 'Card':
       return {
-        component: <Card>Card Content</Card>,
+        component: <Card />,
         leftControls: [
           universalColorControls, 
           universalSizeShapeControls,

@@ -67,11 +67,8 @@ export const InteractiveComponentDisplay = forwardRef<
     getInitialPropsFromControls(leftControls, rightControls, initialProps)
   );
 
-  // Update props when controls change
-  useEffect(() => {
-    const newProps = getInitialPropsFromControls(leftControls, rightControls, initialProps);
-    setComponentProps(newProps);
-  }, [leftControls, rightControls, initialProps]);
+  // Note: Initial props are set in useState initializer above
+  // We don't need a useEffect here as it causes state resets on re-renders
 
   // Handle prop changes
   const handlePropChange = useCallback((key: string, value: any, control: PropControl) => {
@@ -79,7 +76,10 @@ export const InteractiveComponentDisplay = forwardRef<
     
     setComponentProps(prev => {
       const newProps = { ...prev, [key]: validatedValue };
-      onPropsChange?.(newProps);
+      // Defer the callback to avoid setState during render
+      setTimeout(() => {
+        onPropsChange?.(newProps);
+      }, 0);
       return newProps;
     });
   }, [onPropsChange]);
@@ -113,7 +113,7 @@ export const InteractiveComponentDisplay = forwardRef<
         return (
           <Dropdown
             options={control.options || []}
-            value={currentValue || ''}
+            value={currentValue}
             onChange={(value) => handlePropChange(control.key, value, control)}
             size="sm"
             color="primary"
@@ -152,7 +152,11 @@ export const InteractiveComponentDisplay = forwardRef<
           <TextArea
             id={controlId}
             value={currentValue || ''}
-            onChange={(value) => handlePropChange(control.key, value, control)}
+            onChange={(valueOrEvent) => {
+              // Handle both value and event cases
+              const value = valueOrEvent?.target?.value ?? valueOrEvent;
+              handlePropChange(control.key, value, control);
+            }}
             placeholder={`Enter ${control.label.toLowerCase()}...`}
             size="sm"
             color="primary"

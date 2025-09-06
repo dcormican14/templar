@@ -60,7 +60,6 @@ export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>((allProps, ref)
     highlight,
     syntaxHighlighting = true,
     onCopy,
-    // Filter out props that shouldn't be passed to DOM
     showLineNumbers, // Legacy prop that should not be passed to DOM
     code, // Legacy prop that should not be passed to DOM
     ...restProps
