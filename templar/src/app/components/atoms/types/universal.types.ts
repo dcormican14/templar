@@ -4,13 +4,19 @@ import React from 'react';
 export type UniversalColor = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'custom';
 
 // Universal variant system used across all atomic components  
-export type UniversalVariant = 'solid' | 'ghost' | 'outline';
+export type UniversalVariant = 'solid' | 'ghost' | 'outline' | 'glassmorphic';
 
 // Universal size system used across all atomic components
 export type UniversalSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 // Universal shape system used across all atomic components
 export type UniversalShape = 'sharp' | 'round' | 'pill';
+
+// Universal animation mode system used across all atomic components
+export type UniversalAnimationMode = 'none' | 'default' | 'parallax' | 'typewriter' | 'isometric';
+
+// Universal animation modes array (for multiple selection)
+export type UniversalAnimationModes = UniversalAnimationMode[];
 
 // Base universal props that all atomic components share
 export interface UniversalAtomicProps {
@@ -95,6 +101,17 @@ export interface UniversalAtomicProps {
    * @default true
    */
   animate?: boolean;
+  
+  /**
+   * Animation mode to use (single mode)
+   * @default 'default'
+   */
+  animationMode?: UniversalAnimationMode;
+  
+  /**
+   * Multiple animation modes to use simultaneously
+   */
+  animationModes?: UniversalAnimationModes;
   
   /**
    * Animation duration override in milliseconds
@@ -373,7 +390,7 @@ export const isUniversalColor = (value: any): value is UniversalColor => {
 };
 
 export const isUniversalVariant = (value: any): value is UniversalVariant => {
-  return ['solid', 'ghost', 'outline'].includes(value);
+  return ['solid', 'ghost', 'outline', 'glassmorphic'].includes(value);
 };
 
 export const isUniversalSize = (value: any): value is UniversalSize => {
@@ -382,6 +399,14 @@ export const isUniversalSize = (value: any): value is UniversalSize => {
 
 export const isUniversalShape = (value: any): value is UniversalShape => {
   return ['sharp', 'round', 'pill'].includes(value);
+};
+
+export const isUniversalAnimationMode = (value: any): value is UniversalAnimationMode => {
+  return ['none', 'default', 'parallax', 'typewriter', 'isometric'].includes(value);
+};
+
+export const isUniversalAnimationModes = (value: any): value is UniversalAnimationModes => {
+  return Array.isArray(value) && value.every(isUniversalAnimationMode);
 };
 
 // Default values for universal props
@@ -393,6 +418,7 @@ export const UNIVERSAL_DEFAULTS = {
   disabled: false,
   loading: false,
   animate: true,
+  animationMode: 'default' as UniversalAnimationMode,
 } as const;
 
 // Helper function to extract universal props from a props object
@@ -415,6 +441,8 @@ export const extractUniversalProps = <T extends UniversalAtomicProps>(
     id,
     'data-testid': dataTestId,
     animate,
+    animationMode,
+    animationModes,
     animationDuration,
     'aria-label': ariaLabel,
     'aria-describedby': ariaDescribedBy,
@@ -445,6 +473,8 @@ export const extractUniversalProps = <T extends UniversalAtomicProps>(
     id,
     'data-testid': dataTestId,
     animate,
+    animationMode,
+    animationModes,
     animationDuration,
     'aria-label': ariaLabel,
     'aria-describedby': ariaDescribedBy,
@@ -482,6 +512,8 @@ export const extractFormProps = <T extends UniversalFormProps>(
     id,
     'data-testid': dataTestId,
     animate,
+    animationMode,
+    animationModes,
     animationDuration,
     'aria-label': ariaLabel,
     'aria-describedby': ariaDescribedBy,
@@ -546,6 +578,8 @@ export const extractFormProps = <T extends UniversalFormProps>(
     id,
     'data-testid': dataTestId,
     animate,
+    animationMode,
+    animationModes,
     animationDuration,
     'aria-label': ariaLabel,
     'aria-describedby': ariaDescribedBy,
@@ -615,6 +649,8 @@ export const extractContainerProps = <T extends UniversalContainerProps>(
     id,
     'data-testid': dataTestId,
     animate,
+    animationMode,
+    animationModes,
     animationDuration,
     'aria-label': ariaLabel,
     'aria-describedby': ariaDescribedBy,
@@ -662,6 +698,8 @@ export const extractContainerProps = <T extends UniversalContainerProps>(
     id,
     'data-testid': dataTestId,
     animate,
+    animationMode,
+    animationModes,
     animationDuration,
     'aria-label': ariaLabel,
     'aria-describedby': ariaDescribedBy,
@@ -715,6 +753,8 @@ export const extractInteractiveProps = <T extends UniversalInteractiveProps>(
     id,
     'data-testid': dataTestId,
     animate,
+    animationMode,
+    animationModes,
     animationDuration,
     'aria-label': ariaLabel,
     'aria-describedby': ariaDescribedBy,
@@ -763,6 +803,8 @@ export const extractInteractiveProps = <T extends UniversalInteractiveProps>(
     id,
     'data-testid': dataTestId,
     animate,
+    animationMode,
+    animationModes,
     animationDuration,
     'aria-label': ariaLabel,
     'aria-describedby': ariaDescribedBy,

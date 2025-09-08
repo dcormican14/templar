@@ -43,7 +43,8 @@ const universalColorControls: PropControlGroup = {
       options: [
         { value: 'solid', label: 'Solid' },
         { value: 'ghost', label: 'Ghost' },
-        { value: 'outline', label: 'Outline' }
+        { value: 'outline', label: 'Outline' },
+        { value: 'glassmorphic', label: 'Glassmorphic' }
       ]
     },
     {
@@ -98,6 +99,28 @@ const universalStateControls: PropControlGroup = {
   ]
 };
 
+const universalAnimationControls: PropControlGroup = {
+  title: 'Animation',
+  controls: [
+    {
+      key: 'animate',
+      label: 'Enable Animations',
+      type: 'checkbox'
+    },
+    {
+      key: 'animationMode',
+      label: 'Animation Mode',
+      type: 'select',
+      options: [
+        { value: 'default', label: 'Default' },
+        { value: 'parallax', label: 'Parallax Tilt' },
+        { value: 'typewriter', label: 'Typewriter' },
+        { value: 'isometric', label: 'Isometric' }
+      ]
+    }
+  ]
+};
+
 export function getComponentInteractiveConfig(componentName: string): ComponentConfig | null {
   switch (componentName) {
     case 'Button':
@@ -106,6 +129,7 @@ export function getComponentInteractiveConfig(componentName: string): ComponentC
         leftControls: [universalColorControls, universalSizeShapeControls],
         rightControls: [
           universalStateControls,
+          universalAnimationControls,
           {
             title: 'Content',
             controls: [
@@ -122,7 +146,9 @@ export function getComponentInteractiveConfig(componentName: string): ComponentC
           variant: 'solid',
           size: 'md',
           shape: 'round',
-          children: 'Click Me'
+          children: 'Click Me',
+          animate: true,
+          animationMode: 'default'
         }
       };
 

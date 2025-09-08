@@ -119,11 +119,13 @@ Each semantic color (primary, secondary, success, warning, destructive, info) ha
 - **solid** (default) - Filled background with contrasting foreground text
 - **ghost** - Transparent background with colored text, subtle hover effects
 - **outline** - Transparent background with colored border and text
+- **glassmorphic** - Frosted glass appearance with backdrop blur and transparency
 
 ### Variant Behavior
-- **Solid**: Full color background, uses foreground color for text
-- **Ghost**: Transparent background, uses main color for text, hover adds subtle background
-- **Outline**: Transparent background, colored border and text, hover adds background fill
+- **Solid**: Uses accent color for vibrant appearance, foreground color for text, enhanced with accent hover effects
+- **Ghost**: Transparent background, uses main color for text, hover adds selected color's background with transparency
+- **Outline**: Transparent background, colored border and text, hover adds selected color's background fill
+- **Glassmorphic**: Semi-transparent background with backdrop blur filter, includes diagonal reflection lines using selected color's hover variant, uses color-specific shadow (e.g., `primary-shadow`, `success-shadow`)
 
 ## Icon Placement
 
@@ -244,9 +246,10 @@ All components should define their props using TypeScript with these standardize
 
 ```typescript
 export type ComponentColor = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'custom';
-export type ComponentVariant = 'solid' | 'ghost' | 'outline';
+export type ComponentVariant = 'solid' | 'ghost' | 'outline' | 'gradient' | 'glassmorphic' | 'isomorphic';
 export type ComponentSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 export type ComponentShape = 'sharp' | 'round' | 'pill';
+export type ComponentAnimationMode = 'none' | 'default' | 'parallax' | 'typewriter';
 export type IconPlacement = 'leading' | 'trailing';
 
 export interface StandardComponentProps {
@@ -258,6 +261,8 @@ export interface StandardComponentProps {
   iconPlacement?: IconPlacement;
   loading?: boolean;
   disabled?: boolean;
+  animate?: boolean;
+  animationMode?: ComponentAnimationMode;
 }
 ```
 
@@ -283,9 +288,28 @@ Use the 4px spacing system consistently:
 ## Component-Specific Considerations
 
 ### Buttons
-- Default: `color="primary"`, `variant="solid"`, `size="md"`, `shape="round"`
-- Support all color, variant, size, and shape options
+- Default: `color="primary"`, `variant="solid"`, `size="md"`, `shape="round"`, `animationMode="default"`
+- Support all color, variant, size, shape, and animation mode options
 - Icon-only buttons use square aspect ratio
+
+#### Color Implementation
+- **Solid Variant**: Uses `accent` color for vibrant appearance, fallback to `main` color
+- **Color-specific Hover**: Each variant uses the selected color's hover properties (e.g., `success-hover`, `warning-hover`)
+- **Glassmorphic Shadows**: Automatically uses color-specific shadows (e.g., `primary-shadow`, `destructive-shadow`)
+
+#### Animation Modes Usage
+- **`default`**: Standard hover effects and transitions
+- **`parallax`**: Premium/marketing buttons with 3D tilt and glare effects
+- **`typewriter`**: Call-to-action elements with continuous typing animation
+- **`isometric`**: Interactive buttons with realistic 3D press feedback
+- **`none`**: Data-heavy interfaces or accessibility-focused designs
+
+#### Variant-Animation Compatibility
+- **All Variants**: Support `default`, `parallax`, `typewriter`, and `none` animations
+- **Isometric Animation**: Only supports `solid` and `outline` variants
+- **Ghost + Isometric**: Maintains default ghost hover effects (background color change)
+- **Glassmorphic + Isometric**: Maintains default glassmorphic effects (no isometric styling applied)
+- **Parallax + Glassmorphic**: Special shadow preservation system maintains glassmorphic shadows during 3D tilt
 
 ### Form Inputs
 - Default: `size="md"`, `shape="round"`
@@ -305,6 +329,104 @@ Use the 4px spacing system consistently:
 
 ### Animation Principles
 Templar components use consistent animation patterns to create smooth, delightful user experiences while maintaining performance and accessibility.
+
+### Animation Modes
+Components can use different animation modes through the `animationMode` prop, providing varied interactive experiences while maintaining consistent behavior patterns.
+
+#### Available Animation Modes
+- **none** - Disables all animations for the component
+- **default** - Standard CSS transitions and hover effects (default behavior)
+- **parallax** - Interactive 3D parallax tilt effect with glare lighting
+- **typewriter** - Continuous typewriter text effect with typing, waiting, and deletion cycles
+- **isometric** - 3D button press effect with large bottom border and bouncy animation
+
+#### Animation Mode Implementation
+```typescript
+// Animation mode type definition
+export type UniversalAnimationMode = 'none' | 'default' | 'parallax' | 'typewriter' | 'isometric';
+
+// Usage in components
+interface ComponentProps {
+  animate?: boolean;           // Master animation toggle
+  animationMode?: UniversalAnimationMode; // Specific animation style
+}
+```
+
+#### Animation Mode Behaviors
+
+##### Default Mode
+```typescript
+<Button animationMode="default">Standard Button</Button>
+```
+- CSS transition-based animations
+- Hover state changes (opacity, background color)
+- Focus ring animations
+- Loading spinner transitions
+- Compatible with all variants and shapes
+
+##### Parallax Mode  
+```typescript
+<Button animationMode="parallax">3D Tilt Button</Button>
+```
+- Interactive 3D tilt following mouse movement
+- Dynamic glare effect with realistic lighting
+- Enhanced scale and perspective transforms
+- Automatically inherits button shape (round, pill, sharp)
+- Disabled interaction during loading/disabled states
+- **Glassmorphic Shadow Preservation**: Special handling to preserve glassmorphic shadows by moving them to the parallax wrapper
+
+**Technical Specifications:**
+- Tilt angles: ±15° on both X and Y axes
+- Scale factor: 1.05x on interaction
+- Glare opacity: 30% maximum
+- Transition speed: 300ms
+- Reverse tilt direction for enhanced feel
+
+##### Typewriter Mode
+```typescript
+<Button animationMode="typewriter">Type Me</Button>
+```
+- Continuous typing animation cycle
+- Types text character by character (100ms per character)
+- Random wait period between 6-8 seconds
+- Deletes text with faster speed (50ms per character)  
+- Includes blinking cursor effect
+- Preserves hover effects alongside text animation
+
+**Animation Cycle:**
+1. **Typing Phase**: Types each character sequentially
+2. **Waiting Phase**: Random 6-8 second pause with blinking cursor
+3. **Deleting Phase**: Removes characters in reverse order
+4. **Loop**: Restarts cycle automatically
+
+##### Isometric Mode
+```typescript
+<Button animationMode="isometric">3D Press Button</Button>
+```
+- Large 6px bottom border using foreground color (solid) or main color (outline)
+- Bouncy button press animation: `translateY(3px)` with border reduction to 3px
+- Spring-based easing with `cubic-bezier(0.34, 1.56, 0.64, 1)`
+- **Variant Support**: Only works with `solid` and `outline` variants
+- **Excluded Variants**: `ghost` and `glassmorphic` maintain default hover effects instead
+- **Border Color Logic**:
+  - **Solid**: All borders use foreground color for unified appearance
+  - **Outline**: Bottom border uses main color, side borders remain unchanged
+
+**Technical Specifications:**
+- Rest state: `translateY(0)` with 6px bottom border
+- Press state: `translateY(3px)` with 3px bottom border
+- Transition: 0.4s spring easing
+- Box-sizing: `border-box` with relative positioning
+
+##### None Mode
+```typescript
+<Button animationMode="none">Static Button</Button>
+```
+- Completely disables all animations
+- Instant state changes
+- No transitions or effects
+- Optimal for reduced-motion preferences
+- Performance-focused implementation
 
 ### Timing and Easing
 
@@ -438,3 +560,88 @@ Define animation values as CSS variables when used across multiple components:
 - Backdrop blur animations when supported
 
 This animation system ensures consistency across all Templar components while providing flexibility for various use cases and maintaining excellent accessibility standards.
+
+## Advanced Button Architecture
+
+### CSS Property Consistency
+The button system uses non-shorthand CSS properties throughout to prevent React property conflicts:
+
+```css
+/* Non-shorthand border properties */
+borderTopWidth: '1px',
+borderRightWidth: '1px', 
+borderBottomWidth: '1px',
+borderLeftWidth: '1px',
+borderTopStyle: 'solid',
+borderRightStyle: 'solid',
+borderBottomStyle: 'solid',
+borderLeftStyle: 'solid',
+borderTopColor: colors.main,
+borderRightColor: colors.main,
+borderLeftColor: colors.main,
+borderBottomColor: colors.main
+```
+
+**Rationale**: Prevents React warnings when mixing shorthand (`borderColor`) with non-shorthand (`borderBottomWidth`) properties during animation state changes.
+
+### Glassmorphic Glass Reflection System
+Glassmorphic variant includes realistic glass reflection effects:
+
+```css
+/* Dual-layer reflection gradients */
+topReflectionGradient: linear-gradient(135deg, transparent 0%, ${color}20 20%, ${color}15 25%, transparent 35%)
+bottomReflectionGradient: linear-gradient(135deg, transparent 45%, ${color}25 55%, ${color}20 65%, transparent 80%)
+
+/* Layered background */
+background: `
+  ${topReflectionGradient},
+  ${bottomReflectionGradient},
+  rgba(255, 255, 255, 0.1)
+`
+```
+
+**Features**:
+- **Two diagonal reflection lines** traveling from top-right to bottom-left
+- **Dynamic color adaptation** using selected color's hover variant
+- **Realistic glass physics** with varying opacity and thickness
+- **Enhanced on hover** with increased reflection intensity
+
+### Parallax-Glassmorphic Shadow Preservation
+Special handling ensures glassmorphic shadows remain visible during parallax tilt:
+
+```typescript
+// Shadow detection and preservation
+const shouldPreserveShadow = childBoxShadow.includes('32px') || childBoxShadow.includes('40px');
+
+// Conditional overflow handling
+overflow: shouldPreserveShadow ? 'visible' : 'hidden',
+boxShadow: shouldPreserveShadow ? childBoxShadow : 'none',
+
+// Remove shadow from child to prevent duplication
+{shouldPreserveShadow && isValidElement(children) 
+  ? cloneElement(children, { style: { ...children.props.style, boxShadow: 'none' } })
+  : children
+}
+```
+
+**Technical Solution**:
+1. **Detects glassmorphic shadows** by signature shadow dimensions
+2. **Transfers shadow to wrapper** to prevent overflow clipping
+3. **Removes duplicate shadow** from child element
+4. **Maintains all other styling** without interference
+
+### Multi-Animation Architecture
+The system supports future multiple animation selection through extensible types:
+
+```typescript
+// Current single animation
+animationMode?: UniversalAnimationMode;
+
+// Future multiple animations
+animationModes?: UniversalAnimationModes; // Array of animation modes
+```
+
+**Implementation Notes**:
+- **Priority-based execution**: Isometric animation takes precedence over default variant hover effects
+- **Variant-aware logic**: Ghost and glassmorphic maintain their characteristics even with unsupported animations
+- **Graceful fallbacks**: Unsupported animation-variant combinations default to appropriate behavior

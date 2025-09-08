@@ -1,13 +1,14 @@
 'use client';
 
-import React, { forwardRef, useMemo } from 'react';
+import React, { forwardRef, useMemo, useEffect } from 'react';
 import { useCSSVariables, useLoading, useSettings } from '../../../providers';
 import { extractInteractiveProps, UNIVERSAL_DEFAULTS } from '../types';
 import type { ButtonProps } from './Button.types';
-import { getVariantStyles, getSizeStyles, createBaseStyles, getShapeStyles } from './Button.styles';
+import { getVariantStyles, getSizeStyles, createBaseStyles, getShapeStyles, getIsometricStyles, getColorVariables } from './Button.styles';
 import { createCenteredContent, createTextContainer } from './Button.utils';
 import { ProgressIndicator } from '../ProgressIndicator';
 import { useAsyncClick, useButtonHover } from './hooks';
+import { ParallaxTiltWrapper, TypewriterText } from './animations';
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>((allProps, ref) => {
   // Extract interactive props and component-specific props
@@ -30,7 +31,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>((allProps, ref)
     id,
     'data-testid': dataTestId,
     animate = UNIVERSAL_DEFAULTS.animate,
-    rounded, // Legacy support
+    animationMode = UNIVERSAL_DEFAULTS.animationMode,
     fullWidth,
     onMouseEnter: universalOnMouseEnter,
     onMouseLeave: universalOnMouseLeave,
@@ -55,14 +56,26 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>((allProps, ref)
   const isDisabled = Boolean(disabled) || isButtonLoading;
   const hasIcon = Boolean(icon);
   const animationsEnabled = (settings.appearance.animations ?? true) && animate;
+  const useAnimationMode = animationsEnabled && animationMode !== 'none';
+  const shouldUseDefaultAnimations = useAnimationMode && animationMode === 'default';
+  const hasIsometricAnimation = useAnimationMode && animationMode === 'isometric' && variant !== 'ghost' && variant !== 'glassmorphic';
+  const shouldUseHoverEffects = useAnimationMode && (
+    animationMode === 'default' || 
+    animationMode === 'typewriter' || 
+    hasIsometricAnimation ||
+    (animationMode === 'isometric' && (variant === 'ghost' || variant === 'glassmorphic')) // Enable hover effects for variants that don't support isometric
+  );
+
 
   // Event handlers
   const handleAsyncClick = useAsyncClick({ loadingKey, onAsyncClick, onClick });
   const { handleMouseEnter, handleMouseLeave } = useButtonHover({
     variant,
     isDisabled: Boolean(isDisabled),
-    animationsEnabled,
-    cssVars
+    animationsEnabled: shouldUseHoverEffects,
+    cssVars,
+    hasIsometricAnimation,
+    colors: getColorVariables(color, customColor, cssVars)
   });
   
   // Combine universal and component mouse handlers
@@ -82,23 +95,37 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>((allProps, ref)
     Boolean(isDisabled),
     hasIcon,
     shape,
-    animationsEnabled,
-    rounded
-  ), [fullWidth, isDisabled, hasIcon, shape, animationsEnabled, rounded]);
+    shouldUseDefaultAnimations,
+  ), [fullWidth, isDisabled, hasIcon, shape, shouldUseDefaultAnimations]);
 
   const variantStyles = useMemo(() => getVariantStyles(color, variant, customColor, cssVars), [color, variant, customColor, cssVars]);
   const sizeStyles = useMemo(() => getSizeStyles(size), [size]);
+  const isometricStyles = useMemo(() => hasIsometricAnimation ? getIsometricStyles(getColorVariables(color, customColor, cssVars), variant, shape) : {}, [hasIsometricAnimation, color, customColor, cssVars, variant, shape]);
 
   const combinedStyles: React.CSSProperties = {
     ...baseStyles,
     ...sizeStyles,
     ...variantStyles,
+    ...isometricStyles,
     width,
     height,
     ...style,
   };
 
-  // Content rendering
+  // Content rendering with animation mode support
+  const renderTextContent = useMemo(() => {
+    if (useAnimationMode && animationMode === 'typewriter' && typeof children === 'string') {
+      return (
+        <TypewriterText
+          text={children}
+          disabled={isDisabled || !useAnimationMode}
+          speed={100}
+        />
+      );
+    }
+    return children;
+  }, [children, useAnimationMode, animationMode, isDisabled]);
+
   const renderContent = () => {
     if (isButtonLoading) {
       // Map button size to spinner size
@@ -118,15 +145,16 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>((allProps, ref)
     return (
       <>
         {hasIcon ? (
-          createCenteredContent(icon, iconPosition, size, children)
+          createCenteredContent(icon, iconPosition, size, renderTextContent)
         ) : (
-          createTextContainer(children)
+          createTextContainer(renderTextContent)
         )}
       </>
     );
   };
 
-  return (
+  // Render button element
+  const buttonElement = (
     <button
       ref={ref}
       id={id}
@@ -135,13 +163,26 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>((allProps, ref)
       onMouseEnter={combinedMouseEnter}
       onMouseLeave={combinedMouseLeave}
       style={combinedStyles}
-      className={className}
+      className={className || ''}
       data-testid={dataTestId}
       {...restProps}
     >
       {renderContent()}
     </button>
   );
+
+  // Wrap with animation mode if applicable
+  if (useAnimationMode && animationMode === 'parallax') {
+    return (
+      <ParallaxTiltWrapper
+        disabled={isDisabled || !useAnimationMode}
+      >
+        {buttonElement}
+      </ParallaxTiltWrapper>
+    );
+  }
+
+  return buttonElement;
 });
 
 Button.displayName = 'Button';

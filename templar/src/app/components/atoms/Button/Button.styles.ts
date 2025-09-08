@@ -12,6 +12,7 @@ export const getColorVariables = (color: ButtonColor, customColor: string | unde
     };
   }
 
+
   const colorMap: Record<string, any> = {
     primary: {
       main: cssVars.primary,
@@ -87,31 +88,49 @@ export const getVariantStyles = (
   const colors = getColorVariables(color, customColor, cssVars);
 
   const baseStyles = {
-    borderWidth: '1px',
-    borderStyle: 'solid' as const,
+    borderTopWidth: '1px',
+    borderRightWidth: '1px',
+    borderBottomWidth: '1px',
+    borderLeftWidth: '1px',
+    borderTopStyle: 'solid' as const,
+    borderRightStyle: 'solid' as const,
+    borderBottomStyle: 'solid' as const,
+    borderLeftStyle: 'solid' as const,
   };
 
   switch (variant) {
     case 'solid':
       return {
-        backgroundColor: colors.main,
+        backgroundColor: colors.accent || colors.main,
         color: colors.foreground,
-        borderColor: colors.main,
+        borderTopColor: colors.accent || colors.main,
+        borderRightColor: colors.accent || colors.main,
+        borderLeftColor: colors.accent || colors.main,
+        borderBottomColor: colors.accent || colors.main,
         ...baseStyles,
         '&:hover:not(:disabled)': {
           backgroundColor: colors.hover,
-          borderColor: colors.hover,
+          borderTopColor: colors.hover,
+          borderRightColor: colors.hover,
+          borderLeftColor: colors.hover,
+          borderBottomColor: colors.hover,
         },
       };
     case 'outline':
       return {
         backgroundColor: 'transparent',
         color: colors.main,
-        borderColor: colors.main,
+        borderTopColor: colors.main,
+        borderRightColor: colors.main,
+        borderLeftColor: colors.main,
+        borderBottomColor: colors.main,
         ...baseStyles,
         '&:hover:not(:disabled)': {
           backgroundColor: colors.background || colors.main + '10',
-          borderColor: colors.hover,
+          borderTopColor: colors.hover,
+          borderRightColor: colors.hover,
+          borderLeftColor: colors.hover,
+          borderBottomColor: colors.hover,
           color: colors.hover,
         },
       };
@@ -119,18 +138,61 @@ export const getVariantStyles = (
       return {
         backgroundColor: 'transparent',
         color: colors.main,
-        borderColor: 'transparent',
+        borderTopColor: 'transparent',
+        borderRightColor: 'transparent',
+        borderLeftColor: 'transparent',
+        borderBottomColor: 'transparent',
         ...baseStyles,
         '&:hover:not(:disabled)': {
           backgroundColor: colors.background || colors.main + '10',
           color: colors.hover,
         },
       };
+    case 'glassmorphic':
+      // Create reflection gradient lines using the hover color with transparency
+      const reflectionColor = colors.hover || colors.main || '#ffffff';
+      const topReflectionGradient = `linear-gradient(135deg, transparent 0%, ${reflectionColor}20 20%, ${reflectionColor}15 25%, transparent 35%)`;
+      const bottomReflectionGradient = `linear-gradient(135deg, transparent 45%, ${reflectionColor}25 55%, ${reflectionColor}20 65%, transparent 80%)`;
+      
+      return {
+        background: `
+          ${topReflectionGradient},
+          ${bottomReflectionGradient},
+          rgba(255, 255, 255, 0.1)
+        `,
+        backdropFilter: 'blur(10px)',
+        color: colors.main,
+        boxShadow: `0 8px 32px 0 ${colors.shadow || 'rgba(31, 38, 135, 0.37)'}`,
+        position: 'relative',
+        overflow: 'hidden',
+        ...baseStyles,
+        borderTopColor: 'rgba(255, 255, 255, 0.2)',
+        borderRightColor: 'rgba(255, 255, 255, 0.2)',
+        borderLeftColor: 'rgba(255, 255, 255, 0.2)',
+        borderBottomColor: 'rgba(255, 255, 255, 0.2)',
+        '&:hover:not(:disabled)': {
+          background: `
+            linear-gradient(135deg, transparent 0%, ${reflectionColor}30 20%, ${reflectionColor}25 25%, transparent 35%),
+            linear-gradient(135deg, transparent 45%, ${reflectionColor}35 55%, ${reflectionColor}30 65%, transparent 80%),
+            rgba(255, 255, 255, 0.15)
+          `,
+          backdropFilter: 'blur(15px)',
+          borderTopColor: 'rgba(255, 255, 255, 0.3)',
+          borderRightColor: 'rgba(255, 255, 255, 0.3)',
+          borderLeftColor: 'rgba(255, 255, 255, 0.3)',
+          borderBottomColor: 'rgba(255, 255, 255, 0.3)',
+          transform: 'translateY(-1px)',
+          boxShadow: `0 12px 40px 0 ${colors.shadow || 'rgba(31, 38, 135, 0.45)'}`,
+        },
+      };
     default:
       return {
         backgroundColor: colors.main,
         color: colors.foreground,
-        borderColor: colors.main,
+        borderTopColor: colors.main,
+        borderRightColor: colors.main,
+        borderLeftColor: colors.main,
+        borderBottomColor: colors.main,
         ...baseStyles,
       };
   }
@@ -203,4 +265,39 @@ export const createBaseStyles = (
     userSelect: 'none',
     ...getShapeStyles(finalShape),
   };
+};
+
+
+// Get isometric animation styles
+export const getIsometricStyles = (color: any, variant: string, shape: string) => {
+  // Ghost and glassmorphic variants don't support isometric animation
+  if (variant === 'ghost' || variant === 'glassmorphic') {
+    return {};
+  }
+  
+  // For outline variant, use the main color (primary). For solid, use foreground color.
+  const borderColor = variant === 'outline' ? color.main : color.foreground || '#000000';
+  
+  const styles: any = {
+    // Large bottom border - override the base 1px
+    borderBottomWidth: '6px',
+    borderBottomStyle: 'solid',
+    borderBottomColor: borderColor,
+    transform: 'translateY(0)',
+    transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+    // Ensure proper box-sizing and prevent collapse
+    boxSizing: 'border-box',
+    position: 'relative',
+    // Adjust padding to account for larger bottom border
+    paddingBottom: '2px', // Slightly reduce bottom padding to compensate
+  };
+  
+  // For solid variant, make all border colors match the bottom border (foreground color)
+  if (variant === 'solid') {
+    styles.borderTopColor = borderColor;
+    styles.borderRightColor = borderColor;
+    styles.borderLeftColor = borderColor;
+  }
+  
+  return styles;
 };

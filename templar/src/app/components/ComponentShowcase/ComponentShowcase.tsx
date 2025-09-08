@@ -151,7 +151,12 @@ For more detailed documentation, examples, and API reference, visit the [Templar
     }
 
     // Generate code string for the separate CodeBlock using the actual component name
-    const codeString = generateCodeString(componentName, componentProps, (config.component as any).props?.children, config.initialProps);
+    // Override animationMode to 'none' if animations are disabled for code preview
+    const codeProps = { ...componentProps };
+    if (!componentProps.animate && codeProps.animationMode) {
+      codeProps.animationMode = 'none';
+    }
+    const codeString = generateCodeString(componentName, codeProps, (config.component as any).props?.children, config.initialProps);
 
     return (
       <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px' }}>

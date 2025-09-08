@@ -3,7 +3,8 @@ import type {
   UniversalSize, 
   UniversalColor, 
   UniversalVariant, 
-  UniversalShape 
+  UniversalShape,
+  UniversalAnimationMode 
 } from '../types';
 
 // Component-specific type aliases (for backward compatibility)
@@ -11,6 +12,7 @@ export type ButtonColor = UniversalColor;
 export type ButtonVariant = UniversalVariant;
 export type ButtonSize = UniversalSize;
 export type ButtonShape = UniversalShape;
+export type ButtonAnimationMode = UniversalAnimationMode;
 export type IconPosition = 'leading' | 'trailing';
 
 // Component-specific props (not covered by universal props)

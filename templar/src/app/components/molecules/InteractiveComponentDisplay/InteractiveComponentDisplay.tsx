@@ -110,6 +110,9 @@ export const InteractiveComponentDisplay = forwardRef<
 
     switch (control.type) {
       case 'select':
+        // Check if this is the animationMode dropdown and animations are disabled
+        const isAnimationModeDisabled = control.key === 'animationMode' && !componentProps.animate;
+        
         return (
           <Dropdown
             options={control.options || []}
@@ -118,6 +121,7 @@ export const InteractiveComponentDisplay = forwardRef<
             size="sm"
             color="primary"
             shape="default"
+            disabled={isAnimationModeDisabled}
           />
         );
 
@@ -211,8 +215,14 @@ export const InteractiveComponentDisplay = forwardRef<
     );
   };
 
+  // Prepare props for rendering - override animationMode to 'none' if animations are disabled
+  const renderProps = { ...componentProps };
+  if (!componentProps.animate && renderProps.animationMode) {
+    renderProps.animationMode = 'none';
+  }
+
   // Clone element with new props
-  const enhancedElement = cloneElementWithProps(children, componentProps);
+  const enhancedElement = cloneElementWithProps(children, renderProps);
 
   // Styles
   const containerStyles = createContainerStyles(size, layout, cssVars);
