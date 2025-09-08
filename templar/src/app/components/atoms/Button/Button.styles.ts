@@ -274,6 +274,21 @@ export const getIconSize = (buttonSize: ButtonSize): 'xs' | 'sm' | 'md' | 'lg' |
   return iconSizeMap[buttonSize];
 };
 
+// Get icon-only styles (square/circular based on shape)
+export const getIconOnlyStyles = (size: ButtonSize, shape: ButtonShape): React.CSSProperties => {
+  // Get the height from the size styles to make width match height
+  const sizeStyles = getSizeStyles(size);
+  const height = sizeStyles.height;
+  
+  return {
+    width: height, // Make width equal to height for square/circle
+    minWidth: height, // Override minWidth from size styles
+    paddingLeft: '0', // Center the icon
+    paddingRight: '0', // Center the icon
+    aspectRatio: '1', // Ensure 1:1 aspect ratio
+  };
+};
+
 export const createBaseStyles = (
   fullWidth: boolean,
   isDisabled: boolean,

@@ -22,6 +22,11 @@ export const generateCodeString = (
         return false;
       }
       
+      // Skip internal helper props
+      if (key.startsWith('_')) {
+        return false;
+      }
+      
       // Filter out props that match their default/initial values
       if (initialProps && initialProps[key] === value) {
         return false;
@@ -43,6 +48,34 @@ export const generateCodeString = (
         return `${key}={${JSON.stringify(value)}}`;
       }
       if (typeof value === 'object') {
+        // Handle React elements specially
+        if (React.isValidElement(value)) {
+          // Extract the component type and props for display
+          const componentName = typeof value.type === 'string' ? value.type : (value.type as any)?.displayName || (value.type as any)?.name || 'Component';
+          const componentProps = value.props || {};
+          
+          // Simple case: if it's an Icon component with just a name prop
+          if (componentName === 'Icon' && componentProps.name && Object.keys(componentProps).length === 1) {
+            return `${key}={<Icon name="${componentProps.name}" />}`;
+          }
+          
+          // General case: render as JSX
+          const propStrings = Object.entries(componentProps)
+            .filter(([propKey]) => propKey !== 'children')
+            .map(([propKey, propValue]) => {
+              if (typeof propValue === 'string') {
+                return `${propKey}="${propValue}"`;
+              }
+              return `${propKey}={${JSON.stringify(propValue)}}`;
+            });
+          
+          const hasChildren = componentProps.children;
+          if (hasChildren) {
+            return `${key}={<${componentName}${propStrings.length ? ' ' + propStrings.join(' ') : ''}>${componentProps.children}</${componentName}>}`;
+          } else {
+            return `${key}={<${componentName}${propStrings.length ? ' ' + propStrings.join(' ') : ''} />}`;
+          }
+        }
         return `${key}={${JSON.stringify(value)}}`;
       }
       return `${key}={${JSON.stringify(value)}}`;
@@ -87,10 +120,10 @@ export const cloneElementWithProps = (
   element: React.ReactElement,
   newProps: Record<string, any>
 ): React.ReactElement => {
-  // Filter out undefined values to avoid overriding default props unnecessarily
+  // Filter out internal props but allow undefined values to override defaults
   const filteredProps = Object.entries(newProps).reduce((acc, [key, value]) => {
-    if (value !== undefined) {
-      acc[key] = value;
+    if (!key.startsWith('_')) {
+      acc[key] = value; // Include undefined values to override component defaults
     }
     return acc;
   }, {} as Record<string, any>);

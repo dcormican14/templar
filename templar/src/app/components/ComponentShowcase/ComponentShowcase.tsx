@@ -156,6 +156,15 @@ For more detailed documentation, examples, and API reference, visit the [Templar
     if (!componentProps.animate && codeProps.animationMode) {
       codeProps.animationMode = 'none';
     }
+
+    // Handle icon toggle logic for code preview
+    if (codeProps.icon === false) {
+      delete codeProps.icon;
+    } else if (codeProps.icon === true && config.initialProps._defaultIcon) {
+      // If icon is true (checkbox checked), use the default icon for code preview
+      codeProps.icon = config.initialProps._defaultIcon;
+    }
+    
     const codeString = generateCodeString(componentName, codeProps, (config.component as any).props?.children, config.initialProps);
 
     return (

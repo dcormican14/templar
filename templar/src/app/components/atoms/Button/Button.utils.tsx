@@ -36,9 +36,8 @@ export const createIconContainer = (
   };
 
   const spacing = getSpacing(buttonSize);
-  const marginStyle = position === 'leading' 
-    ? { marginRight: spacing } 
-    : { marginLeft: spacing };
+  // Apply both left and right margins to both leading and trailing icons
+  const marginStyle = { marginLeft: spacing, marginRight: spacing };
 
   return (
     <span style={{ 
@@ -72,7 +71,23 @@ export const createCenteredContent = (
   buttonSize: ButtonSize,
   children: React.ReactNode
 ): React.ReactElement => {
-  // Responsive spacing based on button size
+  // Check if there are actual children (text content)
+  const hasChildren = Boolean(children && (typeof children === 'string' ? children.trim() : children));
+  
+  // If there are no children, just render the icon centered without any spacing
+  if (!hasChildren) {
+    return (
+      <span style={{ 
+        display: 'flex', 
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        {renderIcon(icon, buttonSize)}
+      </span>
+    );
+  }
+
+  // Responsive spacing based on button size (only when there are children)
   const getSpacing = (size: ButtonSize): string => {
     const spacingMap = {
       xs: '2px',

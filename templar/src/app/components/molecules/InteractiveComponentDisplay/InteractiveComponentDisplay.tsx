@@ -120,7 +120,6 @@ export const InteractiveComponentDisplay = forwardRef<
             onChange={(value) => handlePropChange(control.key, value, control)}
             size="sm"
             color="primary"
-            shape="default"
             disabled={isAnimationModeDisabled}
           />
         );
@@ -219,6 +218,14 @@ export const InteractiveComponentDisplay = forwardRef<
   const renderProps = { ...componentProps };
   if (!componentProps.animate && renderProps.animationMode) {
     renderProps.animationMode = 'none';
+  }
+
+  // Handle icon toggle logic - if icon is false (checkbox unchecked), remove the icon prop
+  if (renderProps.icon === false) {
+    renderProps.icon = undefined; // Explicitly set to undefined to override any default icon
+  } else if (renderProps.icon === true && initialProps._defaultIcon) {
+    // If icon is true (checkbox checked), use the default icon
+    renderProps.icon = initialProps._defaultIcon;
   }
 
   // Clone element with new props

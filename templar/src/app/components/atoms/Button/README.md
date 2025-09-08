@@ -4,14 +4,16 @@ A comprehensive, accessible, and highly customizable button component built with
 
 ## Features
 
-- **Multiple variants**: primary, secondary, outline, ghost, destructive
-- **Flexible sizing**: xs, sm, md, lg, xl
+- **Multiple variants**: solid, ghost, outline, glassmorphic with color theming
+- **Flexible sizing**: xs, sm, md, lg, xl with responsive design
 - **Icon support**: leading and trailing icon positions with automatic sizing
-- **Loading states**: built-in async operation handling
+- **Icon-only mode**: automatic square/circular styling when no text content
+- **Loading states**: built-in async operation handling with color-matched spinners
+- **Animation modes**: default, parallax tilt, typewriter, and isometric 3D effects
 - **Theme integration**: automatic adaptation to RoundTable theme system
 - **Accessibility**: proper ARIA attributes and keyboard navigation
 - **Hover effects**: smooth animations and visual feedback
-- **Rounded variant**: pill-shaped styling option
+- **Shape variants**: sharp, round, and pill styling options
 
 ## File Structure
 
@@ -61,6 +63,33 @@ import { Button } from './components/atoms/Button';
 </Button>
 ```
 
+### Icon-Only Buttons
+
+When no text content is provided, buttons with icons automatically become square or circular based on the shape prop:
+
+```tsx
+{/* Square icon button */}
+<Button 
+  variant="primary" 
+  shape="sharp"
+  icon={<Icon name="Settings" />}
+/>
+
+{/* Circular icon button */}
+<Button 
+  variant="primary" 
+  shape="round"
+  icon={<Icon name="Heart" />}
+/>
+
+{/* Pill-shaped icon button */}
+<Button 
+  variant="primary" 
+  shape="pill"
+  icon={<Icon name="Star" />}
+/>
+```
+
 ### Async Operations
 
 ```tsx
@@ -75,16 +104,49 @@ import { Button } from './components/atoms/Button';
 </Button>
 ```
 
-### Rounded Variant
+### Animation Modes
+
+```tsx
+{/* Default hover animations */}
+<Button animationMode="default">
+  Default Animation
+</Button>
+
+{/* Parallax tilt effect */}
+<Button animationMode="parallax">
+  Parallax Tilt
+</Button>
+
+{/* Typewriter text effect */}
+<Button animationMode="typewriter">
+  Typewriter Effect
+</Button>
+
+{/* Isometric 3D button effect */}
+<Button animationMode="isometric">
+  Isometric 3D
+</Button>
+```
+
+### Loading States
+
+Loading spinners automatically match the button's color theme:
 
 ```tsx
 <Button 
-  variant="primary" 
-  rounded
-  icon={<Icon name="Heart" />}
-  iconPosition="leading"
+  variant="solid"
+  color="success" 
+  loading
 >
-  Like
+  Success Loading {/* Shows green spinner */}
+</Button>
+
+<Button 
+  variant="solid"
+  color="destructive" 
+  loading
+>
+  Destructive Loading {/* Shows red spinner */}
 </Button>
 ```
 
@@ -104,19 +166,45 @@ import { Button } from './components/atoms/Button';
 
 ## Variants
 
-- **primary**: Main call-to-action button
-- **secondary**: Secondary actions
+- **solid**: Filled button with solid background (default)
 - **outline**: Outlined button with transparent background
-- **ghost**: Minimal button with no background
+- **ghost**: Minimal button with no background or border
+- **glassmorphic**: Modern glass-like appearance with backdrop blur and reflections
+
+## Colors
+
+- **primary**: Main brand color theme
+- **secondary**: Secondary brand color theme
+- **success**: For positive actions (save, confirm, etc.)
+- **warning**: For cautionary actions (caution, alert, etc.)
 - **destructive**: For dangerous actions (delete, remove, etc.)
+- **info**: For informational actions (learn more, details, etc.)
+- **custom**: Allows custom color with customColor prop
 
 ## Sizes
 
-- **xs**: Extra small (40px height, 64px min-width)
-- **sm**: Small (40px height, 80px min-width)
-- **md**: Medium (48px height, 96px min-width)
-- **lg**: Large (56px height, 112px min-width)
-- **xl**: Extra large (64px height, 128px min-width)
+- **xs**: Extra small (40px height, 82px min-width)
+- **sm**: Small (40px height, 82px min-width)
+- **md**: Medium (48px height, 112px min-width)
+- **lg**: Large (52px height, 112px min-width)
+- **xl**: Extra large (60px height, 142px min-width)
+
+## Design Notes
+
+### Icon-Only Buttons
+- Automatically adjust to square/circular shape when no text content is provided
+- Icon position setting becomes irrelevant for centering in icon-only mode
+- Maintains consistent aspect ratio (1:1) across all sizes
+
+### Icon Spacing
+- Both leading and trailing icons receive balanced left and right margins
+- Spacing scales responsively with button size (2px-6px based on size)
+- No spacing applied in icon-only mode to ensure perfect centering
+
+### Loading State Consistency
+- Spinner color automatically matches the selected button color theme
+- Spinner size scales appropriately with button size
+- Loading state preserves button dimensions and accessibility
 
 ## Architecture
 

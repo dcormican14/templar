@@ -20,7 +20,7 @@
   /* Primary colors */
   --primary: #ff90e8;
   --primary-background: #000000;
-  --primary-foreground: #000000;
+  --primary-foreground: #ffffff;
   --primary-hover: #ffc4f3;
   --primary-accent: #ff5ae0;
   --primary-shadow: rgba(255, 144, 232, 0.8);
@@ -31,7 +31,7 @@
   /* Secondary colors */
   --secondary: #90caf9;
   --secondary-background: #000000;
-  --secondary-foreground: #000000;
+  --secondary-foreground: #ffffff;
   --secondary-hover: #c2e4ff;
   --secondary-accent: #5bb6ff;
   --secondary-shadow: rgba(144, 202, 249, 0.8);
@@ -42,7 +42,7 @@
   /* Success colors */
   --success: #00ffae;
   --success-background: #000000;
-  --success-foreground: #000000;
+  --success-foreground: #ffffff;
   --success-hover: #33ffc0;
   --success-accent: #00e69e;
   --success-shadow: rgba(0, 255, 174, 0.8);
@@ -53,7 +53,7 @@
   /* Warning colors */
   --warning: #ff7f7f;
   --warning-background: #000000;
-  --warning-foreground: #000000;
+  --warning-foreground: #ffffff;
   --warning-hover: #ff9999;
   --warning-accent: #ff5757;
   --warning-shadow: rgba(255, 127, 127, 0.8);
@@ -64,7 +64,7 @@
   /* Destructive colors */
   --destructive: #ff4d94;
   --destructive-background: #000000;
-  --destructive-foreground: #000000;
+  --destructive-foreground: #ffffff;
   --destructive-hover: #ff70a8;
   --destructive-accent: #ff1a80;
   --destructive-shadow: rgba(255, 77, 148, 0.8);
@@ -75,7 +75,7 @@
   /* Info colors */
   --info: #90caf9;
   --info-background: #000000;
-  --info-foreground: #000000;
+  --info-foreground: #ffffff;
   --info-hover: #c2e4ff;
   --info-accent: #5bb6ff;
   --info-shadow: rgba(144, 202, 249, 0.8);

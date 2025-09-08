@@ -4,7 +4,7 @@ import React, { forwardRef, useMemo, useEffect } from 'react';
 import { useCSSVariables, useLoading, useSettings } from '../../../providers';
 import { extractInteractiveProps, UNIVERSAL_DEFAULTS } from '../types';
 import type { ButtonProps } from './Button.types';
-import { getVariantStyles, getSizeStyles, createBaseStyles, getShapeStyles, getIsometricStyles, getColorVariables } from './Button.styles';
+import { getVariantStyles, getSizeStyles, createBaseStyles, getShapeStyles, getIsometricStyles, getColorVariables, getIconOnlyStyles } from './Button.styles';
 import { createCenteredContent, createTextContainer } from './Button.utils';
 import { ProgressIndicator } from '../ProgressIndicator';
 import { useAsyncClick, useButtonHover } from './hooks';
@@ -55,6 +55,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>((allProps, ref)
   const isButtonLoading = loading || (loadingKey && isLoading(loadingKey));
   const isDisabled = Boolean(disabled) || isButtonLoading;
   const hasIcon = Boolean(icon);
+  const hasChildren = Boolean(children && (typeof children === 'string' ? children.trim() : children));
+  const isIconOnly = hasIcon && !hasChildren;
   const animationsEnabled = (settings.appearance.animations ?? true) && animate;
   const useAnimationMode = animationsEnabled && animationMode !== 'none';
   const shouldUseDefaultAnimations = useAnimationMode && animationMode === 'default';
@@ -100,12 +102,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>((allProps, ref)
 
   const variantStyles = useMemo(() => getVariantStyles(color, variant, customColor, cssVars), [color, variant, customColor, cssVars]);
   const sizeStyles = useMemo(() => getSizeStyles(size), [size]);
+  const iconOnlyStyles = useMemo(() => isIconOnly ? getIconOnlyStyles(size, shape) : {}, [isIconOnly, size, shape]);
   const isometricStyles = useMemo(() => hasIsometricAnimation ? getIsometricStyles(getColorVariables(color, customColor, cssVars), variant, shape) : {}, [hasIsometricAnimation, color, customColor, cssVars, variant, shape]);
 
   const combinedStyles: React.CSSProperties = {
     ...baseStyles,
     ...sizeStyles,
     ...variantStyles,
+    ...iconOnlyStyles, // Apply icon-only styles after size styles to override them
     ...isometricStyles,
     width,
     height,
@@ -130,8 +134,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>((allProps, ref)
     if (isButtonLoading) {
       // Map button size to spinner size
       const spinnerSize = size === 'xs' ? 'xs' : size === 'sm' ? 'xs' : 'sm';
-      // Determine spinner color based on variant
-      const spinnerColor = variant === 'outline' || variant === 'ghost' ? color : 'primary';
+      // Use the selected color for the spinner to match the button's color theme
+      const spinnerColor = color;
       
       return (
         <ProgressIndicator 

@@ -20,7 +20,7 @@
   /* Primary colors */
   --primary: #ff90e8;
   --primary-background: #4a1844;
-  --primary-foreground: #073642;
+  --primary-foreground: #eee8d5;
   --primary-hover: #ffb3ed;
   --primary-accent: #e066cc;
   --primary-shadow: rgba(255, 144, 232, 0.3);
@@ -31,7 +31,7 @@
   /* Secondary colors */
   --secondary: #90caf9;
   --secondary-background: #073642;
-  --secondary-foreground: #073642;
+  --secondary-foreground: #eee8d5;
   --secondary-hover: #add8ff;
   --secondary-accent: #6bb6ff;
   --secondary-shadow: rgba(144, 202, 249, 0.3);
@@ -42,7 +42,7 @@
   /* Success colors */
   --success: #859900;
   --success-background: #1a2e1a;
-  --success-foreground: #002b36;
+  --success-foreground: #eee8d5;
   --success-hover: #a6bf00;
   --success-accent: #719900;
   --success-shadow: rgba(133, 153, 0, 0.3);
@@ -53,7 +53,7 @@
   /* Warning colors */
   --warning: #cb4b16;
   --warning-background: #332014;
-  --warning-foreground: #002b36;
+  --warning-foreground: #eee8d5;
   --warning-hover: #d6621f;
   --warning-accent: #b5420f;
   --warning-shadow: rgba(203, 75, 22, 0.3);
