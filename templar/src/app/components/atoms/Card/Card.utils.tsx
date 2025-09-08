@@ -1,4 +1,5 @@
 import React from 'react';
+import type { CardTextAlignment } from './Card.types';
 
 /**
  * Creates a wrapper for card content with proper flex layout
@@ -11,23 +12,33 @@ export const createContentWrapper = (children: React.ReactNode): React.ReactElem
   );
 };
 
+// Legacy functions kept for backward compatibility (now unused)
+export const createHeaderSection = () => null;
+export const createFooterSection = () => null;
+
 /**
- * Creates header section with proper styling
+ * Creates external header text (rendered above the card)
  */
-export const createHeaderSection = (
+export const createExternalHeader = (
   header: React.ReactNode,
+  alignment: CardTextAlignment = 'left',
   cssVars: any
-): React.ReactElement => {
-  if (!header) return <></>;
+): React.ReactElement | null => {
+  if (!header) return null;
   
   return (
     <div 
       style={{
-        marginBottom: '12px',
-        borderBottom: '1px solid',
-        borderBottomColor: cssVars.border,
-        paddingBottom: '12px',
+        marginBottom: '4px', // Closer to card
+        textAlign: alignment,
+        color: cssVars.foreground,
         fontWeight: '500',
+        fontSize: '14px',
+        fontFamily: 'inherit',
+        width: '100%', // Match card width
+        wordWrap: 'break-word', // Wrap long text
+        overflowWrap: 'break-word', // Better text wrapping
+        hyphens: 'auto', // Hyphenation support
       }}
     >
       {header}
@@ -36,22 +47,28 @@ export const createHeaderSection = (
 };
 
 /**
- * Creates footer section with proper styling
+ * Creates external footer text (rendered below the card)
  */
-export const createFooterSection = (
+export const createExternalFooter = (
   footer: React.ReactNode,
+  alignment: CardTextAlignment = 'left',
   cssVars: any
-): React.ReactElement => {
-  if (!footer) return <></>;
+): React.ReactElement | null => {
+  if (!footer) return null;
   
   return (
     <div 
       style={{
-        marginTop: 'auto',
-        paddingTop: '12px',
-        borderTop: '1px solid',
-        borderTopColor: cssVars.border,
+        marginTop: '4px', // Closer to card
+        textAlign: alignment,
+        color: cssVars.foreground,
         fontWeight: '500',
+        fontSize: '14px',
+        fontFamily: 'inherit',
+        width: '100%', // Match card width
+        wordWrap: 'break-word', // Wrap long text
+        overflowWrap: 'break-word', // Better text wrapping
+        hyphens: 'auto', // Hyphenation support
       }}
     >
       {footer}

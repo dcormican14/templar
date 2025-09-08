@@ -77,8 +77,14 @@ export const getVariantStyles = (
   const colors = getColorVariables(color, customColor, cssVars);
 
   const baseStyles = {
-    borderWidth: '1px',
-    borderStyle: 'solid' as const,
+    borderTopWidth: '1px',
+    borderRightWidth: '1px',
+    borderBottomWidth: '1px',
+    borderLeftWidth: '1px',
+    borderTopStyle: 'solid' as const,
+    borderRightStyle: 'solid' as const,
+    borderBottomStyle: 'solid' as const,
+    borderLeftStyle: 'solid' as const,
   };
 
   switch (variant) {
@@ -86,28 +92,64 @@ export const getVariantStyles = (
       return {
         backgroundColor: colors.main,
         color: colors.foreground,
-        borderColor: colors.border,
+        borderTopColor: colors.border,
+        borderRightColor: colors.border,
+        borderBottomColor: colors.border,
+        borderLeftColor: colors.border,
         ...baseStyles,
       };
     case 'outline':
       return {
         backgroundColor: 'transparent',
         color: colors.main,
-        borderColor: colors.border,
+        borderTopColor: colors.border,
+        borderRightColor: colors.border,
+        borderBottomColor: colors.border,
+        borderLeftColor: colors.border,
         ...baseStyles,
       };
     case 'ghost':
       return {
         backgroundColor: 'transparent',
         color: colors.main,
-        borderColor: 'transparent',
+        borderTopColor: 'transparent',
+        borderRightColor: 'transparent',
+        borderBottomColor: 'transparent',
+        borderLeftColor: 'transparent',
+        ...baseStyles,
+      };
+    case 'glassmorphic':
+      // Create reflection gradient lines using the hover color with transparency
+      const reflectionColor = colors.hover || colors.main || '#ffffff';
+      const topReflectionGradient = `linear-gradient(135deg, transparent 0%, ${reflectionColor}20 20%, ${reflectionColor}15 25%, transparent 35%)`;
+      const bottomReflectionGradient = `linear-gradient(135deg, transparent 45%, ${reflectionColor}25 55%, ${reflectionColor}20 65%, transparent 80%)`;
+      
+      return {
+        background: `
+          ${topReflectionGradient},
+          ${bottomReflectionGradient},
+          rgba(255, 255, 255, 0.1)
+        `,
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)', // Safari support
+        color: colors.main,
+        borderTopColor: 'rgba(255, 255, 255, 0.2)',
+        borderRightColor: 'rgba(255, 255, 255, 0.2)',
+        borderBottomColor: 'rgba(255, 255, 255, 0.2)',
+        borderLeftColor: 'rgba(255, 255, 255, 0.2)',
+        boxShadow: `0 8px 32px 0 ${colors.main}40`, // Use card color with transparency for shadow
+        position: 'relative',
+        overflow: 'hidden',
         ...baseStyles,
       };
     default:
       return {
         backgroundColor: colors.background,
         color: colors.foreground,
-        borderColor: colors.border,
+        borderTopColor: colors.border,
+        borderRightColor: colors.border,
+        borderBottomColor: colors.border,
+        borderLeftColor: colors.border,
         boxShadow: cssVars.shadowSm,
         ...baseStyles,
       };
@@ -127,12 +169,42 @@ export const getSizeStyles = (size: CardSize): React.CSSProperties => {
 
 export const getPaddingStyles = (padding: UniversalSize | 'none'): React.CSSProperties => {
   const paddingMap = {
-    none: { padding: '0px' },
-    xs: { padding: '4px' },
-    sm: { padding: '8px' },
-    md: { padding: '16px' },
-    lg: { padding: '24px' },
-    xl: { padding: '32px' },
+    none: { 
+      paddingTop: '0px',
+      paddingRight: '0px',
+      paddingBottom: '0px',
+      paddingLeft: '0px'
+    },
+    xs: { 
+      paddingTop: '4px',
+      paddingRight: '4px',
+      paddingBottom: '4px',
+      paddingLeft: '4px'
+    },
+    sm: { 
+      paddingTop: '8px',
+      paddingRight: '8px',
+      paddingBottom: '8px',
+      paddingLeft: '8px'
+    },
+    md: { 
+      paddingTop: '16px',
+      paddingRight: '16px',
+      paddingBottom: '16px',
+      paddingLeft: '16px'
+    },
+    lg: { 
+      paddingTop: '24px',
+      paddingRight: '24px',
+      paddingBottom: '24px',
+      paddingLeft: '24px'
+    },
+    xl: { 
+      paddingTop: '32px',
+      paddingRight: '32px',
+      paddingBottom: '32px',
+      paddingLeft: '32px'
+    },
   };
   return paddingMap[padding];
 };
@@ -228,3 +300,39 @@ export const createLoadingOverlayStyles = (cssVars: any): React.CSSProperties =>
   borderRadius: 'inherit',
   zIndex: 10,
 });
+
+// Get isometric animation styles for Card
+export const getIsometricStyles = (color: any, variant: CardVariant, shape: CardShape) => {
+  // Ghost and glassmorphic variants don't support isometric animation
+  if (variant === 'ghost' || variant === 'glassmorphic') {
+    return {};
+  }
+  
+  // For outline variant, use the main color (primary). For solid, use foreground color.
+  const borderColor = variant === 'outline' ? color.main : color.foreground || '#000000';
+  
+  const styles: any = {
+    // Use individual border properties to avoid conflict with shorthand
+    borderTopWidth: '1px',
+    borderLeftWidth: '1px', 
+    borderRightWidth: '1px',
+    borderBottomWidth: '6px', // Larger bottom border for 3D effect (bigger than Badge since Cards are larger)
+    borderTopStyle: 'solid',
+    borderLeftStyle: 'solid',
+    borderRightStyle: 'solid',
+    borderBottomStyle: 'solid',
+    borderTopColor: borderColor,
+    borderLeftColor: borderColor,
+    borderRightColor: borderColor,
+    borderBottomColor: borderColor,
+    transform: 'translateY(0)',
+    transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+    // Ensure proper box-sizing and prevent collapse
+    boxSizing: 'border-box',
+    position: 'relative',
+    // Adjust padding to account for larger bottom border
+    paddingBottom: '13px', // Reduce bottom padding to compensate for thicker border
+  };
+  
+  return styles;
+};

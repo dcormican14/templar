@@ -54,9 +54,9 @@ export const ParallaxTiltWrapper: React.FC<ParallaxTiltWrapperProps> = ({
         ...style,
       }}
       tiltReverse={true}
-      tiltMaxAngleX={15}
-      tiltMaxAngleY={15}
-      perspective={1000}
+      tiltMaxAngleX={8}
+      tiltMaxAngleY={8}
+      perspective={1200}
       scale={1.0}
       transitionSpeed={300}
       gyroscope={true}
