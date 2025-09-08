@@ -200,11 +200,51 @@ export const getVariantStyles = (
 
 export const getSizeStyles = (size: ButtonSize): React.CSSProperties => {
   const sizeMap = {
-    xs: { padding: '4px 12px', fontSize: '14px', minWidth: '82px', height: '40px' },
-    sm: { padding: '6px 12px', fontSize: '14px', minWidth: '82px', height: '40px' },
-    md: { padding: '8px 16px', fontSize: '16px', minWidth: '112px', height: '48px' },
-    lg: { padding: '10px 20px', fontSize: '16px', minWidth: '112px', height: '52px' },
-    xl: { padding: '12px 24px', fontSize: '18px', minWidth: '142px', height: '60px' },
+    xs: { 
+      paddingTop: '4px',
+      paddingRight: '12px', 
+      paddingBottom: '4px',
+      paddingLeft: '12px',
+      fontSize: '14px', 
+      minWidth: '82px', 
+      height: '40px' 
+    },
+    sm: { 
+      paddingTop: '6px',
+      paddingRight: '12px', 
+      paddingBottom: '6px',
+      paddingLeft: '12px',
+      fontSize: '14px', 
+      minWidth: '82px', 
+      height: '40px' 
+    },
+    md: { 
+      paddingTop: '8px',
+      paddingRight: '16px', 
+      paddingBottom: '8px',
+      paddingLeft: '16px',
+      fontSize: '16px', 
+      minWidth: '112px', 
+      height: '48px' 
+    },
+    lg: { 
+      paddingTop: '10px',
+      paddingRight: '20px', 
+      paddingBottom: '10px',
+      paddingLeft: '20px',
+      fontSize: '16px', 
+      minWidth: '112px', 
+      height: '52px' 
+    },
+    xl: { 
+      paddingTop: '12px',
+      paddingRight: '24px', 
+      paddingBottom: '12px',
+      paddingLeft: '24px',
+      fontSize: '18px', 
+      minWidth: '142px', 
+      height: '60px' 
+    },
   };
   return sizeMap[size];
 };
