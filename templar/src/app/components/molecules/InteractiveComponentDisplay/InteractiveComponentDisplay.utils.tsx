@@ -12,6 +12,11 @@ export const generateCodeString = (
 ): string => {
   const propStrings = Object.entries(props)
     .filter(([key, value]) => {
+      // Always exclude children prop - it's handled as content between tags
+      if (key === 'children') {
+        return false;
+      }
+      
       // Filter out undefined, null, and empty string values
       if (value === undefined || value === null || value === '') {
         return false;
@@ -83,16 +88,31 @@ export const generateCodeString = (
 
   const hasChildren = children && React.Children.count(children) > 0;
   
+  // Format children content for display
+  const formatChildren = (children: React.ReactNode): string => {
+    if (typeof children === 'string') {
+      // Show placeholder if empty string or whitespace only
+      return children.trim() || '{/* children */}';
+    }
+    if (typeof children === 'number') {
+      return children.toString();
+    }
+    if (React.isValidElement(children)) {
+      return '{/* JSX element */}';
+    }
+    return '{/* children */}';
+  };
+  
   if (propStrings.length === 0) {
     return hasChildren 
-      ? `<${componentName}>\n  {/* children */}\n</${componentName}>`
+      ? `<${componentName}>\n  ${formatChildren(children)}\n</${componentName}>`
       : `<${componentName} />`;
   }
 
   const propsString = propStrings.join('\n  ');
   
   if (hasChildren) {
-    return `<${componentName}\n  ${propsString}\n>\n  {/* children */}\n</${componentName}>`;
+    return `<${componentName}\n  ${propsString}\n>\n  ${formatChildren(children)}\n</${componentName}>`;
   }
 
   return propStrings.length === 1 

@@ -2,6 +2,7 @@ import React from 'react';
 import type { BadgeSize } from './Badge.types';
 import { getIconSize } from './Badge.styles';
 import { Icon } from '../Icon';
+import { TypewriterText } from '../Button/animations';
 
 export const renderIcon = (
   iconElement: React.ReactNode,
@@ -76,17 +77,80 @@ export const createBadgeContent = (
   removable: boolean,
   onRemove?: () => void,
   cssVars?: any,
-  animationsEnabled?: boolean
+  animationsEnabled?: boolean,
+  useAnimationMode?: boolean,
+  animationMode?: 'none' | 'typewriter' | 'isometric',
+  disabled?: boolean
 ): React.ReactElement => {
   const hasIcon = Boolean(icon);
   const hasRemove = removable && onRemove;
+  const shouldUseTypewriter = useAnimationMode && animationMode === 'typewriter' && !disabled;
+  
+  // Check if there are actual children (text content) - matching Button's logic
+  const hasChildren = Boolean(children && (typeof children === 'string' ? children.trim() : children));
 
+  // Get responsive spacing based on badge size (only when there are children)
+  const getSpacing = (size: BadgeSize): string => {
+    const spacingMap = {
+      xs: '2px',
+      sm: '3px', 
+      md: '4px',
+      lg: '5px',
+      xl: '6px',
+    };
+    return spacingMap[size];
+  };
+
+  // Create content section with text and icon grouping
+  const renderContent = () => {
+    if (!hasChildren) return null;
+
+    if (shouldUseTypewriter && typeof children === 'string') {
+      return (
+        <TypewriterText
+          text={children}
+          speed={50}
+          startDelay={100}
+          enabled={animationsEnabled || false}
+        />
+      );
+    }
+
+    return <span>{children}</span>;
+  };
+
+  const spacing = getSpacing(badgeSize);
+
+  // If there are no children, just render the icon centered without spacing (matching Button logic)
+  if (!hasChildren) {
+    return (
+      <>
+        {hasIcon && (
+          <span style={{ 
+            display: 'flex', 
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            {renderIcon(icon, badgeSize)}
+          </span>
+        )}
+        {hasRemove && createRemoveButton(onRemove, badgeSize, cssVars, animationsEnabled || false)}
+      </>
+    );
+  }
+
+  // When there are children, use proper spacing and layout
   return (
-    <>
+    <span style={{ 
+      display: 'flex', 
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: spacing
+    }}>
       {hasIcon && iconPosition === 'leading' && renderIcon(icon, badgeSize)}
-      {children && <span>{children}</span>}
+      {renderContent()}
       {hasIcon && iconPosition === 'trailing' && renderIcon(icon, badgeSize)}
       {hasRemove && createRemoveButton(onRemove, badgeSize, cssVars, animationsEnabled || false)}
-    </>
+    </span>
   );
 };

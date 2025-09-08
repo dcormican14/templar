@@ -165,7 +165,10 @@ For more detailed documentation, examples, and API reference, visit the [Templar
       codeProps.icon = config.initialProps._defaultIcon;
     }
     
-    const codeString = generateCodeString(componentName, codeProps, (config.component as any).props?.children, config.initialProps);
+    // Use current children from componentProps, not static config children
+    // If componentProps.children exists (even if empty string), use it; otherwise use config default
+    const currentChildren = componentProps.hasOwnProperty('children') ? componentProps.children : (config.component as any).props?.children;
+    const codeString = generateCodeString(componentName, codeProps, currentChildren, config.initialProps);
 
     return (
       <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
