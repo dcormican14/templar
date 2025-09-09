@@ -29,3 +29,4 @@ export {
   useClickOutside, 
   useFocusManagement 
 } from './Dropdown.utils';
+export { DropdownConfig } from './Dropdown.config';

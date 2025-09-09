@@ -2,7 +2,7 @@
 
 import React, { forwardRef, useState, useRef, useMemo, useCallback, useEffect } from 'react';
 import { useCSSVariables, useSettings } from '../../../providers';
-import { extractFormProps, UNIVERSAL_DEFAULTS } from '../types';
+import { extractContainerProps, UNIVERSAL_DEFAULTS } from '../types';
 import { Icon } from '../Icon';
 import type { DropdownProps, DropdownOption, DropdownGroup } from './Dropdown.types';
 import {
@@ -20,6 +20,8 @@ import {
   getValueDisplayStyles,
   getMultiValueStyles,
   getFocusStyles,
+  getIsometricStyles,
+  getColorVariables,
 } from './Dropdown.styles';
 import {
   isGroup,
@@ -40,15 +42,14 @@ import {
   createDropdownPortal,
   getNextSelectableIndex,
 } from './Dropdown.utils';
+import { ParallaxTiltWrapper } from '../Button/animations/ParallaxTiltWrapper';
+import { TypewriterText } from '../Button/animations/TypewriterText';
 
 export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref) => {
-  // Extract Dropdown-specific onChange and value first
-  const { onChange, value, ...propsWithoutSpecific } = allProps;
+  // Extract container props and component-specific props
+  const [containerProps, componentProps] = extractContainerProps(allProps);
   
-  // Extract form props and component-specific props
-  const [formProps, componentProps] = extractFormProps(propsWithoutSpecific);
-  
-  // Destructure form props with defaults
+  // Destructure container props with defaults
   const {
     color = UNIVERSAL_DEFAULTS.color,
     customColor,
@@ -58,10 +59,6 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref
     disabled = UNIVERSAL_DEFAULTS.disabled,
     loading = UNIVERSAL_DEFAULTS.loading,
     loadingKey,
-    error,
-    label,
-    helperText,
-    placeholder = 'Select option...',
     width,
     height,
     className,
@@ -69,8 +66,9 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref
     id,
     'data-testid': dataTestId,
     animate = UNIVERSAL_DEFAULTS.animate,
+    animationMode = UNIVERSAL_DEFAULTS.animationMode,
     rounded, // Legacy support
-  } = formProps;
+  } = containerProps;
   
   // Destructure component-specific props
   const {
@@ -94,12 +92,21 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref
     menuStyle,
     onClose,
     onOpen,
+    onChange,
+    value,
+    placeholder = 'Select option...',
+    error,
+    errorText,
+    header,
+    headerAlignment = 'left',
     ...restProps
   } = componentProps;
     // Hooks
     const cssVars = useCSSVariables();
     const { settings } = useSettings();
     const animationsEnabled = (settings.appearance.animations ?? true) && animate;
+    const useAnimationMode = animationsEnabled && animationMode !== 'none';
+    const hasIsometricAnimation = useAnimationMode && animationMode === 'isometric' && variant !== 'ghost' && variant !== 'glassmorphic';
 
     // State
     const [internalOpen, setInternalOpen] = useState(false);
@@ -139,6 +146,22 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref
       getDisplayText(value, options, multiple, placeholder),
       [value, options, multiple, placeholder]
     );
+
+    // Helper function to render text with optional typewriter animation
+    const renderAnimatedText = (text: React.ReactNode, isTypewriter: boolean) => {
+      if (!isTypewriter || typeof text !== 'string') {
+        return text;
+      }
+      return (
+        <TypewriterText
+          text={text}
+          speed={100}
+          deleteSpeed={50}
+          showCursor={true}
+          disabled={Boolean(disabled)}
+        />
+      );
+    };
 
     // Event handlers
     const handleToggle = useCallback(() => {
@@ -223,16 +246,22 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref
       [size, shape, animationsEnabled, width, rounded]
     );
 
+    const colorVariables = useMemo(() => 
+      getColorVariables(color, customColor, cssVars),
+      [color, customColor, cssVars]
+    );
+
     const triggerStyles = useMemo(() => {
       const baseStyles = getTriggerStyles(color, variant, size, shape, Boolean(disabled), Boolean(error), isOpen, customColor, cssVars, animationsEnabled, rounded);
       const shouldShowFocus = (isFocused || isOpen) && !disabled;
-      const focusStyles = shouldShowFocus ? getFocusStyles(cssVars, variant, Boolean(error)) : {};
-      return { ...baseStyles, ...focusStyles };
-    }, [color, customColor, variant, size, disabled, error, isOpen, shape, rounded, cssVars, animationsEnabled, isFocused]);
+      const focusStyles = shouldShowFocus ? getFocusStyles(cssVars, variant, Boolean(error), colorVariables) : {};
+      const isometricStyles = hasIsometricAnimation ? getIsometricStyles(colorVariables, variant, shape) : {};
+      return { ...baseStyles, ...focusStyles, ...isometricStyles };
+    }, [color, customColor, variant, size, disabled, error, isOpen, shape, rounded, cssVars, animationsEnabled, isFocused, hasIsometricAnimation, colorVariables]);
 
     const arrowStyles = useMemo(() => 
-      getArrowStyles(size, isOpen, animationsEnabled, cssVars, variant),
-      [size, isOpen, animationsEnabled, cssVars, variant]
+      getArrowStyles(size, isOpen, animationsEnabled, cssVars, variant, colorVariables),
+      [size, isOpen, animationsEnabled, cssVars, variant, colorVariables]
     );
 
     const menuStyles = useMemo(() => 
@@ -291,20 +320,20 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref
                   const option = flatOptions.find(opt => opt.value === val);
                   const label = typeof option?.label === 'string' ? option.label : val.toString();
                   return (
-                    <span key={val} style={getMultiValueStyles(size, Boolean(rounded) || (shape === 'round'), cssVars, variant)}>
+                    <span key={val} style={getMultiValueStyles(size, Boolean(rounded) || (shape === 'round'), cssVars, variant, colorVariables)}>
                       {label}
                     </span>
                   );
                 })}
                 {value.length > 3 && (
-                  <span style={getMultiValueStyles(size, Boolean(rounded) || (shape === 'round'), cssVars, variant)}>
+                  <span style={getMultiValueStyles(size, Boolean(rounded) || (shape === 'round'), cssVars, variant, colorVariables)}>
                     +{value.length - 3}
                   </span>
                 )}
               </div>
             ) : (
-              <span style={value ? {} : getPlaceholderStyles(cssVars, variant)}>
-                {displayText}
+              <span style={value ? {} : getPlaceholderStyles(cssVars, variant, colorVariables)}>
+                {renderAnimatedText(displayText, useAnimationMode && animationMode === 'typewriter')}
               </span>
             )}
           </div>
@@ -321,7 +350,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref
     const renderOption = (option: DropdownOption, index: number, globalIndex: number) => {
       const selected = isSelected(option.value, value, multiple);
       const highlighted = globalIndex === highlightedIndex;
-      const optionStyles = getOptionStyles(size, selected, !!option.disabled, highlighted, cssVars, animationsEnabled, variant);
+      const optionStyles = getOptionStyles(size, selected, !!option.disabled, highlighted, cssVars, animationsEnabled, variant, colorVariables);
       const optionAccessibilityProps = createOptionAccessibilityProps(dropdownId, globalIndex, selected, !!option.disabled);
 
       return (
@@ -433,7 +462,30 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref
       return portal ? createDropdownPortal(menuContent) : menuContent;
     };
 
-    return (
+    // Render header function (copied from Card component pattern)
+    const renderHeader = () => {
+      if (!header) return null;
+      
+      return (
+        <div 
+          style={{
+            textAlign: headerAlignment,
+            color: colorVariables.main || cssVars.primary, // Use selected color to match component theme
+            fontWeight: '500',
+            fontSize: '14px',
+            fontFamily: 'inherit',
+            wordWrap: 'break-word',
+            overflowWrap: 'break-word',
+            marginBottom: '8px',
+          }}
+        >
+          {renderAnimatedText(header, useAnimationMode && animationMode === 'typewriter')}
+        </div>
+      );
+    };
+
+    // Create the dropdown element
+    const dropdownElement = (
       <div
         ref={ref || containerRef}
         style={combinedStyles}
@@ -446,6 +498,25 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref
         {renderMenu()}
       </div>
     );
+
+    // Create the complete component with header
+    const completeElement = (
+      <div style={{ width: '100%' }}>
+        {renderHeader()}
+        {dropdownElement}
+      </div>
+    );
+
+    // Wrap with animation mode if applicable
+    if (useAnimationMode && animationMode === 'parallax') {
+      return (
+        <ParallaxTiltWrapper disabled={disabled || !useAnimationMode}>
+          {completeElement}
+        </ParallaxTiltWrapper>
+      );
+    }
+
+    return completeElement;
   }
 );
 

@@ -19,6 +19,9 @@ export const getColorVariables = (color: DropdownColor, customColor: string | un
       background: cssVars.primaryBackground,
       foreground: cssVars.primaryForeground,
       hover: cssVars.primaryHover,
+      accent: cssVars.primaryAccent,
+      shadow: cssVars.primaryShadow,
+      disabled: cssVars.primaryDisabled,
       border: cssVars.primaryBorder,
     },
     secondary: {
@@ -26,6 +29,9 @@ export const getColorVariables = (color: DropdownColor, customColor: string | un
       background: cssVars.secondaryBackground,
       foreground: cssVars.secondaryForeground,
       hover: cssVars.secondaryHover,
+      accent: cssVars.secondaryAccent,
+      shadow: cssVars.secondaryShadow,
+      disabled: cssVars.secondaryDisabled,
       border: cssVars.secondaryBorder,
     },
     success: {
@@ -33,6 +39,9 @@ export const getColorVariables = (color: DropdownColor, customColor: string | un
       background: cssVars.successBackground,
       foreground: cssVars.successForeground,
       hover: cssVars.successHover,
+      accent: cssVars.successAccent,
+      shadow: cssVars.successShadow,
+      disabled: cssVars.successDisabled,
       border: cssVars.successBorder,
     },
     warning: {
@@ -40,6 +49,9 @@ export const getColorVariables = (color: DropdownColor, customColor: string | un
       background: cssVars.warningBackground,
       foreground: cssVars.warningForeground,
       hover: cssVars.warningHover,
+      accent: cssVars.warningAccent,
+      shadow: cssVars.warningShadow,
+      disabled: cssVars.warningDisabled,
       border: cssVars.warningBorder,
     },
     destructive: {
@@ -47,6 +59,9 @@ export const getColorVariables = (color: DropdownColor, customColor: string | un
       background: cssVars.destructiveBackground,
       foreground: cssVars.destructiveForeground,
       hover: cssVars.destructiveHover,
+      accent: cssVars.destructiveAccent,
+      shadow: cssVars.destructiveShadow,
+      disabled: cssVars.destructiveDisabled,
       border: cssVars.destructiveBorder,
     },
     info: {
@@ -54,6 +69,9 @@ export const getColorVariables = (color: DropdownColor, customColor: string | un
       background: cssVars.infoBackground,
       foreground: cssVars.infoForeground,
       hover: cssVars.infoHover,
+      accent: cssVars.infoAccent,
+      shadow: cssVars.infoShadow,
+      disabled: cssVars.infoDisabled,
       border: cssVars.infoBorder,
     },
   };
@@ -151,32 +169,85 @@ export const getTriggerStyles = (
     ...getShapeStyles(finalShape),
   };
 
+  // Base border styles (individual properties to avoid conflicts)
+  const baseBorderStyles = {
+    borderTopWidth: '1px',
+    borderRightWidth: '1px',
+    borderBottomWidth: '1px',
+    borderLeftWidth: '1px',
+    borderTopStyle: 'solid' as const,
+    borderRightStyle: 'solid' as const,
+    borderBottomStyle: 'solid' as const,
+    borderLeftStyle: 'solid' as const,
+  };
+
   // Variant-specific styles
   const variantStyles = (() => {
     switch (variant) {
       case 'solid':
         return {
-          backgroundColor: colors.main,
+          backgroundColor: colors.accent || colors.main,
           color: colors.foreground,
-          border: `1px solid ${colors.border}`,
+          borderTopColor: colors.accent || colors.main,
+          borderRightColor: colors.accent || colors.main,
+          borderBottomColor: colors.accent || colors.main,
+          borderLeftColor: colors.accent || colors.main,
+          ...baseBorderStyles,
         };
       case 'outline':
         return {
           backgroundColor: 'transparent',
           color: colors.main,
-          border: `1px solid ${colors.border}`,
+          borderTopColor: colors.main,
+          borderRightColor: colors.main,
+          borderBottomColor: colors.main,
+          borderLeftColor: colors.main,
+          ...baseBorderStyles,
         };
       case 'ghost':
         return {
           backgroundColor: 'transparent',
           color: colors.main,
-          border: '1px solid transparent',
+          borderTopColor: 'transparent',
+          borderRightColor: 'transparent',
+          borderBottomColor: 'transparent',
+          borderLeftColor: 'transparent',
+          ...baseBorderStyles,
+        };
+      case 'glassmorphic':
+        // Create reflection gradient lines using the hover color with transparency
+        const reflectionColor = colors.hover || colors.main || '#ffffff';
+        const topReflectionGradient = `linear-gradient(135deg, transparent 0%, ${reflectionColor}20 20%, ${reflectionColor}15 25%, transparent 35%)`;
+        const bottomReflectionGradient = `linear-gradient(135deg, transparent 45%, ${reflectionColor}25 55%, ${reflectionColor}20 65%, transparent 80%)`;
+        
+        return {
+          background: `
+            ${topReflectionGradient},
+            ${bottomReflectionGradient},
+            rgba(255, 255, 255, 0.1)
+          `,
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)', // Safari support
+          color: colors.main,
+          borderTopColor: 'rgba(255, 255, 255, 0.2)',
+          borderRightColor: 'rgba(255, 255, 255, 0.2)',
+          borderBottomColor: 'rgba(255, 255, 255, 0.2)',
+          borderLeftColor: 'rgba(255, 255, 255, 0.2)',
+          boxShadow: `0 8px 32px 0 ${colors.main}40`, // Use dropdown color with transparency for shadow
+          position: 'relative',
+          overflow: 'hidden',
+          ...baseBorderStyles,
         };
       default:
+        // Default case should behave like outline variant for consistency
         return {
           backgroundColor: 'transparent',
-          color: cssVars.foreground,
-          border: `1px solid ${cssVars.border}`,
+          color: colors.main,
+          borderTopColor: colors.main,
+          borderRightColor: colors.main,
+          borderBottomColor: colors.main,
+          borderLeftColor: colors.main,
+          ...baseBorderStyles,
         };
     }
   })();
@@ -202,24 +273,30 @@ export const getArrowStyles = (
   open: boolean,
   animationsEnabled: boolean,
   cssVars: any,
-  variant: DropdownVariant = 'outline'
+  variant: DropdownVariant = 'outline',
+  colors?: any
 ): React.CSSProperties => {
   // Determine arrow color based on variant
   let arrowColor = cssVars.foreground; // default
   
-  switch (variant) {
-    case 'solid':
-      arrowColor = cssVars.foreground;
-      break;
-    case 'outline':
-      arrowColor = cssVars.foreground;
-      break;
-    case 'ghost':
-      arrowColor = cssVars.foreground;
-      break;
-    default:
-      arrowColor = cssVars.foreground;
-      break;
+  if (colors) {
+    switch (variant) {
+      case 'solid':
+        arrowColor = colors.foreground || cssVars.foreground;
+        break;
+      case 'outline':
+        arrowColor = colors.main; // Match the text color in outline variant
+        break;
+      case 'ghost':
+        arrowColor = colors.main; // Match the text color in ghost variant
+        break;
+      case 'glassmorphic':
+        arrowColor = colors.main; // Match the text color in glassmorphic variant
+        break;
+      default:
+        arrowColor = cssVars.foreground;
+        break;
+    }
   }
 
   const baseStyles: React.CSSProperties = {
@@ -297,7 +374,8 @@ export const getOptionStyles = (
   highlighted: boolean,
   cssVars: any,
   animationsEnabled: boolean,
-  variant: DropdownVariant = 'outline'
+  variant: DropdownVariant = 'outline',
+  colors?: ReturnType<typeof getColorVariables>
 ): React.CSSProperties => {
   const baseStyles: React.CSSProperties = {
     display: 'flex',
@@ -345,9 +423,9 @@ export const getOptionStyles = (
     stateStyles.opacity = 0.5;
     stateStyles.cursor = 'not-allowed';
   } else if (selected) {
-    // Use primary color for selected state regardless of variant
-    stateStyles.backgroundColor = cssVars.primary + '20';
-    stateStyles.color = cssVars.primary;
+    // Use the component's theme color background for selected state
+    stateStyles.backgroundColor = colors?.background || cssVars.primaryBackground;
+    stateStyles.color = colors?.main || cssVars.primary;
     stateStyles.fontWeight = '500';
   } else if (highlighted) {
     stateStyles.backgroundColor = cssVars.muted || cssVars.secondary + '30';
@@ -491,9 +569,15 @@ export const getGroupLabelStyles = (
   return { ...baseStyles, ...sizeStyles };
 };
 
-export const getPlaceholderStyles = (cssVars: any, variant: DropdownVariant = 'outline'): React.CSSProperties => {
+export const getPlaceholderStyles = (
+  cssVars: any, 
+  variant: DropdownVariant = 'outline',
+  colors?: ReturnType<typeof getColorVariables>
+): React.CSSProperties => {
+  const placeholderColor = cssVars.mutedForeground;
+  
   return {
-    color: cssVars.mutedForeground,
+    color: placeholderColor,
     opacity: 0.7,
   };
 };
@@ -510,7 +594,8 @@ export const getMultiValueStyles = (
   size: DropdownSize,
   rounded: boolean,
   cssVars: any,
-  variant: DropdownVariant = 'outline'
+  variant: DropdownVariant = 'outline',
+  colors?: ReturnType<typeof getColorVariables>
 ): React.CSSProperties => {
   const baseStyles: React.CSSProperties = {
     display: 'inline-flex',
@@ -520,10 +605,15 @@ export const getMultiValueStyles = (
     overflow: 'hidden',
   };
 
-  // Use primary colors for multi-value tags
+  // Use the component's theme color background (same as selected options)
+  // Text color depends on variant: solid uses foreground, outline uses main color
+  const textColor = variant === 'solid' 
+    ? (colors?.foreground || cssVars.primaryForeground)
+    : (colors?.main || cssVars.primary);
+    
   const variantStyles = {
-    backgroundColor: cssVars.primary + '20',
-    color: cssVars.primary,
+    backgroundColor: colors?.background || cssVars.primaryBackground,
+    color: textColor,
   };
 
   const sizeStyles = (() => {
@@ -556,15 +646,17 @@ export const getMultiValueStyles = (
 export const getFocusStyles = (
   cssVars: any, 
   variant: DropdownVariant, 
-  error?: boolean
+  error?: boolean,
+  colors?: ReturnType<typeof getColorVariables>
 ): React.CSSProperties => {
   // Determine the focus outline color based on variant and error state
-  let outlineColor = cssVars.primary; // default
+  let outlineColor: string;
 
   if (error) {
     outlineColor = cssVars.destructive;
   } else {
-    outlineColor = cssVars.primary;
+    // Use the component's theme color for focus
+    outlineColor = colors?.main || cssVars.primary;
   }
 
   return {
@@ -573,4 +665,40 @@ export const getFocusStyles = (
     // Don't change the border color on focus - keep original variant border
     boxShadow: 'none',
   };
+};
+
+// Get isometric animation styles for Dropdown
+export const getIsometricStyles = (color: any, variant: DropdownVariant, shape: DropdownShape) => {
+  // Ghost and glassmorphic variants don't support isometric animation
+  if (variant === 'ghost' || variant === 'glassmorphic') {
+    return {};
+  }
+  
+  // For outline variant, use the main color. For solid, use foreground color.
+  const borderColor = variant === 'outline' ? color.main : color.foreground || '#000000';
+  
+  const styles: any = {
+    // Use individual border properties to avoid conflict with shorthand
+    borderTopWidth: '1px',
+    borderLeftWidth: '1px', 
+    borderRightWidth: '1px',
+    borderBottomWidth: '4px', // Smaller than Button/Card since Dropdown is more compact
+    borderTopStyle: 'solid',
+    borderLeftStyle: 'solid',
+    borderRightStyle: 'solid',
+    borderBottomStyle: 'solid',
+    borderTopColor: borderColor,
+    borderLeftColor: borderColor,
+    borderRightColor: borderColor,
+    borderBottomColor: borderColor,
+    transform: 'translateY(0)',
+    transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+    // Ensure proper box-sizing and prevent collapse
+    boxSizing: 'border-box',
+    position: 'relative',
+    // Adjust padding to account for larger bottom border
+    paddingBottom: '6px', // Reduce bottom padding to compensate for thicker border
+  };
+  
+  return styles;
 };

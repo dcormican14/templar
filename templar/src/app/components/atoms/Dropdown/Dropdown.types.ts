@@ -1,6 +1,6 @@
 import React from 'react';
 import type { 
-  WithFormProps, 
+  WithContainerProps, 
   UniversalSize, 
   UniversalColor, 
   UniversalVariant, 
@@ -13,6 +13,9 @@ export type DropdownVariant = UniversalVariant;
 export type DropdownSize = UniversalSize;
 export type DropdownShape = UniversalShape;
 export type DropdownPosition = 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end' | 'left' | 'right';
+
+// Text alignment options for header
+export type DropdownTextAlignment = 'left' | 'center' | 'right';
 
 export interface DropdownOption {
   value: string | number;
@@ -144,12 +147,33 @@ export interface DropdownSpecificProps extends Omit<React.HTMLAttributes<HTMLDiv
    * Callback when dropdown is about to open
    */
   onOpen?: () => void;
+  
+  /**
+   * Optional header content (rendered above the dropdown)
+   */
+  header?: React.ReactNode;
+  
+  /**
+   * Alignment of the header text
+   * @default 'left'
+   */
+  headerAlignment?: DropdownTextAlignment;
 }
 
-// Complete Dropdown props interface extending universal props
-export interface DropdownProps extends Omit<WithFormProps<DropdownSpecificProps>, 'onChange'> {
+// Complete Dropdown props interface extending universal form props for error handling
+export interface DropdownProps extends WithContainerProps<DropdownSpecificProps> {
   /**
    * Callback when selection changes
    */
   onChange?: (value: string | number | (string | number)[]) => void;
+  
+  /**
+   * Whether the dropdown has an error state
+   */
+  error?: boolean;
+  
+  /**
+   * Error text to display
+   */
+  errorText?: string;
 }

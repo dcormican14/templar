@@ -6,6 +6,7 @@ import { ButtonConfig } from '../atoms/Button/Button.config';
 import { BadgeConfig } from '../atoms/Badge/Badge.config';
 import { CardConfig } from '../atoms/Card/Card.config';
 import { CheckBoxConfig } from '../atoms/CheckBox/CheckBox.config';
+import { DropdownConfig } from '../atoms/Dropdown';
 import { ToggleConfig } from '../atoms/Toggle/Toggle.config';
 import { ProgressIndicatorConfig } from '../atoms/ProgressIndicator/ProgressIndicator.config';
 import { DividerConfig } from '../atoms/Divider/Divider.config';
@@ -31,6 +32,9 @@ export function getComponentInteractiveConfig(componentName: string): ComponentC
 
     case 'CheckBox':
       return CheckBoxConfig;
+    
+    case 'Dropdown':
+      return DropdownConfig;
 
     case 'Toggle':
       return ToggleConfig;

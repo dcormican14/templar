@@ -137,15 +137,23 @@ export const InteractiveComponentDisplay = forwardRef<
 
       case 'number':
         return (
-          <input
-            type="number"
+          <TextArea
             id={controlId}
-            value={currentValue || ''}
-            min={control.min}
-            max={control.max}
-            step={control.step || 1}
-            onChange={(e) => handlePropChange(control.key, e.target.value, control)}
-            style={getInputStyles(cssVars)}
+            value={currentValue ? String(currentValue) : ''}
+            onChange={(valueOrEvent) => {
+              // Handle both value and event cases
+              const value = valueOrEvent?.target?.value ?? valueOrEvent;
+              // Convert to number for number inputs
+              const numValue = value === '' ? '' : Number(value);
+              handlePropChange(control.key, numValue, control);
+            }}
+            placeholder={`Enter ${control.label.toLowerCase()}...`}
+            size="sm"
+            color="primary"
+            variant="outline"
+            maxRows={1}
+            minRows={1}
+            autoResize={false}
           />
         );
 
