@@ -3,6 +3,7 @@
 import React, { forwardRef, useImperativeHandle, useState, useCallback, useId, useRef } from 'react';
 import { useCSSVariables, useSettings } from '../../../providers';
 import { Icon } from '../../atoms/Icon';
+import { Scrollbar } from '../../atoms/Scrollbar';
 import type { CollapsibleMenuProps, CollapsibleMenuRef } from './CollapsibleMenu.types';
 import {
   getCollapsibleMenuContainerStyles,
@@ -11,6 +12,7 @@ import {
   getToggleIconStyles,
   getSizeConfig,
 } from './CollapsibleMenu.styles';
+import { Button } from '../../atoms';
 
 export const CollapsibleMenu = forwardRef<CollapsibleMenuRef, CollapsibleMenuProps>((props, ref) => {
   const {
@@ -166,10 +168,11 @@ export const CollapsibleMenu = forwardRef<CollapsibleMenuRef, CollapsibleMenuPro
     const iconName = position === 'right' ? 'NavArrowRight' : 'NavArrowLeft';
     
     return (
-      <button
-        ref={toggleRef}
-        type="button"
-        className={toggleClassName}
+      <Button
+        variant="solid"
+        color={color}
+        size={size}
+        shape="round"
         style={{
           ...toggleStyles,
           ...toggleStyle,
@@ -179,11 +182,7 @@ export const CollapsibleMenu = forwardRef<CollapsibleMenuRef, CollapsibleMenuPro
         disabled={disabled}
         aria-label={`${isCollapsed ? 'Expand' : 'Collapse'} menu`}
         aria-expanded={!isCollapsed}
-        tabIndex={0}
-      >
-        {toggleContent ? (
-          toggleContent
-        ) : (
+        icon={toggleContent || (
           <div style={toggleIconStyles}>
             <Icon 
               name={iconName} 
@@ -191,7 +190,7 @@ export const CollapsibleMenu = forwardRef<CollapsibleMenuRef, CollapsibleMenuPro
             />
           </div>
         )}
-      </button>
+      />
     );
   };
   
@@ -213,9 +212,27 @@ export const CollapsibleMenu = forwardRef<CollapsibleMenuRef, CollapsibleMenuPro
       {renderToggle()}
       
       {/* Content area */}
-      <div style={contentStyles}>
+      <Scrollbar
+        variant="solid"
+        color={color}
+        customColor={customColor}
+        size={size}
+        shape="round"
+        orientation="vertical"
+        visibility="always"
+        smoothScrolling
+        showIndicators
+        hideNative={false}
+        disabled={disabled}
+        animate={animate}
+        style={{ 
+          flex: 1,
+          height: '100%',
+          minHeight: 0, // Important for flex children
+        }}
+      >
         {children}
-      </div>
+      </Scrollbar>
     </div>
   );
 });

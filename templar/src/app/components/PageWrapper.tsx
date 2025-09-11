@@ -133,7 +133,8 @@ export function PageWrapper({ children, activeTab, useScrollbar = true }: PageWr
       {/* Main content */}
       {useScrollbar ? (
         <Scrollbar
-          height="calc(100vh - 48px)" // Full viewport minus nav height
+          height="calc(100vh - 48px)"
+          variant="ghost"
           color="secondary"
           size="md"
           visibility="hover"

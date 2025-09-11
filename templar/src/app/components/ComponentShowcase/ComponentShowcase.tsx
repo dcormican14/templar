@@ -285,8 +285,16 @@ For more detailed documentation, examples, and API reference, visit the [Templar
       {/* Content */}
       <Scrollbar 
         style={{ flex: 1 }}
+        variant="solid"
+        color="primary"
+        size="md"
+        shape="round"
+        orientation="vertical"
         visibility="hover"
-        smoothScrolling={true}
+        smoothScrolling
+        showIndicators
+        hideNative
+        animate
       >
         {activeTab === 'overview' ? renderOverview() : renderInteractive()}
       </Scrollbar>

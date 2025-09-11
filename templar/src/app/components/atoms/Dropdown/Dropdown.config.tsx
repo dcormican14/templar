@@ -104,34 +104,8 @@ export const DropdownConfig = {
             { value: 'right', label: 'Right' }
           ]
         },
-        {
-          key: 'maxHeight',
-          label: 'Max Height',
-          type: 'select' as ControlType,
-          options: [
-            { value: '200px', label: '200px' },
-            { value: '300px', label: '300px' },
-            { value: '400px', label: '400px' },
-            { value: '500px', label: '500px' }
-          ]
-        }
       ]
     },
-    {
-      title: 'Messages',
-      controls: [
-        {
-          key: 'emptyMessage',
-          label: 'Empty Message',
-          type: 'text' as ControlType
-        },
-        {
-          key: 'noResultsMessage',
-          label: 'No Results Message',
-          type: 'text' as ControlType
-        }
-      ]
-    }
   ],
   initialProps: {
     color: 'primary',

@@ -330,7 +330,7 @@ export const getLineNumberStyles = (
     borderLeft: `1px solid ${colors.border || colors.main}`,
     borderRadius: getBorderRadius(),
     padding: (typeof sizeConfig.padding === 'string' ? sizeConfig.padding.split(' ')[0] : '12px') + ' 8px',
-    paddingTop: '24px', // Account for language label
+    paddingTop: '28px', // Account for language label
     fontSize: sizeConfig.fontSize,
     lineHeight: sizeConfig.lineHeight,
     color: colors.main, // Same color as title/language label

@@ -11,6 +11,7 @@ import { ToggleConfig } from '../atoms/Toggle/Toggle.config';
 import { ProgressIndicatorConfig } from '../atoms/ProgressIndicator/ProgressIndicator.config';
 import { DividerConfig } from '../atoms/Divider/Divider.config';
 import { IconConfig } from '../atoms/Icon/Icon.config';
+import { ScrollbarConfig } from '../atoms/Scrollbar/Scrollbar.config';
 
 interface ComponentConfig {
   component: React.ReactElement;
@@ -47,6 +48,9 @@ export function getComponentInteractiveConfig(componentName: string): ComponentC
 
     case 'Icon':
       return IconConfig;
+
+    case 'Scrollbar':
+      return ScrollbarConfig;
 
     default:
       return null;

@@ -227,9 +227,11 @@ export function ComponentsPage() {
       <div 
         style={{ 
           flex: 1, 
-          overflow: 'auto',
+          overflow: 'hidden', // Changed from 'auto' to 'hidden' to let child components handle scrolling
           backgroundColor: cssVars.background,
           height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
         }}
       >
         {renderMainContent()}

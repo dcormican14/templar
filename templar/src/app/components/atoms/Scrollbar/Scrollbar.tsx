@@ -2,6 +2,7 @@ import React, { forwardRef, useRef, useImperativeHandle, useState, useEffect, us
 import { useCSSVariables, useSettings } from '../../../providers';
 import { extractContainerProps, UNIVERSAL_DEFAULTS } from '../types';
 import { ScrollbarProps, ScrollbarRef } from './Scrollbar.types';
+import { Icon } from '../Icon/Icon';
 import {
   createScrollbarContainerStyles,
   getScrollableContentStyles,
@@ -28,10 +29,14 @@ const createWebkitScrollbarCSS = (
   webkitStyles: Record<string, React.CSSProperties>
 ): string => {
   let css = '';
+  let hoverStyles = null;
   
   Object.entries(webkitStyles).forEach(([selector, styles]) => {
-    if (selector.includes('::-webkit-scrollbar')) {
-      const cleanSelector = selector.replace('&', `#${uniqueId}`);
+    if (selector === '__hover__') {
+      // Special case for hover state
+      hoverStyles = styles;
+    } else if (selector.includes('::-webkit-scrollbar')) {
+      const cleanSelector = selector.replace('&', `#${uniqueId} > div:first-child`);
       const cssProps = Object.entries(styles as Record<string, any>)
         .map(([prop, value]) => {
           // Convert camelCase to kebab-case
@@ -43,6 +48,11 @@ const createWebkitScrollbarCSS = (
       css += `${cleanSelector} { ${cssProps} }`;
     }
   });
+  
+  // Add hover state for the container
+  if (hoverStyles) {
+    css += `#${uniqueId}:hover > div:first-child::-webkit-scrollbar-thumb { opacity: ${hoverStyles.opacity}; }`;
+  }
   
   return css;
 };
@@ -98,6 +108,7 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
   const {
     orientation = 'vertical',
     visibility = 'hover',
+    alignment = 'end',
     smoothScrolling = true,
     hideNative = true,
     momentum = true,
@@ -251,7 +262,6 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
   
   // Styles
   const containerStyles = createScrollbarContainerStyles(
-    shape,
     width,
     height,
     undefined, // minWidth
@@ -268,7 +278,11 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
   
   const contentStyles = getScrollableContentStyles(
     orientation,
-    animationsEnabled
+    animationsEnabled,
+    hideNative,
+    smoothScrolling,
+    momentum,
+    Boolean(disabled)
   );
   
   const needsVerticalScrollbar = isScrollingNeeded(scrollState.scrollHeight, scrollState.clientHeight);
@@ -277,19 +291,29 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
   const verticalThumbSize = calculateThumbSize(scrollState.clientHeight, scrollState.scrollHeight);
   const horizontalThumbSize = calculateThumbSize(scrollState.clientWidth, scrollState.scrollWidth);
   
-  const verticalThumbPosition = calculateThumbPosition(
+  // Calculate base thumb positions
+  const baseVerticalThumbPosition = calculateThumbPosition(
     scrollState.scrollTop,
     scrollState.scrollHeight,
     scrollState.clientHeight,
     verticalThumbSize
   );
   
-  const horizontalThumbPosition = calculateThumbPosition(
+  const baseHorizontalThumbPosition = calculateThumbPosition(
     scrollState.scrollLeft,
     scrollState.scrollWidth,
     scrollState.clientWidth,
     horizontalThumbSize
   );
+  
+  // Adjust thumb positions when indicators are shown to prevent overlap
+  const verticalThumbPosition = showIndicators ? 
+    baseVerticalThumbPosition * 0.85 : // Scale down range to leave space for indicators
+    baseVerticalThumbPosition;
+    
+  const horizontalThumbPosition = showIndicators ?
+    baseHorizontalThumbPosition * 0.85 : // Scale down range to leave space for indicators
+    baseHorizontalThumbPosition;
   
   // Custom scrollbar track styles
   const verticalTrackStyles = getCustomScrollbarTrackStyles(
@@ -299,6 +323,7 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
     variant,
     size,
     shape,
+    alignment,
     Boolean(disabled),
     animationsEnabled,
     cssVars
@@ -311,6 +336,7 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
     variant,
     size,
     shape,
+    alignment,
     Boolean(disabled),
     animationsEnabled,
     cssVars
@@ -328,7 +354,9 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
     verticalThumbSize,
     Boolean(disabled),
     isDragging,
-    animationsEnabled
+    animationsEnabled,
+    cssVars,
+    showIndicators
   );
   
   const horizontalThumbStyles = getCustomScrollbarThumbStyles(
@@ -342,7 +370,9 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
     horizontalThumbSize,
     Boolean(disabled),
     isDragging,
-    animationsEnabled
+    animationsEnabled,
+    cssVars,
+    showIndicators
   );
   
   const combinedStyles: React.CSSProperties = {
@@ -359,6 +389,7 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
     shape,
     orientation,
     visibility,
+    alignment,
     Boolean(disabled),
     animationsEnabled,
     cssVars
@@ -366,15 +397,8 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
   
   useEffect(() => {
     if (supportsWebKitScrollbar()) {
-      let css = '';
-      
-      if (hideNative) {
-        // Hide native webkit scrollbars
-        css = `#${uniqueId}::-webkit-scrollbar { display: none; }`;
-      } else {
-        // Apply custom webkit scrollbar styles
-        css = createWebkitScrollbarCSS(uniqueId, webkitStyles);
-      }
+      // Always apply custom webkit scrollbar styles
+      const css = createWebkitScrollbarCSS(uniqueId, webkitStyles);
       
       if (css) {
         injectCSS(uniqueId, css);
@@ -384,7 +408,7 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
     return () => {
       cleanupCSS(uniqueId);
     };
-  }, [uniqueId, webkitStyles, hideNative]);
+  }, [uniqueId, color, customColor, variant, size, shape, orientation, visibility, alignment, disabled, animationsEnabled]);
   
   // Accessibility attributes
   const ariaAttributes = getScrollbarAriaAttributes(
@@ -413,8 +437,8 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
         </div>
       </div>
       
-      {/* Custom vertical scrollbar */}
-      {!hideNative && needsVerticalScrollbar && (orientation === 'vertical' || orientation === 'both') && (
+      {/* Custom vertical scrollbar - only show if webkit is not supported */}
+      {!supportsWebKitScrollbar() && hideNative && needsVerticalScrollbar && (orientation === 'vertical' || orientation === 'both') && variant !== 'invisible' && (
         <div
           ref={verticalTrackRef}
           style={verticalTrackStyles}
@@ -438,8 +462,8 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
         </div>
       )}
       
-      {/* Custom horizontal scrollbar */}
-      {!hideNative && needsHorizontalScrollbar && (orientation === 'horizontal' || orientation === 'both') && (
+      {/* Custom horizontal scrollbar - only show if webkit is not supported */}
+      {!supportsWebKitScrollbar() && hideNative && needsHorizontalScrollbar && (orientation === 'horizontal' || orientation === 'both') && variant !== 'invisible' && (
         <div
           ref={horizontalTrackRef}
           style={horizontalTrackStyles}
@@ -463,37 +487,141 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
         </div>
       )}
       
-      {/* Scroll indicators */}
-      {showIndicators && (
+      {/* Scroll indicators - Arrow icons in the track */}
+      {showIndicators && needsVerticalScrollbar && (orientation === 'vertical' || orientation === 'both') && variant !== 'invisible' && (
         <>
-          {needsVerticalScrollbar && (
-            <div
-              style={getScrollIndicatorStyles(
-                'vertical',
-                color,
-                customColor,
-                size,
-                scrollState.scrollTop > 0 ? 'top' : 'bottom',
-                Boolean(disabled),
-                animationsEnabled,
-                cssVars
-              )}
+          {/* Top indicator */}
+          <div
+            style={getScrollIndicatorStyles(
+              'vertical',
+              color,
+              customColor,
+              size,
+              'top',
+              scrollState.scrollTop > 0,
+              Boolean(disabled),
+              animationsEnabled,
+              cssVars,
+              alignment,
+              variant
+            )}
+            onClick={() => {
+              if (containerRef.current && !disabled) {
+                containerRef.current.scrollTop = Math.max(0, scrollState.scrollTop - 100);
+              }
+            }}
+          >
+            <Icon 
+              name="NavArrowUpSolid" 
+              size={size === 'xs' ? 12 : size === 'sm' ? 14 : size === 'md' ? 16 : size === 'lg' ? 18 : 20}
+              style={{ 
+                transform: 'rotate(0deg)',
+                opacity: scrollState.scrollTop > 0 ? 1 : 0.3
+              }}
             />
-          )}
-          {needsHorizontalScrollbar && (
-            <div
-              style={getScrollIndicatorStyles(
-                'horizontal',
-                color,
-                customColor,
-                size,
-                scrollState.scrollLeft > 0 ? 'left' : 'right',
-                Boolean(disabled),
-                animationsEnabled,
-                cssVars
-              )}
+          </div>
+          {/* Bottom indicator */}
+          <div
+            style={getScrollIndicatorStyles(
+              'vertical',
+              color,
+              customColor,
+              size,
+              'bottom',
+              scrollState.scrollTop < scrollState.scrollHeight - scrollState.clientHeight,
+              Boolean(disabled),
+              animationsEnabled,
+              cssVars,
+              alignment,
+              variant
+            )}
+            onClick={() => {
+              if (containerRef.current && !disabled) {
+                containerRef.current.scrollTop = Math.min(
+                  scrollState.scrollHeight - scrollState.clientHeight,
+                  scrollState.scrollTop + 100
+                );
+              }
+            }}
+          >
+            <Icon 
+              name="NavArrowUpSolid" 
+              size={size === 'xs' ? 12 : size === 'sm' ? 14 : size === 'md' ? 16 : size === 'lg' ? 18 : 20}
+              style={{ 
+                transform: 'rotate(180deg)',
+                opacity: scrollState.scrollTop < scrollState.scrollHeight - scrollState.clientHeight ? 1 : 0.3
+              }}
             />
-          )}
+          </div>
+        </>
+      )}
+      
+      {/* Horizontal scroll indicators */}
+      {showIndicators && needsHorizontalScrollbar && (orientation === 'horizontal' || orientation === 'both') && variant !== 'invisible' && (
+        <>
+          {/* Left indicator */}
+          <div
+            style={getScrollIndicatorStyles(
+              'horizontal',
+              color,
+              customColor,
+              size,
+              'left',
+              scrollState.scrollLeft > 0,
+              Boolean(disabled),
+              animationsEnabled,
+              cssVars,
+              alignment,
+              variant
+            )}
+            onClick={() => {
+              if (containerRef.current && !disabled) {
+                containerRef.current.scrollLeft = Math.max(0, scrollState.scrollLeft - 100);
+              }
+            }}
+          >
+            <Icon 
+              name="NavArrowUpSolid" 
+              size={size === 'xs' ? 12 : size === 'sm' ? 14 : size === 'md' ? 16 : size === 'lg' ? 18 : 20}
+              style={{ 
+                transform: 'rotate(-90deg)',
+                opacity: scrollState.scrollLeft > 0 ? 1 : 0.3
+              }}
+            />
+          </div>
+          {/* Right indicator */}
+          <div
+            style={getScrollIndicatorStyles(
+              'horizontal',
+              color,
+              customColor,
+              size,
+              'right',
+              scrollState.scrollLeft < scrollState.scrollWidth - scrollState.clientWidth,
+              Boolean(disabled),
+              animationsEnabled,
+              cssVars,
+              alignment,
+              variant
+            )}
+            onClick={() => {
+              if (containerRef.current && !disabled) {
+                containerRef.current.scrollLeft = Math.min(
+                  scrollState.scrollWidth - scrollState.clientWidth,
+                  scrollState.scrollLeft + 100
+                );
+              }
+            }}
+          >
+            <Icon 
+              name="NavArrowUpSolid" 
+              size={size === 'xs' ? 12 : size === 'sm' ? 14 : size === 'md' ? 16 : size === 'lg' ? 18 : 20}
+              style={{ 
+                transform: 'rotate(90deg)',
+                opacity: scrollState.scrollLeft < scrollState.scrollWidth - scrollState.clientWidth ? 1 : 0.3
+              }}
+            />
+          </div>
         </>
       )}
     </div>

@@ -1,4 +1,5 @@
 export { Scrollbar } from './Scrollbar';
+export { ScrollbarConfig } from './Scrollbar.config';
 export type { 
   ScrollbarProps, 
   ScrollbarRef, 
@@ -6,7 +7,8 @@ export type {
   ScrollbarColor,
   ScrollbarVariant,
   ScrollbarShape,
-  ScrollbarOrientation
+  ScrollbarOrientation,
+  ScrollbarAlignment
 } from './Scrollbar.types';
 export {
   getColorVariables,

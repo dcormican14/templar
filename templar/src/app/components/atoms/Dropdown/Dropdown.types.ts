@@ -158,6 +158,11 @@ export interface DropdownSpecificProps extends Omit<React.HTMLAttributes<HTMLDiv
    * @default 'left'
    */
   headerAlignment?: DropdownTextAlignment;
+
+  /**
+   * Placeholder text for the dropdown trigger
+   */
+  placeholder?: string;
 }
 
 // Complete Dropdown props interface extending universal form props for error handling

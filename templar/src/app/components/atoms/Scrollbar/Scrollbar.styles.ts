@@ -1,5 +1,5 @@
 import React from 'react';
-import type { ScrollbarColor, ScrollbarVariant, ScrollbarSize, ScrollbarShape, ScrollbarOrientation } from './Scrollbar.types';
+import type { ScrollbarColor, ScrollbarVariant, ScrollbarSize, ScrollbarShape, ScrollbarOrientation, ScrollbarAlignment } from './Scrollbar.types';
 
 // Get color variables based on color prop
 export const getColorVariables = (color: ScrollbarColor, customColor: string | undefined, cssVars: any) => {
@@ -13,48 +13,59 @@ export const getColorVariables = (color: ScrollbarColor, customColor: string | u
     };
   }
 
+  // Fallback values if cssVars is undefined
+  if (!cssVars) {
+    return {
+      main: '#3b82f6',
+      background: '#e5e7eb',
+      foreground: '#ffffff',
+      hover: '#2563eb',
+      border: '#d1d5db',
+    };
+  }
+
   const colorMap: Record<string, any> = {
     primary: {
-      main: cssVars.primary,
-      background: cssVars.primaryBackground,
-      foreground: cssVars.primaryForeground,
-      hover: cssVars.primaryHover,
-      border: cssVars.primaryBorder,
+      main: cssVars.primary || '#3b82f6',
+      background: cssVars.primaryBackground || '#e5e7eb',
+      foreground: cssVars.primaryForeground || '#ffffff',
+      hover: cssVars.primaryHover || '#2563eb',
+      border: cssVars.primaryBorder || '#d1d5db',
     },
     secondary: {
-      main: cssVars.secondary,
-      background: cssVars.secondaryBackground,
-      foreground: cssVars.secondaryForeground,
-      hover: cssVars.secondaryHover,
-      border: cssVars.secondaryBorder,
+      main: cssVars.secondary || '#6b7280',
+      background: cssVars.secondaryBackground || '#f3f4f6',
+      foreground: cssVars.secondaryForeground || '#ffffff',
+      hover: cssVars.secondaryHover || '#4b5563',
+      border: cssVars.secondaryBorder || '#e5e7eb',
     },
     success: {
-      main: cssVars.success,
-      background: cssVars.successBackground,
-      foreground: cssVars.successForeground,
-      hover: cssVars.successHover,
-      border: cssVars.successBorder,
+      main: cssVars.success || '#10b981',
+      background: cssVars.successBackground || '#d1fae5',
+      foreground: cssVars.successForeground || '#ffffff',
+      hover: cssVars.successHover || '#059669',
+      border: cssVars.successBorder || '#86efac',
     },
     warning: {
-      main: cssVars.warning,
-      background: cssVars.warningBackground,
-      foreground: cssVars.warningForeground,
-      hover: cssVars.warningHover,
-      border: cssVars.warningBorder,
+      main: cssVars.warning || '#f59e0b',
+      background: cssVars.warningBackground || '#fef3c7',
+      foreground: cssVars.warningForeground || '#ffffff',
+      hover: cssVars.warningHover || '#d97706',
+      border: cssVars.warningBorder || '#fde68a',
     },
     destructive: {
-      main: cssVars.destructive,
-      background: cssVars.destructiveBackground,
-      foreground: cssVars.destructiveForeground,
-      hover: cssVars.destructiveHover,
-      border: cssVars.destructiveBorder,
+      main: cssVars.destructive || '#ef4444',
+      background: cssVars.destructiveBackground || '#fee2e2',
+      foreground: cssVars.destructiveForeground || '#ffffff',
+      hover: cssVars.destructiveHover || '#dc2626',
+      border: cssVars.destructiveBorder || '#fca5a5',
     },
     info: {
-      main: cssVars.info,
-      background: cssVars.infoBackground,
-      foreground: cssVars.infoForeground,
-      hover: cssVars.infoHover,
-      border: cssVars.infoBorder,
+      main: cssVars.info || '#3b82f6',
+      background: cssVars.infoBackground || '#dbeafe',
+      foreground: cssVars.infoForeground || '#ffffff',
+      hover: cssVars.infoHover || '#2563eb',
+      border: cssVars.infoBorder || '#93c5fd',
     },
   };
 
@@ -115,7 +126,6 @@ export const getSizeConfig = (size: ScrollbarSize) => {
 
 // Container styles
 export const createScrollbarContainerStyles = (
-  shape: ScrollbarShape,
   width: string | number | undefined,
   height: string | number | undefined,
   minWidth: string | number | undefined,
@@ -142,27 +152,22 @@ export const createScrollbarContainerStyles = (
     minHeight: formatDimension(minHeight),
     maxWidth: formatDimension(maxWidth),
     maxHeight: formatDimension(maxHeight),
-    padding: formatDimension(padding),
-    overflow: disabled ? 'hidden' : 'auto',
-    scrollBehavior: smoothScrolling ? 'smooth' : 'auto',
-    WebkitOverflowScrolling: momentum ? 'touch' : 'auto',
     cursor: disabled ? 'not-allowed' : 'default',
     transition: animationsEnabled 
       ? 'all var(--duration-fast) var(--animation-smooth)'
       : 'none',
-    ...getShapeStyles(shape),
-    // Hide native scrollbars if requested
-    ...(hideNative && {
-      scrollbarWidth: 'none',
-      msOverflowStyle: 'none',
-    }),
+    overflow: 'hidden', // Container should hide overflow
   };
 };
 
 // Scrollable content area styles
 export const getScrollableContentStyles = (
   orientation: ScrollbarOrientation,
-  animationsEnabled: boolean
+  animationsEnabled: boolean,
+  hideNative: boolean,
+  smoothScrolling: boolean,
+  momentum: boolean,
+  disabled: boolean
 ): React.CSSProperties => {
   const baseStyles: React.CSSProperties = {
     width: '100%',
@@ -170,13 +175,22 @@ export const getScrollableContentStyles = (
     transition: animationsEnabled 
       ? 'transform var(--duration-smooth) var(--animation-smooth)' 
       : 'none',
+    scrollBehavior: smoothScrolling ? 'smooth' : 'auto',
+    WebkitOverflowScrolling: momentum ? 'touch' : 'auto',
+    // Hide native scrollbars if requested
+    ...(hideNative && {
+      scrollbarWidth: 'none',
+      msOverflowStyle: 'none',
+    }),
   };
+
+  const overflowValue = disabled ? 'hidden' : 'auto';
 
   switch (orientation) {
     case 'horizontal':
       return {
         ...baseStyles,
-        overflowX: 'auto',
+        overflowX: overflowValue,
         overflowY: 'hidden',
         whiteSpace: 'nowrap',
       };
@@ -184,14 +198,14 @@ export const getScrollableContentStyles = (
       return {
         ...baseStyles,
         overflowX: 'hidden',
-        overflowY: 'auto',
+        overflowY: overflowValue,
       };
     case 'both':
     default:
       return {
         ...baseStyles,
-        overflowX: 'auto',
-        overflowY: 'auto',
+        overflowX: overflowValue,
+        overflowY: overflowValue,
       };
   }
 };
@@ -205,6 +219,7 @@ export const getWebKitScrollbarStyles = (
   shape: ScrollbarShape,
   orientation: ScrollbarOrientation,
   visibility: string,
+  alignment: string,
   disabled: boolean,
   animationsEnabled: boolean,
   cssVars: any
@@ -228,37 +243,79 @@ export const getWebKitScrollbarStyles = (
   const variantColors = (() => {
     switch (variant) {
       case 'solid':
+        // Solid variant - bar with solid background
         return {
           thumb: colors.main,
           thumbHover: colors.hover,
-          track: colors.background,
+          track: colors.foreground, // Use foreground color for background
+          trackBorder: 'none',
+          border: 'none',
+          showButtons: false,
+          buttonColor: colors.main,
         };
       case 'ghost':
+        // Ghost variant - just the bar, no background
         return {
-          thumb: colors.main + '60',
-          thumbHover: colors.main + '80',
+          thumb: colors.main,
+          thumbHover: colors.hover,
           track: 'transparent',
+          trackBorder: 'none',
+          border: 'none',
+          showButtons: false,
+          buttonColor: 'transparent',
+        };
+      case 'glassmorphic':
+        return {
+          thumb: `${colors.main}80`,
+          thumbHover: colors.main,
+          track: `${cssVars?.background || '#ffffff'}20`,
+          trackBorder: 'none',
+          border: 'none',
+          showButtons: false,
+          buttonColor: colors.main,
+          backdropFilter: 'blur(10px)',
+          webkitBackdropFilter: 'blur(10px)',
+        };
+      case 'invisible':
+        // Invisible variant - completely invisible scrollbar
+        return {
+          thumb: 'transparent',
+          thumbHover: 'transparent',
+          track: 'transparent',
+          trackBorder: 'none',
+          border: 'none',
+          showButtons: false,
+          buttonColor: 'transparent',
         };
       case 'outline':
       default:
+        // Outline variant - bar with wider background (no border)
         return {
-          thumb: cssVars.muted,
-          thumbHover: colors.main,
-          track: cssVars.background,
+          thumb: colors.main,
+          thumbHover: colors.hover,
+          track: colors.background, // Use the color-specific background
+          trackBorder: 'none',
+          border: 'none',
+          showButtons: false,
+          buttonColor: colors.main,
+          trackPadding: true, // Flag to make track wider
         };
     }
   })();
 
   if (disabled) {
-    variantColors.thumb = cssVars.mutedForeground + '40';
-    variantColors.thumbHover = cssVars.mutedForeground + '40';
+    variantColors.thumb = (cssVars?.mutedForeground || '#6b7280') + '40';
+    variantColors.thumbHover = (cssVars?.mutedForeground || '#6b7280') + '40';
   }
+
+  // Standardize scrollbar width for all variants (wider track)
+  const scrollbarThickness = sizeConfig.thickness + Math.max(4, Math.floor(sizeConfig.thickness * 0.5));
 
   return {
     // Main scrollbar
     '&::-webkit-scrollbar': {
-      width: orientation === 'vertical' || orientation === 'both' ? `${sizeConfig.thickness}px` : '0px',
-      height: orientation === 'horizontal' || orientation === 'both' ? `${sizeConfig.thickness}px` : '0px',
+      width: orientation === 'vertical' || orientation === 'both' ? `${scrollbarThickness}px` : '0px',
+      height: orientation === 'horizontal' || orientation === 'both' ? `${scrollbarThickness}px` : '0px',
       backgroundColor: 'transparent',
     },
 
@@ -266,37 +323,55 @@ export const getWebKitScrollbarStyles = (
     '&::-webkit-scrollbar-track': {
       backgroundColor: variantColors.track,
       borderRadius: shapeStyles.borderRadius,
-      margin: '1px',
+      margin: variant === 'solid' ? '0' : '1px',
+      border: variantColors.trackBorder || 'none',
+      backdropFilter: variantColors.backdropFilter || 'none',
+      WebkitBackdropFilter: variantColors.webkitBackdropFilter || 'none',
     },
 
     // Thumb (draggable part)
     '&::-webkit-scrollbar-thumb': {
       backgroundColor: variantColors.thumb,
       borderRadius: shapeStyles.borderRadius,
-      border: `${Math.max((sizeConfig.thickness - sizeConfig.thumbThickness) / 2, 0)}px solid transparent`,
+      // Center the thumb in the wider track for all variants
+      border: `${Math.max(2, Math.floor((scrollbarThickness - sizeConfig.thumbThickness) / 2))}px solid transparent`,
       backgroundClip: 'padding-box',
       transition: animationsEnabled 
         ? 'background-color var(--duration-fast) var(--animation-smooth), opacity var(--duration-fast) var(--animation-smooth)' 
         : 'none',
-      opacity: isHoverOnly ? 0 : 1,
-      cursor: disabled ? 'not-allowed' : 'pointer',
+      opacity: variant === 'invisible' ? 0 : (isHoverOnly ? 0 : 1),
+      cursor: disabled ? 'not-allowed' : (variant === 'invisible' ? 'default' : 'pointer'),
+      backdropFilter: variantColors.backdropFilter || 'none',
+      WebkitBackdropFilter: variantColors.webkitBackdropFilter || 'none',
+      boxShadow: variant === 'glassmorphic' ? `0 2px 4px ${cssVars?.shadow || '#000000'}20` : 'none',
     },
 
     // Thumb hover state
     '&::-webkit-scrollbar-thumb:hover': {
-      backgroundColor: disabled ? variantColors.thumb : variantColors.thumbHover,
-      opacity: 1,
+      backgroundColor: disabled ? variantColors.thumb : (variant === 'invisible' ? 'transparent' : variantColors.thumbHover),
+      opacity: variant === 'invisible' ? 0 : 1,
+      boxShadow: variant === 'glassmorphic' ? `0 4px 8px ${cssVars?.shadow || '#000000'}30` : 'none',
     },
 
     // Corner where scrollbars meet
     '&::-webkit-scrollbar-corner': {
       backgroundColor: variantColors.track,
       borderRadius: shapeStyles.borderRadius,
+      backdropFilter: variantColors.backdropFilter || 'none',
+      WebkitBackdropFilter: variantColors.webkitBackdropFilter || 'none',
     },
 
-    // Show scrollbar on hover
+    // Hide scrollbar buttons for all variants
+    ...{
+      '&::-webkit-scrollbar-button': {
+        display: 'none',
+      },
+    },
+
+    // Show scrollbar on hover - need container hover
     ...(isHoverOnly && {
-      '&:hover::-webkit-scrollbar-thumb': {
+      // This will be processed specially in createWebkitScrollbarCSS
+      '__hover__': {
         opacity: 1,
       },
     }),
@@ -327,24 +402,36 @@ export const getFirefoxScrollbarStyles = (
       case 'solid':
         return {
           thumb: colors.main,
-          track: colors.background,
+          track: colors.foreground, // Use foreground color for background
         };
       case 'ghost':
+        // Ghost variant - completely invisible
         return {
-          thumb: colors.main + '60',
+          thumb: 'transparent',
+          track: 'transparent',
+        };
+      case 'glassmorphic':
+        return {
+          thumb: `${colors.main}99`,
+          track: `${cssVars?.background || '#ffffff'}33`,
+        };
+      case 'invisible':
+        return {
+          thumb: 'transparent',
           track: 'transparent',
         };
       case 'outline':
       default:
+        // Outline variant - use color-specific background
         return {
-          thumb: cssVars.muted,
-          track: cssVars.background,
+          thumb: colors.main,
+          track: colors.background,
         };
     }
   })();
 
   if (disabled) {
-    variantColors.thumb = cssVars.mutedForeground + '40';
+    variantColors.thumb = (cssVars?.mutedForeground || '#6b7280') + '40';
   }
 
   return {
@@ -361,6 +448,7 @@ export const getCustomScrollbarTrackStyles = (
   variant: ScrollbarVariant,
   size: ScrollbarSize,
   shape: ScrollbarShape,
+  alignment: string,
   disabled: boolean,
   animationsEnabled: boolean,
   cssVars: any
@@ -385,18 +473,39 @@ export const getCustomScrollbarTrackStyles = (
   const variantStyles = (() => {
     switch (variant) {
       case 'solid':
+        // Solid variant - bar with solid background
         return {
-          backgroundColor: colors.background,
+          backgroundColor: colors.foreground, // Use foreground color for background
+          border: 'none',
+          padding: `${Math.max(2, Math.floor(sizeConfig.thickness * 0.25))}px`, // Standardized padding
         };
       case 'ghost':
+        // Ghost variant - just the bar, no background track
         return {
           backgroundColor: 'transparent',
+          border: 'none',
+          padding: `${Math.max(2, Math.floor(sizeConfig.thickness * 0.25))}px`, // Standardized padding
+        };
+      case 'glassmorphic':
+        return {
+          backgroundColor: `${cssVars?.background || '#ffffff'}20`,
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
+          border: 'none',
+          padding: `${Math.max(2, Math.floor(sizeConfig.thickness * 0.25))}px`, // Standardized padding
+        };
+      case 'invisible':
+        // Invisible variant - completely invisible track
+        return {
+          display: 'none', // Hide the track completely
         };
       case 'outline':
       default:
+        // Outline variant - bar with wider background (no border)
         return {
-          backgroundColor: cssVars.muted,
-          border: `1px solid ${cssVars.border}`,
+          backgroundColor: colors.background, // Use color-specific background
+          border: 'none',
+          padding: `${Math.max(2, Math.floor(sizeConfig.thickness * 0.25))}px`, // Add padding to make track wider
         };
     }
   })();
@@ -405,25 +514,34 @@ export const getCustomScrollbarTrackStyles = (
     baseStyles.opacity = 0.4;
   }
 
+  // Standardize track width for all variants (wider track)
+  const trackThickness = sizeConfig.thickness + Math.max(4, Math.floor(sizeConfig.thickness * 0.5));
+
   if (isVertical) {
+    const positionProps = alignment === 'start' 
+      ? { left: '2px' } 
+      : { right: '2px' };
     return {
       ...baseStyles,
       ...variantStyles,
-      right: '2px',
+      ...positionProps,
       top: '2px',
       bottom: '2px',
-      width: `${sizeConfig.thickness}px`,
+      width: `${trackThickness}px`,
     };
   }
 
   if (isHorizontal) {
+    const positionProps = alignment === 'start' 
+      ? { top: '2px' } 
+      : { bottom: '2px' };
     return {
       ...baseStyles,
       ...variantStyles,
-      bottom: '2px',
+      ...positionProps,
       left: '2px',
       right: '2px',
-      height: `${sizeConfig.thickness}px`,
+      height: `${trackThickness}px`,
     };
   }
 
@@ -442,8 +560,10 @@ export const getCustomScrollbarThumbStyles = (
   position: number,
   thumbSize: number,
   disabled: boolean,
+  isDragging: boolean,
   animationsEnabled: boolean,
-  cssVars: any
+  cssVars: any,
+  showIndicators?: boolean
 ): React.CSSProperties => {
   const colors = getColorVariables(color, customColor, cssVars);
   const sizeConfig = getSizeConfig(size);
@@ -467,68 +587,107 @@ export const getCustomScrollbarThumbStyles = (
   const variantStyles = (() => {
     switch (variant) {
       case 'solid':
+        // Solid variant - bar with solid background
         return {
-          backgroundColor: colors.main,
-          '&:hover': !disabled ? {
-            backgroundColor: colors.hover,
-          } : {},
+          backgroundColor: isDragging ? colors.hover : colors.main,
+          border: 'none',
         };
       case 'ghost':
+        // Ghost variant - just the bar
         return {
-          backgroundColor: colors.main + '60',
-          '&:hover': !disabled ? {
-            backgroundColor: colors.main + '80',
-          } : {},
+          backgroundColor: isDragging ? colors.hover : colors.main,
+          border: 'none',
+        };
+      case 'glassmorphic':
+        return {
+          backgroundColor: isDragging ? colors.main : `${colors.main}80`,
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
+          border: 'none',
+          boxShadow: isDragging ? `0 0 16px ${colors.main}50` : `0 2px 8px ${cssVars?.shadow || '#000000'}15`,
+        };
+      case 'invisible':
+        // Invisible variant - completely invisible thumb
+        return {
+          display: 'none', // Hide the thumb completely
         };
       case 'outline':
       default:
+        // Outline variant - bar on bordered background
         return {
-          backgroundColor: cssVars.muted,
-          border: `1px solid ${colors.border || cssVars.border}`,
-          '&:hover': !disabled ? {
-            backgroundColor: colors.main,
-            borderColor: colors.main,
-          } : {},
+          backgroundColor: isDragging ? colors.hover : colors.main,
+          border: 'none',
         };
     }
   })();
 
   if (disabled) {
     baseStyles.opacity = 0.4;
-    variantStyles.backgroundColor = cssVars.mutedForeground;
+    variantStyles.backgroundColor = cssVars?.mutedForeground || '#6b7280';
   }
 
+  // Calculate space needed for indicators (indicator size + padding)
+  const indicatorSpace = showIndicators ? (sizeConfig.thickness + 6) : 0; // Space for indicator + gap
+  
   const thumbLength = Math.max(thumbSize * 100, sizeConfig.minThumbSize);
-  const thumbPosition = Math.min(position * 100, 100 - thumbLength);
+  
+  // Standardize thumb width across all variants - consistent with track standardization
+  const standardizedThumbWidth = sizeConfig.thumbThickness;
 
   if (isVertical) {
+    // Calculate available space for thumb movement when indicators are shown
+    const availableSpace = showIndicators ? (100 - (indicatorSpace * 2 / 4)) : 100;
+    const scaledPosition = showIndicators ? 
+      (position * availableSpace) : 
+      (position * 100);
+    
+    // Calculate thumb position with indicator offset
+    const thumbPosition = Math.min(scaledPosition, availableSpace - thumbLength);
+    const finalTop = showIndicators ? 
+      `calc(${thumbPosition}% + ${indicatorSpace}px)` : 
+      `${thumbPosition}%`;
+    
     return {
       ...baseStyles,
       ...variantStyles,
       right: '50%',
-      top: `${thumbPosition}%`,
-      width: `${sizeConfig.thumbThickness}px`,
+      top: finalTop,
+      width: `${standardizedThumbWidth}px`,
       height: `${thumbLength}%`,
       transform: 'translateX(50%)',
+      maxHeight: showIndicators ? `calc(100% - ${indicatorSpace * 2}px)` : '100%',
     };
   }
 
   if (isHorizontal) {
+    // Calculate available space for thumb movement when indicators are shown
+    const availableSpace = showIndicators ? (100 - (indicatorSpace * 2 / 4)) : 100;
+    const scaledPosition = showIndicators ? 
+      (position * availableSpace) : 
+      (position * 100);
+    
+    // Calculate thumb position with indicator offset
+    const thumbPosition = Math.min(scaledPosition, availableSpace - thumbLength);
+    const finalLeft = showIndicators ? 
+      `calc(${thumbPosition}% + ${indicatorSpace}px)` : 
+      `${thumbPosition}%`;
+    
     return {
       ...baseStyles,
       ...variantStyles,
       bottom: '50%',
-      left: `${thumbPosition}%`,
+      left: finalLeft,
       width: `${thumbLength}%`,
-      height: `${sizeConfig.thumbThickness}px`,
+      height: `${standardizedThumbWidth}px`,
       transform: 'translateY(50%)',
+      maxWidth: showIndicators ? `calc(100% - ${indicatorSpace * 2}px)` : '100%',
     };
   }
 
   return baseStyles;
 };
 
-// Scroll indicators styles
+// Scroll indicators styles (arrow icons in track)
 export const getScrollIndicatorStyles = (
   orientation: ScrollbarOrientation,
   color: ScrollbarColor,
@@ -536,57 +695,100 @@ export const getScrollIndicatorStyles = (
   size: ScrollbarSize,
   position: 'top' | 'bottom' | 'left' | 'right',
   visible: boolean,
+  disabled: boolean,
   animationsEnabled: boolean,
-  cssVars: any
+  cssVars: any,
+  alignment?: string,
+  variant?: ScrollbarVariant
 ): React.CSSProperties => {
   const colors = getColorVariables(color, customColor, cssVars);
   const sizeConfig = getSizeConfig(size);
+  
+  // Indicator size should be smaller to fit within the track
+  const trackThickness = sizeConfig.thickness + Math.max(4, Math.floor(sizeConfig.thickness * 0.5));
+  const indicatorSize = sizeConfig.thickness; // Use base thickness for indicator
+
+  // Get variant-specific styling for the indicator background
+  const variantStyles = (() => {
+    switch (variant) {
+      case 'solid':
+        return {
+          backgroundColor: 'transparent',
+          color: colors.main,
+          border: 'none',
+        };
+      case 'ghost':
+        return {
+          backgroundColor: 'transparent',
+          color: colors.main,
+          border: 'none',
+        };
+      case 'glassmorphic':
+        return {
+          backgroundColor: 'transparent',
+          color: colors.main,
+          border: 'none',
+        };
+      case 'outline':
+      default:
+        return {
+          backgroundColor: 'transparent',
+          color: colors.main,
+          border: 'none',
+        };
+    }
+  })();
 
   const baseStyles: React.CSSProperties = {
     position: 'absolute',
-    backgroundColor: colors.main + '20',
-    opacity: visible ? 1 : 0,
+    ...variantStyles,
+    opacity: visible ? 1 : 0.5,
     transition: animationsEnabled 
-      ? 'opacity var(--duration-fast) var(--animation-smooth)' 
+      ? 'all var(--duration-fast) var(--animation-smooth)' 
       : 'none',
-    pointerEvents: 'none',
-    zIndex: 3,
+    pointerEvents: disabled ? 'none' : 'auto',
+    cursor: disabled ? 'not-allowed' : (visible ? 'pointer' : 'default'),
+    zIndex: 4,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   };
 
-  const indicatorSize = sizeConfig.thickness;
+  // Calculate centering offset for indicators within the track
+  const centerOffset = Math.max(2, (trackThickness - indicatorSize) / 2);
 
   switch (position) {
     case 'top':
       return {
         ...baseStyles,
-        top: 0,
-        left: 0,
-        right: 0,
+        top: '2px',
+        [alignment === 'start' ? 'left' : 'right']: `${centerOffset}px`,
+        width: `${indicatorSize}px`,
         height: `${indicatorSize}px`,
       };
     case 'bottom':
       return {
         ...baseStyles,
-        bottom: 0,
-        left: 0,
-        right: 0,
+        bottom: '2px',
+        [alignment === 'start' ? 'left' : 'right']: `${centerOffset}px`,
+        width: `${indicatorSize}px`,
         height: `${indicatorSize}px`,
       };
     case 'left':
       return {
         ...baseStyles,
-        top: 0,
-        bottom: 0,
-        left: 0,
+        left: '2px',
+        [alignment === 'start' ? 'top' : 'bottom']: `${centerOffset}px`,
         width: `${indicatorSize}px`,
+        height: `${indicatorSize}px`,
       };
     case 'right':
       return {
         ...baseStyles,
-        top: 0,
-        bottom: 0,
-        right: 0,
+        right: '2px',
+        [alignment === 'start' ? 'top' : 'bottom']: `${centerOffset}px`,
         width: `${indicatorSize}px`,
+        height: `${indicatorSize}px`,
       };
     default:
       return baseStyles;

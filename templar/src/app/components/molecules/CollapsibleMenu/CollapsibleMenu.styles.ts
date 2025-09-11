@@ -168,9 +168,11 @@ export const getContentStyles = (
   return {
     flex: 1,
     padding: collapsed ? `${sizeConfig.padding} 8px` : sizeConfig.padding,
-    overflowY: 'auto',
-    overflowX: 'hidden',
+    // Removed overflow properties - let the Scrollbar component handle scrolling
     transition: 'padding 200ms var(--animation-spring)',
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
   };
 };
 

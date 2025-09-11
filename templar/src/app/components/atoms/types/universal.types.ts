@@ -4,7 +4,7 @@ import React from 'react';
 export type UniversalColor = 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'custom';
 
 // Universal variant system used across all atomic components  
-export type UniversalVariant = 'solid' | 'ghost' | 'outline' | 'glassmorphic';
+export type UniversalVariant = 'solid' | 'ghost' | 'outline' | 'glassmorphic' | 'invisible';
 
 // Universal size system used across all atomic components
 export type UniversalSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';

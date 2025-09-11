@@ -13,6 +13,7 @@ export type ScrollbarColor = UniversalColor;
 export type ScrollbarVariant = UniversalVariant;
 export type ScrollbarShape = UniversalShape;
 export type ScrollbarOrientation = 'horizontal' | 'vertical' | 'both';
+export type ScrollbarAlignment = 'start' | 'end'; // start = left/top, end = right/bottom
 
 // Component-specific props (not covered by universal props)
 export interface ScrollbarSpecificProps extends Omit<ComponentProps<'div'>, 'size' | 'color' | 'style' | 'className' | 'id' | 'children' | 'onClick' | 'width' | 'height'> {
@@ -28,6 +29,12 @@ export interface ScrollbarSpecificProps extends Omit<ComponentProps<'div'>, 'siz
    * @default 'auto'
    */
   visibility?: 'always' | 'hover' | 'auto' | 'hidden';
+  
+  /**
+   * Alignment of the scrollbar (start = left/top, end = right/bottom)
+   * @default 'end'
+   */
+  alignment?: ScrollbarAlignment;
   
   /**
    * Whether to enable smooth scrolling

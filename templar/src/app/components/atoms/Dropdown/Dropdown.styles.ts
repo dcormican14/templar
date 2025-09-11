@@ -259,13 +259,13 @@ export const getTriggerStyles = (
       ...variantStyles,
       borderColor: cssVars.destructive,
       color: cssVars.destructive,
-    };
+    } as React.CSSProperties;
   }
 
   return {
     ...baseStyles,
     ...variantStyles,
-  };
+  } as React.CSSProperties;
 };
 
 export const getArrowStyles = (
