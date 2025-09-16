@@ -336,7 +336,7 @@ export const getMenuStyles = (
     borderRadius: rounded ? '12px' : '8px',
     boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
     maxHeight,
-    overflowY: 'auto',
+    overflow: 'hidden',
     minWidth: '100%',
     marginTop: '4px',
     opacity: 1,

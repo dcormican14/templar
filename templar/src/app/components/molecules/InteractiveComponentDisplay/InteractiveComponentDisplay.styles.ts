@@ -15,7 +15,7 @@ export const createContainerStyles = (
   backgroundColor: cssVars.card,
   borderRadius: '12px',
   border: `1px solid ${cssVars.border}`,
-  overflow: 'hidden',
+  overflow: 'visible',
   boxShadow: cssVars.shadowMd,
 });
 
@@ -68,6 +68,7 @@ export const createDisplayAreaStyles = (
   backgroundRepeat: background !== 'none' && background !== 'subtle' ? 'repeat' : 'no-repeat',
   position: 'relative',
   minHeight: '200px',
+  overflow: 'visible',
   ...displayStyle,
 });
 

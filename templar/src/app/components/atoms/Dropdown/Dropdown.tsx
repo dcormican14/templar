@@ -453,7 +453,16 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref
               />
             </div>
           )}
-          <div style={{ maxHeight, overflowY: 'auto' }}>
+          <div
+            className="dropdown-scrollable-content"
+            style={{
+              maxHeight,
+              overflowY: 'auto',
+              // Hide scrollbar for IE and Edge
+              msOverflowStyle: 'none',
+              // Hide scrollbar for Firefox
+              scrollbarWidth: 'none'
+            }}>
             {renderMenuContent()}
           </div>
         </div>
@@ -500,12 +509,12 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref
     );
 
     // Create the complete component with header
-    const completeElement = (
+    const completeElement = header ? (
       <div style={{ width: '100%' }}>
         {renderHeader()}
         {dropdownElement}
       </div>
-    );
+    ) : dropdownElement;
 
     // Wrap with animation mode if applicable
     if (useAnimationMode && animationMode === 'parallax') {

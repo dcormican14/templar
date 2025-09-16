@@ -13,3 +13,8 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+/* Hide scrollbar for dropdown content while maintaining scroll functionality */
+.dropdown-scrollable-content::-webkit-scrollbar {
+  display: none;
+}
