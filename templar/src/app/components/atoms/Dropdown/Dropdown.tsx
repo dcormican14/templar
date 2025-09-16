@@ -441,14 +441,34 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref
           {...menuAccessibilityProps}
         >
           {searchable && (
-            <div style={{ padding: '8px', borderBottom: `1px solid ${cssVars.border}` }}>
+            <div style={{
+              padding: '8px',
+              borderBottom: `1px solid ${cssVars.border}`,
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center'
+            }}>
+              <Icon
+                name="Search"
+                size="sm"
+                style={{
+                  position: 'absolute',
+                  left: '16px',
+                  zIndex: 1,
+                  color: cssVars.foregroundAccent || cssVars.foreground,
+                  pointerEvents: 'none'
+                }}
+              />
               <input
                 ref={searchRef}
                 type="text"
                 placeholder={searchPlaceholder}
                 value={searchQuery}
                 onChange={handleSearchChange}
-                style={searchStyles}
+                style={{
+                  ...searchStyles,
+                  paddingLeft: '36px' // Add space for the icon
+                }}
                 autoComplete="off"
               />
             </div>
@@ -473,22 +493,45 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref
 
     // Render header function (copied from Card component pattern)
     const renderHeader = () => {
-      if (!header) return null;
-      
+      // Show error text in header when in error state, similar to card component
+      // Priority: if error state and errorText exists, show errorText; otherwise show header
+      let headerText: React.ReactNode = null;
+      let isErrorText = false;
+
+      if (error && errorText && errorText.toString().trim()) {
+        // Error state takes priority - show error text
+        headerText = errorText;
+        isErrorText = true;
+      } else if (header && header.toString().trim()) {
+        // Normal state - show regular header (only if not empty string)
+        headerText = header;
+        isErrorText = false;
+      }
+
+      // Always render header section if we have error text, even if no regular header
+      if (!headerText || headerText.toString().trim() === '') return null;
+
+      // Use destructive color for error text, otherwise use component theme color
+      const headerColor = isErrorText ? cssVars.destructive : (colorVariables.main || cssVars.primary);
+
       return (
-        <div 
+        <div
           style={{
             textAlign: headerAlignment,
-            color: colorVariables.main || cssVars.primary, // Use selected color to match component theme
+            color: headerColor,
             fontWeight: '500',
             fontSize: '14px',
             fontFamily: 'inherit',
             wordWrap: 'break-word',
             overflowWrap: 'break-word',
-            marginBottom: '8px',
+            marginBottom: '0px', // Remove margin since positioning is absolute
+            // Constrain the header to not be wider than the dropdown
+            display: 'block',
+            overflow: 'hidden', // Hide any overflow
+            boxSizing: 'border-box',
           }}
         >
-          {renderAnimatedText(header, useAnimationMode && animationMode === 'typewriter')}
+          {renderAnimatedText(headerText, useAnimationMode && animationMode === 'typewriter')}
         </div>
       );
     };
@@ -509,9 +552,23 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref
     );
 
     // Create the complete component with header
-    const completeElement = header ? (
-      <div style={{ width: '100%' }}>
-        {renderHeader()}
+    // Include header wrapper if there's a header OR if there's error text to display
+    const shouldIncludeHeader = header || (error && errorText);
+    const completeElement = shouldIncludeHeader ? (
+      <div style={{
+        position: 'relative',
+        display: 'inline-block',
+      }}>
+        <div style={{
+          // Position header absolutely to avoid affecting container size
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          transform: 'translateY(calc(-100% - 8px))', // Move up by full height + spacing
+        }}>
+          {renderHeader()}
+        </div>
         {dropdownElement}
       </div>
     ) : dropdownElement;

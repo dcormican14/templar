@@ -252,13 +252,93 @@ export const getTriggerStyles = (
     }
   })();
 
-  // Error state override
+  // Error state override - use destructive styling for borders only, preserve text color
   if (error) {
+    const destructiveColors = getColorVariables('destructive', undefined, cssVars);
+    const destructiveVariantStyles = (() => {
+      switch (variant) {
+        case 'solid':
+          return {
+            backgroundColor: destructiveColors.accent || destructiveColors.main,
+            // Keep original foreground color, not destructive
+            color: colors.foreground,
+            borderTopColor: destructiveColors.accent || destructiveColors.main,
+            borderRightColor: destructiveColors.accent || destructiveColors.main,
+            borderBottomColor: destructiveColors.accent || destructiveColors.main,
+            borderLeftColor: destructiveColors.accent || destructiveColors.main,
+            ...baseBorderStyles,
+          };
+        case 'outline':
+          return {
+            backgroundColor: 'transparent',
+            // Keep original variant color, not destructive
+            color: colors.main,
+            borderTopColor: destructiveColors.main,
+            borderRightColor: destructiveColors.main,
+            borderBottomColor: destructiveColors.main,
+            borderLeftColor: destructiveColors.main,
+            ...baseBorderStyles,
+          };
+        case 'ghost':
+          return {
+            backgroundColor: 'transparent',
+            // Keep original variant color, not destructive
+            color: colors.main,
+            borderTopColor: 'transparent',
+            borderRightColor: 'transparent',
+            borderBottomColor: 'transparent',
+            borderLeftColor: 'transparent',
+            ...baseBorderStyles,
+          };
+        case 'glassmorphic':
+          const reflectionColor = destructiveColors.hover || destructiveColors.main || '#ff0000';
+          const topReflectionGradient = `linear-gradient(135deg, transparent 0%, ${reflectionColor}20 20%, ${reflectionColor}15 25%, transparent 35%)`;
+          const bottomReflectionGradient = `linear-gradient(135deg, transparent 45%, ${reflectionColor}25 55%, ${reflectionColor}20 65%, transparent 80%)`;
+
+          // Convert destructive color to rgba for consistent theming
+          const destructiveMainColor = destructiveColors.main;
+          let destructiveRgba = 'rgba(220, 50, 47, 0.1)'; // fallback
+          if (destructiveMainColor && destructiveMainColor.startsWith('#')) {
+            const hex = destructiveMainColor.replace('#', '');
+            const r = parseInt(hex.substr(0, 2), 16);
+            const g = parseInt(hex.substr(2, 2), 16);
+            const b = parseInt(hex.substr(4, 2), 16);
+            destructiveRgba = `rgba(${r}, ${g}, ${b}, 0.1)`;
+          }
+
+          return {
+            background: `
+              ${topReflectionGradient},
+              ${bottomReflectionGradient},
+              ${destructiveRgba}
+            `,
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+            // Keep original variant color, not destructive
+            color: colors.main,
+            borderTopColor: `${destructiveColors.main}33`, // 20% opacity
+            borderRightColor: `${destructiveColors.main}33`,
+            borderBottomColor: `${destructiveColors.main}33`,
+            borderLeftColor: `${destructiveColors.main}33`,
+            ...baseBorderStyles,
+          };
+        default:
+          return {
+            backgroundColor: 'transparent',
+            // Keep original variant color, not destructive
+            color: colors.main,
+            borderTopColor: destructiveColors.main,
+            borderRightColor: destructiveColors.main,
+            borderBottomColor: destructiveColors.main,
+            borderLeftColor: destructiveColors.main,
+            ...baseBorderStyles,
+          };
+      }
+    })();
+
     return {
       ...baseStyles,
-      ...variantStyles,
-      borderColor: cssVars.destructive,
-      color: cssVars.destructive,
+      ...destructiveVariantStyles,
     } as React.CSSProperties;
   }
 
@@ -589,15 +669,32 @@ export const getGroupLabelStyles = (
 };
 
 export const getPlaceholderStyles = (
-  cssVars: any, 
+  cssVars: any,
   variant: DropdownVariant = 'outline',
   colors?: ReturnType<typeof getColorVariables>
 ): React.CSSProperties => {
-  const placeholderColor = cssVars.mutedForeground;
-  
+  // Use component's color scheme to match the variant and selected color
+  let placeholderColor: string;
+
+  switch (variant) {
+    case 'solid':
+      // For solid variant, use the foreground color (usually white/light on colored background)
+      placeholderColor = colors?.foreground || cssVars.foreground;
+      break;
+    case 'outline':
+    case 'ghost':
+    case 'glassmorphic':
+      // For outline, ghost, and glassmorphic variants, use the main component color
+      placeholderColor = colors?.main || cssVars.primary;
+      break;
+    default:
+      placeholderColor = colors?.main || cssVars.primary;
+      break;
+  }
+
   return {
     color: placeholderColor,
-    opacity: 0.7,
+    opacity: 1,
   };
 };
 

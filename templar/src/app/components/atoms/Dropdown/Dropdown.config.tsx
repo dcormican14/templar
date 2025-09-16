@@ -31,16 +31,6 @@ export const DropdownConfig = {
           key: 'showArrow',
           label: 'Show Arrow',
           type: 'checkbox' as ControlType
-        },
-        {
-          key: 'closeOnSelect',
-          label: 'Close on Select',
-          type: 'checkbox' as ControlType
-        },
-        {
-          key: 'portal',
-          label: 'Use Portal',
-          type: 'checkbox' as ControlType
         }
       ]
     },
@@ -121,15 +111,13 @@ export const DropdownConfig = {
     multiple: false,
     searchable: true,
     showArrow: true,
-    closeOnSelect: true,
-    portal: false,
     position: 'bottom-start',
     maxHeight: '300px',
     emptyMessage: 'No options available',
     noResultsMessage: 'No results found',
     error: false,
     errorText: 'This field has an error',
-    header: '',
+    header: undefined,
     headerAlignment: 'left',
     options: [
       {

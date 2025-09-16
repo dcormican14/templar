@@ -33,8 +33,8 @@ export const generateCodeString = (
       }
       
       // Filter out props that match their default/initial values
-      // Exception: always show header and footer for Card components, and children for text content
-      const alwaysShowProps = ['header', 'footer', 'children'];
+      // Exception: always show header and footer for Card components, children for text content, and searchable for dropdowns
+      const alwaysShowProps = ['header', 'footer', 'children', 'searchable'];
       if (initialProps && initialProps[key] === value && !alwaysShowProps.includes(key)) {
         return false;
       }
