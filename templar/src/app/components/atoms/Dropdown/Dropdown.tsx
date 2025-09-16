@@ -288,6 +288,45 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref
     const accessibilityProps = createAccessibilityProps(dropdownId, isOpen, highlightedIndex, Boolean(error));
     const menuAccessibilityProps = createMenuAccessibilityProps(dropdownId);
 
+    // Isometric hover handlers
+    const handleMouseEnter = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+      if (!disabled && animationsEnabled && hasIsometricAnimation && variant !== 'ghost' && variant !== 'glassmorphic') {
+        // Small bouncy press animation - button moves down, border reduces
+        e.currentTarget.style.transform = 'translateY(3px)';
+        e.currentTarget.style.borderBottomWidth = '3px';
+        // Ensure the border color is maintained
+        const borderColor = variant === 'outline' ? colorVariables.main : colorVariables.foreground;
+        if (borderColor) {
+          e.currentTarget.style.borderBottomColor = borderColor;
+          // For solid variant, also update all other border colors to match
+          if (variant === 'solid') {
+            e.currentTarget.style.borderTopColor = borderColor;
+            e.currentTarget.style.borderRightColor = borderColor;
+            e.currentTarget.style.borderLeftColor = borderColor;
+          }
+        }
+      }
+    }, [disabled, animationsEnabled, hasIsometricAnimation, variant, colorVariables]);
+
+    const handleMouseLeave = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+      if (!disabled && hasIsometricAnimation && variant !== 'ghost' && variant !== 'glassmorphic') {
+        // Return to rest position
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.borderBottomWidth = '6px';
+        // Ensure the border color is maintained
+        const borderColor = variant === 'outline' ? colorVariables.main : colorVariables.foreground;
+        if (borderColor) {
+          e.currentTarget.style.borderBottomColor = borderColor;
+          // For solid variant, also update all other border colors to match
+          if (variant === 'solid') {
+            e.currentTarget.style.borderTopColor = borderColor;
+            e.currentTarget.style.borderRightColor = borderColor;
+            e.currentTarget.style.borderLeftColor = borderColor;
+          }
+        }
+      }
+    }, [disabled, hasIsometricAnimation, variant, colorVariables]);
+
     // Render trigger
     const renderTrigger = () => {
       if (trigger) {
@@ -309,6 +348,8 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref
           onKeyDown={handleKeyDownInternal}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
           disabled={disabled}
           {...accessibilityProps}
         >
