@@ -121,11 +121,11 @@ export const createBaseStyles = (
 // Get size styles for dropdowns
 export const getSizeStyles = (size: DropdownSize): React.CSSProperties => {
   const sizeMap = {
-    xs: { padding: '4px 12px', fontSize: '14px', minHeight: '40px' },
-    sm: { padding: '6px 12px', fontSize: '14px', minHeight: '40px' },
-    md: { padding: '8px 16px', fontSize: '16px', minHeight: '48px' },
-    lg: { padding: '10px 20px', fontSize: '16px', minHeight: '52px' },
-    xl: { padding: '12px 24px', fontSize: '18px', minHeight: '60px' },
+    xs: { paddingTop: '4px', paddingRight: '12px', paddingBottom: '4px', paddingLeft: '12px', fontSize: '14px', minHeight: '40px' },
+    sm: { paddingTop: '6px', paddingRight: '12px', paddingBottom: '6px', paddingLeft: '12px', fontSize: '14px', minHeight: '40px' },
+    md: { paddingTop: '8px', paddingRight: '16px', paddingBottom: '8px', paddingLeft: '16px', fontSize: '16px', minHeight: '48px' },
+    lg: { paddingTop: '10px', paddingRight: '20px', paddingBottom: '10px', paddingLeft: '20px', fontSize: '16px', minHeight: '52px' },
+    xl: { paddingTop: '12px', paddingRight: '24px', paddingBottom: '12px', paddingLeft: '24px', fontSize: '18px', minHeight: '60px' },
   };
   return sizeMap[size] || sizeMap.md;
 };
@@ -157,8 +157,8 @@ export const getTriggerStyles = (
     cursor: disabled ? 'not-allowed' : 'pointer',
     outline: 'none',
     fontFamily: 'inherit',
-    transition: animationsEnabled 
-      ? 'background-color var(--duration-fast) var(--animation-smooth), color var(--duration-fast) var(--animation-smooth), border-color var(--duration-fast) var(--animation-smooth)'
+    transition: animationsEnabled
+      ? 'background-color var(--duration-fast) var(--animation-smooth), color var(--duration-fast) var(--animation-smooth), border-top-color var(--duration-fast) var(--animation-smooth), border-right-color var(--duration-fast) var(--animation-smooth), border-bottom-color var(--duration-fast) var(--animation-smooth), border-left-color var(--duration-fast) var(--animation-smooth)'
       : 'none',
     position: 'relative',
     boxShadow: 'none',
@@ -428,7 +428,26 @@ export const getOptionStyles = (
     stateStyles.color = colors?.main || cssVars.primary;
     stateStyles.fontWeight = '500';
   } else if (highlighted) {
-    stateStyles.backgroundColor = cssVars.muted || cssVars.secondary + '30';
+    // Enhanced hover background logic for maximum visibility across all themes
+    // Always use a semi-transparent overlay of the component's primary color
+    // This ensures consistent, visible hover effects regardless of theme
+    const primaryColor = colors?.main || cssVars.primary;
+
+    // Convert hex to rgba for proper transparency
+    let hoverBackground;
+    if (primaryColor.startsWith('#')) {
+      // Convert hex to rgba with 15% opacity for subtle but visible effect
+      const hex = primaryColor.replace('#', '');
+      const r = parseInt(hex.substr(0, 2), 16);
+      const g = parseInt(hex.substr(2, 2), 16);
+      const b = parseInt(hex.substr(4, 2), 16);
+      hoverBackground = `rgba(${r}, ${g}, ${b}, 0.15)`;
+    } else {
+      // Fallback for non-hex colors
+      hoverBackground = cssVars.backgroundHover || cssVars.muted || primaryColor + '20';
+    }
+
+    stateStyles.backgroundColor = hoverBackground;
   }
 
   return {
