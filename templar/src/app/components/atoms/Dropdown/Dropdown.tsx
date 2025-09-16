@@ -330,16 +330,26 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref
     // Render trigger
     const renderTrigger = () => {
       if (trigger) {
-        return React.cloneElement(trigger as React.ReactElement, {
+        const customTrigger = React.cloneElement(trigger as React.ReactElement, {
           onClick: handleToggle,
           onKeyDown: handleKeyDownInternal,
           onFocus: () => setIsFocused(true),
           onBlur: () => setIsFocused(false),
           ...accessibilityProps,
         } as any);
+
+        // Wrap custom trigger with parallax if needed
+        if (useAnimationMode && animationMode === 'parallax') {
+          return (
+            <ParallaxTiltWrapper disabled={disabled || !useAnimationMode}>
+              {customTrigger}
+            </ParallaxTiltWrapper>
+          );
+        }
+        return customTrigger;
       }
 
-      return (
+      const triggerButton = (
         <button
           ref={triggerRef}
           type="button"
@@ -385,6 +395,17 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref
           )}
         </button>
       );
+
+      // Wrap trigger button with parallax if needed
+      if (useAnimationMode && animationMode === 'parallax') {
+        return (
+          <ParallaxTiltWrapper disabled={disabled || !useAnimationMode}>
+            {triggerButton}
+          </ParallaxTiltWrapper>
+        );
+      }
+
+      return triggerButton;
     };
 
     // Render option
@@ -613,15 +634,6 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref
         {dropdownElement}
       </div>
     ) : dropdownElement;
-
-    // Wrap with animation mode if applicable
-    if (useAnimationMode && animationMode === 'parallax') {
-      return (
-        <ParallaxTiltWrapper disabled={disabled || !useAnimationMode}>
-          {completeElement}
-        </ParallaxTiltWrapper>
-      );
-    }
 
     return completeElement;
   }

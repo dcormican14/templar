@@ -37,7 +37,16 @@ export const DropdownConfig = {
     universalAnimationControls,
   ],
   rightControls: [
-    universalStateControls,
+    {
+      title: 'State',
+      controls: [
+        {
+          key: 'disabled',
+          label: 'Disabled',
+          type: 'checkbox' as ControlType
+        }
+      ]
+    },
     {
       title: 'Error State',
       controls: [
@@ -81,19 +90,7 @@ export const DropdownConfig = {
           label: 'Search Placeholder',
           type: 'text' as ControlType
         },
-        {
-          key: 'position',
-          label: 'Menu Position',
-          type: 'select' as ControlType,
-          options: [
-            { value: 'bottom-start', label: 'Bottom Start' },
-            { value: 'bottom-end', label: 'Bottom End' },
-            { value: 'top-start', label: 'Top Start' },
-            { value: 'top-end', label: 'Top End' },
-            { value: 'left', label: 'Left' },
-            { value: 'right', label: 'Right' }
-          ]
-        },
+        
       ]
     },
   ],
