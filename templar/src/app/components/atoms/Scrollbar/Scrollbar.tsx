@@ -162,6 +162,91 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
   const [dragStart, setDragStart] = useState({ x: 0, y: 0, scrollTop: 0, scrollLeft: 0 });
   const [isScrolling, setIsScrolling] = useState(false);
   const [scrollTimeout, setScrollTimeout] = useState<NodeJS.Timeout | null>(null);
+
+  // Drag handling functions
+  const handleThumbMouseDown = useCallback((e: React.MouseEvent, orientation: 'vertical' | 'horizontal') => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!containerRef.current) return;
+
+    setIsDragging(true);
+    setDragStart({
+      x: e.clientX,
+      y: e.clientY,
+      scrollTop: containerRef.current.scrollTop,
+      scrollLeft: containerRef.current.scrollLeft,
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!isDragging) return;
+
+    let animationFrameId: number;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!containerRef.current) return;
+
+      // Use requestAnimationFrame for smooth updates
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = requestAnimationFrame(() => {
+        if (!containerRef.current) return;
+
+        const deltaX = e.clientX - dragStart.x;
+        const deltaY = e.clientY - dragStart.y;
+
+        if (orientation === 'vertical' || orientation === 'both') {
+          const containerHeight = scrollState.clientHeight;
+          const contentHeight = scrollState.scrollHeight;
+          const scrollableHeight = contentHeight - containerHeight;
+
+          if (scrollableHeight > 0) {
+            // Calculate the thumb height and available track space
+            const thumbHeight = Math.max(20, (containerHeight / contentHeight) * containerHeight);
+            const trackSpace = containerHeight - thumbHeight;
+
+            // Convert mouse movement to scroll position
+            const scrollRatio = deltaY / trackSpace;
+            const newScrollTop = Math.max(0, Math.min(scrollableHeight, dragStart.scrollTop + (scrollRatio * scrollableHeight)));
+
+            containerRef.current.scrollTop = newScrollTop;
+          }
+        }
+
+        if (orientation === 'horizontal' || orientation === 'both') {
+          const containerWidth = scrollState.clientWidth;
+          const contentWidth = scrollState.scrollWidth;
+          const scrollableWidth = contentWidth - containerWidth;
+
+          if (scrollableWidth > 0) {
+            // Calculate the thumb width and available track space
+            const thumbWidth = Math.max(20, (containerWidth / contentWidth) * containerWidth);
+            const trackSpace = containerWidth - thumbWidth;
+
+            // Convert mouse movement to scroll position
+            const scrollRatio = deltaX / trackSpace;
+            const newScrollLeft = Math.max(0, Math.min(scrollableWidth, dragStart.scrollLeft + (scrollRatio * scrollableWidth)));
+
+            containerRef.current.scrollLeft = newScrollLeft;
+          }
+        }
+      });
+    };
+
+    const handleMouseUp = () => {
+      setIsDragging(false);
+      cancelAnimationFrame(animationFrameId);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove, { passive: false });
+    document.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [isDragging, dragStart, orientation, scrollState]);
   
   // Update scroll state
   const updateScrollState = useCallback(() => {
@@ -276,20 +361,36 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
     animationsEnabled
   );
   
-  const contentStyles = getScrollableContentStyles(
-    orientation,
-    animationsEnabled,
-    hideNative,
-    smoothScrolling,
-    momentum,
-    Boolean(disabled)
-  );
+  // Use native scrollbars with direction CSS for start alignment
+  // Force native scrollbar to show when using start alignment for CSS direction approach
+  const shouldHideNative = alignment === 'start' ? false : hideNative;
+
+  // Apply direction CSS for left-side scrollbar positioning
+  const containerDirectionStyles = alignment === 'start' ? {
+    direction: 'rtl' as const,
+  } : {};
+
+  const contentDirectionStyles = alignment === 'start' ? {
+    direction: 'ltr' as const,
+  } : {};
+
+  const contentStyles = {
+    ...getScrollableContentStyles(
+      orientation,
+      animationsEnabled,
+      shouldHideNative,
+      smoothScrolling,
+      momentum,
+      Boolean(disabled)
+    ),
+    ...containerDirectionStyles
+  };
   
   const needsVerticalScrollbar = isScrollingNeeded(scrollState.scrollHeight, scrollState.clientHeight);
   const needsHorizontalScrollbar = isScrollingNeeded(scrollState.scrollWidth, scrollState.clientWidth);
   
-  const verticalThumbSize = calculateThumbSize(scrollState.clientHeight, scrollState.scrollHeight);
-  const horizontalThumbSize = calculateThumbSize(scrollState.clientWidth, scrollState.scrollWidth);
+  const verticalThumbSize = calculateThumbSize(scrollState.scrollHeight, scrollState.clientHeight);
+  const horizontalThumbSize = calculateThumbSize(scrollState.scrollWidth, scrollState.clientWidth);
   
   // Calculate base thumb positions
   const baseVerticalThumbPosition = calculateThumbPosition(
@@ -326,7 +427,8 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
     alignment,
     Boolean(disabled),
     animationsEnabled,
-    cssVars
+    cssVars,
+    showIndicators
   );
   
   const horizontalTrackStyles = getCustomScrollbarTrackStyles(
@@ -339,7 +441,8 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
     alignment,
     Boolean(disabled),
     animationsEnabled,
-    cssVars
+    cssVars,
+    showIndicators
   );
   
   // Custom scrollbar thumb styles
@@ -396,19 +499,20 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
   );
   
   useEffect(() => {
+    // Apply webkit styles when using native scrollbar (both 'end' and 'start' alignments)
     if (supportsWebKitScrollbar()) {
-      // Always apply custom webkit scrollbar styles
+      // Apply custom webkit scrollbar styles for both alignments
       const css = createWebkitScrollbarCSS(uniqueId, webkitStyles);
-      
+
       if (css) {
         injectCSS(uniqueId, css);
       }
     }
-    
+
     return () => {
       cleanupCSS(uniqueId);
     };
-  }, [uniqueId, color, customColor, variant, size, shape, orientation, visibility, alignment, disabled, animationsEnabled]);
+  }, [uniqueId, color, customColor, variant, size, shape, orientation, visibility, alignment, disabled, animationsEnabled, cssVars]);
   
   // Accessibility attributes
   const ariaAttributes = getScrollbarAriaAttributes(
@@ -432,13 +536,13 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
         onScroll={handleScroll}
         tabIndex={disabled ? -1 : 0}
       >
-        <div ref={contentRef}>
+        <div ref={contentRef} style={contentDirectionStyles}>
           {children}
         </div>
       </div>
       
-      {/* Custom vertical scrollbar - only show if webkit is not supported */}
-      {!supportsWebKitScrollbar() && hideNative && needsVerticalScrollbar && (orientation === 'vertical' || orientation === 'both') && variant !== 'invisible' && (
+      {/* Custom vertical scrollbar - show if webkit is not supported OR if native scrollbars are hidden AND not using direction CSS */}
+      {(!supportsWebKitScrollbar() || (shouldHideNative && alignment === 'end')) && needsVerticalScrollbar && (orientation === 'vertical' || orientation === 'both') && variant !== 'invisible' && (
         <div
           ref={verticalTrackRef}
           style={verticalTrackStyles}
@@ -462,8 +566,8 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
         </div>
       )}
       
-      {/* Custom horizontal scrollbar - only show if webkit is not supported */}
-      {!supportsWebKitScrollbar() && hideNative && needsHorizontalScrollbar && (orientation === 'horizontal' || orientation === 'both') && variant !== 'invisible' && (
+      {/* Custom horizontal scrollbar - show if webkit is not supported OR if alignment is not 'end' (since webkit can't be repositioned) */}
+      {(!supportsWebKitScrollbar() || (shouldHideNative && alignment === 'end')) && needsHorizontalScrollbar && (orientation === 'horizontal' || orientation === 'both') && variant !== 'invisible' && (
         <div
           ref={horizontalTrackRef}
           style={horizontalTrackStyles}

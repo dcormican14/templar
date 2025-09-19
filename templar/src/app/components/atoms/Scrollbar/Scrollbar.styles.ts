@@ -6,66 +6,76 @@ export const getColorVariables = (color: ScrollbarColor, customColor: string | u
   if (color === 'custom' && customColor) {
     return {
       main: customColor,
-      foreground: '#ffffff',
-      background: customColor + '10',
+      foreground: '#ffffff', // Default to white text for custom colors
+      background: customColor + '10', // Add opacity for background
       border: customColor,
-      hover: customColor + '20',
-    };
-  }
-
-  // Fallback values if cssVars is undefined
-  if (!cssVars) {
-    return {
-      main: '#3b82f6',
-      background: '#e5e7eb',
-      foreground: '#ffffff',
-      hover: '#2563eb',
-      border: '#d1d5db',
+      hover: customColor + '20', // Add opacity for hover
+      accent: customColor,
+      shadow: customColor + '40',
+      disabled: customColor + '40',
     };
   }
 
   const colorMap: Record<string, any> = {
     primary: {
-      main: cssVars.primary || '#3b82f6',
-      background: cssVars.primaryBackground || '#e5e7eb',
-      foreground: cssVars.primaryForeground || '#ffffff',
-      hover: cssVars.primaryHover || '#2563eb',
-      border: cssVars.primaryBorder || '#d1d5db',
+      main: cssVars.primary,
+      background: cssVars.primaryBackground,
+      foreground: cssVars.primaryForeground,
+      hover: cssVars.primaryHover,
+      accent: cssVars.primaryAccent,
+      shadow: cssVars.primaryShadow,
+      disabled: cssVars.primaryDisabled,
+      border: cssVars.primaryBorder,
     },
     secondary: {
-      main: cssVars.secondary || '#6b7280',
-      background: cssVars.secondaryBackground || '#f3f4f6',
-      foreground: cssVars.secondaryForeground || '#ffffff',
-      hover: cssVars.secondaryHover || '#4b5563',
-      border: cssVars.secondaryBorder || '#e5e7eb',
+      main: cssVars.secondary,
+      background: cssVars.secondaryBackground,
+      foreground: cssVars.secondaryForeground,
+      hover: cssVars.secondaryHover,
+      accent: cssVars.secondaryAccent,
+      shadow: cssVars.secondaryShadow,
+      disabled: cssVars.secondaryDisabled,
+      border: cssVars.secondaryBorder,
     },
     success: {
-      main: cssVars.success || '#10b981',
-      background: cssVars.successBackground || '#d1fae5',
-      foreground: cssVars.successForeground || '#ffffff',
-      hover: cssVars.successHover || '#059669',
-      border: cssVars.successBorder || '#86efac',
+      main: cssVars.success,
+      background: cssVars.successBackground,
+      foreground: cssVars.successForeground,
+      hover: cssVars.successHover,
+      accent: cssVars.successAccent,
+      shadow: cssVars.successShadow,
+      disabled: cssVars.successDisabled,
+      border: cssVars.successBorder,
     },
     warning: {
-      main: cssVars.warning || '#f59e0b',
-      background: cssVars.warningBackground || '#fef3c7',
-      foreground: cssVars.warningForeground || '#ffffff',
-      hover: cssVars.warningHover || '#d97706',
-      border: cssVars.warningBorder || '#fde68a',
+      main: cssVars.warning,
+      background: cssVars.warningBackground,
+      foreground: cssVars.warningForeground,
+      hover: cssVars.warningHover,
+      accent: cssVars.warningAccent,
+      shadow: cssVars.warningShadow,
+      disabled: cssVars.warningDisabled,
+      border: cssVars.warningBorder,
     },
     destructive: {
-      main: cssVars.destructive || '#ef4444',
-      background: cssVars.destructiveBackground || '#fee2e2',
-      foreground: cssVars.destructiveForeground || '#ffffff',
-      hover: cssVars.destructiveHover || '#dc2626',
-      border: cssVars.destructiveBorder || '#fca5a5',
+      main: cssVars.destructive,
+      background: cssVars.destructiveBackground,
+      foreground: cssVars.destructiveForeground,
+      hover: cssVars.destructiveHover,
+      accent: cssVars.destructiveAccent,
+      shadow: cssVars.destructiveShadow,
+      disabled: cssVars.destructiveDisabled,
+      border: cssVars.destructiveBorder,
     },
     info: {
-      main: cssVars.info || '#3b82f6',
-      background: cssVars.infoBackground || '#dbeafe',
-      foreground: cssVars.infoForeground || '#ffffff',
-      hover: cssVars.infoHover || '#2563eb',
-      border: cssVars.infoBorder || '#93c5fd',
+      main: cssVars.info,
+      background: cssVars.infoBackground,
+      foreground: cssVars.infoForeground,
+      hover: cssVars.infoHover,
+      accent: cssVars.infoAccent,
+      shadow: cssVars.infoShadow,
+      disabled: cssVars.infoDisabled,
+      border: cssVars.infoBorder,
     },
   };
 
@@ -268,7 +278,7 @@ export const getWebKitScrollbarStyles = (
         return {
           thumb: `${colors.main}80`,
           thumbHover: colors.main,
-          track: `${cssVars?.background || '#ffffff'}20`,
+          track: cssVars?.background + '20',
           trackBorder: 'none',
           border: 'none',
           showButtons: false,
@@ -304,8 +314,8 @@ export const getWebKitScrollbarStyles = (
   })();
 
   if (disabled) {
-    variantColors.thumb = (cssVars?.mutedForeground || '#6b7280') + '40';
-    variantColors.thumbHover = (cssVars?.mutedForeground || '#6b7280') + '40';
+    variantColors.thumb = cssVars?.mutedForeground + '40';
+    variantColors.thumbHover = cssVars?.mutedForeground + '40';
   }
 
   // Standardize scrollbar width for all variants (wider track)
@@ -343,14 +353,14 @@ export const getWebKitScrollbarStyles = (
       cursor: disabled ? 'not-allowed' : (variant === 'invisible' ? 'default' : 'pointer'),
       backdropFilter: variantColors.backdropFilter || 'none',
       WebkitBackdropFilter: variantColors.webkitBackdropFilter || 'none',
-      boxShadow: variant === 'glassmorphic' ? `0 2px 4px ${cssVars?.shadow || '#000000'}20` : 'none',
+      boxShadow: variant === 'glassmorphic' ? `0 2px 4px ${cssVars?.shadow}20` : 'none',
     },
 
     // Thumb hover state
     '&::-webkit-scrollbar-thumb:hover': {
       backgroundColor: disabled ? variantColors.thumb : (variant === 'invisible' ? 'transparent' : variantColors.thumbHover),
       opacity: variant === 'invisible' ? 0 : 1,
-      boxShadow: variant === 'glassmorphic' ? `0 4px 8px ${cssVars?.shadow || '#000000'}30` : 'none',
+      boxShadow: variant === 'glassmorphic' ? `0 4px 8px ${cssVars?.shadow}30` : 'none',
     },
 
     // Corner where scrollbars meet
@@ -413,7 +423,7 @@ export const getFirefoxScrollbarStyles = (
       case 'glassmorphic':
         return {
           thumb: `${colors.main}99`,
-          track: `${cssVars?.background || '#ffffff'}33`,
+          track: cssVars?.background + '33',
         };
       case 'invisible':
         return {
@@ -431,7 +441,7 @@ export const getFirefoxScrollbarStyles = (
   })();
 
   if (disabled) {
-    variantColors.thumb = (cssVars?.mutedForeground || '#6b7280') + '40';
+    variantColors.thumb = cssVars?.mutedForeground + '40';
   }
 
   return {
@@ -451,7 +461,8 @@ export const getCustomScrollbarTrackStyles = (
   alignment: string,
   disabled: boolean,
   animationsEnabled: boolean,
-  cssVars: any
+  cssVars: any,
+  showIndicators?: boolean
 ): React.CSSProperties => {
   const colors = getColorVariables(color, customColor, cssVars);
   const sizeConfig = getSizeConfig(size);
@@ -488,7 +499,7 @@ export const getCustomScrollbarTrackStyles = (
         };
       case 'glassmorphic':
         return {
-          backgroundColor: `${cssVars?.background || '#ffffff'}20`,
+          backgroundColor: cssVars?.background + '20',
           backdropFilter: 'blur(10px)',
           WebkitBackdropFilter: 'blur(10px)',
           border: 'none',
@@ -517,30 +528,33 @@ export const getCustomScrollbarTrackStyles = (
   // Standardize track width for all variants (wider track)
   const trackThickness = sizeConfig.thickness + Math.max(4, Math.floor(sizeConfig.thickness * 0.5));
 
+  // When indicators are shown, reserve space for them
+  const indicatorSpace = showIndicators ? sizeConfig.thickness + 4 : 2;
+
   if (isVertical) {
-    const positionProps = alignment === 'start' 
-      ? { left: '2px' } 
+    const positionProps = alignment === 'start'
+      ? { left: '2px' }
       : { right: '2px' };
     return {
       ...baseStyles,
       ...variantStyles,
       ...positionProps,
-      top: '2px',
-      bottom: '2px',
+      top: `${indicatorSpace}px`,
+      bottom: `${indicatorSpace}px`,
       width: `${trackThickness}px`,
     };
   }
 
   if (isHorizontal) {
-    const positionProps = alignment === 'start' 
-      ? { top: '2px' } 
+    const positionProps = alignment === 'start'
+      ? { top: '2px' }
       : { bottom: '2px' };
     return {
       ...baseStyles,
       ...variantStyles,
       ...positionProps,
-      left: '2px',
-      right: '2px',
+      left: `${indicatorSpace}px`,
+      right: `${indicatorSpace}px`,
       height: `${trackThickness}px`,
     };
   }
@@ -604,7 +618,7 @@ export const getCustomScrollbarThumbStyles = (
           backdropFilter: 'blur(10px)',
           WebkitBackdropFilter: 'blur(10px)',
           border: 'none',
-          boxShadow: isDragging ? `0 0 16px ${colors.main}50` : `0 2px 8px ${cssVars?.shadow || '#000000'}15`,
+          boxShadow: isDragging ? `0 0 16px ${colors.main}50` : `0 2px 8px ${cssVars?.shadow}15`,
         };
       case 'invisible':
         // Invisible variant - completely invisible thumb
@@ -623,7 +637,7 @@ export const getCustomScrollbarThumbStyles = (
 
   if (disabled) {
     baseStyles.opacity = 0.4;
-    variantStyles.backgroundColor = cssVars?.mutedForeground || '#6b7280';
+    variantStyles.backgroundColor = cssVars?.mutedForeground;
   }
 
   // Calculate space needed for indicators (indicator size + padding)
@@ -761,7 +775,7 @@ export const getScrollIndicatorStyles = (
     case 'top':
       return {
         ...baseStyles,
-        top: '2px',
+        top: `${centerOffset}px`,
         [alignment === 'start' ? 'left' : 'right']: `${centerOffset}px`,
         width: `${indicatorSize}px`,
         height: `${indicatorSize}px`,
@@ -769,7 +783,7 @@ export const getScrollIndicatorStyles = (
     case 'bottom':
       return {
         ...baseStyles,
-        bottom: '2px',
+        bottom: `${centerOffset}px`,
         [alignment === 'start' ? 'left' : 'right']: `${centerOffset}px`,
         width: `${indicatorSize}px`,
         height: `${indicatorSize}px`,
@@ -777,7 +791,7 @@ export const getScrollIndicatorStyles = (
     case 'left':
       return {
         ...baseStyles,
-        left: '2px',
+        left: `${centerOffset}px`,
         [alignment === 'start' ? 'top' : 'bottom']: `${centerOffset}px`,
         width: `${indicatorSize}px`,
         height: `${indicatorSize}px`,
@@ -785,7 +799,7 @@ export const getScrollIndicatorStyles = (
     case 'right':
       return {
         ...baseStyles,
-        right: '2px',
+        right: `${centerOffset}px`,
         [alignment === 'start' ? 'top' : 'bottom']: `${centerOffset}px`,
         width: `${indicatorSize}px`,
         height: `${indicatorSize}px`,

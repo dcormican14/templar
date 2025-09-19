@@ -73,17 +73,6 @@ export const ScrollbarConfig = {
           ]
         },
         {
-          key: 'visibility',
-          label: 'Visibility',
-          type: 'select' as ControlType,
-          options: [
-            { value: 'always', label: 'Always' },
-            { value: 'hover', label: 'On Hover' },
-            { value: 'auto', label: 'Auto' },
-            { value: 'hidden', label: 'Hidden' }
-          ]
-        },
-        {
           key: 'hideNative',
           label: 'Hide Native Scrollbar',
           type: 'checkbox' as ControlType
@@ -120,7 +109,7 @@ export const ScrollbarConfig = {
         {
           key: 'height',
           label: 'Height',
-          type: 'number' as ControlType
+          type: 'text' as ControlType
         }
       ]
     },
@@ -142,7 +131,7 @@ export const ScrollbarConfig = {
     shape: 'round',
     orientation: 'vertical',
     alignment: 'end',
-    visibility: 'hover',
+    visibility: 'always',
     hideNative: false,
     smoothScrolling: true,
     momentum: true,
@@ -150,8 +139,8 @@ export const ScrollbarConfig = {
     disabled: false,
     animate: true,
     animationMode: 'default',
-    width: '100%',
-    height: 400,
+    width: '400px',
+    height: '400px',
     autoHideDelay: 1000
   }
 };
