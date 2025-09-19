@@ -110,8 +110,8 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
     visibility = 'always',
     alignment = 'end',
     smoothScrolling = true,
-    hideNative = true,
     momentum = true,
+    hideNative, // Remove this prop to prevent it from being passed to DOM
     showIndicators = false,
     onScroll,
     onScrollStart,
@@ -138,7 +138,10 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
   
   // Validate props in development
   validateScrollbarProps({ height, width, orientation });
-  
+
+  // Special handling for both orientation with start alignment
+  const isStartBothCase = alignment === 'start' && orientation === 'both';
+
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -354,15 +357,13 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
     undefined, // maxHeight
     undefined, // padding
     smoothScrolling,
-    hideNative,
+    false, // Never hide native scrollbars
     momentum,
     Boolean(disabled),
     animationsEnabled
   );
   
   // Use native scrollbars with direction CSS for start alignment
-  // Force native scrollbar to show when using start alignment for CSS direction approach
-  const shouldHideNative = alignment === 'start' ? false : hideNative;
 
   // Apply CSS transforms for start alignment positioning
   const containerDirectionStyles = alignment === 'start' ? (() => {
@@ -373,11 +374,9 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
       // Use rotateX(180deg) for horizontal scrollbar on top
       return { transform: 'rotateX(180deg)' };
     } else if (orientation === 'both') {
-      // For both orientations, combine both approaches
-      return {
-        direction: 'rtl' as const,
-        transform: 'rotateX(180deg)'
-      };
+      // For both orientations, only apply direction: rtl for vertical scrollbar
+      // Horizontal scrollbar will be handled by custom scrollbar positioned at top
+      return { direction: 'rtl' as const };
     }
     return {};
   })() : {};
@@ -390,11 +389,9 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
       // Flip content back for horizontal
       return { transform: 'rotateX(180deg)' };
     } else if (orientation === 'both') {
-      // For both orientations, apply both resets
-      return {
-        direction: 'ltr' as const,
-        transform: 'rotateX(180deg)'
-      };
+      // For both orientations, only reset text direction
+      // No transform needed since we'll use custom horizontal scrollbar
+      return { direction: 'ltr' as const };
     }
     return {};
   })() : {};
@@ -403,7 +400,7 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
     ...getScrollableContentStyles(
       orientation,
       animationsEnabled,
-      shouldHideNative,
+      false, // Never hide native scrollbars
       smoothScrolling,
       momentum,
       Boolean(disabled)
@@ -455,7 +452,7 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
     cssVars,
     showIndicators
   );
-  
+
   const horizontalTrackStyles = getCustomScrollbarTrackStyles(
     'horizontal',
     color,
@@ -527,7 +524,9 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
     // Apply webkit styles when using native scrollbar (both 'end' and 'start' alignments)
     if (supportsWebKitScrollbar()) {
       // Apply custom webkit scrollbar styles for both alignments
-      const css = createWebkitScrollbarCSS(uniqueId, webkitStyles);
+      let css = createWebkitScrollbarCSS(uniqueId, webkitStyles);
+
+      // For both + start case, no special horizontal scrollbar handling needed
 
       if (css) {
         injectCSS(uniqueId, css);
@@ -537,7 +536,7 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
     return () => {
       cleanupCSS(uniqueId);
     };
-  }, [uniqueId, color, customColor, variant, size, shape, orientation, visibility, alignment, disabled, animationsEnabled, cssVars]);
+  }, [uniqueId, color, customColor, variant, size, shape, orientation, visibility, alignment, disabled, animationsEnabled, cssVars, isStartBothCase]);
   
   // Accessibility attributes
   const ariaAttributes = getScrollbarAriaAttributes(
@@ -555,6 +554,7 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
       {...ariaAttributes}
       {...rest}
     >
+      {/* Use standard structure for all cases */}
       <div
         ref={containerRef}
         style={contentStyles}
@@ -566,8 +566,8 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
         </div>
       </div>
       
-      {/* Custom vertical scrollbar - show if webkit is not supported OR if native scrollbars are hidden AND not using direction CSS */}
-      {(!supportsWebKitScrollbar() || (shouldHideNative && alignment === 'end')) && needsVerticalScrollbar && (orientation === 'vertical' || orientation === 'both') && variant !== 'invisible' && (
+      {/* Custom vertical scrollbar - only show if webkit is not supported */}
+      {!supportsWebKitScrollbar() && needsVerticalScrollbar && (orientation === 'vertical' || orientation === 'both') && variant !== 'invisible' && (
         <div
           ref={verticalTrackRef}
           style={verticalTrackStyles}
@@ -587,12 +587,13 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
           <div
             ref={verticalThumbRef}
             style={verticalThumbStyles}
+            onMouseDown={(e) => handleThumbMouseDown(e, 'vertical')}
           />
         </div>
       )}
       
-      {/* Custom horizontal scrollbar - show if webkit is not supported OR if alignment is not 'end' (since webkit can't be repositioned) */}
-      {(!supportsWebKitScrollbar() || (shouldHideNative && alignment === 'end')) && needsHorizontalScrollbar && (orientation === 'horizontal' || orientation === 'both') && variant !== 'invisible' && (
+      {/* Custom horizontal scrollbar - only show if webkit is not supported */}
+      {!supportsWebKitScrollbar() && needsHorizontalScrollbar && (orientation === 'horizontal' || orientation === 'both') && variant !== 'invisible' && (
         <div
           ref={horizontalTrackRef}
           style={horizontalTrackStyles}
@@ -612,6 +613,7 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
           <div
             ref={horizontalThumbRef}
             style={horizontalThumbStyles}
+            onMouseDown={(e) => handleThumbMouseDown(e, 'horizontal')}
           />
         </div>
       )}

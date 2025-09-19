@@ -104,11 +104,6 @@ export const ScrollbarConfig = {
           ]
         },
         {
-          key: 'hideNative',
-          label: 'Hide Native Scrollbar',
-          type: 'checkbox' as ControlType
-        },
-        {
           key: 'smoothScrolling',
           label: 'Smooth Scrolling',
           type: 'checkbox' as ControlType
@@ -148,7 +143,6 @@ export const ScrollbarConfig = {
     shape: 'round',
     orientation: 'vertical',
     alignment: 'end',
-    hideNative: false,
     smoothScrolling: true,
     momentum: true,
     showIndicators: false,

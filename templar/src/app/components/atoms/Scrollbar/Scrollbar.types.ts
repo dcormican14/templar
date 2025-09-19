@@ -43,12 +43,6 @@ export interface ScrollbarSpecificProps extends Omit<ComponentProps<'div'>, 'siz
   smoothScrolling?: boolean;
   
   /**
-   * Whether to hide the native scrollbars
-   * @default true
-   */
-  hideNative?: boolean;
-  
-  /**
    * Whether to enable scroll momentum on touch devices
    * @default true
    */
