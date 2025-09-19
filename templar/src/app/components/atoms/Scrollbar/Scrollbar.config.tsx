@@ -33,12 +33,24 @@ export const ScrollbarConfig = {
     </Scrollbar>
   ),
   leftControls: [
-    universalColorControls,
     {
-      title: 'Variant',
-      controls: [
-        {
-          key: 'variant',
+    title: 'Color & Variant',
+    controls: [
+      {
+        key: 'color',
+        label: 'Color',
+        type: 'select' as ControlType,
+        options: [
+          { value: 'primary', label: 'Primary' },
+          { value: 'secondary', label: 'Secondary' },
+          { value: 'success', label: 'Success' },
+          { value: 'warning', label: 'Warning' },
+          { value: 'destructive', label: 'Destructive' },
+          { value: 'info', label: 'Info' },
+        ]
+      },
+      {
+        key: 'variant',
           label: 'Variant',
           type: 'select' as ControlType,
           options: [
@@ -48,10 +60,27 @@ export const ScrollbarConfig = {
             { value: 'glassmorphic', label: 'Glassmorphic' },
             { value: 'invisible', label: 'Invisible' },
           ]
-        }
-      ]
+      },
+      {
+        key: 'customColor',
+        label: 'Custom Color',
+        type: 'color' as ControlType
+      }
+    ]
     },
     universalSizeShapeControls,
+    {
+      title: 'State',
+      controls: [
+        {
+          key: 'disabled',
+          label: 'Disabled',
+          type: 'checkbox' as ControlType
+        },
+      ]
+    },
+  ],
+  rightControls: [
     {
       title: 'Scrollbar Behavior',
       controls: [
@@ -96,9 +125,6 @@ export const ScrollbarConfig = {
         }
       ]
     },
-  ],
-  rightControls: [
-    universalStateControls,
     {
       title: 'Dimensions',
       controls: [
@@ -114,16 +140,6 @@ export const ScrollbarConfig = {
         }
       ]
     },
-    {
-      title: 'Auto Hide',
-      controls: [
-        {
-          key: 'autoHideDelay',
-          label: 'Auto Hide Delay (ms)',
-          type: 'number' as ControlType
-        }
-      ]
-    }
   ],
   initialProps: {
     color: 'primary',
@@ -132,7 +148,6 @@ export const ScrollbarConfig = {
     shape: 'round',
     orientation: 'vertical',
     alignment: 'end',
-    visibility: 'always',
     hideNative: false,
     smoothScrolling: true,
     momentum: true,
@@ -141,7 +156,6 @@ export const ScrollbarConfig = {
     animate: true,
     animationMode: 'default',
     width: '400px',
-    height: '400px',
-    autoHideDelay: 1000
+    height: '400px'
   }
 };

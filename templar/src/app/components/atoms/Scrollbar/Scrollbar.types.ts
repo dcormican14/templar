@@ -54,11 +54,6 @@ export interface ScrollbarSpecificProps extends Omit<ComponentProps<'div'>, 'siz
    */
   momentum?: boolean;
   
-  /**
-   * Auto-hide delay in milliseconds
-   * @default 1000
-   */
-  autoHideDelay?: number;
   
   /**
    * Whether to enable scroll indicators

@@ -107,12 +107,11 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
   // Destructure component-specific props
   const {
     orientation = 'vertical',
-    visibility = 'hover',
+    visibility = 'always',
     alignment = 'end',
     smoothScrolling = true,
     hideNative = true,
     momentum = true,
-    autoHideDelay = 1000,
     showIndicators = false,
     onScroll,
     onScrollStart,
