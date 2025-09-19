@@ -365,14 +365,40 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
   // Force native scrollbar to show when using start alignment for CSS direction approach
   const shouldHideNative = alignment === 'start' ? false : hideNative;
 
-  // Apply direction CSS for left-side scrollbar positioning
-  const containerDirectionStyles = alignment === 'start' ? {
-    direction: 'rtl' as const,
-  } : {};
+  // Apply CSS transforms for start alignment positioning
+  const containerDirectionStyles = alignment === 'start' ? (() => {
+    if (orientation === 'vertical') {
+      // Use direction: rtl for vertical scrollbar on left
+      return { direction: 'rtl' as const };
+    } else if (orientation === 'horizontal') {
+      // Use rotateX(180deg) for horizontal scrollbar on top
+      return { transform: 'rotateX(180deg)' };
+    } else if (orientation === 'both') {
+      // For both orientations, combine both approaches
+      return {
+        direction: 'rtl' as const,
+        transform: 'rotateX(180deg)'
+      };
+    }
+    return {};
+  })() : {};
 
-  const contentDirectionStyles = alignment === 'start' ? {
-    direction: 'ltr' as const,
-  } : {};
+  const contentDirectionStyles = alignment === 'start' ? (() => {
+    if (orientation === 'vertical') {
+      // Reset text direction for vertical
+      return { direction: 'ltr' as const };
+    } else if (orientation === 'horizontal') {
+      // Flip content back for horizontal
+      return { transform: 'rotateX(180deg)' };
+    } else if (orientation === 'both') {
+      // For both orientations, apply both resets
+      return {
+        direction: 'ltr' as const,
+        transform: 'rotateX(180deg)'
+      };
+    }
+    return {};
+  })() : {};
 
   const contentStyles = {
     ...getScrollableContentStyles(

@@ -15,7 +15,9 @@ const DemoContent = () => (
         padding: '12px', 
         marginBottom: '8px',
         backgroundColor: 'var(--card-background)',
-        border: '1px solid var(--border)'
+        border: '1px solid var(--border)',
+        textWrap:'wrap',
+        width: '500px',
       }}>
         <h4>Section {i + 1}</h4>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
@@ -94,7 +96,6 @@ export const ScrollbarConfig = {
         }
       ]
     },
-    universalAnimationControls,
   ],
   rightControls: [
     universalStateControls,
