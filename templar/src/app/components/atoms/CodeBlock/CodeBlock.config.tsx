@@ -54,6 +54,11 @@ export const CodeBlockConfig = {
           type: 'checkbox' as ControlType
         },
         {
+          key: 'inline',
+          label: 'Inline',
+          type: 'checkbox' as ControlType
+        },
+        {
           key: 'children',
           label: 'Code Content',
           type: 'textarea' as ControlType
@@ -70,6 +75,7 @@ export const CodeBlockConfig = {
     copyable: true,
     lineNumbers: true,
     syntaxHighlighting: true,
+    inline: false,
     children: sampleCode
   }
 };

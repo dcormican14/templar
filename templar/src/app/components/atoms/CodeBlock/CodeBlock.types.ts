@@ -42,12 +42,18 @@ export interface CodeBlockSpecificProps extends Omit<React.HTMLAttributes<HTMLEl
    * @default true
    */
   syntaxHighlighting?: boolean;
-  
+
+  /**
+   * Whether to render as inline code instead of block code
+   * @default false
+   */
+  inline?: boolean;
+
   /**
    * Callback when copy button is clicked
    */
   onCopy?: (content: string) => void;
-  
+
   /**
    * Code content to display
    */

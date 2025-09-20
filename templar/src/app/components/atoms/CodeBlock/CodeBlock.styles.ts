@@ -112,15 +112,23 @@ export const getVariantStyles = (
       };
     case 'ghost':
       return {
-        backgroundColor: colors.background,
-        color: colors.main,
+        backgroundColor: 'transparent',
+        color: cssVars.foreground,
         borderColor: 'transparent',
+        ...baseStyles,
+      };
+    case 'glassmorphic':
+      return {
+        backgroundColor: colors.background || cssVars.backgroundAccent,
+        color: cssVars.foreground,
+        borderColor: colors.border || colors.main,
+        backdropFilter: 'blur(10px)',
         ...baseStyles,
       };
     case 'outline':
     default:
       return {
-        backgroundColor: colors.background || cssVars.backgroundAccent,
+        backgroundColor: 'transparent',
         color: cssVars.foreground,
         borderColor: colors.border || colors.main,
         ...baseStyles,
@@ -216,6 +224,12 @@ export const getInlineCodeStyles = (
           borderColor: colors.main,
         };
       case 'ghost':
+        return {
+          backgroundColor: 'transparent',
+          color: colors.main,
+          borderColor: 'transparent',
+        };
+      case 'glassmorphic':
         return {
           backgroundColor: colors.background,
           color: colors.main,
@@ -330,7 +344,7 @@ export const getLineNumberStyles = (
     borderLeft: `1px solid ${colors.border || colors.main}`,
     borderRadius: getBorderRadius(),
     padding: (typeof sizeConfig.padding === 'string' ? sizeConfig.padding.split(' ')[0] : '12px') + ' 8px',
-    paddingTop: '28px', // Account for language label
+    paddingTop: '32px', // Account for language label
     fontSize: sizeConfig.fontSize,
     lineHeight: sizeConfig.lineHeight,
     color: colors.main, // Same color as title/language label

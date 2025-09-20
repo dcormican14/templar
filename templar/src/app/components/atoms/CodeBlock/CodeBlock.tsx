@@ -4,13 +4,14 @@ import React, { forwardRef, useMemo, useState, useCallback } from 'react';
 import { useCSSVariables, useSettings, useToast } from '../../../providers';
 import { extractContainerProps, UNIVERSAL_DEFAULTS } from '../types';
 import type { CodeBlockProps } from './CodeBlock.types';
-import { 
-  getVariantStyles, 
-  getSizeStyles, 
-  createBaseStyles, 
+import {
+  getVariantStyles,
+  getSizeStyles,
+  createBaseStyles,
   getCopyButtonStyles,
   getLineNumberStyles,
-  getColorVariables
+  getColorVariables,
+  getInlineCodeStyles
 } from './CodeBlock.styles';
 import { 
   extractTextContent, 
@@ -59,6 +60,7 @@ export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>((allProps, ref)
     lineNumbers = false,
     highlight,
     syntaxHighlighting = true,
+    inline = false,
     onCopy,
     showLineNumbers, // Legacy prop that should not be passed to DOM
     code, // Legacy prop that should not be passed to DOM
@@ -73,7 +75,7 @@ export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>((allProps, ref)
     const [copied, setCopied] = useState(false);
 
     // Computed values
-    const isInline = variant === 'ghost'; // Using 'ghost' as inline variant
+    const isInline = inline;
     const animationsEnabled = (settings.appearance.animations ?? true) && animate;
     const textContent = extractTextContent(children);
     const syntaxTheme = useMemo(() => createSyntaxTheme(cssVars), [cssVars]);
@@ -107,7 +109,7 @@ export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>((allProps, ref)
       ...baseStyles,
       ...sizeStyles,
       ...variantStyles,
-      paddingTop: language ? '28px' : sizeStyles.padding,
+      paddingTop: language ? '32px' : sizeStyles.padding,
       paddingLeft: lineNumbers ? '52px' : '16px',
       width,
       height,
@@ -116,6 +118,7 @@ export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>((allProps, ref)
 
     const copyButtonStyles = useMemo(() => getCopyButtonStyles(size, cssVars, animationsEnabled), [size, cssVars, animationsEnabled]);
     const lineNumberStyles = useMemo(() => getLineNumberStyles(size, cssVars, color, customColor, shape), [size, cssVars, color, customColor, shape]);
+    const inlineStyles = useMemo(() => getInlineCodeStyles(color, customColor, variant, size, shape, cssVars), [color, customColor, variant, size, shape, cssVars]);
 
     // Content rendering
     const renderContent = () => {
@@ -170,7 +173,7 @@ export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>((allProps, ref)
         <code
           ref={ref as React.Ref<HTMLElement>}
           id={id}
-          style={variantStyles}
+          style={{...inlineStyles, ...style}}
           className={className}
           data-testid={dataTestId}
           {...restProps}
@@ -187,10 +190,12 @@ export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>((allProps, ref)
           <div
             style={{
               position: 'absolute',
-              top: '8px',
+              top: '12px',
               left: lineNumbers ? '52px' : '16px', // Move right when line numbers are present
               fontSize: '12px',
-              color: getColorVariables(color, customColor, cssVars).main,
+              color: variant === 'solid'
+                ? getColorVariables(color, customColor, cssVars).foreground
+                : getColorVariables(color, customColor, cssVars).main,
               fontFamily: 'inherit',
               zIndex: 2, // Higher z-index to appear above line numbers
               opacity: 0.8,
@@ -206,7 +211,7 @@ export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>((allProps, ref)
         {copyable && (
           <div style={{
             position: 'absolute',
-            top: '8px',
+            top: '4px',
             right: '8px',
             zIndex: 2
           }}>
@@ -218,7 +223,12 @@ export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>((allProps, ref)
               animate={animationsEnabled}
               style={{
                 minWidth: 'auto',
-                padding: '6px 8px'
+                padding: '6px 8px',
+                color: variant === 'solid'
+                  ? getColorVariables(color, customColor, cssVars).foreground
+                  : (variant === 'outline' || variant === 'glassmorphic' || variant === 'ghost')
+                    ? getColorVariables(color, customColor, cssVars).main
+                    : undefined
               }}
             >
               <Icon 
