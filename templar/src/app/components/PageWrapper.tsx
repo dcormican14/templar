@@ -10,10 +10,9 @@ import { useSafeCSSVariables } from '../hooks/useSafeCSSVariables';
 interface PageWrapperProps {
   children: React.ReactNode;
   activeTab: 'overview' | 'docs' | 'components' | 'contact';
-  useScrollbar?: boolean;
 }
 
-export function PageWrapper({ children, activeTab, useScrollbar = true }: PageWrapperProps) {
+export function PageWrapper({ children, activeTab }: PageWrapperProps) {
   const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const { theme, cycleTheme } = useSafeTheme();
@@ -99,7 +98,7 @@ export function PageWrapper({ children, activeTab, useScrollbar = true }: PageWr
   };
 
   return (
-    <div 
+    <div
       className="h-screen transition-all duration-300 overflow-hidden"
       style={{
         backgroundColor: cssVars.background,
@@ -131,25 +130,27 @@ export function PageWrapper({ children, activeTab, useScrollbar = true }: PageWr
       </div>
       
       {/* Main content */}
-      {useScrollbar ? (
-        <Scrollbar
-          height="calc(100vh - 48px)"
-          variant="ghost"
-          color="secondary"
-          size="md"
-          visibility="hover"
-          smoothScrolling={true}
-          style={{ marginTop: '48px' }}
-        >
+      <Scrollbar
+        height="calc(100vh - 48px)"
+        variant="ghost"
+        color="secondary"
+        size="md"
+        visibility="hover"
+        smoothScrolling={true}
+        style={{ marginTop: '48px' }}
+      >
+        {activeTab === 'overview' ? (
+          // Full width and height for overview page
+          <div style={{ width: '100vw', height: '100vh', margin: 0, padding: 0 }}>
+            {children}
+          </div>
+        ) : (
+          // Container for other pages
           <main className="container mx-auto px-6 py-8">
             {children}
           </main>
-        </Scrollbar>
-      ) : (
-        <div style={{ marginTop: '48px', height: 'calc(100vh - 48px)' }}>
-          {children}
-        </div>
-      )}
+        )}
+      </Scrollbar>
       
       {/* Floating Theme Switcher */}
       <div className="fixed bottom-6 right-6 z-50">

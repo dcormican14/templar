@@ -56,7 +56,6 @@ export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>((allProps, 
   // Destructure component-specific props
   const {
     accept,
-    multiple = false,
     maxSize,
     maxFiles,
     uploadText,
@@ -68,6 +67,9 @@ export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>((allProps, 
     showFileList = true,
     ...restProps
   } = componentProps;
+
+  // Determine multiple based on maxFiles
+  const multiple = maxFiles !== 1;
   
   const cssVars = useCSSVariables();
   const animationsEnabled = animate;
@@ -111,9 +113,23 @@ export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>((allProps, 
   // Drag and drop functionality
   const { isDragActive, dragProps } = useDragAndDrop(
     (newFiles) => {
-      const updatedFiles = multiple ? [...currentFiles, ...newFiles] : newFiles;
+      let updatedFiles = multiple ? [...currentFiles, ...newFiles] : newFiles;
+
+      // Enforce maxFiles limit
+      if (maxFiles && updatedFiles.length > maxFiles) {
+        updatedFiles = updatedFiles.slice(0, maxFiles);
+        const errorMessage = `Maximum ${maxFiles} file${maxFiles > 1 ? 's' : ''} allowed.`;
+        setInternalError(errorMessage);
+        onError?.(errorMessage);
+        // Clear input to allow re-selection
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+      } else {
+        setInternalError('');
+      }
+
       setCurrentFiles(updatedFiles);
-      setInternalError('');
     },
     (errorMessage) => {
       setInternalError(errorMessage);
@@ -143,9 +159,23 @@ export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>((allProps, 
       return;
     }
 
-    const updatedFiles = multiple ? [...currentFiles, ...validFiles] : validFiles;
+    let updatedFiles = multiple ? [...currentFiles, ...validFiles] : validFiles;
+
+    // Enforce maxFiles limit
+    if (maxFiles && updatedFiles.length > maxFiles) {
+      updatedFiles = updatedFiles.slice(0, maxFiles);
+      const errorMessage = `Maximum ${maxFiles} file${maxFiles > 1 ? 's' : ''} allowed.`;
+      setInternalError(errorMessage);
+      onError?.(errorMessage);
+      // Clear input to allow re-selection
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    } else {
+      setInternalError('');
+    }
+
     setCurrentFiles(updatedFiles);
-    setInternalError('');
   };
 
   // Handle clicking the drop zone
@@ -161,8 +191,8 @@ export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>((allProps, 
     setCurrentFiles(updatedFiles);
     setInternalError('');
 
-    // Clear the input value if no files remain
-    if (updatedFiles.length === 0 && fileInputRef.current) {
+    // Always clear the input value to allow re-selection of the same files
+    if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };

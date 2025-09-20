@@ -57,6 +57,8 @@ export { Slider } from './Slider';
 export type { SliderProps, SliderRef, SliderSize, SliderColor, SliderOrientation } from './Slider';
 export { TextArea } from './TextArea';
 export type { TextAreaProps, TextAreaRef, TextAreaSize, TextAreaColor, TextAreaVariant, TextAreaShape, TextAreaResize } from './TextArea';
+export { FallingLeaves } from './FallingLeaves';
+export type { FallingLeavesProps, Leaf } from './FallingLeaves';
 // Re-export all atomic components (with specific exports to avoid conflicts)
 export * from './Button';
 export * from './Badge';

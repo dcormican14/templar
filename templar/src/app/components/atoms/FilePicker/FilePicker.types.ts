@@ -20,20 +20,15 @@ export interface FilePickerSpecificProps {
    * @example "image/*", ".pdf,.doc,.docx", "image/png,image/jpeg"
    */
   accept?: string;
-  
-  /**
-   * Whether to allow multiple file selection
-   * @default false
-   */
-  multiple?: boolean;
-  
+
   /**
    * Maximum file size in bytes
    */
   maxSize?: number;
-  
+
   /**
-   * Maximum number of files (when multiple is true)
+   * Maximum number of files (automatically enables multiple when > 1)
+   * @default 1
    */
   maxFiles?: number;
   

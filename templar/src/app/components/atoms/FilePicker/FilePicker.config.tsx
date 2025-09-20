@@ -27,11 +27,6 @@ export const FilePickerConfig = {
           ]
         },
         {
-          key: 'multiple',
-          label: 'Multiple Files',
-          type: 'checkbox' as ControlType
-        },
-        {
           key: 'showFileList',
           label: 'Show File List',
           type: 'checkbox' as ControlType
@@ -52,11 +47,6 @@ export const FilePickerConfig = {
           type: 'text' as ControlType
         },
         {
-          key: 'maxSize',
-          label: 'Max Size (MB)',
-          type: 'number' as ControlType
-        },
-        {
           key: 'maxFiles',
           label: 'Max Files',
           type: 'number' as ControlType
@@ -70,12 +60,10 @@ export const FilePickerConfig = {
     size: 'md',
     shape: 'round',
     accept: '',
-    multiple: false,
     showFileList: true,
     uploadText: 'Drop files here or click to browse',
     subText: 'Supports any file type',
     helperText: '',
-    maxSize: undefined,
-    maxFiles: undefined
+    maxFiles: 1
   }
 };
