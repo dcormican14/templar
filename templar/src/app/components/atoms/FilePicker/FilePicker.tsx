@@ -1,9 +1,10 @@
 import React, { forwardRef, useRef, useImperativeHandle } from 'react';
 import { Icon } from '../Icon';
+import { Button } from '../Button';
 import { useCSSVariables } from '@/app/providers';
 import { extractFormProps, UNIVERSAL_DEFAULTS } from '../types';
 import { FilePickerProps, FilePickerRef } from './FilePicker.types';
-import { 
+import {
   createFilePickerContainerStyles,
   getFilePickerDropZoneStyles,
   getIconStyles,
@@ -15,7 +16,6 @@ import {
   getFileInfoStyles,
   getFileNameStyles,
   getFileSizeStyles,
-  getRemoveButtonStyles,
   getHiddenInputStyles
 } from './FilePicker.styles';
 import { 
@@ -71,6 +71,11 @@ export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>((allProps, 
   
   const cssVars = useCSSVariables();
   const animationsEnabled = animate;
+
+  // Don't render if cssVars is not ready
+  if (!cssVars) {
+    return null;
+  }
   const [internalFiles, setInternalFiles] = React.useState<File[]>([]);
   const [internalError, setInternalError] = React.useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -199,11 +204,13 @@ export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>((allProps, 
           customColor,
           variant,
           size,
+          shape,
           disabled,
           isError,
           isDragActive,
           animationsEnabled,
-          cssVars
+          cssVars,
+          rounded
         )}
         {...restProps}
       >
@@ -280,9 +287,11 @@ export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>((allProps, 
                 customColor,
                 variant,
                 size,
+                shape,
                 disabled,
                 animationsEnabled,
-                cssVars
+                cssVars,
+                rounded
               )}
             >
               <div style={getFileInfoStyles()}>
@@ -309,21 +318,30 @@ export const FilePicker = forwardRef<FilePickerRef, FilePickerProps>((allProps, 
                 </div>
               </div>
               
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                size="sm"
+                color={variant === 'outline' || variant === 'solid' ? 'custom' : color}
+                customColor={variant === 'outline' || variant === 'solid' ? cssVars.foreground : undefined}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleRemoveFile(index);
                 }}
-                style={getRemoveButtonStyles(size, disabled, animationsEnabled, cssVars)}
                 aria-label={`Remove ${file.name}`}
                 disabled={disabled}
+                animate={animationsEnabled}
+                style={{
+                  minWidth: 'auto',
+                  padding: '4px',
+                  borderRadius: '50%',
+                  aspectRatio: '1',
+                }}
               >
-                <Icon 
-                  name="Xmark" 
-                  size="xs"
+                <Icon
+                  name="Xmark"
+                  size="sm"
                 />
-              </button>
+              </Button>
             </div>
           ))}
         </div>

@@ -13,6 +13,18 @@ export const getColorVariables = (color: FilePickerColor, customColor: string | 
     };
   }
 
+  // Safety check for cssVars
+  if (!cssVars) {
+    console.warn('cssVars is undefined in FilePicker getColorVariables');
+    return {
+      main: '#000',
+      background: '#f0f0f0',
+      foreground: '#fff',
+      hover: '#333',
+      border: '#ccc',
+    };
+  }
+
   const colorMap: Record<string, any> = {
     primary: {
       main: cssVars.primary,
@@ -145,14 +157,20 @@ export const getFilePickerDropZoneStyles = (
   customColor: string | undefined,
   variant: FilePickerVariant,
   size: FilePickerSize,
+  shape: FilePickerShape,
   disabled: boolean,
   error: boolean,
   isDragActive: boolean,
   animationsEnabled: boolean,
-  cssVars: any
+  cssVars: any,
+  // Legacy support
+  rounded?: boolean
 ): React.CSSProperties => {
   const colors = getColorVariables(color, customColor, cssVars);
   const sizeConfig = getSizeConfig(size);
+
+  // Handle legacy rounded prop
+  const finalShape = rounded !== undefined ? (rounded ? 'pill' : 'round') : shape;
 
   // Base styles
   const baseStyles: React.CSSProperties = {
@@ -162,14 +180,16 @@ export const getFilePickerDropZoneStyles = (
     justifyContent: 'center',
     minHeight: sizeConfig.minHeight,
     padding: sizeConfig.padding,
-    border: '2px dashed',
+    borderWidth: '2px',
+    borderStyle: 'dashed',
     cursor: disabled ? 'not-allowed' : 'pointer',
     textAlign: 'center',
-    transition: animationsEnabled 
+    transition: animationsEnabled
       ? 'all var(--duration-fast) var(--animation-smooth)'
       : 'none',
     position: 'relative',
     fontSize: sizeConfig.fontSize,
+    ...getShapeStyles(finalShape),
   };
 
   // Variant styles with error state override
@@ -200,9 +220,34 @@ export const getFilePickerDropZoneStyles = (
         };
       case 'ghost':
         return {
-          borderColor: colors.background,
-          backgroundColor: colors.background,
+          borderColor: 'transparent',
+          backgroundColor: 'transparent',
           color: colors.main,
+        };
+      case 'glassmorphic':
+        // Create reflection gradient lines using the hover color with transparency
+        const reflectionColor = colors.hover || colors.main || '#ffffff';
+        const topReflectionGradient = `linear-gradient(135deg, transparent 0%, ${reflectionColor}20 20%, ${reflectionColor}15 25%, transparent 35%)`;
+        const bottomReflectionGradient = `linear-gradient(135deg, transparent 45%, ${reflectionColor}25 55%, ${reflectionColor}20 65%, transparent 80%)`;
+
+        return {
+          background: `
+            ${topReflectionGradient},
+            ${bottomReflectionGradient},
+            rgba(255, 255, 255, 0.1)
+          `,
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)', // Safari support
+          color: colors.main,
+          borderWidth: '2px',
+          borderStyle: 'solid',
+          borderTopColor: 'rgba(255, 255, 255, 0.2)',
+          borderRightColor: 'rgba(255, 255, 255, 0.2)',
+          borderBottomColor: 'rgba(255, 255, 255, 0.2)',
+          borderLeftColor: 'rgba(255, 255, 255, 0.2)',
+          boxShadow: `0 8px 32px 0 ${colors.main}40`, // Colored shadow for glowing effect
+          position: 'relative',
+          overflow: 'hidden',
         };
       case 'outline':
       default:
@@ -319,38 +364,52 @@ export const getFileItemStyles = (
   customColor: string | undefined,
   variant: FilePickerVariant,
   size: FilePickerSize,
+  shape: FilePickerShape,
   disabled: boolean,
   animationsEnabled: boolean,
-  cssVars: any
+  cssVars: any,
+  // Legacy support
+  rounded?: boolean
 ): React.CSSProperties => {
   const colors = getColorVariables(color, customColor, cssVars);
   const sizeConfig = getSizeConfig(size);
+
+  // Handle legacy rounded prop
+  const finalShape = rounded !== undefined ? (rounded ? 'pill' : 'round') : shape;
 
   const baseStyles: React.CSSProperties = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '8px 12px',
-    borderRadius: '8px',
     fontSize: sizeConfig.fontSize,
-    transition: animationsEnabled 
+    maxWidth: '400px',
+    width: '100%',
+    transition: animationsEnabled
       ? 'background-color var(--duration-fast) var(--animation-smooth)'
       : 'none',
+    ...getShapeStyles(finalShape),
   };
 
   const variantStyles = (() => {
     switch (variant) {
       case 'solid':
         return {
-          backgroundColor: colors.background,
-          color: colors.main,
-          border: `1px solid ${colors.background}`,
+          backgroundColor: cssVars.muted,
+          color: cssVars.foreground,
+          border: `1px solid ${cssVars.border}`,
         };
       case 'ghost':
         return {
           backgroundColor: colors.background,
           color: colors.main,
-          border: '1px solid transparent',
+          border: `1px solid ${colors.background}`,
+        };
+      case 'glassmorphic':
+        return {
+          backgroundColor: colors.background,
+          color: colors.main,
+          border: `1px solid ${colors.border || colors.main}`,
         };
       case 'outline':
       default:
@@ -397,40 +456,6 @@ export const getFileSizeStyles = (cssVars: any): React.CSSProperties => ({
   flexShrink: 0,
 });
 
-// Remove button styles
-export const getRemoveButtonStyles = (
-  size: FilePickerSize,
-  disabled: boolean,
-  animationsEnabled: boolean,
-  cssVars: any
-): React.CSSProperties => {
-  const sizeMap = {
-    xs: '16px',
-    sm: '18px',
-    md: '20px',
-    lg: '22px',
-    xl: '24px',
-  };
-
-  return {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: sizeMap[size],
-    height: sizeMap[size],
-    borderRadius: '50%',
-    border: 'none',
-    backgroundColor: 'transparent',
-    color: cssVars.mutedForeground,
-    cursor: disabled ? 'not-allowed' : 'pointer',
-    transition: animationsEnabled 
-      ? 'color var(--duration-fast) var(--animation-smooth), background-color var(--duration-fast) var(--animation-smooth)'
-      : 'none',
-    fontSize: '12px',
-    padding: 0,
-    // Hover styles handled via event handlers
-  };
-};
 
 // Hidden input styles
 export const getHiddenInputStyles = (): React.CSSProperties => ({
