@@ -217,10 +217,10 @@ For more detailed documentation, examples, and API reference, visit the [Templar
             <CodeBlock
               language="tsx"
               size="sm"
-              lineNumbers={false}
+              lineNumbers={true}
               copyable={true}
               color="primary"
-              variant="outline"
+              variant="glassmorphic"
               style={{ margin: 0 }}
             >
               {codeString}

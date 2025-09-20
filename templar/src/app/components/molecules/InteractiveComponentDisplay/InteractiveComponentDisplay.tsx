@@ -299,6 +299,8 @@ export const InteractiveComponentDisplay = forwardRef<
         alignItems: 'center',
         justifyContent: 'center',
         minHeight: '400px',
+        maxWidth: '718px',
+        overflow: 'hidden',
         backgroundColor: cssVars.background
       }} className={displayClassName}>
         {enhancedElement}

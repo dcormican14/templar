@@ -14,7 +14,16 @@ export const CodeBlockConfig = {
   component: <CodeBlock language="typescript" lineNumbers copyable>{sampleCode}</CodeBlock>,
   leftControls: [universalColorControls, universalSizeShapeControls],
   rightControls: [
-    universalStateControls,
+    {
+      title: 'State',
+      controls: [
+        {
+          key: 'inline',
+          label: 'Inline',
+          type: 'checkbox' as ControlType
+        }
+      ]
+    },
     {
       title: 'CodeBlock Options',
       controls: [
@@ -39,6 +48,11 @@ export const CodeBlockConfig = {
           ]
         },
         {
+          key: 'syntaxHighlighting',
+          label: 'Syntax Highlighting',
+          type: 'checkbox' as ControlType
+        },
+        {
           key: 'copyable',
           label: 'Copyable',
           type: 'checkbox' as ControlType
@@ -46,16 +60,6 @@ export const CodeBlockConfig = {
         {
           key: 'lineNumbers',
           label: 'Line Numbers',
-          type: 'checkbox' as ControlType
-        },
-        {
-          key: 'syntaxHighlighting',
-          label: 'Syntax Highlighting',
-          type: 'checkbox' as ControlType
-        },
-        {
-          key: 'inline',
-          label: 'Inline',
           type: 'checkbox' as ControlType
         },
         {
