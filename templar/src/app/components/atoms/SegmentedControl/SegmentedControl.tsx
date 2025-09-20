@@ -32,6 +32,14 @@ export const SegmentedControl = forwardRef<SegmentedControlRef, SegmentedControl
   name,
   className,
   style,
+  // Filter out interactive config props that shouldn't be passed to DOM
+  itemCount,
+  item1,
+  item2,
+  item3,
+  item4,
+  item5,
+  _itemsComputed,
   ...props
 }, ref) => {
   // Get CSS variables for theming

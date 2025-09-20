@@ -68,6 +68,11 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>((allPr
     showProgress,
     toastPosition,
     type, // Legacy prop
+    // Filter out interactive config props that shouldn't be passed to DOM
+    hasActions,
+    actionLabel1,
+    actionLabel2,
+    _actionsComputed,
     ...restProps
   } = componentProps;
   

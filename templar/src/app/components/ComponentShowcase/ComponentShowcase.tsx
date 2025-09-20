@@ -293,7 +293,6 @@ For more detailed documentation, examples, and API reference, visit the [Templar
         visibility="hover"
         smoothScrolling
         showIndicators
-        hideNative
         animate
       >
         {activeTab === 'overview' ? renderOverview() : renderInteractive()}

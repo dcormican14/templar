@@ -21,15 +21,17 @@ export function ComponentsPage() {
   const getSelectedComponentFromURL = () => {
     const componentParam = searchParams.get('component');
     if (!componentParam) return null;
-    
-    // Convert URL parameter to proper case (first letter uppercase)
-    const properCaseComponent = componentParam.charAt(0).toUpperCase() + componentParam.slice(1).toLowerCase();
-    
-    // Validate component exists
-    if (components.atoms.includes(properCaseComponent) || components.molecules.includes(properCaseComponent)) {
-      return properCaseComponent;
+
+    // Find exact match first (case-insensitive)
+    const allComponents = [...components.atoms, ...components.molecules];
+    const exactMatch = allComponents.find(comp =>
+      comp.toLowerCase() === componentParam.toLowerCase()
+    );
+
+    if (exactMatch) {
+      return exactMatch;
     }
-    
+
     return null;
   };
 
@@ -176,7 +178,7 @@ export function ComponentsPage() {
   const renderMainContent = () => {
     if (!selectedComponent) {
       return (
-        <div 
+        <div
           style={{
             display: 'flex',
             flexDirection: 'column',
