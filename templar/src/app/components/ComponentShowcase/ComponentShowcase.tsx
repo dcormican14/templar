@@ -193,8 +193,7 @@ For more detailed documentation, examples, and API reference, visit the [Templar
           backgroundColor: cssVars.card,
           borderRadius: '12px',
           border: `1px solid ${cssVars.border}`,
-          overflow: 'hidden',
-          boxShadow: cssVars.shadowMd
+          overflow: 'hidden'
         }}>
           <div style={{
             padding: '16px 24px',
