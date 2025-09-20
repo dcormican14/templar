@@ -236,8 +236,28 @@ export const InteractiveComponentDisplay = forwardRef<
     renderProps.icon = initialProps._defaultIcon;
   }
 
+  // Add callback handlers for interactive components
+  const interactiveProps = { ...renderProps };
+
+  // For CheckBox components, add onChange handler to update state
+  if (children && React.isValidElement(children)) {
+    const componentName = getComponentName(children);
+
+    // Check if this is a checkbox-like component (has checked prop)
+    const hasCheckedProp = 'checked' in renderProps;
+    if (componentName === 'CheckBox' || hasCheckedProp) {
+      interactiveProps.onChange = (checked: boolean) => {
+        setComponentProps(prev => ({ ...prev, checked }));
+        // Also call original onChange if it exists
+        if (renderProps.onChange) {
+          renderProps.onChange(checked);
+        }
+      };
+    }
+  }
+
   // Clone element with new props
-  const enhancedElement = cloneElementWithProps(children, renderProps);
+  const enhancedElement = cloneElementWithProps(children, interactiveProps);
 
   // Styles
   const containerStyles = createContainerStyles(size, layout, cssVars);

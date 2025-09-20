@@ -31,7 +31,7 @@ export interface CheckBoxSpecificProps extends Omit<React.InputHTMLAttributes<HT
   indeterminate?: boolean;
   
   /**
-   * Description text shown below the label (in addition to helperText)
+   * Description text shown below the label
    */
   description?: string;
   

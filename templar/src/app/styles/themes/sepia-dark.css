@@ -31,7 +31,7 @@
   /* Secondary colors */
   --secondary: #7ab1d6;
   --secondary-background: #1e2b33;
-  --secondary-foreground: #2b1e14;
+  --secondary-foreground: #f4ecd8;
   --secondary-hover: #99c9eb;
   --secondary-accent: #5a9bc4;
   --secondary-shadow: rgba(122, 177, 214, 0.3);
@@ -42,7 +42,7 @@
   /* Success colors */
   --success: #7dbb8c;
   --success-background: #1e2e23;
-  --success-foreground: #2b1e14;
+  --success-foreground: #f4ecd8;
   --success-hover: #96c7a2;
   --success-accent: #659e72;
   --success-shadow: rgba(125, 187, 140, 0.3);
@@ -53,7 +53,7 @@
   /* Warning colors */
   --warning: #e6a96b;
   --warning-background: #332920;
-  --warning-foreground: #2b1e14;
+  --warning-foreground: #f4ecd8;
   --warning-hover: #ebba84;
   --warning-accent: #d99551;
   --warning-shadow: rgba(230, 169, 107, 0.3);
@@ -75,7 +75,7 @@
   /* Info colors */
   --info: #7ab1d6;
   --info-background: #1e2b33;
-  --info-foreground: #2b1e14;
+  --info-foreground: #f4ecd8;
   --info-hover: #99c9eb;
   --info-accent: #5a9bc4;
   --info-shadow: rgba(122, 177, 214, 0.3);

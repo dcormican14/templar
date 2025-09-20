@@ -412,7 +412,7 @@ export const isUniversalAnimationModes = (value: any): value is UniversalAnimati
 // Default values for universal props
 export const UNIVERSAL_DEFAULTS = {
   color: 'primary' as UniversalColor,
-  variant: 'solid' as UniversalVariant,
+  variant: 'outline' as UniversalVariant,
   size: 'md' as UniversalSize,
   shape: 'round' as UniversalShape,
   disabled: false,

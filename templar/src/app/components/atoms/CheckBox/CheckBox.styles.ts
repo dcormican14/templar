@@ -67,42 +67,107 @@ export const getShapeStyles = (shape: CheckBoxShape): React.CSSProperties => {
     case 'sharp':
       return { borderRadius: '0' };
     case 'round':
-      return { borderRadius: '12px' };
+      return { borderRadius: '6px' };
     case 'pill':
       return { borderRadius: '9999px' };
     default:
-      return { borderRadius: '12px' };
+      return { borderRadius: '6px' };
   }
 };
 
 export const getVariantStyles = (
+  variant: 'solid' | 'ghost' | 'outline' | 'glassmorphic' | 'invisible',
   color: CheckBoxColor,
   customColor: string | undefined,
-  cssVars: any, 
-  checked: boolean, 
+  cssVars: any,
+  checked: boolean,
   error: boolean
 ): React.CSSProperties => {
   const colors = getColorVariables(color, customColor, cssVars);
 
   // Error state override
   if (error) {
-    return {
-      borderColor: checked ? cssVars.destructive : cssVars.destructive,
-      backgroundColor: checked ? cssVars.destructive : cssVars.background,
+    const baseErrorStyle = {
       color: cssVars.destructiveForeground,
       borderWidth: '1px',
       borderStyle: 'solid' as const,
     };
+
+    switch (variant) {
+      case 'solid':
+        return {
+          ...baseErrorStyle,
+          borderColor: checked ? cssVars.destructive : cssVars.mutedForeground,
+          backgroundColor: checked ? cssVars.destructive : cssVars.mutedForeground,
+        };
+      case 'ghost':
+        return {
+          ...baseErrorStyle,
+          borderColor: checked ? cssVars.destructive : cssVars.mutedForeground,
+          backgroundColor: checked ? cssVars.destructive : 'transparent',
+        };
+      case 'glassmorphic':
+        return {
+          ...baseErrorStyle,
+          borderColor: cssVars.destructive,
+          backgroundColor: checked ? cssVars.destructive : cssVars.destructiveBackground,
+          backdropFilter: 'blur(10px)',
+        };
+      case 'outline':
+      default:
+        return {
+          ...baseErrorStyle,
+          borderColor: cssVars.destructive,
+          backgroundColor: checked ? cssVars.destructive : cssVars.background,
+        };
+    }
   }
 
-  // Normal state styles
-  return {
-    borderColor: checked ? colors.main : cssVars.border,
-    backgroundColor: checked ? colors.main : cssVars.background,
-    color: colors.foreground,
-    borderWidth: '1px',
-    borderStyle: 'solid' as const,
-  };
+  // Normal state styles by variant
+  switch (variant) {
+    case 'solid':
+      return {
+        borderColor: checked ? colors.main : cssVars.mutedForeground,
+        backgroundColor: checked ? colors.main : cssVars.mutedForeground,
+        color: colors.foreground,
+        borderWidth: '1px',
+        borderStyle: 'solid' as const,
+      };
+    case 'ghost':
+      return {
+        borderColor: checked ? colors.main : cssVars.mutedForeground,
+        backgroundColor: checked ? colors.main : 'transparent',
+        color: colors.foreground,
+        borderWidth: '1px',
+        borderStyle: 'solid' as const,
+      };
+    case 'glassmorphic':
+      return {
+        borderColor: checked ? colors.main : colors.border,
+        backgroundColor: checked ? colors.main : colors.background,
+        color: colors.foreground,
+        borderWidth: '1px',
+        borderStyle: 'solid' as const,
+        backdropFilter: 'blur(10px)',
+      };
+    case 'invisible':
+      return {
+        borderColor: 'transparent',
+        backgroundColor: 'transparent',
+        color: colors.foreground,
+        borderWidth: '1px',
+        borderStyle: 'solid' as const,
+      };
+    case 'outline':
+    default:
+      return {
+        borderColor: colors.main,
+        backgroundColor: checked ? colors.main : cssVars.background,
+        color: colors.foreground,
+        borderWidth: '1px',
+        borderStyle: 'solid' as const,
+      };
+  }
 };
 
 export const getSizeStyles = (size: CheckBoxSize): React.CSSProperties => {
@@ -199,7 +264,7 @@ export const getDescriptionStyles = (cssVars: any, size: CheckBoxSize, disabled:
   };
 
   return {
-    marginTop: '4px',
+    marginTop: '2px',
     marginLeft: size === 'xs' ? '24px' : size === 'sm' ? '26px' : size === 'md' ? '28px' : size === 'lg' ? '32px' : '36px',
     fontSize: fontSizeMap[size],
     color: cssVars.mutedForeground,

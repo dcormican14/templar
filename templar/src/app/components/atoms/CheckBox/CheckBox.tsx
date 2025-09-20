@@ -16,11 +16,17 @@ import {
   getFocusStyles,
 } from './CheckBox.styles';
 import { createCheckIcon, getIconSize, handleKeyDown, getIconColor } from './CheckBox.utils';
+import { Icon } from '../Icon';
 
 export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>((allProps, ref) => {
-  // Extract CheckBox-specific onChange first
-  const { onChange, ...propsWithoutOnChange } = allProps;
-  
+  // Filter out interactive config props that shouldn't be passed to DOM
+  const {
+    onChange,
+    // Interactive config props to filter out
+    _checkboxComputed,
+    ...propsWithoutOnChange
+  } = allProps;
+
   // Extract form props and component-specific props
   const [formProps, componentProps] = extractFormProps(propsWithoutOnChange);
   
@@ -28,13 +34,14 @@ export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>((allProps, r
   const {
     color = UNIVERSAL_DEFAULTS.color,
     customColor,
+    variant = UNIVERSAL_DEFAULTS.variant,
     size = UNIVERSAL_DEFAULTS.size,
     shape = UNIVERSAL_DEFAULTS.shape,
     disabled = UNIVERSAL_DEFAULTS.disabled,
     error,
     label,
-    helperText,
     className,
+    required,
     style,
     id,
     'data-testid': dataTestId,
@@ -69,6 +76,28 @@ export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>((allProps, r
     // Computed values
     const animationsEnabled = (settings.appearance.animations ?? true) && animate;
     const iconSize = getIconSize(size);
+    const asteriskSize = (size === 'lg' || size === 'xl') ? 'sm' : 'xs';
+
+    // Determine asterisk color based on variant and error state
+    const getAsteriskColor = () => {
+      if (Boolean(error)) {
+        return cssVars.destructive;
+      }
+
+      switch (variant) {
+        case 'solid':
+          // For solid variant, use main color on foreground background when unchecked
+          return color === 'custom' && customColor ? customColor : cssVars[color] || cssVars.primary;
+        case 'glassmorphic':
+          // For glassmorphic variant, use primary color when unchecked
+          return cssVars.primary;
+        case 'ghost':
+        case 'outline':
+        case 'invisible':
+        default:
+          return cssVars.mutedForeground;
+      }
+    };
 
     // Set indeterminate state
     useEffect(() => {
@@ -108,12 +137,13 @@ export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>((allProps, r
     ), [disabled, shape, animationsEnabled, rounded]);
 
     const variantStyles = useMemo(() => getVariantStyles(
+      variant,
       color,
       customColor,
       cssVars,
       checkedValue || indeterminate,
       Boolean(error)
-    ), [color, customColor, cssVars, checkedValue, indeterminate, error]);
+    ), [variant, color, customColor, cssVars, checkedValue, indeterminate, error]);
 
     const sizeStyles = useMemo(() => getSizeStyles(size), [size]);
     const inputStyles = useMemo(() => getInputStyles(), []);
@@ -150,6 +180,7 @@ export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>((allProps, r
               id={id}
               checked={checkedValue}
               disabled={disabled}
+              required={required}
               onChange={handleChange}
               onKeyDown={handleKeyDownInternal}
               onFocus={() => setFocused(true)}
@@ -157,17 +188,40 @@ export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>((allProps, r
               style={inputStyles}
               data-testid={dataTestId}
               aria-checked={indeterminate ? 'mixed' : checkedValue}
-              aria-describedby={description || helperText ? `${id}-description` : undefined}
+              aria-describedby={description ? `${id}-description` : undefined}
               {...restProps}
             />
             
-            {/* Check icon */}
-            {createCheckIcon(
-              checkedValue,
-              indeterminate,
-              Boolean(error),
-              iconSize,
-              getIconColor(color, customColor, Boolean(error), checkedValue, cssVars)
+            {/* Check icon or Required asterisk */}
+            {required && !checkedValue && !indeterminate ? (
+              // Show asterisk for required unchecked state
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  pointerEvents: 'none',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Icon
+                  name="Asterisk"
+                  size={asteriskSize}
+                  color={getAsteriskColor()}
+                />
+              </div>
+            ) : (
+              // Show normal check icon
+              createCheckIcon(
+                checkedValue,
+                indeterminate,
+                Boolean(error),
+                iconSize,
+                getIconColor(color, customColor, Boolean(error), checkedValue, cssVars)
+              )
             )}
           </div>
 
@@ -182,9 +236,9 @@ export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>((allProps, r
           )}
         </div>
 
-        {/* Description or Helper Text */}
-        {(description || helperText) && (
-          <div 
+        {/* Description */}
+        {description && (
+          <div
             id={`${id}-description`}
             style={descriptionStyles}
             onClick={contentToggleable ? () => {
@@ -193,7 +247,7 @@ export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>((allProps, r
               }
             } : undefined}
           >
-            {description || helperText}
+            {description}
           </div>
         )}
       </div>
