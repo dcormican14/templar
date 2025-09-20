@@ -142,7 +142,7 @@ export function FallingLeaves({
             left: `${leaf.x}px`,
             top: `${leaf.y}px`,
             transform: `rotate(${leaf.rotation}deg) scale(${leaf.scale})`,
-            width: '40px',
+            width: '60px',
             height: 'auto',
             opacity: 0.8,
             transition: 'none',
