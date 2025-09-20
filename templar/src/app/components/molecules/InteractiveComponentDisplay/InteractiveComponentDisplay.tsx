@@ -127,11 +127,13 @@ export const InteractiveComponentDisplay = forwardRef<
       case 'checkbox':
         return (
           <CheckBox
+            id={controlId}
             checked={Boolean(currentValue)}
             onChange={(checked) => handlePropChange(control.key, checked, control)}
             label={control.label}
             size="sm"
             color="primary"
+            contentToggleable={true}
           />
         );
 
@@ -282,7 +284,9 @@ export const InteractiveComponentDisplay = forwardRef<
         backgroundColor: cssVars.backgroundAccent,
         padding: '16px',
         borderRight: `1px solid ${cssVars.border}`,
-        minHeight: '100%'
+        minHeight: '100%',
+        borderTopLeftRadius: '12px',
+        borderBottomLeftRadius: '12px'
       }}>
         {renderControlPanel(leftControls, 'left')}
       </div>
@@ -310,7 +314,9 @@ export const InteractiveComponentDisplay = forwardRef<
         backgroundColor: cssVars.backgroundAccent,
         padding: '16px',
         borderLeft: `1px solid ${cssVars.border}`,
-        minHeight: '100%'
+        minHeight: '100%',
+        borderTopRightRadius: '12px',
+        borderBottomRightRadius: '12px'
       }}>
         {renderControlPanel(rightControls, 'right')}
       </div>

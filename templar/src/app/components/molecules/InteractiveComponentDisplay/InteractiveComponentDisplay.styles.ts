@@ -16,7 +16,6 @@ export const createContainerStyles = (
   borderRadius: '12px',
   border: `1px solid ${cssVars.border}`,
   overflow: 'visible',
-  boxShadow: cssVars.shadowMd,
 });
 
 // Header styles
