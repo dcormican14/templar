@@ -10,7 +10,8 @@
 @import './themes/sepia-light.css';
 @import './themes/sepia-dark.css';
 @import './themes/solarized-dark.css';
-@import './themes/dark-test.css';
+@import './themes/valor.css';
+@import './themes/valor-dark.css';
 
 /* Base theme system styles */
 * {

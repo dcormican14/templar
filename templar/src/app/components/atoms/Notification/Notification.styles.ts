@@ -186,7 +186,11 @@ export const getNotificationStyles = (
     gap: '12px',
     width: '100%',
     padding: sizeConfig.padding,
-    border: '1px solid',
+    borderTopWidth: '1px',
+    borderRightWidth: '1px',
+    borderBottomWidth: '1px',
+    borderLeftWidth: '1px',
+    borderStyle: 'solid',
     fontSize: sizeConfig.fontSize,
     lineHeight: sizeConfig.lineHeight,
     transition: 'background-color var(--duration-fast) var(--animation-smooth), border-color var(--duration-fast) var(--animation-smooth)',
@@ -199,23 +203,43 @@ export const getNotificationStyles = (
       case 'solid':
         return {
           backgroundColor: colors.main,
-          borderColor: colors.main,
+          borderTopColor: colors.main,
+          borderRightColor: colors.main,
+          borderBottomColor: colors.main,
+          borderLeftColor: colors.main,
           color: colors.foreground,
         };
       case 'ghost':
         return {
-          backgroundColor: colors.background,
-          borderColor: 'transparent',
+          backgroundColor: 'transparent',
+          borderTopColor: 'transparent',
+          borderRightColor: 'transparent',
+          borderBottomColor: 'transparent',
+          borderLeftColor: colors.main,
+          borderLeftWidth: '4px',
           color: colors.main,
+        };
+      case 'glassmorphic':
+        return {
+          backgroundColor: colors.background,
+          borderTopColor: colors.border || cssVars.border,
+          borderRightColor: colors.border || cssVars.border,
+          borderBottomColor: colors.border || cssVars.border,
+          borderLeftColor: colors.main,
+          borderLeftWidth: '4px',
+          color: colors.main,
+          backdropFilter: 'blur(12px)',
         };
       case 'outline':
       default:
         return {
           backgroundColor: cssVars.background,
-          borderColor: colors.border || cssVars.border,
-          color: cssVars.foreground,
-          borderLeftWidth: '4px',
+          borderTopColor: colors.border || cssVars.border,
+          borderRightColor: colors.border || cssVars.border,
+          borderBottomColor: colors.border || cssVars.border,
           borderLeftColor: colors.main,
+          borderLeftWidth: '4px',
+          color: cssVars.foreground,
         };
     }
   })();

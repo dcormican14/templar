@@ -34,7 +34,34 @@ export const getIconSize = (notificationSize: NotificationSize): 'xs' | 'sm' | '
   }
 };
 
-export const getTypeColor = (color: NotificationColor, cssVars: any): string => {
+export const getTypeColor = (color: NotificationColor, cssVars: any, variant?: string): string => {
+  // In solid variant, use foreground color for visibility against colored background
+  if (variant === 'solid') {
+    switch (color) {
+      case 'primary':
+        return cssVars.primaryForeground;
+      case 'secondary':
+        return cssVars.secondaryForeground;
+      case 'warning':
+        return cssVars.warningForeground;
+      case 'destructive':
+        return cssVars.destructiveForeground;
+      case 'success':
+        return cssVars.successForeground;
+      case 'info':
+        return cssVars.infoForeground;
+      case 'custom':
+      default:
+        return cssVars.foreground;
+    }
+  }
+
+  // In outline variant, use foreground color to match text color
+  if (variant === 'outline') {
+    return cssVars.foreground;
+  }
+
+  // For ghost and glassmorphic variants, use the main color
   switch (color) {
     case 'primary':
       return cssVars.primary;
@@ -58,7 +85,8 @@ export const createTypeIcon = (
   color: NotificationColor,
   size: NotificationSize,
   cssVars: any,
-  customIcon?: React.ReactNode
+  customIcon?: React.ReactNode,
+  variant?: string
 ): React.ReactElement => {
   if (customIcon) {
     return <span>{customIcon}</span>;
@@ -66,11 +94,11 @@ export const createTypeIcon = (
 
   const iconName = getTypeIcon(color);
   const iconSize = getIconSize(size);
-  const iconColor = getTypeColor(color, cssVars);
+  const iconColor = getTypeColor(color, cssVars, variant);
 
   return (
-    <Icon 
-      name={iconName as any} 
+    <Icon
+      name={iconName as any}
       size={iconSize}
       style={{ color: iconColor }}
     />

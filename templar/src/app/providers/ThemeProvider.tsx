@@ -2,8 +2,8 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-type Theme = 'light' | 'dark' | 'high-contrast' | 'sepia-light' | 'sepia-dark' | 'solarized-dark' | 'system' | 'auto';
-type ResolvedTheme = 'light' | 'dark' |  'high-contrast' | 'sepia-light' | 'sepia-dark' | 'solarized-dark';
+type Theme = 'light' | 'dark' | 'high-contrast' | 'sepia-light' | 'sepia-dark' | 'solarized-dark' | 'valor' | 'valor-dark' | 'system' | 'auto';
+type ResolvedTheme = 'light' | 'dark' | 'high-contrast' | 'sepia-light' | 'sepia-dark' | 'solarized-dark' | 'valor' | 'valor-dark';
 
 interface ThemeContextType {
   theme: Theme;
@@ -133,7 +133,7 @@ interface ThemeProviderProps {
   storageKey?: string;
 }
 
-const availableThemes: Theme[] = ['light', 'dark', 'high-contrast', 'sepia-light', 'sepia-dark', 'solarized-dark', 'system', 'auto'];
+const availableThemes: Theme[] = ['light', 'dark', 'high-contrast', 'sepia-light', 'sepia-dark', 'solarized-dark', 'valor', 'valor-dark', 'system', 'auto'];
 
 export function ThemeProvider({
   children,
@@ -297,6 +297,8 @@ export function ThemeProvider({
       case 'sepia-light':
       case 'sepia-dark':
       case 'solarized-dark':
+      case 'valor':
+      case 'valor-dark':
         return theme;
       default:
         return 'light';
@@ -320,13 +322,13 @@ export function ThemeProvider({
     root.setAttribute(attribute, resolvedTheme);
     
     // Remove all theme classes first
-    root.classList.remove('light', 'dark', 'high-contrast', 'sepia-light', 'sepia-dark', 'solarized-dark');
-    
+    root.classList.remove('light', 'dark', 'high-contrast', 'sepia-light', 'sepia-dark', 'solarized-dark', 'valor', 'valor-dark');
+
     // Add the resolved theme class
     root.classList.add(resolvedTheme);
-    
+
     // Also handle dark mode class for Tailwind CSS compatibility
-    if (resolvedTheme === 'dark' || resolvedTheme === 'sepia-dark' || resolvedTheme === 'solarized-dark') {
+    if (resolvedTheme === 'dark' || resolvedTheme === 'sepia-dark' || resolvedTheme === 'solarized-dark' || resolvedTheme === 'valor-dark') {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
@@ -345,7 +347,7 @@ export function ThemeProvider({
       const root = document.documentElement;
       const newResolvedTheme = mediaQuery.matches ? 'dark' : 'light';
       root.setAttribute(attribute, newResolvedTheme);
-      root.classList.remove('light', 'dark', 'high-contrast', 'sepia-light', 'sepia-dark', 'solarized-dark');
+      root.classList.remove('light', 'dark', 'high-contrast', 'sepia-light', 'sepia-dark', 'solarized-dark', 'valor', 'valor-dark');
       root.classList.add(newResolvedTheme);
       root.classList.toggle('dark', newResolvedTheme === 'dark');
       setTimeout(updateThemeVariables, 0);
@@ -363,7 +365,7 @@ export function ThemeProvider({
       const root = document.documentElement;
       const newResolvedTheme = getAutoTheme();
       root.setAttribute(attribute, newResolvedTheme);
-      root.classList.remove('light', 'dark', 'high-contrast', 'sepia-light', 'sepia-dark', 'solarized-dark');
+      root.classList.remove('light', 'dark', 'high-contrast', 'sepia-light', 'sepia-dark', 'solarized-dark', 'valor', 'valor-dark');
       root.classList.add(newResolvedTheme);
       root.classList.toggle('dark', newResolvedTheme === 'dark');
       setTimeout(updateThemeVariables, 0);

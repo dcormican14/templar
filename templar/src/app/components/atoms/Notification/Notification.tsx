@@ -182,7 +182,7 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>((allPr
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
             {showIcon && (
               <div style={iconContainerStyles}>
-                {createTypeIcon(effectiveColor, size, cssVars, customIcon)}
+                {createTypeIcon(effectiveColor, size, cssVars, customIcon, variant)}
               </div>
             )}
             <h4 style={titleStyles}>{title}</h4>

@@ -100,40 +100,60 @@ export function OverviewPage() {
             flexDirection: 'column',
             alignItems: 'center',
             gap: '32px',
-            padding: 'calc(48px + 50vh) 32px 32px 32px' // Start below nav + middle of viewport
+            padding: 'calc(48px + 8vh) 32px 32px 32px' // Start below nav + higher on viewport
           }}>
-            <Card
-              variant="glassmorphic"
-              size="lg"
-              shape="round"
-              color="primary"
-              style={{
-                maxWidth: '600px',
-                width: '100%',
-                backgroundColor: `${cssVars.background}E6`, // 90% opacity
-                backdropFilter: 'blur(20px)',
-                border: `1px solid ${cssVars.border}80`
-              }}
-            >
-              <div style={{ textAlign: 'center', padding: '40px' }}>
-                <Icon name="HomeShield" size="xl" style={{ color: cssVars.primary, marginBottom: '24px' }} />
+            {/* Mournshire Splash Page */}
+            <div style={{
+              textAlign: 'center',
+              width: '100%',
+              padding: '80px 32px',
+              minHeight: '80vh',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
+              <div style={{ position: 'relative', marginBottom: '24px' }}>
+                {/* Navy shadow text */}
                 <h1 style={{
-                  fontSize: '48px',
+                  fontSize: 'clamp(4rem, 8vw, 8rem)',
+                  fontWeight: 'bold',
+                  color: '#1E2A3A',
+                  letterSpacing: '0.02em',
+                  lineHeight: '1.1',
+                  position: 'absolute',
+                  top: '8px',
+                  left: '-8px',
+                  zIndex: 1
+                }}>
+                  Mournshire
+                </h1>
+                {/* Main text */}
+                <h1 style={{
+                  fontSize: 'clamp(4rem, 8vw, 8rem)',
                   fontWeight: 'bold',
                   color: cssVars.foreground,
-                  marginBottom: '16px'
+                  textShadow: `2px 2px 4px ${cssVars.backgroundShadow}`,
+                  letterSpacing: '0.02em',
+                  lineHeight: '1.1',
+                  position: 'relative',
+                  zIndex: 2
                 }}>
-                  Welcome to Templar
+                  Mournshire
                 </h1>
-                <p style={{
-                  fontSize: '20px',
-                  color: cssVars.foregroundAccent,
-                  lineHeight: '1.6'
-                }}>
-                  A comprehensive React component library built on atomic design principles
-                </p>
               </div>
-            </Card>
+              <p style={{
+                fontSize: 'clamp(1.25rem, 3vw, 2rem)',
+                color: cssVars.foregroundAccent,
+                fontStyle: 'italic',
+                marginTop: '16px',
+                textShadow: `1px 1px 2px ${cssVars.backgroundShadow}`,
+                maxWidth: '800px',
+                lineHeight: '1.4'
+              }}>
+                Where the last leaf of autumn falls
+              </p>
+            </div>
 
             <Card
               variant="glassmorphic"

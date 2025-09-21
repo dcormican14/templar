@@ -1,0 +1,109 @@
+/* Valor Theme - Inspired by knights, autumn, and castles */
+[data-theme="valor"] {
+  /* Base colors */
+  --background: #F5F1E8; /* Warm Cream */
+  --background-hover: #EDE5D7;
+  --background-accent: #E8DCC8; /* Light Cream */
+  --background-shadow: rgba(139, 125, 107, 0.3);
+  --background-disabled: #F9F6F0;
+  --background-border: #D4C4A8;
+  --background-font: #3C2F1C; /* Dark Brown */
+
+  --foreground: #3C2F1C;
+  --foreground-hover: #2A1F12;
+  --foreground-accent: #6B5B47; /* Medium Brown */
+  --foreground-shadow: rgba(60, 47, 28, 0.1);
+  --foreground-disabled: #A89681;
+  --foreground-border: #8B7D6B;
+  --foreground-font: #F5F1E8;
+  
+  /* Primary colors (Valor's Rusted Red) */
+  --primary: #A63C2E; /* Rusted Red */
+  --primary-background: #F2E6E0; /* Light cream background */
+  --primary-foreground: #F5F1E8;
+  --primary-hover: #C24C3B;
+  --primary-accent: #7C2E24;
+  --primary-shadow: rgba(166, 60, 46, 0.3);
+  --primary-disabled: #D4C4A8;
+  --primary-border: #C24C3B;
+  --primary-font: #F5F1E8;
+  
+  /* Secondary colors (Golden Wheat & Warm tones) */
+  --secondary: #D9A441; /* Golden Wheat */
+  --secondary-background: #F6F0E5; /* Cream background */
+  --secondary-foreground: #3C2F1C;
+  --secondary-hover: #E6B95E;
+  --secondary-accent: #B8842D;
+  --secondary-shadow: rgba(217, 164, 65, 0.3);
+  --secondary-disabled: #E8DCC8;
+  --secondary-border: #E6B95E;
+  --secondary-font: #3C2F1C;
+  
+  /* Success colors (nature-inspired greens) */
+  --success: #4ADE80;
+  --success-background: #F0F6F2; /* Light cream-green */
+  --success-foreground: #3C2F1C;
+  --success-hover: #6EE7B7;
+  --success-accent: #22C55E;
+  --success-shadow: rgba(74, 222, 128, 0.3);
+  --success-disabled: #E8DCC8;
+  --success-border: #22C55E;
+  --success-font: #3C2F1C;
+  
+  /* Warning colors (fiery autumn reds/oranges) */
+  --warning: #E67E22;
+  --warning-background: #F6F1E8; /* Light cream-orange */
+  --warning-foreground: #3C2F1C;
+  --warning-hover: #F39C46;
+  --warning-accent: #CC5C00;
+  --warning-shadow: rgba(230, 126, 34, 0.3);
+  --warning-disabled: #E8DCC8;
+  --warning-border: #CC5C00;
+  --warning-font: #3C2F1C;
+  
+  /* Destructive colors (deep crimson) */
+  --destructive: #B22234;
+  --destructive-background: #F4EAEA; /* Light cream-red */
+  --destructive-foreground: #3C2F1C;
+  --destructive-hover: #D42C44;
+  --destructive-accent: #8A1C27;
+  --destructive-shadow: rgba(178, 34, 52, 0.3);
+  --destructive-disabled: #E8DCC8;
+  --destructive-border: #D42C44;
+  --destructive-font: #3C2F1C;
+  
+  /* Info colors (regal blue) */
+  --info: #3C82E3;
+  --info-background: #F0F3F8; /* Light cream-blue */
+  --info-foreground: #3C2F1C;
+  --info-hover: #5699F0;
+  --info-accent: #2B5BBF;
+  --info-shadow: rgba(60, 130, 227, 0.3);
+  --info-disabled: #E8DCC8;
+  --info-border: #2B5BBF;
+  --info-font: #3C2F1C;
+  
+  /* Legacy compatibility */
+  --accent: #D9A441; /* Golden Wheat */
+  --accent-foreground: #3C2F1C;
+  --border: #D4C4A8;
+  --border-hover: #8B7D6B;
+  --muted: #E8DCC8;
+  --muted-foreground: #3C2F1C;
+  --error: #B22234;
+  --error-foreground: #3C2F1C;
+  --card: #EDE5D7;
+  --card-foreground: #3C2F1C;
+  --input: #F9F6F0;
+  --input-border: #D4C4A8;
+  --input-placeholder: #A89681;
+  --input-foreground: #3C2F1C;
+  --progress-track: #E8DCC8;
+  --progress-track-text: #6B5B47;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.35);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.45), 0 1px 2px -1px rgb(0 0 0 / 0.45);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.45), 0 2px 4px -2px rgb(0 0 0 / 0.45);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.45), 0 4px 6px -4px rgb(0 0 0 / 0.45);
+}

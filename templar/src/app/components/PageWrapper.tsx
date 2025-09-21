@@ -77,6 +77,10 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
         return 'CoffeeCup';
       case 'solarized-dark':
         return 'SeaAndSun';
+      case 'valor':
+        return 'HistoricShield';
+      case 'valor-dark':
+        return 'HomeShield';
       default:
         return 'Palette';
     }
@@ -92,6 +96,8 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
         return 'Sepia Light';
       case 'solarized-dark':
         return 'Solarized Dark';
+      case 'valor-dark':
+        return 'Valor Dark';
       default:
         return themeName.charAt(0).toUpperCase() + themeName.slice(1);
     }
@@ -158,6 +164,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
           variant="solid"
           size="lg"
           shape="pill"
+          animationMode="isometric"
           icon={<Icon name={getThemeIcon(theme)} size="md" />}
           onClick={cycleTheme}
           className="shadow-lg hover:shadow-xl transition-shadow duration-200"
