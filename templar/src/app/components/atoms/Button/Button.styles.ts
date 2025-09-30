@@ -88,10 +88,10 @@ export const getVariantStyles = (
   const colors = getColorVariables(color, customColor, cssVars);
 
   const baseStyles = {
-    borderTopWidth: '1px',
-    borderRightWidth: '1px',
-    borderBottomWidth: '1px',
-    borderLeftWidth: '1px',
+    borderTopWidth: '2px',
+    borderRightWidth: '2px',
+    borderBottomWidth: '2px',
+    borderLeftWidth: '2px',
     borderTopStyle: 'solid' as const,
     borderRightStyle: 'solid' as const,
     borderBottomStyle: 'solid' as const,
@@ -118,7 +118,7 @@ export const getVariantStyles = (
       };
     case 'outline':
       return {
-        backgroundColor: 'transparent',
+        backgroundColor: cssVars.background,
         color: colors.main,
         borderTopColor: colors.main,
         borderRightColor: colors.main,
@@ -323,36 +323,93 @@ export const createBaseStyles = (
 };
 
 
-// Get isometric animation styles
-export const getIsometricStyles = (color: any, variant: string, shape: string) => {
+// Get isometric container styles (wrapper for button + shadow)
+export const getIsometricContainerStyles = (): React.CSSProperties => ({
+  position: 'relative',
+  display: 'inline-block',
+});
+
+// Get isometric button styles (the main button element)
+export const getIsometricButtonStyles = (
+  color: any,
+  variant: string,
+  animationsEnabled: boolean
+): React.CSSProperties => {
+  const baseStyles = {
+    position: 'relative' as const,
+    zIndex: 1,
+    transform: 'translate(0, 0)',
+    transition: animationsEnabled
+      ? 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+      : 'none',
+  };
+
+  // For solid variant with isometric, override border colors to use foreground (white)
+  if (variant === 'solid') {
+    return {
+      ...baseStyles,
+      borderTopColor: color.foreground,
+      borderRightColor: color.foreground,
+      borderLeftColor: color.foreground,
+      borderBottomColor: color.foreground,
+    };
+  }
+
+  return baseStyles;
+};
+
+// Get isometric shadow element styles
+export const getIsometricShadowStyles = (
+  color: any,
+  variant: string,
+  shape: string,
+  size: any,
+  animationsEnabled: boolean
+): React.CSSProperties => {
   // Ghost and glassmorphic variants don't support isometric animation
   if (variant === 'ghost' || variant === 'glassmorphic') {
-    return {};
+    return { display: 'none' };
   }
-  
-  // For outline variant, use the main color (primary). For solid, use foreground color.
-  const borderColor = variant === 'outline' ? color.main : color.foreground || '#000000';
-  
-  const styles: any = {
-    // Large bottom border - override the base 1px
-    borderBottomWidth: '6px',
-    borderBottomStyle: 'solid',
-    borderBottomColor: borderColor,
-    transform: 'translateY(0)',
-    transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
-    // Ensure proper box-sizing and prevent collapse
-    boxSizing: 'border-box',
-    position: 'relative',
-    // Adjust padding to account for larger bottom border
-    paddingBottom: '2px', // Slightly reduce bottom padding to compensate
+
+  // Get the same border radius as the button based on shape
+  const shapeStyles = getShapeStyles(shape);
+
+  // Base shadow styles
+  const baseStyles = {
+    position: 'absolute' as const,
+    top: '4px',
+    left: '4px',
+    width: '100%',
+    height: '100%',
+    ...shapeStyles, // Apply the same border radius as the button
+    zIndex: 0,
+    transition: animationsEnabled
+      ? 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+      : 'none',
+    transform: 'translate(0, 0)',
   };
-  
-  // For solid variant, make all border colors match the bottom border (foreground color)
+
+  // Different shadow styling based on variant
   if (variant === 'solid') {
-    styles.borderTopColor = borderColor;
-    styles.borderRightColor = borderColor;
-    styles.borderLeftColor = borderColor;
+    return {
+      ...baseStyles,
+      backgroundColor: color.foreground, // White background for solid variant
+    };
+  } else {
+    // For outline variant, use the main color
+    return {
+      ...baseStyles,
+      backgroundColor: color.main,
+    };
   }
-  
-  return styles;
 };
+
+// Get isometric hover styles for button
+export const getIsometricHoverButtonStyles = (): React.CSSProperties => ({
+  transform: 'translate(3px, 3px)',
+});
+
+// Get isometric hover styles for shadow
+export const getIsometricHoverShadowStyles = (): React.CSSProperties => ({
+  transform: 'translate(-1px, -1px)',
+});

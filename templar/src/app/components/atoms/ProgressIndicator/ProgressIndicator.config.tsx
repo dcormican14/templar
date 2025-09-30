@@ -4,7 +4,7 @@ import { universalColorControls, universalSizeShapeControls } from '../shared/un
 import type { ControlType } from '../../molecules/InteractiveComponentDisplay/InteractiveComponentDisplay.types';
 
 export const ProgressIndicatorConfig = {
-  component: <ProgressIndicator type="bar" value={50} />,
+  component: <ProgressIndicator type="circular" variant="solid" showPercentage={true} indeterminate={true} />,
   leftControls: [universalColorControls, universalSizeShapeControls],
   rightControls: [
     {
@@ -15,33 +15,45 @@ export const ProgressIndicatorConfig = {
           label: 'Type',
           type: 'select' as ControlType,
           options: [
-            { value: 'spinner', label: 'Spinner' },
             { value: 'bar', label: 'Progress Bar' },
-            { value: 'circular', label: 'Circular' },
-            { value: 'dots', label: 'Dots' }
+            { value: 'circular', label: 'Circular' }
           ]
-        },
-        {
-          key: 'value',
-          label: 'Value',
-          type: 'number' as ControlType,
-          min: 0,
-          max: 100,
-          step: 5
         },
         {
           key: 'showPercentage',
           label: 'Show Percentage',
           type: 'checkbox' as ControlType
+        },
+        {
+          key: 'indeterminate',
+          label: 'Indeterminate Loading',
+          type: 'checkbox' as ControlType
+        },
+        {
+          key: 'autoProgress',
+          label: 'Auto Progress',
+          type: 'checkbox' as ControlType
+        },
+        {
+          key: 'autoProgressDuration',
+          label: 'Auto Duration (ms)',
+          type: 'number' as ControlType,
+          min: 1000,
+          max: 10000,
+          step: 500
         }
       ]
     }
   ],
   initialProps: {
     color: 'primary',
+    variant: 'solid',
     size: 'md',
-    type: 'bar',
-    value: 50,
-    showPercentage: false
+    type: 'circular',
+    value: 75,
+    showPercentage: true,
+    indeterminate: true,
+    autoProgress: false,
+    autoProgressDuration: 3000
   }
 };

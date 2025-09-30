@@ -6,6 +6,10 @@ import { extractFormProps, UNIVERSAL_DEFAULTS } from '../types';
 import { Icon } from '../Icon';
 import type { SearchProps } from './Search.types';
 import {
+  getSearchContainerStyles,
+  getSearchInputStyles,
+  getSearchIconStyles,
+  getLoadingStyles,
   getPlaceholderColor,
 } from './Search.styles';
 import {
@@ -84,6 +88,20 @@ export const Search = forwardRef<HTMLInputElement, SearchProps>((allProps, ref) 
     combinedRef as React.RefObject<HTMLInputElement>,
     autoFocus
   );
+
+  // Map search sizes to icon sizes
+  const getIconSize = (searchSize: typeof size): 'xs' | 'sm' | 'md' | 'lg' | 'xl' => {
+    const iconSizeMap = {
+      xs: 'sm' as const,
+      sm: 'sm' as const,
+      md: 'md' as const,
+      lg: 'md' as const,
+      xl: 'lg' as const,
+    };
+    return iconSizeMap[searchSize];
+  };
+
+  const iconSize = getIconSize(size);
   
   // Focus state
   const [isFocused, setIsFocused] = useState(false);
@@ -167,77 +185,63 @@ export const Search = forwardRef<HTMLInputElement, SearchProps>((allProps, ref) 
   // Handle legacy rounded prop
   const finalShape = rounded !== undefined ? (rounded ? 'pill' : 'round') : shape;
   
-  // Styles
-  const containerStyles = useMemo(() => ({
-    position: 'relative' as const,
-    display: 'inline-flex',
-    alignItems: 'center',
-    width: width || '300px',
-    border: `1px solid ${Boolean(error) ? cssVars.error : cssVars.border}`,
-    borderRadius: finalShape === 'pill' ? '9999px' : finalShape === 'round' ? '12px' : '6px',
-    backgroundColor: variant === 'solid' ? cssVars.primary : cssVars.background,
-    transition: animationsEnabled ? 'all 0.2s ease' : 'none',
-  }), [width, error, cssVars, finalShape, variant, animationsEnabled]);
-  
-  const inputStyles = useMemo(() => ({
-    flex: 1,
-    border: 'none',
-    outline: 'none',
-    backgroundColor: 'transparent',
-    color: variant === 'solid' ? cssVars.primaryForeground : cssVars.foreground,
-    fontSize: size === 'xs' ? '12px' : size === 'sm' ? '14px' : size === 'lg' ? '18px' : size === 'xl' ? '20px' : '16px',
-    padding: `${size === 'xs' ? '8px' : size === 'sm' ? '10px' : size === 'lg' ? '14px' : size === 'xl' ? '16px' : '12px'}`,
-    paddingLeft: showSearchIcon && searchIconPosition === 'left' ? '40px' : '12px',
-    paddingRight: showClearButton && value ? '40px' : '12px',
-  }), [size, variant, cssVars, showSearchIcon, searchIconPosition, showClearButton, value]);
-  
-  const searchIconStyles = useMemo(() => ({
-    position: 'absolute' as const,
-    left: searchIconPosition === 'left' ? '12px' : 'auto',
-    right: searchIconPosition === 'right' ? '12px' : 'auto',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '24px',
-    height: '24px',
-    border: 'none',
-    background: 'transparent',
-    cursor: disabled ? 'not-allowed' : 'pointer',
-    color: variant === 'solid' ? cssVars.primaryForeground : cssVars.mutedForeground,
-    opacity: disabled ? 0.5 : 1,
-  }), [disabled, variant, cssVars, searchIconPosition]);
-  
-  const clearIconStyles = useMemo(() => ({
-    position: 'absolute' as const,
-    right: '12px',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '24px',
-    height: '24px',
-    border: 'none',
-    background: 'transparent',
-    cursor: disabled ? 'not-allowed' : 'pointer',
-    color: variant === 'solid' ? cssVars.primaryForeground : cssVars.mutedForeground,
-    opacity: disabled ? 0.5 : 1,
-  }), [disabled, variant, cssVars]);
-  
-  const loadingStyles = useMemo(() => ({
-    animation: animationsEnabled ? 'spin 1s linear infinite' : 'none',
-  }), [animationsEnabled]);
-  
-  const focusStyles = useMemo(() =>
-    isFocused ? { outline: `2px solid ${cssVars.primary}`, outlineOffset: '2px' } : {},
-    [isFocused, cssVars]
-  );
-  
+  // Generate styles using new styling functions
+  const containerStyles = useMemo(() => getSearchContainerStyles(
+    size,
+    variant,
+    color,
+    customColor,
+    finalShape,
+    Boolean(disabled),
+    isFocused,
+    Boolean(error),
+    animationsEnabled,
+    cssVars,
+    width
+  ), [size, variant, color, customColor, finalShape, disabled, isFocused, error, animationsEnabled, cssVars, width]);
+
+  const inputStyles = useMemo(() => getSearchInputStyles(
+    size,
+    variant,
+    color,
+    customColor,
+    Boolean(disabled),
+    showSearchIcon && searchIconPosition === 'left',
+    showClearButton && Boolean(value),
+    cssVars
+  ), [size, variant, color, customColor, disabled, showSearchIcon, searchIconPosition, showClearButton, value, cssVars]);
+
+  const searchIconStyles = useMemo(() => getSearchIconStyles(
+    size,
+    searchIconPosition,
+    variant,
+    color,
+    customColor,
+    Boolean(disabled),
+    true, // clickable
+    animationsEnabled,
+    cssVars
+  ), [size, searchIconPosition, variant, color, customColor, disabled, animationsEnabled, cssVars]);
+
+  const clearIconStyles = useMemo(() => getSearchIconStyles(
+    size,
+    'right',
+    variant,
+    color,
+    customColor,
+    Boolean(disabled),
+    true, // clickable
+    animationsEnabled,
+    cssVars
+  ), [size, variant, color, customColor, disabled, animationsEnabled, cssVars]);
+
+  const loadingStyles = useMemo(() => getLoadingStyles(
+    size,
+    animationsEnabled
+  ), [size, animationsEnabled]);
+
   const combinedStyles: React.CSSProperties = {
     ...containerStyles,
-    ...focusStyles,
     ...style,
   };
   
@@ -267,12 +271,12 @@ export const Search = forwardRef<HTMLInputElement, SearchProps>((allProps, ref) 
         >
           {loading ? (
             <div style={loadingStyles}>
-              <Icon name="Refresh" size={size === 'xs' ? 'sm' : size === 'xl' ? 'lg' : 'md'} />
+              <Icon name="Refresh" size={iconSize} />
             </div>
           ) : searchIcon ? (
             searchIcon
           ) : (
-            <Icon name="Search" size={size === 'xs' ? 'sm' : size === 'xl' ? 'lg' : 'md'} />
+            <Icon name="Search" size={iconSize} />
           )}
         </button>
       )}
@@ -312,13 +316,13 @@ export const Search = forwardRef<HTMLInputElement, SearchProps>((allProps, ref) 
           {clearIcon ? (
             clearIcon
           ) : (
-            <Icon name="Cancel" size={size === 'xs' ? 'sm' : size === 'xl' ? 'lg' : 'md'} />
+            <Icon name="Cancel" size={iconSize} />
           )}
         </button>
       )}
       
       {/* Search icon on right */}
-      {showSearchIcon && searchIconPosition === 'right' && !showClearButton && (
+      {showSearchIcon && searchIconPosition === 'right' && (!showClearButton || !value) && (
         <button
           type="button"
           onClick={handleSearchClick}
@@ -329,12 +333,12 @@ export const Search = forwardRef<HTMLInputElement, SearchProps>((allProps, ref) 
         >
           {loading ? (
             <div style={loadingStyles}>
-              <Icon name="Refresh" size={size === 'xs' ? 'sm' : size === 'xl' ? 'lg' : 'md'} />
+              <Icon name="Refresh" size={iconSize} />
             </div>
           ) : searchIcon ? (
             searchIcon
           ) : (
-            <Icon name="Search" size={size === 'xs' ? 'sm' : size === 'xl' ? 'lg' : 'md'} />
+            <Icon name="Search" size={iconSize} />
           )}
         </button>
       )}

@@ -4,7 +4,7 @@ import React, { forwardRef, useMemo, useEffect } from 'react';
 import { useCSSVariables, useLoading, useSettings } from '../../../providers';
 import { extractInteractiveProps, UNIVERSAL_DEFAULTS } from '../types';
 import type { ButtonProps } from './Button.types';
-import { getVariantStyles, getSizeStyles, createBaseStyles, getShapeStyles, getIsometricStyles, getColorVariables, getIconOnlyStyles } from './Button.styles';
+import { getVariantStyles, getSizeStyles, createBaseStyles, getShapeStyles, getIsometricContainerStyles, getIsometricButtonStyles, getIsometricShadowStyles, getColorVariables, getIconOnlyStyles } from './Button.styles';
 import { createCenteredContent, createTextContainer } from './Button.utils';
 import { ProgressIndicator } from '../ProgressIndicator';
 import { useAsyncClick, useButtonHover } from './hooks';
@@ -103,14 +103,18 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>((allProps, ref)
   const variantStyles = useMemo(() => getVariantStyles(color, variant, customColor, cssVars), [color, variant, customColor, cssVars]);
   const sizeStyles = useMemo(() => getSizeStyles(size), [size]);
   const iconOnlyStyles = useMemo(() => isIconOnly ? getIconOnlyStyles(size, shape) : {}, [isIconOnly, size, shape]);
-  const isometricStyles = useMemo(() => hasIsometricAnimation ? getIsometricStyles(getColorVariables(color, customColor, cssVars), variant, shape) : {}, [hasIsometricAnimation, color, customColor, cssVars, variant, shape]);
+
+  // Isometric styles
+  const isometricContainerStyles = useMemo(() => hasIsometricAnimation ? getIsometricContainerStyles() : {}, [hasIsometricAnimation]);
+  const isometricButtonStyles = useMemo(() => hasIsometricAnimation ? getIsometricButtonStyles(getColorVariables(color, customColor, cssVars), variant, animationsEnabled) : {}, [hasIsometricAnimation, color, customColor, cssVars, variant, animationsEnabled]);
+  const isometricShadowStyles = useMemo(() => hasIsometricAnimation ? getIsometricShadowStyles(getColorVariables(color, customColor, cssVars), variant, shape, sizeStyles, animationsEnabled) : {}, [hasIsometricAnimation, color, customColor, cssVars, variant, shape, sizeStyles, animationsEnabled]);
 
   const combinedStyles: React.CSSProperties = {
     ...baseStyles,
     ...sizeStyles,
     ...variantStyles,
     ...iconOnlyStyles, // Apply icon-only styles after size styles to override them
-    ...isometricStyles,
+    ...isometricButtonStyles, // Apply isometric button styles
     width,
     height,
     ...style,
@@ -175,18 +179,26 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>((allProps, ref)
     </button>
   );
 
+  // Wrap with isometric container if isometric animation is enabled
+  const isometricWrappedButton = hasIsometricAnimation ? (
+    <div style={isometricContainerStyles}>
+      <div style={isometricShadowStyles} />
+      {buttonElement}
+    </div>
+  ) : buttonElement;
+
   // Wrap with animation mode if applicable
   if (useAnimationMode && animationMode === 'parallax') {
     return (
       <ParallaxTiltWrapper
         disabled={isDisabled || !useAnimationMode}
       >
-        {buttonElement}
+        {isometricWrappedButton}
       </ParallaxTiltWrapper>
     );
   }
 
-  return buttonElement;
+  return isometricWrappedButton;
 });
 
 Button.displayName = 'Button';

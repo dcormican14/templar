@@ -225,7 +225,8 @@ export const CollapsibleMenu = forwardRef<CollapsibleMenuRef, CollapsibleMenuPro
         hideNative={false}
         disabled={disabled}
         animate={animate}
-        style={{ 
+        height="100%"
+        style={{
           flex: 1,
           height: '100%',
           minHeight: 0, // Important for flex children

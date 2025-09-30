@@ -7,8 +7,6 @@ export const SegmentedControlConfig = {
   component: (
     <SegmentedControl
       items={['Option 1', 'Option 2', 'Option 3']}
-      selectedIndex={0}
-      onChange={(index, item) => console.log('Selected:', index, item)}
     />
   ),
   leftControls: [universalColorControls, universalSizeShapeControls],
@@ -32,26 +30,14 @@ export const SegmentedControlConfig = {
           ]
         },
         {
-          key: 'selectedIndex',
-          label: 'Selected Index',
-          type: 'select' as ControlType,
-          options: [
-            { label: 'Option 1 (0)', value: '0' },
-            { label: 'Option 2 (1)', value: '1' },
-            { label: 'Option 3 (2)', value: '2' },
-            { label: 'Option 4 (3)', value: '3' },
-            { label: 'Option 5 (4)', value: '4' }
-          ]
-        },
-        {
           key: 'itemCount',
           label: 'Number of Items',
           type: 'select' as ControlType,
           options: [
-            { label: '2 Items', value: '2' },
-            { label: '3 Items', value: '3' },
-            { label: '4 Items', value: '4' },
-            { label: '5 Items', value: '5' }
+            { label: '2 Items', value: 2 },
+            { label: '3 Items', value: 3 },
+            { label: '4 Items', value: 4 },
+            { label: '5 Items', value: 5 }
           ]
         },
         {

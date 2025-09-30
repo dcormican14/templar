@@ -1,5 +1,5 @@
 import { CSSProperties } from 'react';
-import { RadioButtonSize, RadioButtonColor, RadioButtonShape } from './RadioButton.types';
+import { RadioButtonSize, RadioButtonColor, RadioButtonShape, RadioButtonVariant } from './RadioButton.types';
 
 // Get color variables based on color prop
 export const getColorVariables = (color: RadioButtonColor, customColor: string | undefined, cssVars: any) => {
@@ -59,6 +59,95 @@ export const getColorVariables = (color: RadioButtonColor, customColor: string |
   };
 
   return colorMap[color] || colorMap.primary;
+};
+
+// Get variant styles for radio button
+export const getVariantStyles = (
+  variant: RadioButtonVariant,
+  color: RadioButtonColor,
+  customColor: string | undefined,
+  cssVars: any,
+  checked: boolean,
+  error: boolean
+): CSSProperties => {
+  const colors = getColorVariables(color, customColor, cssVars);
+
+  // Error state override
+  if (error) {
+    const baseErrorStyle = {
+      borderWidth: '2px',
+      borderStyle: 'solid' as const,
+    };
+
+    switch (variant) {
+      case 'solid':
+        return {
+          ...baseErrorStyle,
+          borderColor: cssVars.destructive,
+          backgroundColor: checked ? cssVars.destructive : cssVars.background,
+        };
+      case 'ghost':
+        return {
+          ...baseErrorStyle,
+          borderColor: cssVars.destructive,
+          backgroundColor: checked ? cssVars.destructive : 'transparent',
+        };
+      case 'glassmorphic':
+        return {
+          ...baseErrorStyle,
+          borderColor: cssVars.destructive,
+          backgroundColor: checked ? cssVars.destructive : cssVars.destructiveBackground,
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
+        };
+      case 'outline':
+      default:
+        return {
+          ...baseErrorStyle,
+          borderColor: cssVars.destructive,
+          backgroundColor: checked ? cssVars.destructive : cssVars.background,
+        };
+    }
+  }
+
+  // Normal state styles by variant
+  switch (variant) {
+    case 'solid':
+      return {
+        borderColor: checked ? colors.main : colors.background,
+        backgroundColor: checked ? colors.main : colors.background,
+        borderWidth: '2px',
+        borderStyle: 'solid' as const,
+      };
+    case 'ghost':
+      return {
+        borderColor: checked ? colors.main : cssVars.border,
+        backgroundColor: checked ? colors.main : 'transparent',
+        borderWidth: '2px',
+        borderStyle: 'solid' as const,
+      };
+    case 'glassmorphic':
+      const reflectionColor = colors.hover || colors.main || '#ffffff';
+      return {
+        borderColor: checked ? colors.main : colors.border,
+        borderWidth: '2px',
+        borderStyle: 'solid' as const,
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        boxShadow: `0 4px 16px 0 ${colors.shadow || 'rgba(31, 38, 135, 0.37)'}`,
+        background: checked
+          ? colors.main
+          : `linear-gradient(135deg, transparent 0%, ${reflectionColor}20 20%, ${reflectionColor}15 25%, transparent 35%), ${colors.background}`,
+      };
+    case 'outline':
+    default:
+      return {
+        borderColor: checked ? colors.main : cssVars.border,
+        backgroundColor: checked ? colors.main : cssVars.background,
+        borderWidth: '2px',
+        borderStyle: 'solid' as const,
+      };
+  }
 };
 
 // Size configurations
@@ -152,9 +241,7 @@ export const getRadioButtonContainerStyles = (
   };
 
   return {
-    display: 'inline-flex',
-    alignItems: 'flex-start',
-    gap: gapMap[size],
+    display: 'inline-block',
     cursor: disabled ? 'not-allowed' : (contentToggleable ? 'pointer' : 'default'),
     fontFamily: 'inherit',
   };
@@ -166,6 +253,7 @@ export const getRadioButtonCircleStyles = (
   color: RadioButtonColor,
   customColor: string | undefined,
   shape: RadioButtonShape,
+  variant: RadioButtonVariant,
   checked: boolean,
   disabled: boolean,
   focused: boolean,
@@ -174,8 +262,8 @@ export const getRadioButtonCircleStyles = (
   cssVars: any
 ): CSSProperties => {
   const dimensions = getRadioButtonDimensions(size);
-  const colors = getRadioButtonColors(color, customColor, checked, disabled, error, cssVars);
-  
+  const variantStyles = getVariantStyles(variant, color, customColor, cssVars, checked, error);
+
   const getBorderRadius = () => {
     switch (shape) {
       case 'sharp':
@@ -198,20 +286,21 @@ export const getRadioButtonCircleStyles = (
     };
     return marginMap[size];
   };
-  
+
+  const colors = getColorVariables(color, customColor, cssVars);
+
   return {
     position: 'relative',
     width: `${dimensions.size}px`,
     height: `${dimensions.size}px`,
     borderRadius: getBorderRadius(),
-    border: `2px solid ${colors.border}`,
-    backgroundColor: colors.background,
+    ...variantStyles,
     transition: animationsEnabled
       ? 'border-color var(--duration-fast) var(--animation-smooth), background-color var(--duration-fast) var(--animation-smooth), opacity var(--duration-fast) var(--animation-smooth)'
       : 'none',
     cursor: disabled ? 'not-allowed' : 'pointer',
     opacity: disabled ? 0.6 : 1,
-    outline: focused ? `2px solid ${colors.variantColor}` : 'none',
+    outline: focused ? `2px solid ${colors.main}` : 'none',
     outlineOffset: '2px',
     flexShrink: 0,
     marginTop: getMarginTop(),
@@ -224,6 +313,7 @@ export const getRadioButtonDotStyles = (
   color: RadioButtonColor,
   customColor: string | undefined,
   shape: RadioButtonShape,
+  variant: RadioButtonVariant,
   checked: boolean,
   disabled: boolean,
   error: boolean,
@@ -231,8 +321,8 @@ export const getRadioButtonDotStyles = (
   cssVars: any
 ): CSSProperties => {
   const dimensions = getRadioButtonDimensions(size);
-  const colors = getRadioButtonColors(color, customColor, checked, disabled, error, cssVars);
-  
+  const colors = getColorVariables(color, customColor, cssVars);
+
   const getDotRadius = () => {
     switch (shape) {
       case 'sharp':
@@ -244,7 +334,26 @@ export const getRadioButtonDotStyles = (
         return '50%';
     }
   };
-  
+
+  // Get dot color based on variant and state
+  const getDotColor = () => {
+    if (!checked) return 'transparent';
+
+    if (error) {
+      return cssVars.destructiveForeground || cssVars.background;
+    }
+
+    switch (variant) {
+      case 'solid':
+      case 'ghost':
+      case 'glassmorphic':
+        return colors.foreground || cssVars.background;
+      case 'outline':
+      default:
+        return colors.foreground || cssVars.background;
+    }
+  };
+
   return {
     position: 'absolute',
     top: '50%',
@@ -252,7 +361,7 @@ export const getRadioButtonDotStyles = (
     width: `${dimensions.dotSize}px`,
     height: `${dimensions.dotSize}px`,
     borderRadius: getDotRadius(),
-    backgroundColor: colors.dot,
+    backgroundColor: getDotColor(),
     transform: `translate(-50%, -50%) scale(${checked ? 1 : 0})`,
     transition: animationsEnabled
       ? 'all var(--duration-fast) var(--animation-spring)'
@@ -304,11 +413,14 @@ export const getLabelStyles = (
   };
 };
 
-// Description styles
-export const getDescriptionStyles = (
+// Header styles
+export const getHeaderStyles = (
   size: RadioButtonSize,
+  color: RadioButtonColor,
+  customColor: string | undefined,
   disabled: boolean,
   error: boolean,
+  checked: boolean,
   contentToggleable: boolean,
   cssVars: any
 ): CSSProperties => {
@@ -319,14 +431,29 @@ export const getDescriptionStyles = (
     lg: '16px',
     xl: '18px',
   };
-  
+
+  // Get the color that matches the selected element
+  const colors = getColorVariables(color, customColor, cssVars);
+  let headerColor;
+
+  if (disabled) {
+    headerColor = cssVars.mutedForeground;
+  } else if (error) {
+    headerColor = cssVars.destructive;
+  } else if (checked) {
+    headerColor = colors.main; // Use the same color as the selected radio button
+  } else {
+    headerColor = cssVars.foreground;
+  }
+
   return {
     fontSize: fontSizeMap[size],
-    color: disabled ? cssVars.mutedForeground : (error ? cssVars.destructive : cssVars.mutedForeground),
-    marginTop: '2px',
+    color: headerColor,
+    marginBottom: '8px',
     lineHeight: 1.3,
     userSelect: 'none',
     cursor: disabled ? 'not-allowed' : (contentToggleable ? 'pointer' : 'default'),
+    fontWeight: '500',
   };
 };
 

@@ -238,6 +238,50 @@ export const InteractiveComponentDisplay = forwardRef<
     renderProps.icon = initialProps._defaultIcon;
   }
 
+  // Handle computed actions logic - if _actionsComputed is true, build actions from hasActions and action labels
+  if (initialProps._actionsComputed && renderProps.hasActions) {
+    const actions = [];
+
+    // Add first action if label is provided
+    if (renderProps.actionLabel1) {
+      actions.push({
+        label: renderProps.actionLabel1,
+        onClick: () => console.log(`${renderProps.actionLabel1} clicked`),
+        variant: 'solid'
+      });
+    }
+
+    // Add second action if label is provided
+    if (renderProps.actionLabel2) {
+      actions.push({
+        label: renderProps.actionLabel2,
+        onClick: () => console.log(`${renderProps.actionLabel2} clicked`),
+        variant: 'outline'
+      });
+    }
+
+    // Set the computed actions array
+    renderProps.actions = actions.length > 0 ? actions : undefined;
+  } else if (initialProps._actionsComputed && !renderProps.hasActions) {
+    // If hasActions is false, remove actions entirely
+    renderProps.actions = undefined;
+  }
+
+  // Handle computed items logic - if _itemsComputed is true, build items from itemCount and item labels
+  if (initialProps._itemsComputed) {
+    const items = [];
+    const itemCount = renderProps.itemCount || 3;
+
+    // Build items array based on itemCount
+    for (let i = 1; i <= itemCount; i++) {
+      const itemKey = `item${i}` as keyof typeof renderProps;
+      items.push(renderProps[itemKey] || `Option ${i}`);
+    }
+
+    // Set the computed items array
+    renderProps.items = items;
+  }
+
   // Add callback handlers for interactive components
   const interactiveProps = { ...renderProps };
 
@@ -253,6 +297,17 @@ export const InteractiveComponentDisplay = forwardRef<
         // Also call original onChange if it exists
         if (renderProps.onChange) {
           renderProps.onChange(checked);
+        }
+      };
+    }
+
+    // For SegmentedControl, add onChange handler to update selectedIndex
+    if (componentName === 'SegmentedControl') {
+      interactiveProps.onChange = (selectedIndex: number, selectedItem: string) => {
+        setComponentProps(prev => ({ ...prev, selectedIndex }));
+        // Also call original onChange if it exists
+        if (renderProps.onChange) {
+          renderProps.onChange(selectedIndex, selectedItem);
         }
       };
     }

@@ -5,6 +5,7 @@ import { useCSSVariables, useSettings } from '../../../providers';
 import { Button } from '../Button';
 import { Icon } from '../Icon';
 import { Divider } from '../Divider';
+import { ProgressIndicator } from '../ProgressIndicator';
 import { extractContainerProps, UNIVERSAL_DEFAULTS } from '../types';
 import type { NotificationProps } from './Notification.types';
 import {
@@ -151,6 +152,9 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>((allPr
       ...notificationStyles,
       width,
       height,
+      // Combine loading and disabled states properly
+      opacity: disabled ? 0.6 : loading ? 0.7 : undefined,
+      cursor: disabled ? 'not-allowed' : loading ? 'wait' : undefined,
       ...style,
     };
 
@@ -182,14 +186,24 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>((allPr
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
             {showIcon && (
               <div style={iconContainerStyles}>
-                {createTypeIcon(effectiveColor, size, cssVars, customIcon, variant)}
+                {loading ? (
+                  <ProgressIndicator
+                    type="spinner"
+                    size={size === 'xs' ? 'xs' : size === 'sm' ? 'sm' : size === 'lg' ? 'md' : 'sm'}
+                    color={variant === 'outline' ? 'primary' : effectiveColor}
+                    variant={variant === 'solid' ? 'solid' : 'outline'}
+                    disabled={disabled}
+                  />
+                ) : (
+                  createTypeIcon(effectiveColor, size, cssVars, customIcon, variant)
+                )}
               </div>
             )}
             <h4 style={titleStyles}>{title}</h4>
           </div>
 
           {/* Right side: Close Button */}
-          {dismissible && onDismiss && (
+          {dismissible && onDismiss && !loading && !disabled && (
             <button
               onClick={handleDismiss}
               style={{
@@ -274,7 +288,7 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>((allPr
             </div>
 
             {/* Right side: Actions */}
-            {actions && actions.length > 0 && (
+            {actions && actions.length > 0 && !loading && !disabled && (
               <div style={{
                 display: 'flex',
                 gap: '8px',
@@ -282,30 +296,83 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>((allPr
                 flexWrap: 'wrap',
                 flexShrink: 0
               }}>
-                {actions.map((action, index) => (
-                  <button
-                    key={index}
-                    onClick={action.onClick}
-                    style={getActionButtonStyles(
-                      action.variant || 'outline',
-                      size,
-                      cssVars,
-                      animationsEnabled
-                    )}
-                    onMouseEnter={(e) => {
-                      if (animationsEnabled) {
-                        e.currentTarget.style.opacity = '0.8';
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (animationsEnabled) {
-                        e.currentTarget.style.opacity = '1';
-                      }
-                    }}
-                  >
-                    {action.label}
-                  </button>
-                ))}
+                {actions.map((action, index) => {
+                  const actionVariant = action.variant || 'outline';
+                  const baseStyles = getActionButtonStyles(actionVariant, size, cssVars, animationsEnabled, variant, effectiveColor);
+
+                  // Get notification-specific colors for hover effects
+                  const getHoverColors = (color: string) => {
+                    const colorMap: Record<string, any> = {
+                      primary: { hover: cssVars.primaryHover },
+                      secondary: { hover: cssVars.secondaryHover },
+                      success: { hover: cssVars.successHover },
+                      warning: { hover: cssVars.warningHover },
+                      destructive: { hover: cssVars.destructiveHover },
+                      info: { hover: cssVars.infoHover },
+                    };
+                    return colorMap[color]?.hover || cssVars.primaryHover;
+                  };
+
+                  const hoverColor = getHoverColors(effectiveColor);
+
+                  return (
+                    <button
+                      key={index}
+                      onClick={action.onClick}
+                      style={baseStyles}
+                      onMouseEnter={(e) => {
+                        if (animationsEnabled) {
+                          const isInSolidNotification = variant === 'solid';
+
+                          if (actionVariant === 'solid') {
+                            if (isInSolidNotification) {
+                              // Solid button in solid notification: slightly darken the text color background
+                              e.currentTarget.style.backgroundColor = cssVars.foregroundAccent;
+                              e.currentTarget.style.borderTopColor = cssVars.foregroundAccent;
+                              e.currentTarget.style.borderRightColor = cssVars.foregroundAccent;
+                              e.currentTarget.style.borderBottomColor = cssVars.foregroundAccent;
+                              e.currentTarget.style.borderLeftColor = cssVars.foregroundAccent;
+                              e.currentTarget.style.color = hoverColor;
+                            } else {
+                              // Normal solid button hover
+                              e.currentTarget.style.backgroundColor = hoverColor;
+                              e.currentTarget.style.borderTopColor = hoverColor;
+                              e.currentTarget.style.borderRightColor = hoverColor;
+                              e.currentTarget.style.borderBottomColor = hoverColor;
+                              e.currentTarget.style.borderLeftColor = hoverColor;
+                            }
+                          } else if (actionVariant === 'outline') {
+                            if (isInSolidNotification) {
+                              // Outline button in solid notification: add subtle text color background
+                              e.currentTarget.style.backgroundColor = cssVars.foregroundAccent;
+                            } else {
+                              // Normal outline button hover - use notification color scheme
+                              const notificationBg = cssVars[`${effectiveColor}Background`] || cssVars.primaryBackground;
+                              e.currentTarget.style.backgroundColor = notificationBg;
+                              e.currentTarget.style.borderTopColor = hoverColor;
+                              e.currentTarget.style.borderRightColor = hoverColor;
+                              e.currentTarget.style.borderBottomColor = hoverColor;
+                              e.currentTarget.style.borderLeftColor = hoverColor;
+                              e.currentTarget.style.color = hoverColor;
+                            }
+                          } else if (actionVariant === 'ghost') {
+                            const ghostBg = cssVars[`${effectiveColor}Background`] || cssVars.primaryBackground;
+                            e.currentTarget.style.backgroundColor = ghostBg;
+                            e.currentTarget.style.color = hoverColor;
+                          }
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (animationsEnabled) {
+                          // Reset to base styles
+                          Object.assign(e.currentTarget.style, baseStyles);
+                        }
+                      }}
+                    >
+                      {action.label}
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>

@@ -14,18 +14,15 @@ export const useButtonHover = ({ variant, isDisabled, animationsEnabled, cssVars
   const handleMouseEnter = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
     if (!isDisabled && animationsEnabled) {
       if (hasIsometricAnimation && variant !== 'ghost' && variant !== 'glassmorphic') {
-        // Small bouncy press animation - button moves down, border reduces
-        e.currentTarget.style.transform = 'translateY(3px)';
-        e.currentTarget.style.borderBottomWidth = '3px';
-        // Ensure the border color is maintained
-        const borderColor = variant === 'outline' ? colors?.main : colors?.foreground;
-        if (borderColor) {
-          e.currentTarget.style.borderBottomColor = borderColor;
-          // For solid variant, also update all other border colors to match
-          if (variant === 'solid') {
-            e.currentTarget.style.borderTopColor = borderColor;
-            e.currentTarget.style.borderRightColor = borderColor;
-            e.currentTarget.style.borderLeftColor = borderColor;
+        // Apply isometric hover animation - button moves toward shadow
+        e.currentTarget.style.transform = 'translate(3px, 3px)';
+
+        // Find the shadow element (previous sibling in the isometric container)
+        const container = e.currentTarget.parentElement;
+        if (container) {
+          const shadowElement = container.querySelector('div:first-child') as HTMLElement;
+          if (shadowElement) {
+            shadowElement.style.transform = 'translate(-1px, -1px)';
           }
         }
       } else if (variant === 'outline' || variant === 'ghost') {
@@ -43,17 +40,14 @@ export const useButtonHover = ({ variant, isDisabled, animationsEnabled, cssVars
     if (!isDisabled) {
       if (hasIsometricAnimation && variant !== 'ghost' && variant !== 'glassmorphic') {
         // Return to rest position
-        e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.borderBottomWidth = '6px';
-        // Ensure the border color is maintained
-        const borderColor = variant === 'outline' ? colors?.main : colors?.foreground;
-        if (borderColor) {
-          e.currentTarget.style.borderBottomColor = borderColor;
-          // For solid variant, also update all other border colors to match
-          if (variant === 'solid') {
-            e.currentTarget.style.borderTopColor = borderColor;
-            e.currentTarget.style.borderRightColor = borderColor;
-            e.currentTarget.style.borderLeftColor = borderColor;
+        e.currentTarget.style.transform = 'translate(0, 0)';
+
+        // Find the shadow element and reset its position
+        const container = e.currentTarget.parentElement;
+        if (container) {
+          const shadowElement = container.querySelector('div:first-child') as HTMLElement;
+          if (shadowElement) {
+            shadowElement.style.transform = 'translate(0, 0)';
           }
         }
       } else if (variant === 'outline' || variant === 'ghost') {

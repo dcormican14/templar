@@ -1,18 +1,92 @@
 import React from 'react';
 import { Search } from './Search';
+import { Button } from '../Button';
+import { Icon } from '../Icon';
 import { universalColorControls, universalSizeShapeControls, universalStateControls } from '../shared/universalControls';
 import type { ControlType } from '../../molecules/InteractiveComponentDisplay/InteractiveComponentDisplay.types';
+import { useToast } from '../../../providers/ToastProvider';
+
+// Wrapper component that uses the toast hook
+const DynamicSearchDemo: React.FC<any> = (props) => {
+  const { info, success } = useToast();
+  const [searchValue, setSearchValue] = React.useState(props.value || "");
+
+  // Update internal state when props.value changes
+  React.useEffect(() => {
+    setSearchValue(props.value || "");
+  }, [props.value]);
+
+  const handleChange = (value: string) => {
+    setSearchValue(value);
+    console.log('Search value changed:', value);
+  };
+
+  const handleSearch = (value: string) => {
+    if (value.trim()) {
+      success('Search performed!', `You searched for: "${value}"`);
+    } else {
+      info('Empty search', 'Please enter a search term');
+    }
+  };
+
+  const handleClear = () => {
+    setSearchValue("");
+    info('Search cleared', 'Search input has been cleared');
+  };
+
+  const handleOpenClick = () => {
+    if (searchValue.trim()) {
+      info('Open action', `Opening search results for: "${searchValue}"`);
+    } else {
+      info('Open action', 'Click to open search interface');
+    }
+  };
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <Search
+        placeholder={props.placeholder || "Search for anything..."}
+        value={searchValue}
+        onChange={handleChange}
+        onSearch={handleSearch}
+        onClear={handleClear}
+        color={props.color}
+        variant={props.variant}
+        size={props.size}
+        shape={props.shape}
+        disabled={props.disabled}
+        loading={props.loading}
+        error={props.error}
+        label={props.label}
+        helperText={props.helperText}
+        width={props.width}
+        height={props.height}
+        showSearchIcon={props.showSearchIcon}
+        showClearButton={props.showClearButton}
+        searchIconPosition={props.searchIconPosition}
+        clearOnEscape={props.clearOnEscape}
+        debounceDelay={props.debounceDelay}
+        required={props.required}
+        readOnly={props.readOnly}
+        autoFocus={props.autoFocus}
+        autoComplete={props.autoComplete}
+      />
+      <Button
+        onClick={handleOpenClick}
+        disabled={props.disabled}
+        variant={props.variant}
+        color={props.error ? 'destructive' : props.color}
+        size={props.size}
+        shape={props.shape}
+        icon={<Icon name="OpenInWindow" size={props.size} />}
+        aria-label="Open in new window"
+      />
+    </div>
+  );
+};
 
 export const SearchConfig = {
-  component: (
-    <Search
-      placeholder="Search for anything..."
-      value=""
-      onChange={(value) => console.log('Search value changed:', value)}
-      onSearch={(value) => console.log('Search submitted:', value)}
-      onClear={() => console.log('Search cleared')}
-    />
-  ),
+  component: <DynamicSearchDemo />,
   leftControls: [universalColorControls, universalSizeShapeControls],
   rightControls: [
     universalStateControls,

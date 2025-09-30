@@ -21,9 +21,9 @@ export interface RadioButtonSpecificProps extends Omit<ComponentProps<'input'>, 
   label?: ReactNode;
   
   /**
-   * Description text shown below the label
+   * Header text shown above the radio button and label
    */
-  description?: ReactNode;
+  header?: ReactNode;
   
   /**
    * Position of the label relative to the radio button
@@ -109,7 +109,7 @@ export interface RadioButtonGroupProps {
   options: Array<{
     value: string;
     label?: ReactNode;
-    description?: ReactNode;
+    header?: ReactNode;
     disabled?: boolean;
   }>;
   

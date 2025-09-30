@@ -2,7 +2,7 @@
 
 import React, { Fragment } from 'react';
 import { useCSSVariables } from '../../../providers';
-import { Icon, CodeBlock } from '../../atoms';
+import { Icon, CodeBlock, ProgressIndicator } from '../../atoms';
 import type { ReadmeDisplayProps } from './ReadmeDisplay.types';
 
 export function ReadmeDisplay({ content, loading = false, className, style }: ReadmeDisplayProps) {
@@ -98,7 +98,7 @@ export function ReadmeDisplay({ content, loading = false, className, style }: Re
           alignItems: 'center', 
           gap: '16px' 
         }}>
-          <Icon name="Loading" spin size="lg" style={{ color: cssVars.primary }} />
+          <ProgressIndicator variant="circle" size="lg" color="primary" />
           <p style={{ color: cssVars.foregroundAccent }}>Loading documentation...</p>
         </div>
       );

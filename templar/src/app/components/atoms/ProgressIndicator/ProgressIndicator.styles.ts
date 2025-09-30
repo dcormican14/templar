@@ -19,42 +19,54 @@ export const getColorVariables = (color: ProgressIndicatorColor, customColor: st
       background: cssVars.primaryBackground,
       foreground: cssVars.primaryForeground,
       hover: cssVars.primaryHover,
+      accent: cssVars.primaryAccent,
       border: cssVars.primaryBorder,
+      shadow: cssVars.primaryShadow,
     },
     secondary: {
       main: cssVars.secondary,
       background: cssVars.secondaryBackground,
       foreground: cssVars.secondaryForeground,
       hover: cssVars.secondaryHover,
+      accent: cssVars.secondaryAccent,
       border: cssVars.secondaryBorder,
+      shadow: cssVars.secondaryShadow,
     },
     success: {
       main: cssVars.success,
       background: cssVars.successBackground,
       foreground: cssVars.successForeground,
       hover: cssVars.successHover,
+      accent: cssVars.successAccent,
       border: cssVars.successBorder,
+      shadow: cssVars.successShadow,
     },
     warning: {
       main: cssVars.warning,
       background: cssVars.warningBackground,
       foreground: cssVars.warningForeground,
       hover: cssVars.warningHover,
+      accent: cssVars.warningAccent,
       border: cssVars.warningBorder,
+      shadow: cssVars.warningShadow,
     },
     destructive: {
       main: cssVars.destructive,
       background: cssVars.destructiveBackground,
       foreground: cssVars.destructiveForeground,
       hover: cssVars.destructiveHover,
+      accent: cssVars.destructiveAccent,
       border: cssVars.destructiveBorder,
+      shadow: cssVars.destructiveShadow,
     },
     info: {
       main: cssVars.info,
       background: cssVars.infoBackground,
       foreground: cssVars.infoForeground,
       hover: cssVars.infoHover,
+      accent: cssVars.infoAccent,
       border: cssVars.infoBorder,
+      shadow: cssVars.infoShadow,
     },
   };
 
@@ -85,8 +97,6 @@ export const getSizeConfig = (size: ProgressIndicatorSize) => {
       circularSize: '24px',
       circularThickness: '2px',
       fontSize: '10px',
-      dotSize: '4px',
-      dotSpacing: '2px',
     },
     sm: {
       height: '6px',
@@ -95,8 +105,6 @@ export const getSizeConfig = (size: ProgressIndicatorSize) => {
       circularSize: '32px',
       circularThickness: '3px',
       fontSize: '11px',
-      dotSize: '6px',
-      dotSpacing: '3px',
     },
     md: {
       height: '8px',
@@ -105,8 +113,6 @@ export const getSizeConfig = (size: ProgressIndicatorSize) => {
       circularSize: '40px',
       circularThickness: '4px',
       fontSize: '12px',
-      dotSize: '8px',
-      dotSpacing: '4px',
     },
     lg: {
       height: '12px',
@@ -115,8 +121,6 @@ export const getSizeConfig = (size: ProgressIndicatorSize) => {
       circularSize: '48px',
       circularThickness: '5px',
       fontSize: '14px',
-      dotSize: '10px',
-      dotSpacing: '5px',
     },
     xl: {
       height: '16px',
@@ -125,8 +129,6 @@ export const getSizeConfig = (size: ProgressIndicatorSize) => {
       circularSize: '56px',
       circularThickness: '6px',
       fontSize: '16px',
-      dotSize: '12px',
-      dotSpacing: '6px',
     },
   };
 
@@ -172,9 +174,9 @@ export const getBarProgressStyles = (
     position: 'relative',
     width: width || '200px',
     height: sizeConfig.height,
-    overflow: 'hidden',
-    transition: animationsEnabled 
-      ? 'background-color var(--duration-fast) var(--animation-smooth)' 
+    overflow: 'visible', // Allow text to overflow outside the bar
+    transition: animationsEnabled
+      ? 'background-color var(--duration-fast) var(--animation-smooth)'
       : 'none',
     ...getShapeStyles(shape),
   };
@@ -185,12 +187,30 @@ export const getBarProgressStyles = (
       case 'solid':
         return {
           backgroundColor: colors.background,
-          border: `1px solid ${colors.border || cssVars.border}`,
+          border: 'none',
         };
       case 'ghost':
         return {
           backgroundColor: 'transparent',
-          border: `1px solid ${colors.background}`,
+          border: `1px solid transparent`,
+        };
+      case 'glassmorphic':
+        const reflectionColor = colors.hover || colors.main || '#ffffff';
+        const topReflectionGradient = `linear-gradient(135deg, transparent 0%, ${reflectionColor}20 20%, ${reflectionColor}15 25%, transparent 35%)`;
+        const bottomReflectionGradient = `linear-gradient(135deg, transparent 45%, ${reflectionColor}25 55%, ${reflectionColor}20 65%, transparent 80%)`;
+
+        return {
+          background: `
+            ${topReflectionGradient},
+            ${bottomReflectionGradient},
+            ${colors.background}
+          `,
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
+          border: `1px solid ${colors.border || cssVars.border}`,
+          boxShadow: `0 8px 32px 0 ${colors.shadow || 'rgba(31, 38, 135, 0.37)'}`,
+          position: 'relative',
+          overflow: 'visible', // Allow text to overflow even for glassmorphic
         };
       case 'outline':
       default:
@@ -243,11 +263,25 @@ export const getProgressFillStyles = (
     switch (variant) {
       case 'solid':
         return {
-          backgroundColor: colors.main,
+          backgroundColor: colors.accent || colors.main,
         };
       case 'ghost':
         return {
           backgroundColor: colors.main,
+        };
+      case 'glassmorphic':
+        const reflectionColor = colors.hover || colors.main || '#ffffff';
+        const topReflectionGradient = `linear-gradient(135deg, transparent 0%, ${reflectionColor}30 20%, ${reflectionColor}25 25%, transparent 35%)`;
+        const bottomReflectionGradient = `linear-gradient(135deg, transparent 45%, ${reflectionColor}35 55%, ${reflectionColor}30 65%, transparent 80%)`;
+
+        return {
+          background: `
+            ${topReflectionGradient},
+            ${bottomReflectionGradient},
+            ${colors.accent || colors.main}
+          `,
+          backdropFilter: 'blur(5px)',
+          WebkitBackdropFilter: 'blur(5px)',
         };
       case 'outline':
       default:
@@ -259,9 +293,9 @@ export const getProgressFillStyles = (
 
   // Width based on progress or indeterminate state
   if (indeterminate) {
-    baseStyles.width = '30%';
-    baseStyles.animation = animationsEnabled 
-      ? 'progress-indeterminate 2s ease-in-out infinite' 
+    baseStyles.width = '30%'; // Fixed width bar that will slide within track
+    baseStyles.animation = animationsEnabled
+      ? 'progress-indeterminate 2s ease-in-out infinite'
       : 'none';
   } else {
     baseStyles.width = `${Math.max(0, Math.min(100, progress))}%`;
@@ -324,34 +358,118 @@ export const getSpinnerStyles = (
 export const getCircularProgressStyles = (
   color: ProgressIndicatorColor,
   customColor: string | undefined,
+  variant: ProgressIndicatorVariant,
   size: ProgressIndicatorSize,
   progress: number,
   disabled: boolean,
   animationsEnabled: boolean,
   cssVars: any
 ): React.CSSProperties => {
+  const colors = getColorVariables(color, customColor, cssVars);
   const sizeConfig = getSizeConfig(size);
 
-  return {
+  const baseStyles: React.CSSProperties = {
     width: sizeConfig.circularSize,
     height: sizeConfig.circularSize,
     opacity: disabled ? 0.6 : 1,
   };
+
+  // Add glassmorphic container effects if needed
+  if (variant === 'glassmorphic') {
+    const reflectionColor = colors.hover || colors.main || '#ffffff';
+    const topReflectionGradient = `linear-gradient(135deg, transparent 0%, ${reflectionColor}20 20%, ${reflectionColor}15 25%, transparent 35%)`;
+    const bottomReflectionGradient = `linear-gradient(135deg, transparent 45%, ${reflectionColor}25 55%, ${reflectionColor}20 65%, transparent 80%)`;
+
+    return {
+      ...baseStyles,
+      background: `
+        ${topReflectionGradient},
+        ${bottomReflectionGradient},
+        ${colors.background}
+      `,
+      backdropFilter: 'blur(10px)',
+      WebkitBackdropFilter: 'blur(10px)',
+      borderRadius: '50%',
+      border: `1px solid ${colors.border || cssVars.border}`,
+      boxShadow: `0 8px 32px 0 ${colors.shadow || 'rgba(31, 38, 135, 0.37)'}`,
+      position: 'relative',
+      overflow: 'hidden',
+    };
+  }
+
+  return baseStyles;
 };
 
 // Circular progress SVG styles
 export const getCircularProgressSVGStyles = (
   color: ProgressIndicatorColor,
   customColor: string | undefined,
+  variant: ProgressIndicatorVariant,
   size: ProgressIndicatorSize,
   cssVars: any
 ) => {
   const colors = getColorVariables(color, customColor, cssVars);
   const sizeConfig = getSizeConfig(size);
-  
+
   const radius = 16;
   const circumference = 2 * Math.PI * radius;
-  
+
+  // Get variant-specific track and progress styles
+  const getVariantStyles = () => {
+    switch (variant) {
+      case 'solid':
+        return {
+          track: {
+            stroke: colors.background,
+          },
+          progress: {
+            stroke: colors.accent || colors.main,
+          }
+        };
+      case 'ghost':
+        return {
+          track: {
+            stroke: 'transparent',
+          },
+          progress: {
+            stroke: colors.main,
+          }
+        };
+      case 'glassmorphic':
+        // For glassmorphic, match the bar variant styling approach
+        const reflectionColor = colors.hover || colors.main || '#ffffff';
+        return {
+          track: {
+            stroke: colors.background,
+            strokeOpacity: 1,
+          },
+          progress: {
+            stroke: `url(#glassmorphic-gradient-${color})`,
+          },
+          gradientDefs: {
+            gradientId: `glassmorphic-gradient-${color}`,
+            stops: [
+              { offset: '0%', stopColor: colors.accent || colors.main, stopOpacity: 1 },
+              { offset: '50%', stopColor: reflectionColor, stopOpacity: 0.8 },
+              { offset: '100%', stopColor: colors.accent || colors.main, stopOpacity: 1 }
+            ]
+          }
+        };
+      case 'outline':
+      default:
+        return {
+          track: {
+            stroke: cssVars.muted,
+          },
+          progress: {
+            stroke: colors.main,
+          }
+        };
+    }
+  };
+
+  const variantStyles = getVariantStyles();
+
   return {
     svg: {
       width: '100%',
@@ -360,62 +478,126 @@ export const getCircularProgressSVGStyles = (
     } as React.CSSProperties,
     track: {
       fill: 'none',
-      stroke: cssVars.muted,
       strokeWidth: sizeConfig.circularThickness,
+      ...variantStyles.track,
     } as React.CSSProperties,
     progress: {
       fill: 'none',
-      stroke: colors.main,
       strokeWidth: sizeConfig.circularThickness,
       strokeLinecap: 'round' as const,
       transition: 'stroke-dashoffset var(--duration-smooth) var(--animation-smooth)',
+      ...variantStyles.progress,
     } as React.CSSProperties,
     circumference,
     radius,
+    gradientDefs: variantStyles.gradientDefs,
   };
 };
 
-// Dots progress styles
-export const getDotsProgressStyles = (
+// Circular indeterminate progress SVG styles
+export const getCircularIndeterminateProgressSVGStyles = (
   color: ProgressIndicatorColor,
   customColor: string | undefined,
+  variant: ProgressIndicatorVariant,
   size: ProgressIndicatorSize,
-  disabled: boolean,
   animationsEnabled: boolean,
   cssVars: any
-): React.CSSProperties => {
-  const sizeConfig = getSizeConfig(size);
-
-  return {
-    display: 'flex',
-    gap: sizeConfig.dotSpacing,
-    alignItems: 'center',
-    opacity: disabled ? 0.6 : 1,
-  };
-};
-
-// Individual dot styles
-export const getDotStyles = (
-  color: ProgressIndicatorColor,
-  customColor: string | undefined,
-  size: ProgressIndicatorSize,
-  index: number,
-  animationsEnabled: boolean,
-  cssVars: any
-): React.CSSProperties => {
+) => {
   const colors = getColorVariables(color, customColor, cssVars);
   const sizeConfig = getSizeConfig(size);
 
+  const radius = 16;
+  const circumference = 2 * Math.PI * radius;
+
+  // Create a segment that's 30% of the circle (similar to bar's 30% width)
+  const segmentLength = circumference * 0.3;
+  const gapLength = circumference - segmentLength;
+
+  // Get variant-specific track and progress styles (same as regular circular)
+  const getVariantStyles = () => {
+    switch (variant) {
+      case 'solid':
+        return {
+          track: {
+            stroke: colors.background,
+          },
+          progress: {
+            stroke: colors.accent || colors.main,
+          }
+        };
+      case 'ghost':
+        return {
+          track: {
+            stroke: 'transparent',
+          },
+          progress: {
+            stroke: colors.main,
+          }
+        };
+      case 'glassmorphic':
+        // For glassmorphic, match the bar variant styling approach
+        const reflectionColor = colors.hover || colors.main || '#ffffff';
+        return {
+          track: {
+            stroke: colors.background,
+            strokeOpacity: 1,
+          },
+          progress: {
+            stroke: `url(#glassmorphic-indeterminate-gradient-${color})`,
+          },
+          gradientDefs: {
+            gradientId: `glassmorphic-indeterminate-gradient-${color}`,
+            stops: [
+              { offset: '0%', stopColor: colors.accent || colors.main, stopOpacity: 1 },
+              { offset: '50%', stopColor: reflectionColor, stopOpacity: 0.8 },
+              { offset: '100%', stopColor: colors.accent || colors.main, stopOpacity: 1 }
+            ]
+          }
+        };
+      case 'outline':
+      default:
+        return {
+          track: {
+            stroke: cssVars.muted,
+          },
+          progress: {
+            stroke: colors.main,
+          }
+        };
+    }
+  };
+
+  const variantStyles = getVariantStyles();
+
   return {
-    width: sizeConfig.dotSize,
-    height: sizeConfig.dotSize,
-    borderRadius: '50%',
-    backgroundColor: colors.main,
-    animation: animationsEnabled 
-      ? `progress-dots 1.4s ease-in-out infinite both ${index * 0.16}s` 
-      : 'none',
+    svg: {
+      width: '100%',
+      height: '100%',
+      transform: 'rotate(-90deg)',
+      animation: animationsEnabled
+        ? 'progress-circular-indeterminate 2s linear infinite'
+        : 'none',
+    } as React.CSSProperties,
+    track: {
+      fill: 'none',
+      strokeWidth: sizeConfig.circularThickness,
+      ...variantStyles.track,
+    } as React.CSSProperties,
+    progress: {
+      fill: 'none',
+      strokeWidth: sizeConfig.circularThickness,
+      strokeLinecap: 'round' as const,
+      strokeDasharray: `${segmentLength} ${gapLength}`,
+      strokeDashoffset: 0,
+      ...variantStyles.progress,
+    } as React.CSSProperties,
+    circumference,
+    radius,
+    segmentLength,
+    gradientDefs: variantStyles.gradientDefs,
   };
 };
+
 
 // Text/Label styles
 export const getTextStyles = (
@@ -425,11 +607,12 @@ export const getTextStyles = (
   cssVars: any
 ): React.CSSProperties => {
   const sizeConfig = getSizeConfig(size);
+  const colors = getColorVariables(color, undefined, cssVars);
 
   return {
     fontSize: sizeConfig.fontSize,
     fontWeight: 600,
-    color: variant === 'solid' ? cssVars.foreground : 'currentColor',
+    color: variant === 'solid' ? colors.main : 'currentColor',
     textAlign: 'center',
     lineHeight: 1,
   };
@@ -438,9 +621,12 @@ export const getTextStyles = (
 // Progress text overlay styles (for bars)
 export const getProgressTextStyles = (
   size: ProgressIndicatorSize,
+  color: ProgressIndicatorColor,
+  customColor: string | undefined,
   cssVars: any
 ): React.CSSProperties => {
   const sizeConfig = getSizeConfig(size);
+  const colors = getColorVariables(color, customColor, cssVars);
 
   return {
     position: 'absolute',
@@ -449,7 +635,7 @@ export const getProgressTextStyles = (
     transform: 'translate(-50%, -50%)',
     fontSize: sizeConfig.fontSize,
     fontWeight: 600,
-    color: cssVars.foreground,
+    color: colors.main,
     textAlign: 'center',
     lineHeight: 1,
     whiteSpace: 'nowrap',
@@ -461,9 +647,12 @@ export const getProgressTextStyles = (
 // Circular progress text styles
 export const getCircularTextStyles = (
   size: ProgressIndicatorSize,
+  color: ProgressIndicatorColor,
+  customColor: string | undefined,
   cssVars: any
 ): React.CSSProperties => {
   const sizeConfig = getSizeConfig(size);
+  const colors = getColorVariables(color, customColor, cssVars);
 
   return {
     position: 'absolute',
@@ -472,7 +661,7 @@ export const getCircularTextStyles = (
     transform: 'translate(-50%, -50%)',
     fontSize: sizeConfig.fontSize,
     fontWeight: 600,
-    color: cssVars.foreground,
+    color: colors.main,
     textAlign: 'center',
     lineHeight: 1,
     whiteSpace: 'nowrap',

@@ -168,7 +168,16 @@ For more detailed documentation, examples, and API reference, visit the [Templar
     // Use current children from componentProps, not static config children
     // If componentProps.children exists (even if empty string), use it; otherwise use config default
     const currentChildren = componentProps.hasOwnProperty('children') ? componentProps.children : (config.component as any).props?.children;
-    const codeString = generateCodeString(componentName, codeProps, currentChildren, config.initialProps);
+
+    // Use custom code generation if available, otherwise use default
+    let codeString: string;
+    if ((config as any).generateCodeString) {
+      codeString = (config as any).generateCodeString(componentProps);
+    } else {
+      // Use dynamic component name if available
+      const dynamicComponentName = (config as any).getComponentName ? (config as any).getComponentName(componentProps) : componentName;
+      codeString = generateCodeString(dynamicComponentName, codeProps, currentChildren, config.initialProps);
+    }
 
     return (
       <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -282,8 +291,7 @@ For more detailed documentation, examples, and API reference, visit the [Templar
       </div>
 
       {/* Content */}
-      <Scrollbar 
-        style={{ flex: 1 }}
+      <Scrollbar
         variant="solid"
         color="primary"
         size="md"
@@ -293,6 +301,8 @@ For more detailed documentation, examples, and API reference, visit the [Templar
         smoothScrolling
         showIndicators
         animate
+        height="100%"
+        style={{ flex: 1, height: '100%' }}
       >
         {activeTab === 'overview' ? renderOverview() : renderInteractive()}
       </Scrollbar>

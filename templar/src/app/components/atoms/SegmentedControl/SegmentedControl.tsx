@@ -5,7 +5,6 @@ import { useCSSVariables } from '../../../providers';
 import { SegmentedControlProps, SegmentedControlRef } from './SegmentedControl.types';
 import {
   getContainerStyles,
-  getSizeStyles,
   getSegmentStyles,
   getIndicatorStyles,
   getVariantStyles,
@@ -26,8 +25,13 @@ export const SegmentedControl = forwardRef<SegmentedControlRef, SegmentedControl
   onChange,
   size = getDefaultSize(),
   variant = getDefaultVariant(),
+  color = 'primary',
+  customColor,
+  shape = 'round',
   disabled = false,
+  error = false,
   fullWidth = false,
+  animate = true,
   rounded = false,
   name,
   className,
@@ -84,15 +88,17 @@ export const SegmentedControl = forwardRef<SegmentedControlRef, SegmentedControl
     if (!isControlled) {
       setInternalSelectedIndex(newIndex);
     }
-    
-    onChange?.(newIndex, items[newIndex]);
-    
+
+    if (onChange) {
+      onChange(newIndex, items[newIndex]);
+    }
+
     // Focus the new selected segment
     setTimeout(() => {
       segmentRefs.current[newIndex]?.focus();
     }, 0);
   };
-  
+
   // Handle segment click
   const handleSegmentClick = (index: number) => {
     if (disabled || index === currentSelectedIndex) return;
@@ -117,11 +123,21 @@ export const SegmentedControl = forwardRef<SegmentedControlRef, SegmentedControl
     name,
   });
   
-  // Combine styles
+  // Combine styles with proper parameters
   const containerStyles = {
-    ...getContainerStyles(fullWidth, disabled, rounded, items.length, cssVars),
-    ...getVariantStyles(variant, cssVars),
-    ...getSizeStyles(size),
+    ...getContainerStyles(
+      size,
+      variant,
+      color,
+      customColor,
+      rounded ? 'pill' : shape,
+      disabled,
+      error,
+      animate,
+      cssVars,
+      fullWidth,
+      items.length
+    ),
     ...style,
   };
   
@@ -137,7 +153,17 @@ export const SegmentedControl = forwardRef<SegmentedControlRef, SegmentedControl
       {/* Sliding indicator */}
       <div
         role="presentation"
-        style={getIndicatorStyles(currentSelectedIndex, items.length, variant, rounded, cssVars)}
+        style={getIndicatorStyles(
+          currentSelectedIndex,
+          items.length,
+          variant,
+          color,
+          customColor,
+          rounded ? 'pill' : shape,
+          size,
+          animate,
+          cssVars
+        )}
       />
       
       {/* Segments */}
@@ -159,7 +185,17 @@ export const SegmentedControl = forwardRef<SegmentedControlRef, SegmentedControl
             type="button"
             disabled={disabled}
             onClick={() => handleSegmentClick(index)}
-            style={getSegmentStyles(size, isSelected, disabled, rounded, variant, cssVars)}
+            style={getSegmentStyles(
+              size,
+              variant,
+              color,
+              customColor,
+              rounded ? 'pill' : shape,
+              isSelected,
+              disabled,
+              animate,
+              cssVars
+            )}
             {...segmentAriaAttributes}
           >
             <div style={{

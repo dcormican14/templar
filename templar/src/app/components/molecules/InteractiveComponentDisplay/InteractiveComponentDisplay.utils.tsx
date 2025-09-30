@@ -129,9 +129,22 @@ export const getComponentName = (element: React.ReactElement): string => {
   if (typeof element.type === 'string') {
     return element.type;
   }
+
+  // Check if it's a forwardRef or memo component first (these are objects)
+  if (typeof element.type === 'object' && element.type !== null) {
+    const type = element.type as any;
+    // For forwardRef components, the render function has the displayName
+    if (type.render) {
+      return type.render.displayName || type.render.name || type.displayName || type.name || 'Component';
+    }
+    return type.displayName || type.name || 'Component';
+  }
+
+  // Regular function components
   if (typeof element.type === 'function') {
     return (element.type as any).displayName || (element.type as any).name || 'Component';
   }
+
   return 'Component';
 };
 
@@ -142,9 +155,10 @@ export const cloneElementWithProps = (
   element: React.ReactElement,
   newProps: Record<string, any>
 ): React.ReactElement => {
-  // Filter out internal props but allow undefined values to override defaults
+  // Filter out internal props and config props that shouldn't be passed to components
+  const configProps = ['itemCount', 'item1', 'item2', 'item3', 'item4', 'item5'];
   const filteredProps = Object.entries(newProps).reduce((acc, [key, value]) => {
-    if (!key.startsWith('_')) {
+    if (!key.startsWith('_') && !configProps.includes(key)) {
       acc[key] = value; // Include undefined values to override component defaults
     }
     return acc;

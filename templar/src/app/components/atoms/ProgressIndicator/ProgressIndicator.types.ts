@@ -12,7 +12,7 @@ export type ProgressIndicatorSize = UniversalSize;
 export type ProgressIndicatorColor = UniversalColor;
 export type ProgressIndicatorVariant = UniversalVariant;
 export type ProgressIndicatorShape = UniversalShape;
-export type ProgressIndicatorType = 'spinner' | 'bar' | 'progressBar' | 'circular' | 'dots';
+export type ProgressIndicatorType = 'bar' | 'progressBar' | 'circular';
 
 // Component-specific props (not covered by universal props)
 export interface ProgressIndicatorSpecificProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -74,7 +74,19 @@ export interface ProgressIndicatorSpecificProps extends React.HTMLAttributes<HTM
    * @default false
    */
   indeterminate?: boolean;
-  
+
+  /**
+   * Whether to automatically increment progress value
+   * @default false
+   */
+  autoProgress?: boolean;
+
+  /**
+   * Duration in milliseconds for auto progress to complete (0-100%)
+   * @default 3000
+   */
+  autoProgressDuration?: number;
+
   // Legacy props for backward compatibility
   preset?: string;
   trackSize?: UniversalSize;

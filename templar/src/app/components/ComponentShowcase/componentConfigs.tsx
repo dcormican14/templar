@@ -27,6 +27,8 @@ interface ComponentConfig {
   leftControls: PropControlGroup[];
   rightControls: PropControlGroup[];
   initialProps: Record<string, any>;
+  getComponentName?: (props: Record<string, any>) => string;
+  generateCodeString?: (props: Record<string, any>) => string;
 }
 
 export function getComponentInteractiveConfig(componentName: string): ComponentConfig | null {

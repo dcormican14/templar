@@ -244,11 +244,7 @@ export const getNotificationStyles = (
     }
   })();
 
-  // Disabled styles
-  if (disabled) {
-    baseStyles.opacity = 0.6;
-    baseStyles.cursor = 'not-allowed';
-  }
+  // Note: Disabled styles are handled in the main component to properly combine with loading state
 
   return {
     ...baseStyles,
@@ -331,9 +327,68 @@ export const getActionButtonStyles = (
   variant: NotificationVariant,
   size: NotificationSize,
   cssVars: any,
-  animationsEnabled: boolean
+  animationsEnabled: boolean,
+  notificationVariant?: NotificationVariant,
+  notificationColor?: string
 ): React.CSSProperties => {
   const sizeConfig = getSizeConfig(size);
+
+  // Get colors based on notification color scheme
+  const getNotificationColors = (color: string) => {
+    const colorMap: Record<string, any> = {
+      primary: {
+        main: cssVars.primary,
+        background: cssVars.primaryBackground,
+        foreground: cssVars.primaryForeground,
+        hover: cssVars.primaryHover,
+        accent: cssVars.primaryAccent,
+        border: cssVars.primaryBorder,
+      },
+      secondary: {
+        main: cssVars.secondary,
+        background: cssVars.secondaryBackground,
+        foreground: cssVars.secondaryForeground,
+        hover: cssVars.secondaryHover,
+        accent: cssVars.secondaryAccent,
+        border: cssVars.secondaryBorder,
+      },
+      success: {
+        main: cssVars.success,
+        background: cssVars.successBackground,
+        foreground: cssVars.successForeground,
+        hover: cssVars.successHover,
+        accent: cssVars.successAccent,
+        border: cssVars.successBorder,
+      },
+      warning: {
+        main: cssVars.warning,
+        background: cssVars.warningBackground,
+        foreground: cssVars.warningForeground,
+        hover: cssVars.warningHover,
+        accent: cssVars.warningAccent,
+        border: cssVars.warningBorder,
+      },
+      destructive: {
+        main: cssVars.destructive,
+        background: cssVars.destructiveBackground,
+        foreground: cssVars.destructiveForeground,
+        hover: cssVars.destructiveHover,
+        accent: cssVars.destructiveAccent,
+        border: cssVars.destructiveBorder,
+      },
+      info: {
+        main: cssVars.info,
+        background: cssVars.infoBackground,
+        foreground: cssVars.infoForeground,
+        hover: cssVars.infoHover,
+        accent: cssVars.infoAccent,
+        border: cssVars.infoBorder,
+      },
+    };
+    return colorMap[color] || colorMap.primary;
+  };
+
+  const colors = getNotificationColors(notificationColor || 'primary');
 
   const baseStyles: React.CSSProperties = {
     display: 'inline-flex',
@@ -342,36 +397,78 @@ export const getActionButtonStyles = (
     padding: sizeConfig.buttonPadding,
     fontSize: sizeConfig.buttonFontSize,
     fontWeight: 500,
-    border: '1px solid',
+    borderTopWidth: '1px',
+    borderRightWidth: '1px',
+    borderBottomWidth: '1px',
+    borderLeftWidth: '1px',
+    borderStyle: 'solid',
     borderRadius: '8px',
     cursor: 'pointer',
     textDecoration: 'none',
-    transition: animationsEnabled 
-      ? 'all var(--duration-fast) var(--animation-smooth)' 
+    transition: animationsEnabled
+      ? 'all var(--duration-fast) var(--animation-smooth)'
       : 'none',
   };
 
   const variantStyles = (() => {
+    // Special styling for action buttons in solid notifications for better visibility
+    const isInSolidNotification = notificationVariant === 'solid';
+
     switch (variant) {
       case 'solid':
-        return {
-          backgroundColor: cssVars.background,
-          borderColor: cssVars.border,
-          color: cssVars.foreground,
-        };
+        if (isInSolidNotification) {
+          // In solid notifications, use notification text color as background
+          return {
+            backgroundColor: colors.foreground,
+            borderTopColor: colors.foreground,
+            borderRightColor: colors.foreground,
+            borderBottomColor: colors.foreground,
+            borderLeftColor: colors.foreground,
+            color: colors.main,
+          };
+        } else {
+          // Normal solid styling for other notification variants
+          return {
+            backgroundColor: colors.main,
+            borderTopColor: colors.main,
+            borderRightColor: colors.main,
+            borderBottomColor: colors.main,
+            borderLeftColor: colors.main,
+            color: colors.foreground,
+          };
+        }
       case 'ghost':
         return {
           backgroundColor: 'transparent',
-          borderColor: 'transparent',
-          color: 'inherit',
+          borderTopColor: 'transparent',
+          borderRightColor: 'transparent',
+          borderBottomColor: 'transparent',
+          borderLeftColor: 'transparent',
+          color: isInSolidNotification ? colors.foreground : colors.main,
         };
       case 'outline':
       default:
-        return {
-          backgroundColor: 'transparent',
-          borderColor: 'currentColor',
-          color: 'inherit',
-        };
+        if (isInSolidNotification) {
+          // In solid notifications, use notification text color for outline
+          return {
+            backgroundColor: 'transparent',
+            borderTopColor: colors.foreground,
+            borderRightColor: colors.foreground,
+            borderBottomColor: colors.foreground,
+            borderLeftColor: colors.foreground,
+            color: colors.foreground,
+          };
+        } else {
+          // Normal outline styling for other notification variants
+          return {
+            backgroundColor: 'transparent',
+            borderTopColor: colors.main,
+            borderRightColor: colors.main,
+            borderBottomColor: colors.main,
+            borderLeftColor: colors.main,
+            color: colors.main,
+          };
+        }
     }
   })();
 

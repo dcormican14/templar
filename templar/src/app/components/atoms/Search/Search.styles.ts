@@ -1,4 +1,4 @@
-import React from 'react';
+import { CSSProperties } from 'react';
 import type { SearchColor, SearchVariant, SearchSize, SearchShape } from './Search.types';
 
 // Get color variables based on color prop
@@ -19,6 +19,9 @@ export const getColorVariables = (color: SearchColor, customColor: string | unde
       background: cssVars.primaryBackground,
       foreground: cssVars.primaryForeground,
       hover: cssVars.primaryHover,
+      accent: cssVars.primaryAccent,
+      shadow: cssVars.primaryShadow,
+      disabled: cssVars.primaryDisabled,
       border: cssVars.primaryBorder,
     },
     secondary: {
@@ -26,6 +29,9 @@ export const getColorVariables = (color: SearchColor, customColor: string | unde
       background: cssVars.secondaryBackground,
       foreground: cssVars.secondaryForeground,
       hover: cssVars.secondaryHover,
+      accent: cssVars.secondaryAccent,
+      shadow: cssVars.secondaryShadow,
+      disabled: cssVars.secondaryDisabled,
       border: cssVars.secondaryBorder,
     },
     success: {
@@ -33,6 +39,9 @@ export const getColorVariables = (color: SearchColor, customColor: string | unde
       background: cssVars.successBackground,
       foreground: cssVars.successForeground,
       hover: cssVars.successHover,
+      accent: cssVars.successAccent,
+      shadow: cssVars.successShadow,
+      disabled: cssVars.successDisabled,
       border: cssVars.successBorder,
     },
     warning: {
@@ -40,6 +49,9 @@ export const getColorVariables = (color: SearchColor, customColor: string | unde
       background: cssVars.warningBackground,
       foreground: cssVars.warningForeground,
       hover: cssVars.warningHover,
+      accent: cssVars.warningAccent,
+      shadow: cssVars.warningShadow,
+      disabled: cssVars.warningDisabled,
       border: cssVars.warningBorder,
     },
     destructive: {
@@ -47,6 +59,9 @@ export const getColorVariables = (color: SearchColor, customColor: string | unde
       background: cssVars.destructiveBackground,
       foreground: cssVars.destructiveForeground,
       hover: cssVars.destructiveHover,
+      accent: cssVars.destructiveAccent,
+      shadow: cssVars.destructiveShadow,
+      disabled: cssVars.destructiveDisabled,
       border: cssVars.destructiveBorder,
     },
     info: {
@@ -54,6 +69,9 @@ export const getColorVariables = (color: SearchColor, customColor: string | unde
       background: cssVars.infoBackground,
       foreground: cssVars.infoForeground,
       hover: cssVars.infoHover,
+      accent: cssVars.infoAccent,
+      shadow: cssVars.infoShadow,
+      disabled: cssVars.infoDisabled,
       border: cssVars.infoBorder,
     },
   };
@@ -61,181 +79,263 @@ export const getColorVariables = (color: SearchColor, customColor: string | unde
   return colorMap[color] || colorMap.primary;
 };
 
+// Size configurations following design standards (matching Button component heights)
+export const getSearchDimensions = (size: SearchSize) => {
+  switch (size) {
+    case 'xs':
+      return {
+        height: 40, // Matches Button xs height
+        minWidth: 200,
+        fontSize: '14px',
+        iconSize: 16,
+        paddingX: 8,
+        paddingY: 6,
+        borderRadius: 12,
+      };
+    case 'sm':
+      return {
+        height: 40, // Matches Button sm height
+        minWidth: 220,
+        fontSize: '14px',
+        iconSize: 18,
+        paddingX: 10,
+        paddingY: 8,
+        borderRadius: 12,
+      };
+    case 'lg':
+      return {
+        height: 52, // Matches Button lg height
+        minWidth: 260,
+        fontSize: '16px',
+        iconSize: 22,
+        paddingX: 14,
+        paddingY: 12,
+        borderRadius: 12,
+      };
+    case 'xl':
+      return {
+        height: 60, // Matches Button xl height
+        minWidth: 280,
+        fontSize: '18px',
+        iconSize: 24,
+        paddingX: 16,
+        paddingY: 14,
+        borderRadius: 12,
+      };
+    case 'md':
+    default:
+      return {
+        height: 48, // Matches Button md height
+        minWidth: 240,
+        fontSize: '16px', // Updated to match Button md fontSize
+        iconSize: 20,
+        paddingX: 12,
+        paddingY: 10,
+        borderRadius: 12,
+      };
+  }
+};
+
+// Get variant styles for search input
+export const getVariantStyles = (
+  variant: SearchVariant,
+  color: SearchColor,
+  customColor: string | undefined,
+  cssVars: any,
+  error: boolean
+): CSSProperties => {
+  const colors = getColorVariables(color, customColor, cssVars);
+
+  // Error state override
+  if (error) {
+    const baseErrorStyle = {
+      borderWidth: '2px',
+      borderStyle: 'solid' as const,
+      borderColor: cssVars.destructive,
+    };
+
+    switch (variant) {
+      case 'solid':
+        return {
+          ...baseErrorStyle,
+          backgroundColor: cssVars.destructiveAccent || cssVars.destructive,
+          color: colors.foreground, // Keep original foreground color, not destructive
+        };
+      case 'ghost':
+        return {
+          ...baseErrorStyle,
+          backgroundColor: 'transparent',
+          color: cssVars.foreground,
+        };
+      case 'glassmorphic':
+        return {
+          ...baseErrorStyle,
+          backgroundColor: cssVars.destructiveBackground,
+          color: cssVars.destructiveForeground,
+        };
+      case 'outline':
+      default:
+        return {
+          ...baseErrorStyle,
+          backgroundColor: cssVars.background,
+          color: cssVars.foreground,
+        };
+    }
+  }
+
+  // Normal state styles by variant
+  switch (variant) {
+    case 'solid':
+      return {
+        borderColor: colors.accent || colors.main,
+        backgroundColor: colors.accent || colors.main,
+        color: colors.foreground,
+        borderWidth: '2px',
+        borderStyle: 'solid' as const,
+      };
+    case 'ghost':
+      return {
+        borderColor: 'transparent',
+        backgroundColor: 'transparent',
+        color: cssVars.foreground,
+        borderWidth: '2px',
+        borderStyle: 'solid' as const,
+      };
+    case 'glassmorphic':
+      return {
+        borderColor: colors.border,
+        backgroundColor: colors.background,
+        color: colors.foreground,
+        borderWidth: '2px',
+        borderStyle: 'solid' as const,
+      };
+    case 'outline':
+    default:
+      return {
+        borderColor: colors.main,
+        backgroundColor: cssVars.background,
+        color: cssVars.foreground,
+        borderWidth: '2px',
+        borderStyle: 'solid' as const,
+      };
+  }
+};
+
 // Get shape styles based on shape prop
-export const getShapeStyles = (shape: SearchShape): React.CSSProperties => {
+export const getShapeStyles = (shape: SearchShape, size: SearchSize): CSSProperties => {
+  const dimensions = getSearchDimensions(size);
+
   switch (shape) {
     case 'sharp':
       return { borderRadius: '0' };
     case 'round':
-      return { borderRadius: '12px' };
+      return { borderRadius: `${dimensions.borderRadius}px` };
     case 'pill':
       return { borderRadius: '9999px' };
     default:
-      return { borderRadius: '12px' };
+      return { borderRadius: `${dimensions.borderRadius}px` };
   }
 };
 
-export const createSearchContainerStyles = (
+// Main search container styles
+export const getSearchContainerStyles = (
   size: SearchSize,
-  rounded: boolean,
+  variant: SearchVariant,
+  color: SearchColor,
+  customColor: string | undefined,
+  shape: SearchShape,
+  disabled: boolean,
+  focused: boolean,
+  error: boolean,
   animationsEnabled: boolean,
+  cssVars: any,
   width?: string | number
-): React.CSSProperties => {
-  const baseStyles: React.CSSProperties = {
+): CSSProperties => {
+  const dimensions = getSearchDimensions(size);
+  const variantStyles = getVariantStyles(variant, color, customColor, cssVars, error);
+  const shapeStyles = getShapeStyles(shape, size);
+  const colors = getColorVariables(color, customColor, cssVars);
+
+  const baseStyles: CSSProperties = {
     position: 'relative',
     display: 'inline-flex',
     alignItems: 'center',
     width: width || 'auto',
-    minWidth: '200px',
-    transition: animationsEnabled ? 'width 0.2s ease-in-out, opacity 0.2s ease-in-out' : 'none',
+    minWidth: `${dimensions.minWidth}px`,
+    height: `${dimensions.height}px`,
+    fontFamily: 'inherit',
+    transition: animationsEnabled
+      ? 'border-color var(--duration-fast) var(--animation-smooth), background-color var(--duration-fast) var(--animation-smooth), opacity var(--duration-fast) var(--animation-smooth)'
+      : 'none',
+    cursor: disabled ? 'not-allowed' : 'text',
+    opacity: disabled ? 0.6 : 1,
   };
 
-  return baseStyles;
+  const focusStyles: CSSProperties = focused ? {
+    outline: `2px solid ${error ? cssVars.destructive : colors.main}`,
+    outlineOffset: '2px',
+  } : {};
+
+  return {
+    ...baseStyles,
+    ...variantStyles,
+    ...shapeStyles,
+    ...focusStyles,
+  };
 };
 
+// Search input styles
 export const getSearchInputStyles = (
-  variant: SearchVariant,
   size: SearchSize,
+  variant: SearchVariant,
+  color: SearchColor,
+  customColor: string | undefined,
   disabled: boolean,
-  error: boolean,
-  rounded: boolean,
-  cssVars: any,
-  animationsEnabled: boolean,
   hasLeftIcon: boolean,
   hasRightIcon: boolean,
-  color: SearchColor = 'primary',
-  customColor?: string
-): React.CSSProperties => {
-  // Base input styles
-  const baseStyles: React.CSSProperties = {
-    width: '100%',
-    border: '1px solid',
+  cssVars: any
+): CSSProperties => {
+  const dimensions = getSearchDimensions(size);
+  const colors = getColorVariables(color, customColor, cssVars);
+
+  // Calculate padding based on icons
+  const leftPadding = hasLeftIcon ? dimensions.iconSize + dimensions.paddingX + 8 : dimensions.paddingX;
+  const rightPadding = hasRightIcon ? dimensions.iconSize + dimensions.paddingX + 8 : dimensions.paddingX;
+
+  const baseStyles: CSSProperties = {
+    flex: 1,
+    border: 'none',
     outline: 'none',
-    fontFamily: 'inherit',
-    transition: animationsEnabled ? 'background-color 0.2s ease-in-out, color 0.2s ease-in-out, opacity 0.2s ease-in-out' : 'none',
     backgroundColor: 'transparent',
-    color: cssVars.foreground,
+    fontFamily: 'inherit',
+    fontSize: dimensions.fontSize,
+    lineHeight: 1.5,
+    paddingLeft: `${leftPadding}px`,
+    paddingRight: `${rightPadding}px`,
+    paddingTop: `${dimensions.paddingY}px`,
+    paddingBottom: `${dimensions.paddingY}px`,
     // Reset browser styles
     WebkitAppearance: 'none',
     MozAppearance: 'none',
   };
 
-  // Size-specific styles
-  const sizeStyles = (() => {
-    switch (size) {
-      case 'sm':
-        return {
-          padding: hasLeftIcon ? '6px 8px 6px 32px' : hasRightIcon ? '6px 32px 6px 8px' : '6px 8px',
-          fontSize: '14px',
-          lineHeight: '1.4',
-          borderRadius: rounded ? '8px' : '4px',
-          height: '32px',
-        };
-      case 'lg':
-        return {
-          padding: hasLeftIcon ? '10px 12px 10px 40px' : hasRightIcon ? '10px 40px 10px 12px' : '10px 12px',
-          fontSize: '16px',
-          lineHeight: '1.5',
-          borderRadius: rounded ? '12px' : '8px',
-          height: '48px',
-        };
-      case 'md':
-      default:
-        return {
-          padding: hasLeftIcon ? '8px 10px 8px 36px' : hasRightIcon ? '8px 36px 8px 10px' : '8px 10px',
-          fontSize: '14px',
-          lineHeight: '1.5',
-          borderRadius: rounded ? '10px' : '6px',
-          height: '40px',
-        };
-    }
-  })();
-
-  // Adjust padding if both icons are present
-  if (hasLeftIcon && hasRightIcon) {
-    switch (size) {
-      case 'sm':
-        sizeStyles.padding = '6px 32px';
-        break;
-      case 'lg':
-        sizeStyles.padding = '10px 40px';
-        break;
-      case 'md':
-      default:
-        sizeStyles.padding = '8px 36px';
-        break;
-    }
-  }
-
-  // Variant-specific styles
-  const variantStyles = (() => {
-    if (error) {
-      return {
-        borderColor: cssVars.error,
-        backgroundColor: cssVars.background,
-        color: cssVars.foreground,
-      };
-    }
-
+  // Color based on variant
+  const getInputColor = () => {
     switch (variant) {
       case 'solid':
-        return {
-          backgroundColor: getColorVariables(color, customColor, cssVars).main,
-          borderColor: getColorVariables(color, customColor, cssVars).border,
-          color: getColorVariables(color, customColor, cssVars).foreground,
-        };
+        return colors.foreground;
       case 'outline':
-        return {
-          backgroundColor: cssVars.background,
-          borderColor: getColorVariables(color, customColor, cssVars).border,
-          color: cssVars.foreground,
-        };
       case 'ghost':
-        return {
-          backgroundColor: 'transparent',
-          borderColor: 'transparent',
-          color: cssVars.foreground,
-        };
+      case 'glassmorphic':
       default:
-        return {
-          backgroundColor: cssVars.background,
-          borderColor: cssVars.border,
-          color: cssVars.foreground,
-        };
+        return cssVars.foreground;
     }
-  })();
-
-  // State-specific styles
-  const stateStyles: React.CSSProperties = {};
-  
-  if (disabled) {
-    stateStyles.opacity = 0.5;
-    stateStyles.cursor = 'not-allowed';
-  }
-
-  // Determine placeholder color based on variant
-  let placeholderColor = cssVars.mutedForeground; // default
-  
-  switch (variant) {
-    case 'solid':
-      placeholderColor = cssVars.primaryForeground;
-      break;
-    case 'outline':
-      placeholderColor = cssVars.mutedForeground;
-      break;
-    case 'ghost':
-      placeholderColor = cssVars.mutedForeground;
-      break;
-    default:
-      placeholderColor = cssVars.mutedForeground;
-      break;
-  }
+  };
 
   return {
     ...baseStyles,
-    ...sizeStyles,
-    ...variantStyles,
-    ...stateStyles,
+    color: getInputColor(),
+    cursor: disabled ? 'not-allowed' : 'text',
   };
 };
 
@@ -253,163 +353,66 @@ export const getPlaceholderColor = (cssVars: any, variant: SearchVariant = 'outl
   }
 };
 
+// Search icon styles
 export const getSearchIconStyles = (
   size: SearchSize,
   position: 'left' | 'right',
+  variant: SearchVariant,
+  color: SearchColor,
+  customColor: string | undefined,
   disabled: boolean,
   clickable: boolean,
-  cssVars: any,
-  variant: SearchVariant = 'outline'
-): React.CSSProperties => {
-  // Determine icon color based on variant
-  let iconColor = cssVars.mutedForeground; // default
-  
-  switch (variant) {
-    case 'solid':
-      iconColor = cssVars.primaryForeground;
-      break;
-    case 'outline':
-      iconColor = cssVars.foreground;
-      break;
-    case 'ghost':
-      iconColor = cssVars.foreground;
-      break;
-    default:
-      iconColor = cssVars.foreground;
-      break;
-  }
+  animationsEnabled: boolean,
+  cssVars: any
+): CSSProperties => {
+  const dimensions = getSearchDimensions(size);
+  const colors = getColorVariables(color, customColor, cssVars);
 
-  const baseStyles: React.CSSProperties = {
+  // Determine icon color based on variant
+  const getIconColor = () => {
+    switch (variant) {
+      case 'solid':
+        return colors.foreground;
+      case 'outline':
+      case 'ghost':
+      case 'glassmorphic':
+      default:
+        return cssVars.mutedForeground;
+    }
+  };
+
+  const baseStyles: CSSProperties = {
     position: 'absolute',
     top: '50%',
     transform: 'translateY(-50%)',
-    color: iconColor,
-    pointerEvents: clickable ? 'auto' : 'none',
-    cursor: clickable && !disabled ? 'pointer' : 'default',
-    zIndex: 1,
+    [position]: `${dimensions.paddingX}px`,
+    width: `${dimensions.iconSize}px`,
+    height: `${dimensions.iconSize}px`,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-  };
-
-  // Size and position specific styles
-  const sizePositionStyles = (() => {
-    switch (size) {
-      case 'sm':
-        return {
-          [position]: '8px',
-          fontSize: '14px',
-        };
-      case 'lg':
-        return {
-          [position]: '12px',
-          fontSize: '18px',
-        };
-      case 'md':
-      default:
-        return {
-          [position]: '10px',
-          fontSize: '16px',
-        };
-    }
-  })();
-
-  const stateStyles: React.CSSProperties = {};
-  
-  if (disabled) {
-    stateStyles.opacity = 0.5;
-  }
-
-  if (clickable && !disabled) {
-    stateStyles.transition = 'color 0.2s ease-in-out';
-  }
-
-  return {
-    ...baseStyles,
-    ...sizePositionStyles,
-    ...stateStyles,
-  };
-};
-
-export const getLoadingStyles = (
-  size: SearchSize,
-  cssVars: any
-): React.CSSProperties => {
-  const baseStyles: React.CSSProperties = {
-    position: 'absolute',
-    top: '50%',
-    right: '10px',
-    transform: 'translateY(-50%)',
-    color: cssVars.mutedForeground,
+    border: 'none',
+    background: 'transparent',
+    color: getIconColor(),
+    cursor: clickable && !disabled ? 'pointer' : 'default',
+    opacity: disabled ? 0.5 : 1,
+    transition: animationsEnabled ? 'color var(--duration-fast) var(--animation-smooth), opacity var(--duration-fast) var(--animation-smooth)' : 'none',
     zIndex: 1,
   };
 
-  const sizeStyles = (() => {
-    switch (size) {
-      case 'sm':
-        return { fontSize: '12px' };
-      case 'lg':
-        return { fontSize: '16px' };
-      case 'md':
-      default:
-        return { fontSize: '14px' };
-    }
-  })();
-
-  return { ...baseStyles, ...sizeStyles };
+  return baseStyles;
 };
 
-export const getFocusStyles = (
-  cssVars: any, 
-  variant: SearchVariant, 
-  error?: boolean
-): React.CSSProperties => {
-  // Determine the focus outline color based on variant and error state
-  let outlineColor = cssVars.primary; // default
-
-  if (error) {
-    outlineColor = cssVars.error;
-  } else {
-    switch (variant) {
-      case 'solid':
-        outlineColor = cssVars.primary;
-        break;
-      case 'outline':
-      case 'ghost':
-      default:
-        outlineColor = cssVars.primary;
-        break;
-    }
-  }
+// Loading spinner styles
+export const getLoadingStyles = (
+  size: SearchSize,
+  animationsEnabled: boolean
+): CSSProperties => {
+  const dimensions = getSearchDimensions(size);
 
   return {
-    outline: `2px solid ${outlineColor}`,
-    outlineOffset: '2px',
-    // Don't change the border color on focus - keep original variant border
-  };
-};
-
-export const getPlaceholderStyles = (cssVars: any, variant: SearchVariant = 'outline'): React.CSSProperties => {
-  // Determine placeholder color based on variant
-  let placeholderColor = cssVars.mutedForeground; // default
-  
-  switch (variant) {
-    case 'solid':
-      placeholderColor = cssVars.primaryForeground;
-      break;
-    case 'outline':
-      placeholderColor = cssVars.mutedForeground;
-      break;
-    case 'ghost':
-      placeholderColor = cssVars.mutedForeground;
-      break;
-    default:
-      placeholderColor = cssVars.mutedForeground;
-      break;
-  }
-
-  return {
-    color: placeholderColor,
-    opacity: 0.7,
+    animation: animationsEnabled ? 'spin 1s linear infinite' : 'none',
+    width: `${dimensions.iconSize}px`,
+    height: `${dimensions.iconSize}px`,
   };
 };
