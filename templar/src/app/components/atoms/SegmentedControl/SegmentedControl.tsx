@@ -8,6 +8,9 @@ import {
   getSegmentStyles,
   getIndicatorStyles,
   getVariantStyles,
+  getIsometricContainerStyles,
+  getIsometricShadowStyles,
+  getColorVariables,
 } from './SegmentedControl.styles';
 import {
   getDefaultSize,
@@ -32,6 +35,7 @@ export const SegmentedControl = forwardRef<SegmentedControlRef, SegmentedControl
   error = false,
   fullWidth = false,
   animate = true,
+  animationMode = 'default',
   rounded = false,
   name,
   className,
@@ -48,6 +52,11 @@ export const SegmentedControl = forwardRef<SegmentedControlRef, SegmentedControl
 }, ref) => {
   // Get CSS variables for theming
   const cssVars = useCSSVariables();
+
+  // Animation logic
+  const animationsEnabled = animate;
+  const useAnimationMode = animationsEnabled && animationMode !== 'none';
+  const hasIsometricAnimation = useAnimationMode && animationMode === 'isometric' && variant !== 'ghost' && variant !== 'glassmorphic';
   
   // Generate unique ID
   const id = useId();
@@ -65,6 +74,8 @@ export const SegmentedControl = forwardRef<SegmentedControlRef, SegmentedControl
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
   const segmentRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const indicatorRef = useRef<HTMLDivElement>(null);
+  const shadowRef = useRef<HTMLDivElement>(null);
   
   // Expose imperative methods
   useImperativeHandle(ref, () => ({
@@ -115,6 +126,35 @@ export const SegmentedControl = forwardRef<SegmentedControlRef, SegmentedControl
       disabled
     );
   };
+
+  // Isometric hover handlers - applied to the selected segment button
+  const handleSelectedSegmentMouseEnter = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (!disabled && hasIsometricAnimation) {
+      if (indicatorRef.current) {
+        // On hover, move to (0, 0) to "press" toward the shadow
+        indicatorRef.current.style.transform = 'translate(0, 0)';
+      }
+      // Also move the text with the indicator
+      const button = event.currentTarget;
+      if (button) {
+        button.style.transform = 'translate(0, 0)';
+      }
+    }
+  };
+
+  const handleSelectedSegmentMouseLeave = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (!disabled && hasIsometricAnimation) {
+      if (indicatorRef.current) {
+        // On leave, return to elevated position (-3px, -3px)
+        indicatorRef.current.style.transform = 'translate(-3px, -3px)';
+      }
+      // Also return the text to elevated position
+      const button = event.currentTarget;
+      if (button) {
+        button.style.transform = 'translate(-3px, -3px)';
+      }
+    }
+  };
   
   // Get ARIA attributes
   const containerAriaAttributes = getAriaAttributes({
@@ -141,6 +181,51 @@ export const SegmentedControl = forwardRef<SegmentedControlRef, SegmentedControl
     ...style,
   };
   
+  // Render the indicator with optional isometric wrapper
+  const renderIndicator = () => {
+    const indicatorStyles = getIndicatorStyles(
+      currentSelectedIndex,
+      items.length,
+      variant,
+      color,
+      customColor,
+      rounded ? 'pill' : shape,
+      size,
+      animate,
+      cssVars,
+      hasIsometricAnimation
+    );
+
+    const indicatorElement = (
+      <div
+        ref={indicatorRef}
+        role="presentation"
+        style={indicatorStyles}
+      />
+    );
+
+    // Isometric wrapper
+    if (hasIsometricAnimation) {
+      const colors = getColorVariables(color, customColor, cssVars);
+      const shadowStyles = getIsometricShadowStyles(
+        colors,
+        variant,
+        rounded ? 'pill' : shape,
+        size,
+        animate
+      );
+
+      return (
+        <div style={getIsometricContainerStyles(currentSelectedIndex, items.length)}>
+          <div ref={shadowRef} style={shadowStyles} />
+          {indicatorElement}
+        </div>
+      );
+    }
+
+    return indicatorElement;
+  };
+
   return (
     <div
       ref={containerRef}
@@ -151,21 +236,8 @@ export const SegmentedControl = forwardRef<SegmentedControlRef, SegmentedControl
       {...props}
     >
       {/* Sliding indicator */}
-      <div
-        role="presentation"
-        style={getIndicatorStyles(
-          currentSelectedIndex,
-          items.length,
-          variant,
-          color,
-          customColor,
-          rounded ? 'pill' : shape,
-          size,
-          animate,
-          cssVars
-        )}
-      />
-      
+      {renderIndicator()}
+
       {/* Segments */}
       {items.map((item, index) => {
         const isSelected = index === currentSelectedIndex;
@@ -177,7 +249,9 @@ export const SegmentedControl = forwardRef<SegmentedControlRef, SegmentedControl
           item,
           segmentId,
         });
-        
+
+        const renderSegmentText = () => item;
+
         return (
           <button
             key={`${item}-${index}`}
@@ -185,6 +259,8 @@ export const SegmentedControl = forwardRef<SegmentedControlRef, SegmentedControl
             type="button"
             disabled={disabled}
             onClick={() => handleSegmentClick(index)}
+            onMouseEnter={isSelected && hasIsometricAnimation ? handleSelectedSegmentMouseEnter : undefined}
+            onMouseLeave={isSelected && hasIsometricAnimation ? handleSelectedSegmentMouseLeave : undefined}
             style={getSegmentStyles(
               size,
               variant,
@@ -194,35 +270,22 @@ export const SegmentedControl = forwardRef<SegmentedControlRef, SegmentedControl
               isSelected,
               disabled,
               animate,
-              cssVars
+              cssVars,
+              hasIsometricAnimation
             )}
             {...segmentAriaAttributes}
           >
-            <div style={{
+            <span style={{
               width: '100%',
+              display: 'block',
               textAlign: 'center',
-              position: 'relative',
               whiteSpace: 'nowrap',
               overflow: 'hidden',
-              textOverflow: 'ellipsis'
+              textOverflow: 'ellipsis',
+              minWidth: 0
             }}>
-              {/* Invisible bold text to reserve space */}
-              <span style={{
-                visibility: 'hidden',
-                fontWeight: '600',
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                pointerEvents: 'none'
-              }}>
-                {item}
-              </span>
-              {/* Actual visible text */}
-              <span>
-                {item}
-              </span>
-            </div>
+              {renderSegmentText()}
+            </span>
           </button>
         );
       })}

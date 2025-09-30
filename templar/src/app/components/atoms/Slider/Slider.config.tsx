@@ -9,9 +9,7 @@ export const SliderConfig = {
       min={0}
       max={100}
       step={1}
-      value={50}
       label="Demo Slider"
-      onChange={(value) => console.log('Slider value changed:', value)}
     />
   ),
   leftControls: [universalColorControls, universalSizeShapeControls],
@@ -28,11 +26,6 @@ export const SliderConfig = {
             { label: 'Horizontal', value: 'horizontal' },
             { label: 'Vertical', value: 'vertical' }
           ]
-        },
-        {
-          key: 'value',
-          label: 'Current Value',
-          type: 'number' as ControlType
         },
         {
           key: 'min',
@@ -61,7 +54,7 @@ export const SliderConfig = {
         },
         {
           key: 'showLabels',
-          label: 'Show Min/Max Labels',
+          label: 'Show Header/Footer Labels',
           type: 'checkbox' as ControlType
         }
       ]
@@ -75,24 +68,14 @@ export const SliderConfig = {
           type: 'text' as ControlType
         },
         {
-          key: 'description',
-          label: 'Description',
+          key: 'header',
+          label: 'Header',
           type: 'text' as ControlType
         },
         {
-          key: 'minLabel',
-          label: 'Custom Min Label',
+          key: 'footer',
+          label: 'Footer',
           type: 'text' as ControlType
-        },
-        {
-          key: 'maxLabel',
-          label: 'Custom Max Label',
-          type: 'text' as ControlType
-        },
-        {
-          key: 'length',
-          label: 'Length (px)',
-          type: 'number' as ControlType
         }
       ]
     },
@@ -136,15 +119,11 @@ export const SliderConfig = {
     showTicks: false,
     showLabels: false,
     label: 'Demo Slider',
-    description: '',
-    minLabel: '',
-    maxLabel: '',
-    length: 300,
+    header: '',
+    footer: '',
     name: '',
     required: false,
     readOnly: false,
-    autoFocus: false,
-    // Computed props for callbacks
-    _sliderComputed: true
+    autoFocus: false
   }
 };

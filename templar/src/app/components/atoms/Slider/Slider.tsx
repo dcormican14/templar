@@ -42,6 +42,7 @@ export const Slider = forwardRef<SliderRef, SliderProps>((allProps, ref) => {
   const {
     color = UNIVERSAL_DEFAULTS.color,
     customColor,
+    variant = UNIVERSAL_DEFAULTS.variant,
     size = UNIVERSAL_DEFAULTS.size,
     disabled = UNIVERSAL_DEFAULTS.disabled,
     error,
@@ -75,9 +76,9 @@ export const Slider = forwardRef<SliderRef, SliderProps>((allProps, ref) => {
     showTicks = false,
     ticks,
     showLabels = false,
-    minLabel,
-    maxLabel,
-    length = width || height,
+    header,
+    footer,
+    length = width || height || 300,
     formatValue: customFormatter,
     ...rest
   } = componentProps;
@@ -104,6 +105,7 @@ export const Slider = forwardRef<SliderRef, SliderProps>((allProps, ref) => {
   // State
   const [focused, setFocused] = useState(false);
   const [dragging, setDragging] = useState(false);
+  const [hovering, setHovering] = useState(false);
   const [showTooltipState, setShowTooltipState] = useState(false);
   
   // Refs
@@ -255,6 +257,25 @@ export const Slider = forwardRef<SliderRef, SliderProps>((allProps, ref) => {
       setShowTooltipState(false);
     }
   }, [dragging]);
+
+  // Handle mouse enter/leave for hover state
+  const handleMouseEnter = useCallback(() => {
+    if (!disabled) {
+      setHovering(true);
+      if (showTooltip) {
+        setShowTooltipState(true);
+      }
+    }
+  }, [disabled, showTooltip]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (!dragging) {
+      setHovering(false);
+      if (!focused) {
+        setShowTooltipState(false);
+      }
+    }
+  }, [dragging, focused]);
     
   // Generate tick marks if needed
   const tickMarks = showTicks ? generateTicks(min, max, step, ticks) : [];
@@ -292,22 +313,27 @@ export const Slider = forwardRef<SliderRef, SliderProps>((allProps, ref) => {
         
         {/* Main slider container */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', width: '100%' }}>
-          {/* Min label for horizontal, or track for vertical */}
-          {showLabels && orientation === 'horizontal' && (
-            <span style={getMinMaxLabelStyles(size, orientation, disabled || false, cssVars)}>
-              {minLabel || min.toString()}
+          {/* Header for horizontal */}
+          {orientation === 'horizontal' && header && (
+            <span style={getMinMaxLabelStyles(size, orientation, disabled || false, color, customColor, cssVars)}>
+              {header}
             </span>
           )}
           
           {/* Track container */}
           <div
             ref={trackRef}
-            style={getTrackContainerStyles(orientation, size, animationsEnabled)}
+            style={{
+              ...getTrackContainerStyles(orientation, size, animationsEnabled, length),
+              cursor: disabled ? 'not-allowed' : dragging ? 'grabbing' : hovering ? 'grab' : 'pointer',
+            }}
             onMouseDown={handlePointerDown}
             onTouchStart={handlePointerDown}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
           >
             {/* Track background */}
-            <div style={getTrackBackgroundStyles(orientation, size, cssVars)} />
+            <div style={getTrackBackgroundStyles(orientation, size, variant, color, customColor, cssVars)} />
             
             {/* Track fill */}
             <div
@@ -320,7 +346,8 @@ export const Slider = forwardRef<SliderRef, SliderProps>((allProps, ref) => {
                 min,
                 max,
                 error || false,
-                animationsEnabled,
+                animationsEnabled && !dragging,
+                variant,
                 cssVars
               )}
             />
@@ -339,19 +366,23 @@ export const Slider = forwardRef<SliderRef, SliderProps>((allProps, ref) => {
             
             {/* Thumb */}
             <div
-              style={getThumbStyles(
-                orientation,
-                size,
-                color,
-                customColor,
-                currentValue,
-                min,
-                max,
-                error || false,
-                focused,
-                animationsEnabled,
-                cssVars
-              )}
+              style={{
+                ...getThumbStyles(
+                  orientation,
+                  size,
+                  color,
+                  customColor,
+                  currentValue,
+                  min,
+                  max,
+                  error || false,
+                  focused || hovering,
+                  animationsEnabled && !dragging,
+                  variant,
+                  cssVars
+                ),
+                cursor: disabled ? 'not-allowed' : dragging ? 'grabbing' : 'grab',
+              }}
             />
             
             {/* Tooltip */}
@@ -388,33 +419,27 @@ export const Slider = forwardRef<SliderRef, SliderProps>((allProps, ref) => {
             />
           </div>
           
-          {/* Max label for horizontal */}
-          {showLabels && orientation === 'horizontal' && (
-            <span style={getMinMaxLabelStyles(size, orientation, disabled || false, cssVars)}>
-              {maxLabel || max.toString()}
+          {/* Footer for horizontal */}
+          {orientation === 'horizontal' && footer && (
+            <span style={getMinMaxLabelStyles(size, orientation, disabled || false, color, customColor, cssVars)}>
+              {footer}
             </span>
           )}
         </div>
         
         {/* Labels for vertical orientation */}
-        {showLabels && orientation === 'vertical' && (
+        {orientation === 'vertical' && (header || footer) && (
           <div style={getLabelsContainerStyles(orientation)}>
-            <span style={getMinMaxLabelStyles(size, orientation, disabled || false, cssVars)}>
-              {minLabel || min.toString()}
-            </span>
-            <span style={getMinMaxLabelStyles(size, orientation, disabled || false, cssVars)}>
-              {maxLabel || max.toString()}
-            </span>
-          </div>
-        )}
-        
-        {/* Description */}
-        {description && (
-          <div
-            id={`${id}-description`}
-            style={getDescriptionStyles(size, disabled || false, error || false, cssVars)}
-          >
-            {description}
+            {header && (
+              <span style={getMinMaxLabelStyles(size, orientation, disabled || false, color, customColor, cssVars)}>
+                {header}
+              </span>
+            )}
+            {footer && (
+              <span style={getMinMaxLabelStyles(size, orientation, disabled || false, color, customColor, cssVars)}>
+                {footer}
+              </span>
+            )}
           </div>
         )}
     </div>

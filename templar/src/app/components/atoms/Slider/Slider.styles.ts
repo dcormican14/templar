@@ -1,5 +1,5 @@
 import React from 'react';
-import type { SliderColor, SliderSize, SliderOrientation } from './Slider.types';
+import type { SliderColor, SliderSize, SliderOrientation, SliderVariant } from './Slider.types';
 
 // Get color variables based on color prop
 export const getColorVariables = (color: SliderColor, customColor: string | undefined, cssVars: any) => {
@@ -10,66 +10,139 @@ export const getColorVariables = (color: SliderColor, customColor: string | unde
       background: customColor + '10',
       border: customColor,
       hover: customColor + '20',
+      accent: customColor,
+      shadow: `0 2px 8px ${customColor}20`,
+      disabled: customColor + '40',
     };
   }
 
   const colorMap: Record<string, any> = {
     primary: {
       main: cssVars.primary,
-      background: cssVars.primaryBackground || cssVars.primary + '10',
+      background: cssVars.primaryBackground,
       foreground: cssVars.primaryForeground,
-      hover: cssVars.primaryHover || cssVars.primary + '20',
-      border: cssVars.primaryBorder || cssVars.primary,
+      hover: cssVars.primaryHover,
+      accent: cssVars.primaryAccent,
+      shadow: cssVars.primaryShadow,
+      disabled: cssVars.primaryDisabled,
+      border: cssVars.primaryBorder,
     },
     secondary: {
       main: cssVars.secondary,
-      background: cssVars.secondaryBackground || cssVars.secondary + '10',
+      background: cssVars.secondaryBackground,
       foreground: cssVars.secondaryForeground,
-      hover: cssVars.secondaryHover || cssVars.secondary + '20',
-      border: cssVars.secondaryBorder || cssVars.secondary,
+      hover: cssVars.secondaryHover,
+      accent: cssVars.secondaryAccent,
+      shadow: cssVars.secondaryShadow,
+      disabled: cssVars.secondaryDisabled,
+      border: cssVars.secondaryBorder,
     },
     success: {
       main: cssVars.success,
-      background: cssVars.successBackground || cssVars.success + '10',
+      background: cssVars.successBackground,
       foreground: cssVars.successForeground,
-      hover: cssVars.successHover || cssVars.success + '20',
-      border: cssVars.successBorder || cssVars.success,
+      hover: cssVars.successHover,
+      accent: cssVars.successAccent,
+      shadow: cssVars.successShadow,
+      disabled: cssVars.successDisabled,
+      border: cssVars.successBorder,
     },
     warning: {
       main: cssVars.warning,
-      background: cssVars.warningBackground || cssVars.warning + '10',
+      background: cssVars.warningBackground,
       foreground: cssVars.warningForeground,
-      hover: cssVars.warningHover || cssVars.warning + '20',
-      border: cssVars.warningBorder || cssVars.warning,
+      hover: cssVars.warningHover,
+      accent: cssVars.warningAccent,
+      shadow: cssVars.warningShadow,
+      disabled: cssVars.warningDisabled,
+      border: cssVars.warningBorder,
     },
     destructive: {
-      main: cssVars.error,
-      background: cssVars.errorBackground || cssVars.error + '10',
-      foreground: cssVars.errorForeground || '#ffffff',
-      hover: cssVars.errorHover || cssVars.error + '20',
-      border: cssVars.errorBorder || cssVars.error,
+      main: cssVars.destructive,
+      background: cssVars.destructiveBackground,
+      foreground: cssVars.destructiveForeground,
+      hover: cssVars.destructiveHover,
+      accent: cssVars.destructiveAccent,
+      shadow: cssVars.destructiveShadow,
+      disabled: cssVars.destructiveDisabled,
+      border: cssVars.destructiveBorder,
     },
     info: {
       main: cssVars.info,
-      background: cssVars.infoBackground || cssVars.info + '10',
+      background: cssVars.infoBackground,
       foreground: cssVars.infoForeground,
-      hover: cssVars.infoHover || cssVars.info + '20',
-      border: cssVars.infoBorder || cssVars.info,
+      hover: cssVars.infoHover,
+      accent: cssVars.infoAccent,
+      shadow: cssVars.infoShadow,
+      disabled: cssVars.infoDisabled,
+      border: cssVars.infoBorder,
     },
   };
 
   return colorMap[color] || colorMap.primary;
 };
 
-// Get size configuration
+// Get variant styles for the slider
+export const getVariantStyles = (
+  variant: SliderVariant,
+  color: SliderColor,
+  customColor: string | undefined,
+  cssVars: any
+) => {
+  const colors = getColorVariables(color, customColor, cssVars);
+
+  switch (variant) {
+    case 'solid':
+      return {
+        fill: colors.accent || colors.main,
+        thumb: colors.accent || colors.main,
+        thumbBorder: 'transparent',
+        thumbShadow: `0 2px 8px ${colors.shadow || colors.main + '40'}`,
+      };
+    case 'outline':
+      return {
+        fill: colors.background || colors.main + '20',
+        thumb: cssVars.background || '#ffffff',
+        thumbBorder: colors.main,
+        thumbShadow: `0 2px 4px ${cssVars.shadow || 'rgba(0,0,0,0.1)'}`,
+      };
+    case 'ghost':
+      return {
+        fill: colors.background || colors.main + '30',
+        thumb: colors.main + '40',
+        thumbBorder: 'transparent',
+        thumbShadow: 'none',
+      };
+    case 'glassmorphic':
+      const reflectionColor = colors.hover || colors.main || '#ffffff';
+      return {
+        fill: colors.background || colors.main + '20',
+        thumb: 'rgba(255, 255, 255, 0.2)',
+        thumbBorder: colors.main,
+        thumbShadow: `0 0 20px ${colors.main}80, 0 0 40px ${colors.main}40, 0 4px 16px ${colors.shadow || 'rgba(31, 38, 135, 0.37)'}`,
+        thumbBackdrop: 'blur(10px)',
+        thumbGlow: `0 0 20px ${colors.main}`,
+      };
+    default:
+      return {
+        fill: colors.accent || colors.main,
+        thumb: colors.accent || colors.main,
+        thumbBorder: 'transparent',
+        thumbShadow: `0 2px 8px ${colors.shadow || colors.main + '40'}`,
+      };
+  }
+};
+
+// Get size configuration aligned with design standards
 export const getSizeConfig = (size: SliderSize, orientation: SliderOrientation) => {
   const baseConfig = {
     xs: {
       trackThickness: 2,
       thumbSize: 12,
-      thumbBorder: 1,
-      fontSize: '12px',
-      gap: '6px',
+      thumbBorder: 2,
+      fontSize: '14px',
+      gap: '8px',
+      padding: '12px',
     },
     sm: {
       trackThickness: 3,
@@ -77,27 +150,31 @@ export const getSizeConfig = (size: SliderSize, orientation: SliderOrientation) 
       thumbBorder: 2,
       fontSize: '14px',
       gap: '8px',
+      padding: '12px',
     },
     md: {
       trackThickness: 4,
       thumbSize: 20,
       thumbBorder: 2,
       fontSize: '16px',
-      gap: '10px',
+      gap: '12px',
+      padding: '16px',
     },
     lg: {
       trackThickness: 5,
       thumbSize: 24,
       thumbBorder: 2,
-      fontSize: '18px',
+      fontSize: '16px',
       gap: '12px',
+      padding: '20px',
     },
     xl: {
       trackThickness: 6,
       thumbSize: 28,
-      thumbBorder: 3,
-      fontSize: '20px',
-      gap: '14px',
+      thumbBorder: 2,
+      fontSize: '18px',
+      gap: '16px',
+      padding: '24px',
     },
   };
 
@@ -117,16 +194,8 @@ export const getSliderContainerStyles = (
     gap: '8px',
     fontFamily: 'inherit',
     cursor: disabled ? 'not-allowed' : 'default',
-    opacity: disabled ? 0.6 : 1,
+    opacity: disabled ? 0.5 : 1,
   };
-
-  if (length) {
-    if (orientation === 'horizontal') {
-      baseStyles.width = typeof length === 'number' ? `${length}px` : length;
-    } else {
-      baseStyles.height = typeof length === 'number' ? `${length}px` : length;
-    }
-  }
 
   return baseStyles;
 };
@@ -135,21 +204,21 @@ export const getSliderContainerStyles = (
 export const getTrackContainerStyles = (
   orientation: SliderOrientation,
   size: SliderSize,
-  animationsEnabled: boolean
+  animationsEnabled: boolean,
+  length?: string | number
 ): React.CSSProperties => {
   const config = getSizeConfig(size, orientation);
-  
+  const trackLength = typeof length === 'number' ? `${length}px` : length || '300px';
+
   return {
     position: 'relative',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: orientation === 'horizontal' ? '100%' : `${config.thumbSize}px`,
-    height: orientation === 'horizontal' ? `${config.thumbSize}px` : '200px',
-    cursor: 'pointer',
-    transition: animationsEnabled
-      ? 'opacity var(--duration-fast) var(--animation-smooth)'
-      : 'none',
+    width: orientation === 'horizontal' ? trackLength : `${config.thumbSize}px`,
+    height: orientation === 'horizontal' ? `${config.thumbSize}px` : trackLength,
+    transition: animationsEnabled ? 'opacity 0.2s ease-in-out' : 'none',
+    userSelect: 'none',
   };
 };
 
@@ -157,13 +226,22 @@ export const getTrackContainerStyles = (
 export const getTrackBackgroundStyles = (
   orientation: SliderOrientation,
   size: SliderSize,
+  variant: SliderVariant,
+  color: SliderColor,
+  customColor: string | undefined,
   cssVars: any
 ): React.CSSProperties => {
   const config = getSizeConfig(size, orientation);
-  
+  const variantStyles = getVariantStyles(variant, color, customColor, cssVars);
+
+  // For ghost, outline, and glassmorphic variants, use the same style as the fill for consistency
+  const backgroundColor = (variant === 'ghost' || variant === 'outline' || variant === 'glassmorphic')
+    ? variantStyles.fill
+    : cssVars.border;
+
   return {
     position: 'absolute',
-    backgroundColor: cssVars.border,
+    background: backgroundColor,
     borderRadius: '9999px',
     width: orientation === 'horizontal' ? '100%' : `${config.trackThickness}px`,
     height: orientation === 'horizontal' ? `${config.trackThickness}px` : '100%',
@@ -181,25 +259,34 @@ export const getTrackFillStyles = (
   max: number,
   error: boolean,
   animationsEnabled: boolean,
+  variant: SliderVariant,
   cssVars: any
 ): React.CSSProperties => {
   const config = getSizeConfig(size, orientation);
-  const colors = getColorVariables(color, customColor, cssVars);
+  const variantStyles = getVariantStyles(variant, color, customColor, cssVars);
   const percentage = ((value - min) / (max - min)) * 100;
-  
-  const fillColor = error ? cssVars.error : colors.main;
-  
-  return {
+
+  const fillColor = error ? cssVars.destructive : variantStyles.fill;
+  const colors = getColorVariables(color, customColor, cssVars);
+
+  const styles: React.CSSProperties = {
     position: 'absolute',
-    backgroundColor: fillColor,
+    background: fillColor,
     borderRadius: '9999px',
     width: orientation === 'horizontal' ? `${percentage}%` : `${config.trackThickness}px`,
     height: orientation === 'horizontal' ? `${config.trackThickness}px` : `${percentage}%`,
     [orientation === 'horizontal' ? 'left' : 'bottom']: 0,
     transition: animationsEnabled
-      ? 'width var(--duration-fast) var(--animation-smooth), height var(--duration-fast) var(--animation-smooth), background-color var(--duration-fast) var(--animation-smooth)'
+      ? 'width 0.2s ease-in-out, height 0.2s ease-in-out, background 0.2s ease-in-out, box-shadow 0.2s ease-in-out'
       : 'none',
   };
+
+  // Add glow effect for glassmorphic variant
+  if (variant === 'glassmorphic' && !error) {
+    styles.boxShadow = `0 0 10px ${colors.main}60, 0 0 20px ${colors.main}30`;
+  }
+
+  return styles;
 };
 
 // Hidden input styles
@@ -226,40 +313,47 @@ export const getThumbStyles = (
   error: boolean,
   focused: boolean,
   animationsEnabled: boolean,
+  variant: SliderVariant,
   cssVars: any
 ): React.CSSProperties => {
   const config = getSizeConfig(size, orientation);
-  const colors = getColorVariables(color, customColor, cssVars);
+  const variantStyles = getVariantStyles(variant, color, customColor, cssVars);
   const percentage = ((value - min) / (max - min)) * 100;
-  
-  const thumbColor = error ? cssVars.error : colors.main;
-  
+
+  const thumbColor = error ? cssVars.destructive : variantStyles.thumb;
+  const thumbBorderColor = error ? cssVars.destructive : variantStyles.thumbBorder;
+  const scaleValue = focused ? 1.1 : 1;
+
   const baseStyles: React.CSSProperties = {
     position: 'absolute',
     width: `${config.thumbSize}px`,
     height: `${config.thumbSize}px`,
-    backgroundColor: cssVars.background,
-    border: `${config.thumbBorder}px solid ${thumbColor}`,
+    backgroundColor: thumbColor,
+    border: `${config.thumbBorder}px solid ${thumbBorderColor}`,
     borderRadius: '50%',
-    cursor: 'grab',
     zIndex: 1,
     outline: focused ? `2px solid ${thumbColor}` : 'none',
     outlineOffset: '2px',
     transition: animationsEnabled
-      ? 'left var(--duration-fast) var(--animation-smooth), bottom var(--duration-fast) var(--animation-smooth), border-color var(--duration-fast) var(--animation-smooth), box-shadow var(--duration-fast) var(--animation-smooth)'
+      ? 'left 0.2s ease-in-out, bottom 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out, background-color 0.2s ease-in-out'
       : 'none',
-    boxShadow: focused ? `0 0 0 2px ${thumbColor}20` : cssVars.shadow,
+    boxShadow: focused ? `0 0 0 4px ${thumbColor}20` : variantStyles.thumbShadow,
   };
 
-  // Position the thumb
+  // Add backdrop filter for glassmorphic variant
+  if (variant === 'glassmorphic' && variantStyles.thumbBackdrop) {
+    baseStyles.backdropFilter = variantStyles.thumbBackdrop;
+  }
+
+  // Position the thumb with scale on hover/focus
   if (orientation === 'horizontal') {
     baseStyles.left = `calc(${percentage}% - ${config.thumbSize / 2}px)`;
     baseStyles.top = '50%';
-    baseStyles.transform = 'translateY(-50%)';
+    baseStyles.transform = `translateY(-50%) scale(${scaleValue})`;
   } else {
     baseStyles.bottom = `calc(${percentage}% - ${config.thumbSize / 2}px)`;
     baseStyles.left = '50%';
-    baseStyles.transform = 'translateX(-50%)';
+    baseStyles.transform = `translateX(-50%) scale(${scaleValue})`;
   }
 
   return baseStyles;
@@ -273,11 +367,15 @@ export const getLabelStyles = (
   cssVars: any
 ): React.CSSProperties => {
   const config = getSizeConfig(size, 'horizontal');
-  
+
   return {
     fontSize: config.fontSize,
     fontWeight: 500,
-    color: disabled ? cssVars.mutedForeground : (error ? cssVars.error : cssVars.foreground),
+    color: disabled
+      ? cssVars.foregroundDisabled || cssVars.mutedForeground
+      : error
+      ? cssVars.destructive
+      : cssVars.foreground,
     marginBottom: '4px',
     userSelect: 'none',
   };
@@ -291,16 +389,20 @@ export const getDescriptionStyles = (
   cssVars: any
 ): React.CSSProperties => {
   const fontSizeMap = {
-    xs: '10px',
+    xs: '12px',
     sm: '12px',
     md: '14px',
-    lg: '16px',
-    xl: '18px',
+    lg: '14px',
+    xl: '16px',
   };
-  
+
   return {
     fontSize: fontSizeMap[size],
-    color: disabled ? cssVars.mutedForeground : (error ? cssVars.error : cssVars.mutedForeground),
+    color: disabled
+      ? cssVars.foregroundDisabled || cssVars.mutedForeground
+      : error
+      ? cssVars.destructive
+      : cssVars.mutedForeground,
     marginTop: '4px',
     lineHeight: 1.4,
     userSelect: 'none',
@@ -312,15 +414,28 @@ export const getMinMaxLabelStyles = (
   size: SliderSize,
   orientation: SliderOrientation,
   disabled: boolean,
+  color: SliderColor,
+  customColor: string | undefined,
   cssVars: any
 ): React.CSSProperties => {
-  const config = getSizeConfig(size, orientation);
-  
+  const fontSizeMap = {
+    xs: '12px',
+    sm: '12px',
+    md: '14px',
+    lg: '14px',
+    xl: '16px',
+  };
+
+  const colors = getColorVariables(color, customColor, cssVars);
+
   return {
-    fontSize: config.fontSize,
-    color: disabled ? cssVars.mutedForeground : cssVars.mutedForeground,
+    fontSize: fontSizeMap[size],
+    fontWeight: 500,
+    color: disabled ? cssVars.mutedForeground : colors.main,
     userSelect: 'none',
     whiteSpace: 'nowrap',
+    minWidth: '20px',
+    textAlign: 'center',
   };
 };
 
@@ -349,13 +464,13 @@ export const getTooltipStyles = (
 ): React.CSSProperties => {
   const config = getSizeConfig(size, orientation);
   const percentage = ((value - min) / (max - min)) * 100;
-  
+
   const baseStyles: React.CSSProperties = {
     position: 'absolute',
     backgroundColor: cssVars.card || cssVars.background,
     color: cssVars.cardForeground || cssVars.foreground,
     padding: '4px 8px',
-    borderRadius: '6px',
+    borderRadius: '8px',
     fontSize: '12px',
     fontWeight: 500,
     whiteSpace: 'nowrap',
@@ -366,11 +481,11 @@ export const getTooltipStyles = (
   };
 
   if (orientation === 'horizontal') {
-    baseStyles.left = `calc(${percentage}% - 50%)`;
+    baseStyles.left = `${percentage}%`;
     baseStyles.bottom = `${config.thumbSize + 8}px`;
-    baseStyles.transform = 'translateX(50%)';
+    baseStyles.transform = 'translateX(-50%)';
   } else {
-    baseStyles.bottom = `calc(${percentage}% - 50%)`;
+    baseStyles.bottom = `${percentage}%`;
     baseStyles.left = `${config.thumbSize + 8}px`;
     baseStyles.transform = 'translateY(50%)';
   }

@@ -1,13 +1,15 @@
 import React from 'react';
-import type { 
-  WithFormProps, 
-  UniversalSize, 
-  UniversalColor 
+import type {
+  WithFormProps,
+  UniversalSize,
+  UniversalColor,
+  UniversalVariant
 } from '../types';
 
 // Component-specific type aliases (for backward compatibility)
 export type SliderSize = UniversalSize;
 export type SliderColor = UniversalColor;
+export type SliderVariant = UniversalVariant;
 export type SliderOrientation = 'horizontal' | 'vertical';
 
 // Component-specific props (not covered by universal props)
@@ -72,20 +74,20 @@ export interface SliderSpecificProps extends Omit<React.InputHTMLAttributes<HTML
   description?: string;
   
   /**
-   * Whether to show min/max labels
+   * Whether to show header/footer labels
    * @default false
    */
   showLabels?: boolean;
-  
+
   /**
-   * Custom min label
+   * Header text (shown at start of slider)
    */
-  minLabel?: string;
-  
+  header?: string;
+
   /**
-   * Custom max label
+   * Footer text (shown at end of slider)
    */
-  maxLabel?: string;
+  footer?: string;
   
   /**
    * Width for horizontal sliders or height for vertical sliders

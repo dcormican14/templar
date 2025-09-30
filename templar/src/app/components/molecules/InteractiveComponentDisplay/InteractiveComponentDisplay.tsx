@@ -311,6 +311,17 @@ export const InteractiveComponentDisplay = forwardRef<
         }
       };
     }
+
+    // For Slider, add onChange handler to update value
+    if (componentName === 'Slider') {
+      interactiveProps.onChange = (value: number) => {
+        setComponentProps(prev => ({ ...prev, value }));
+        // Also call original onChange if it exists
+        if (renderProps.onChange) {
+          renderProps.onChange(value);
+        }
+      };
+    }
   }
 
   // Clone element with new props

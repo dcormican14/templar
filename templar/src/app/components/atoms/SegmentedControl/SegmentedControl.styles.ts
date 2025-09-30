@@ -192,8 +192,8 @@ export const getVariantStyles = (
   switch (variant) {
     case 'solid':
       return {
-        borderColor: colors.accent || colors.main,
-        backgroundColor: colors.background,
+        borderColor: colors.main, // --{{color}}
+        backgroundColor: colors.main, // --{{color}}
         borderWidth: '2px',
         borderStyle: 'solid' as const,
       };
@@ -287,7 +287,8 @@ export const getSegmentStyles = (
   isSelected: boolean,
   disabled: boolean,
   animationsEnabled: boolean,
-  cssVars: any
+  cssVars: any,
+  hasIsometricAnimation?: boolean
 ): CSSProperties => {
   const dimensions = getSegmentedControlDimensions(size);
   const colors = getColorVariables(color, customColor, cssVars);
@@ -297,6 +298,14 @@ export const getSegmentStyles = (
       return getCSSVar(cssVars, 'mutedForeground', '#9ca3af');
     }
 
+    // Solid variant: all text is white, selected text uses --color
+    if (variant === 'solid') {
+      if (isSelected) {
+        return colors.main; // --{{color}}
+      }
+      return getCSSVar(cssVars, 'foreground', '#ffffff'); // white
+    }
+
     if (isSelected) {
       return colors.main;
     }
@@ -304,19 +313,25 @@ export const getSegmentStyles = (
     return getCSSVar(cssVars, 'mutedForeground', '#9ca3af');
   };
 
+  // For isometric mode, offset the selected segment text to align with the elevated indicator
+  const textTransform = isSelected && hasIsometricAnimation
+    ? 'translate(-3px, -3px)'
+    : 'none';
+
   return {
     flex: 1,
+    minWidth: 0,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
     zIndex: 2,
     fontSize: dimensions.fontSize,
-    fontWeight: isSelected ? '600' : '400',
+    fontWeight: '500',
     color: getSegmentColor(),
     cursor: disabled ? 'not-allowed' : 'pointer',
     transition: animationsEnabled
-      ? 'color var(--duration-fast) var(--animation-smooth), font-weight var(--duration-fast) var(--animation-smooth)'
+      ? 'color var(--duration-fast) var(--animation-smooth), transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
       : 'none',
     border: 'none',
     backgroundColor: 'transparent',
@@ -329,6 +344,7 @@ export const getSegmentStyles = (
     minWidth: 0,
     boxSizing: 'border-box',
     borderRadius: 'inherit',
+    transform: textTransform,
   };
 };
 
@@ -342,7 +358,8 @@ export const getIndicatorStyles = (
   shape: SegmentedControlShape,
   size: SegmentedControlSize,
   animationsEnabled: boolean,
-  cssVars: any
+  cssVars: any,
+  hasIsometricAnimation?: boolean
 ): CSSProperties => {
   const translateX = `${selectedIndex * 100}%`;
   const colors = getColorVariables(color, customColor, cssVars);
@@ -352,13 +369,13 @@ export const getIndicatorStyles = (
   const getIndicatorBackground = () => {
     switch (variant) {
       case 'solid':
-        return colors.accent || colors.main;
+        return colors.foreground; // white --{{color}}-foreground
       case 'outline':
         return getCSSVar(cssVars, 'background', '#ffffff');
       case 'ghost':
         return colors.background || colors.main + '10';
       case 'glassmorphic':
-        return colors.background;
+        return 'rgba(255, 255, 255, 0.1)';
       default:
         return getCSSVar(cssVars, 'background', '#ffffff');
     }
@@ -371,25 +388,31 @@ export const getIndicatorStyles = (
         return {
           borderWidth: '0',
           borderStyle: 'none' as const,
+          backdropFilter: 'none',
+          WebkitBackdropFilter: 'none',
         };
       case 'outline':
         return {
           borderWidth: '2px',
           borderStyle: 'solid' as const,
           borderColor: colors.main,
+          backdropFilter: 'none',
+          WebkitBackdropFilter: 'none',
         };
       case 'ghost':
         return {
           borderWidth: '0',
           borderStyle: 'none' as const,
+          backdropFilter: 'none',
+          WebkitBackdropFilter: 'none',
         };
       case 'glassmorphic':
         return {
           borderWidth: '1px',
           borderStyle: 'solid' as const,
-          borderColor: colors.border,
-          backdropFilter: 'blur(10px)',
-          WebkitBackdropFilter: 'blur(10px)',
+          borderColor: 'rgba(255, 255, 255, 0.2)',
+          backdropFilter: 'blur(16px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(16px) saturate(180%)',
         };
       default:
         return {
@@ -414,21 +437,163 @@ export const getIndicatorStyles = (
     }
   };
 
-  return {
-    position: 'absolute',
-    top: '2px',
-    left: '2px',
-    width: `calc((100% - 4px) / ${itemCount})`,
-    height: 'calc(100% - 4px)',
+  // Get box shadow based on variant
+  const getIndicatorShadow = () => {
+    if (variant === 'ghost') {
+      return 'none';
+    }
+    if (variant === 'glassmorphic') {
+      // Convert hex color to rgba for glow effect
+      const hexToRgba = (hex: string, alpha: number) => {
+        const cleanHex = hex.replace('#', '');
+        const r = parseInt(cleanHex.substring(0, 2), 16);
+        const g = parseInt(cleanHex.substring(2, 4), 16);
+        const b = parseInt(cleanHex.substring(4, 6), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      };
+
+      // All glow colors use the component's --color
+      const outerGlowColor = hexToRgba(colors.main, 0.37); // Main shadow glow
+      const mediumGlowColor = hexToRgba(colors.main, 0.4); // Medium glow
+      const innerGlowColor = hexToRgba(colors.main, 0.2);  // Inner glow
+
+      return `0 8px 32px 0 ${outerGlowColor}, 0 0 20px ${mediumGlowColor}, inset 0 0 20px ${innerGlowColor}`;
+    }
+    return `0 1px 2px ${getCSSVar(cssVars, 'shadowSm', 'rgba(0, 0, 0, 0.05)')}`;
+  };
+
+  const baseIndicatorStyles = {
+    position: hasIsometricAnimation ? 'relative' as const : 'absolute' as const,
+    top: hasIsometricAnimation ? '0' : '2px',
+    left: hasIsometricAnimation ? '0' : '2px',
+    width: hasIsometricAnimation ? '100%' : `calc((100% - 4px) / ${itemCount})`,
+    height: hasIsometricAnimation ? '100%' : 'calc(100% - 4px)',
     borderRadius: getIndicatorRadius(),
     backgroundColor: getIndicatorBackground(),
-    transform: `translateX(${translateX})`,
+    transform: hasIsometricAnimation ? 'translate(0, 0)' : `translateX(${translateX})`,
     transition: animationsEnabled
-      ? 'transform var(--duration-smooth) var(--animation-spring)'
+      ? 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease-in-out, backdrop-filter 0.3s ease-in-out'
       : 'none',
     zIndex: 1,
-    boxShadow: variant !== 'ghost' ? `0 1px 2px ${getCSSVar(cssVars, 'shadowSm', 'rgba(0, 0, 0, 0.05)')}` : 'none',
+    boxShadow: getIndicatorShadow(),
+    pointerEvents: hasIsometricAnimation ? 'auto' : 'none',
     ...getBorderStyles(),
   };
+
+  // Apply isometric styles if needed
+  if (hasIsometricAnimation) {
+    const isometricStyles = getIsometricIndicatorStyles(colors, variant, animationsEnabled);
+    return {
+      ...baseIndicatorStyles,
+      ...isometricStyles,
+    };
+  }
+
+  return baseIndicatorStyles;
+};
+
+// Get isometric container styles (wrapper for indicator + shadow)
+// Container adjusted to center the 3D effect within each segment
+export const getIsometricContainerStyles = (selectedIndex: number, itemCount: number): CSSProperties => ({
+  position: 'absolute',
+  top: '1px',
+  left: '1px',
+  width: `calc((100% - 2px) / ${itemCount})`,
+  height: 'calc(100% - 2px)',
+  transform: `translateX(${selectedIndex * 100}%)`,
+  transition: 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
+  pointerEvents: 'none', // Container doesn't capture events
+});
+
+// Get isometric indicator styles (the main indicator element)
+export const getIsometricIndicatorStyles = (
+  color: any,
+  variant: SegmentedControlVariant,
+  animationsEnabled: boolean
+): CSSProperties => {
+  const baseStyles = {
+    position: 'relative' as const,
+    zIndex: 1,
+    // Offset the indicator up and left so the shadow appears centered
+    // Default position has the indicator offset from the shadow
+    transform: 'translate(-3px, -3px)',
+    transition: animationsEnabled
+      ? 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+      : 'none',
+    pointerEvents: 'none', // Indicator doesn't capture events - hover is handled by segment button
+  };
+
+  // For solid variant with isometric, add border matching the shadow color
+  if (variant === 'solid') {
+    return {
+      ...baseStyles,
+      borderWidth: '2px',
+      borderStyle: 'solid' as const,
+      borderColor: color.hover || color.main, // Match shadow color for consistency
+    };
+  }
+
+  return baseStyles;
+};
+
+// Get isometric shadow element styles for indicator
+export const getIsometricShadowStyles = (
+  color: any,
+  variant: SegmentedControlVariant,
+  shape: SegmentedControlShape,
+  size: SegmentedControlSize,
+  animationsEnabled: boolean
+): CSSProperties => {
+  // Ghost and glassmorphic variants don't support isometric animation
+  if (variant === 'ghost' || variant === 'glassmorphic') {
+    return { display: 'none' };
+  }
+
+  const dimensions = getSegmentedControlDimensions(size);
+
+  // Get the same border radius as the indicator
+  const getIndicatorRadius = () => {
+    switch (shape) {
+      case 'sharp':
+        return '0';
+      case 'round':
+        return `${Math.max(0, dimensions.borderRadius - 2)}px`;
+      case 'pill':
+        return '9999px';
+      default:
+        return `${Math.max(0, dimensions.borderRadius - 2)}px`;
+    }
+  };
+
+  // Base shadow styles
+  // Shadow positioned to appear centered with the elevated indicator
+  // Indicator at (-3px, -3px), shadow at (+1px, +1px) creates balanced 3D effect
+  const baseStyles = {
+    position: 'absolute' as const,
+    top: '1px',
+    left: '1px',
+    width: '100%',
+    height: '100%',
+    borderRadius: getIndicatorRadius(),
+    zIndex: 0,
+    transition: 'none',
+    transform: 'translate(0, 0)',
+  };
+
+  // Different shadow styling based on variant
+  if (variant === 'solid') {
+    // Solid variant: shadow uses hover color (darker shade) to match border
+    return {
+      ...baseStyles,
+      backgroundColor: color.hover || color.main, // Use darker hover color for better contrast
+      opacity: 0.85, // Slightly transparent for depth effect
+    };
+  } else {
+    // Outline variant: shadow uses standard --color
+    return {
+      ...baseStyles,
+      backgroundColor: color.main, // --{{color}} for outline variant
+    };
+  }
 };
 

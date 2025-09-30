@@ -1,9 +1,10 @@
-import type { UniversalSize, UniversalVariant, UniversalColor, UniversalShape } from '../types';
+import type { UniversalSize, UniversalVariant, UniversalColor, UniversalShape, UniversalAnimationMode } from '../types';
 
 export type SegmentedControlSize = UniversalSize;
 export type SegmentedControlVariant = UniversalVariant;
 export type SegmentedControlColor = UniversalColor;
 export type SegmentedControlShape = UniversalShape;
+export type SegmentedControlAnimationMode = UniversalAnimationMode;
 
 export interface SegmentedControlProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
   items: string[];
@@ -20,6 +21,7 @@ export interface SegmentedControlProps extends Omit<React.HTMLAttributes<HTMLDiv
   error?: boolean;
   fullWidth?: boolean;
   animate?: boolean;
+  animationMode?: SegmentedControlAnimationMode;
   // Legacy support
   rounded?: boolean;
   name?: string;
