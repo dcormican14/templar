@@ -12,9 +12,21 @@ export const SliderConfig = {
       label="Demo Slider"
     />
   ),
-  leftControls: [universalColorControls, universalSizeShapeControls],
+  leftControls: [
+    universalColorControls, 
+    universalSizeShapeControls,
+    {
+      title: 'State',
+      controls: [
+        {
+          key: 'disabled',
+          label: 'Disabled',
+          type: 'checkbox' as ControlType
+        }
+      ]
+    },
+  ],
   rightControls: [
-    universalStateControls,
     {
       title: 'Slider Options',
       controls: [
@@ -79,31 +91,6 @@ export const SliderConfig = {
         }
       ]
     },
-    {
-      title: 'Form Options',
-      controls: [
-        {
-          key: 'name',
-          label: 'Form Name',
-          type: 'text' as ControlType
-        },
-        {
-          key: 'required',
-          label: 'Required',
-          type: 'checkbox' as ControlType
-        },
-        {
-          key: 'readOnly',
-          label: 'Read Only',
-          type: 'checkbox' as ControlType
-        },
-        {
-          key: 'autoFocus',
-          label: 'Auto Focus',
-          type: 'checkbox' as ControlType
-        }
-      ]
-    }
   ],
   initialProps: {
     color: 'primary',

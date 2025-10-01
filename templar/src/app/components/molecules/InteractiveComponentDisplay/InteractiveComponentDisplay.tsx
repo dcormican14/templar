@@ -322,6 +322,18 @@ export const InteractiveComponentDisplay = forwardRef<
         }
       };
     }
+
+    // For TextArea, add onChange handler to update value
+    if (componentName === 'TextArea') {
+      interactiveProps.onChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const value = event.target.value;
+        setComponentProps(prev => ({ ...prev, value }));
+        // Also call original onChange if it exists
+        if (renderProps.onChange) {
+          renderProps.onChange(event);
+        }
+      };
+    }
   }
 
   // Clone element with new props

@@ -168,12 +168,13 @@ export const getTextAreaInputStyles = (
   // Base styles
   const baseStyles: React.CSSProperties = {
     width: '100%',
-    border: '1px solid',
+    borderWidth: '2px',
+    borderStyle: 'solid',
     outline: 'none',
     fontFamily: 'inherit',
     resize: resize === 'none' ? 'none' : resize,
     transition: animationsEnabled
-      ? 'border-color var(--duration-fast) var(--animation-smooth), background-color var(--duration-fast) var(--animation-smooth), box-shadow var(--duration-fast) var(--animation-smooth)'
+      ? 'border-color var(--duration-fast) var(--animation-smooth), background-color var(--duration-fast) var(--animation-smooth), opacity var(--duration-fast) var(--animation-smooth)'
       : 'none',
     ...sizeConfig,
     ...shapeStyles,
@@ -202,58 +203,82 @@ export const getTextAreaInputStyles = (
     baseStyles.paddingLeft = '40px';
   }
 
-  // Variant-specific styles with error state override
+  // Variant-specific styles with error state override (matching Search component)
   const variantStyles = (() => {
     if (error) {
-      return {
-        borderColor: cssVars.error,
-        backgroundColor: cssVars.background,
-        color: cssVars.foreground,
-        '&::placeholder': {
-          color: cssVars.mutedForeground,
-        },
+      const baseErrorStyle = {
+        borderColor: cssVars.destructive,
       };
+
+      switch (variant) {
+        case 'solid':
+          return {
+            ...baseErrorStyle,
+            backgroundColor: cssVars.destructiveAccent || cssVars.destructive,
+            color: colors.foreground, // Keep original foreground color
+          };
+        case 'ghost':
+          return {
+            ...baseErrorStyle,
+            backgroundColor: 'transparent',
+            color: cssVars.foreground,
+          };
+        case 'glassmorphic':
+          return {
+            ...baseErrorStyle,
+            backgroundColor: cssVars.destructiveBackground,
+            color: cssVars.destructiveForeground,
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+          };
+        case 'outline':
+        default:
+          return {
+            ...baseErrorStyle,
+            backgroundColor: cssVars.background,
+            color: cssVars.foreground,
+          };
+      }
     }
 
+    // Normal state styles by variant (matching Search component)
     switch (variant) {
       case 'solid':
         return {
-          backgroundColor: colors.main,
-          borderColor: colors.main,
+          backgroundColor: colors.accent || colors.main,
+          borderColor: colors.accent || colors.main,
           color: colors.foreground,
-          '&::placeholder': {
-            color: colors.foreground,
-            opacity: 0.7,
-          },
         };
       case 'ghost':
         return {
-          backgroundColor: colors.background,
+          backgroundColor: 'transparent',
           borderColor: 'transparent',
-          color: colors.main,
-          '&::placeholder': {
-            color: cssVars.mutedForeground,
-          },
+          color: cssVars.foreground,
+        };
+      case 'glassmorphic':
+        return {
+          backgroundColor: colors.background,
+          borderColor: colors.border,
+          color: colors.foreground,
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
         };
       case 'outline':
       default:
         return {
           backgroundColor: cssVars.background,
-          borderColor: colors.border || cssVars.border,
+          borderColor: colors.main,
           color: cssVars.foreground,
-          '&::placeholder': {
-            color: cssVars.mutedForeground,
-          },
         };
     }
   })();
 
-  // Focus styles
+  // Focus styles (matching Search component)
   const focusStyles: React.CSSProperties = {};
   if (focused) {
-    const focusColor = error ? cssVars.error : colors.main;
-    focusStyles.borderColor = focusColor;
-    focusStyles.boxShadow = `0 0 0 1px ${focusColor}`;
+    const focusColor = error ? cssVars.destructive : colors.main;
+    focusStyles.outline = `2px solid ${focusColor}`;
+    focusStyles.outlineOffset = '2px';
   }
 
   // Disabled styles

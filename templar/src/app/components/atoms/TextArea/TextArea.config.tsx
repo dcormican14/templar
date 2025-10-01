@@ -124,43 +124,6 @@ export const TextAreaConfig = {
         }
       ]
     },
-    {
-      title: 'Form Options',
-      controls: [
-        {
-          key: 'name',
-          label: 'Form Name',
-          type: 'text' as ControlType
-        },
-        {
-          key: 'required',
-          label: 'Required',
-          type: 'checkbox' as ControlType
-        },
-        {
-          key: 'readOnly',
-          label: 'Read Only',
-          type: 'checkbox' as ControlType
-        },
-        {
-          key: 'autoFocus',
-          label: 'Auto Focus',
-          type: 'checkbox' as ControlType
-        },
-        {
-          key: 'autoComplete',
-          label: 'Auto Complete',
-          type: 'select' as ControlType,
-          options: [
-            { label: 'Off', value: 'off' },
-            { label: 'On', value: 'on' },
-            { label: 'Street Address', value: 'street-address' },
-            { label: 'Address Line 1', value: 'address-line1' },
-            { label: 'Address Line 2', value: 'address-line2' }
-          ]
-        }
-      ]
-    }
   ],
   initialProps: {
     color: 'primary',

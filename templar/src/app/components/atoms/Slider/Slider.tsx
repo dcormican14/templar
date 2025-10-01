@@ -71,7 +71,7 @@ export const Slider = forwardRef<SliderRef, SliderProps>((allProps, ref) => {
     orientation = 'horizontal',
     min = 0,
     max = 100,
-    step = 1,
+    step: rawStep = 1,
     showTooltip = false,
     showTicks = false,
     ticks,
@@ -82,6 +82,9 @@ export const Slider = forwardRef<SliderRef, SliderProps>((allProps, ref) => {
     formatValue: customFormatter,
     ...rest
   } = componentProps;
+
+  // Handle empty or invalid step values
+  const step = rawStep === '' || rawStep === null || rawStep === undefined || isNaN(Number(rawStep)) || Number(rawStep) <= 0 ? 1 : Number(rawStep);
   
   // Get CSS variables and settings
   const cssVars = useCSSVariables();
@@ -386,7 +389,7 @@ export const Slider = forwardRef<SliderRef, SliderProps>((allProps, ref) => {
             />
             
             {/* Tooltip */}
-            {(showTooltip || showTooltipState) && (
+            {showTooltip && showTooltipState && (
               <div style={getTooltipStyles(orientation, size, currentValue, min, max, cssVars)}>
                 {formatValue(currentValue, customFormatter)}
               </div>

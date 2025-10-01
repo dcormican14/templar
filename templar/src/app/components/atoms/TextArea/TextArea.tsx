@@ -372,8 +372,6 @@ export const TextArea = forwardRef<TextAreaRef, TextAreaProps>((allProps, ref) =
             </div>
           )}
           
-          {/* Resize handle */}
-          <div style={getResizeHandleStyles(resize, disabled || false, cssVars)} />
           
           {/* Loading overlay */}
           {loading && (
