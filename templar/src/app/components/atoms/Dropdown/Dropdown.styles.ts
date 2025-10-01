@@ -169,19 +169,19 @@ export const getTriggerStyles = (
     ...getShapeStyles(finalShape),
   };
 
-  // Base border styles (individual properties to avoid conflicts)
+  // Base border styles (individual properties to avoid conflicts) - matching Search component
   const baseBorderStyles = {
-    borderTopWidth: '1px',
-    borderRightWidth: '1px',
-    borderBottomWidth: '1px',
-    borderLeftWidth: '1px',
+    borderTopWidth: '2px',
+    borderRightWidth: '2px',
+    borderBottomWidth: '2px',
+    borderLeftWidth: '2px',
     borderTopStyle: 'solid' as const,
     borderRightStyle: 'solid' as const,
     borderBottomStyle: 'solid' as const,
     borderLeftStyle: 'solid' as const,
   };
 
-  // Variant-specific styles
+  // Variant-specific styles (matching Search component)
   const variantStyles = (() => {
     switch (variant) {
       case 'solid':
@@ -194,20 +194,10 @@ export const getTriggerStyles = (
           borderLeftColor: colors.accent || colors.main,
           ...baseBorderStyles,
         };
-      case 'outline':
-        return {
-          backgroundColor: 'transparent',
-          color: colors.main,
-          borderTopColor: colors.main,
-          borderRightColor: colors.main,
-          borderBottomColor: colors.main,
-          borderLeftColor: colors.main,
-          ...baseBorderStyles,
-        };
       case 'ghost':
         return {
           backgroundColor: 'transparent',
-          color: colors.main,
+          color: cssVars.foreground,
           borderTopColor: 'transparent',
           borderRightColor: 'transparent',
           borderBottomColor: 'transparent',
@@ -215,34 +205,22 @@ export const getTriggerStyles = (
           ...baseBorderStyles,
         };
       case 'glassmorphic':
-        // Create reflection gradient lines using the hover color with transparency
-        const reflectionColor = colors.hover || colors.main || '#ffffff';
-        const topReflectionGradient = `linear-gradient(135deg, transparent 0%, ${reflectionColor}20 20%, ${reflectionColor}15 25%, transparent 35%)`;
-        const bottomReflectionGradient = `linear-gradient(135deg, transparent 45%, ${reflectionColor}25 55%, ${reflectionColor}20 65%, transparent 80%)`;
-        
         return {
-          background: `
-            ${topReflectionGradient},
-            ${bottomReflectionGradient},
-            rgba(255, 255, 255, 0.1)
-          `,
+          backgroundColor: colors.background,
+          color: colors.foreground,
+          borderTopColor: colors.border,
+          borderRightColor: colors.border,
+          borderBottomColor: colors.border,
+          borderLeftColor: colors.border,
           backdropFilter: 'blur(10px)',
-          WebkitBackdropFilter: 'blur(10px)', // Safari support
-          color: colors.main,
-          borderTopColor: 'rgba(255, 255, 255, 0.2)',
-          borderRightColor: 'rgba(255, 255, 255, 0.2)',
-          borderBottomColor: 'rgba(255, 255, 255, 0.2)',
-          borderLeftColor: 'rgba(255, 255, 255, 0.2)',
-          boxShadow: `0 8px 32px 0 ${colors.main}40`, // Use dropdown color with transparency for shadow
-          position: 'relative',
-          overflow: 'hidden',
+          WebkitBackdropFilter: 'blur(10px)',
           ...baseBorderStyles,
         };
+      case 'outline':
       default:
-        // Default case should behave like outline variant for consistency
         return {
-          backgroundColor: 'transparent',
-          color: colors.main,
+          backgroundColor: cssVars.background,
+          color: cssVars.foreground,
           borderTopColor: colors.main,
           borderRightColor: colors.main,
           borderBottomColor: colors.main,
@@ -252,85 +230,51 @@ export const getTriggerStyles = (
     }
   })();
 
-  // Error state override - use destructive styling for borders only, preserve text color
+  // Error state override (matching Search component)
   if (error) {
-    const destructiveColors = getColorVariables('destructive', undefined, cssVars);
     const destructiveVariantStyles = (() => {
       switch (variant) {
         case 'solid':
           return {
-            backgroundColor: destructiveColors.accent || destructiveColors.main,
-            // Keep original foreground color, not destructive
+            backgroundColor: cssVars.destructiveAccent || cssVars.destructive,
             color: colors.foreground,
-            borderTopColor: destructiveColors.accent || destructiveColors.main,
-            borderRightColor: destructiveColors.accent || destructiveColors.main,
-            borderBottomColor: destructiveColors.accent || destructiveColors.main,
-            borderLeftColor: destructiveColors.accent || destructiveColors.main,
-            ...baseBorderStyles,
-          };
-        case 'outline':
-          return {
-            backgroundColor: 'transparent',
-            // Keep original variant color, not destructive
-            color: colors.main,
-            borderTopColor: destructiveColors.main,
-            borderRightColor: destructiveColors.main,
-            borderBottomColor: destructiveColors.main,
-            borderLeftColor: destructiveColors.main,
+            borderTopColor: cssVars.destructive,
+            borderRightColor: cssVars.destructive,
+            borderBottomColor: cssVars.destructive,
+            borderLeftColor: cssVars.destructive,
             ...baseBorderStyles,
           };
         case 'ghost':
           return {
             backgroundColor: 'transparent',
-            // Keep original variant color, not destructive
-            color: colors.main,
-            borderTopColor: 'transparent',
-            borderRightColor: 'transparent',
-            borderBottomColor: 'transparent',
-            borderLeftColor: 'transparent',
+            color: cssVars.foreground,
+            borderTopColor: cssVars.destructive,
+            borderRightColor: cssVars.destructive,
+            borderBottomColor: cssVars.destructive,
+            borderLeftColor: cssVars.destructive,
             ...baseBorderStyles,
           };
         case 'glassmorphic':
-          const reflectionColor = destructiveColors.hover || destructiveColors.main || '#ff0000';
-          const topReflectionGradient = `linear-gradient(135deg, transparent 0%, ${reflectionColor}20 20%, ${reflectionColor}15 25%, transparent 35%)`;
-          const bottomReflectionGradient = `linear-gradient(135deg, transparent 45%, ${reflectionColor}25 55%, ${reflectionColor}20 65%, transparent 80%)`;
-
-          // Convert destructive color to rgba for consistent theming
-          const destructiveMainColor = destructiveColors.main;
-          let destructiveRgba = 'rgba(220, 50, 47, 0.1)'; // fallback
-          if (destructiveMainColor && destructiveMainColor.startsWith('#')) {
-            const hex = destructiveMainColor.replace('#', '');
-            const r = parseInt(hex.substr(0, 2), 16);
-            const g = parseInt(hex.substr(2, 2), 16);
-            const b = parseInt(hex.substr(4, 2), 16);
-            destructiveRgba = `rgba(${r}, ${g}, ${b}, 0.1)`;
-          }
-
           return {
-            background: `
-              ${topReflectionGradient},
-              ${bottomReflectionGradient},
-              ${destructiveRgba}
-            `,
+            backgroundColor: cssVars.destructiveBackground,
+            color: cssVars.destructiveForeground,
+            borderTopColor: cssVars.destructive,
+            borderRightColor: cssVars.destructive,
+            borderBottomColor: cssVars.destructive,
+            borderLeftColor: cssVars.destructive,
             backdropFilter: 'blur(10px)',
             WebkitBackdropFilter: 'blur(10px)',
-            // Keep original variant color, not destructive
-            color: colors.main,
-            borderTopColor: `${destructiveColors.main}33`, // 20% opacity
-            borderRightColor: `${destructiveColors.main}33`,
-            borderBottomColor: `${destructiveColors.main}33`,
-            borderLeftColor: `${destructiveColors.main}33`,
             ...baseBorderStyles,
           };
+        case 'outline':
         default:
           return {
-            backgroundColor: 'transparent',
-            // Keep original variant color, not destructive
-            color: colors.main,
-            borderTopColor: destructiveColors.main,
-            borderRightColor: destructiveColors.main,
-            borderBottomColor: destructiveColors.main,
-            borderLeftColor: destructiveColors.main,
+            backgroundColor: cssVars.background,
+            color: cssVars.foreground,
+            borderTopColor: cssVars.destructive,
+            borderRightColor: cssVars.destructive,
+            borderBottomColor: cssVars.destructive,
+            borderLeftColor: cssVars.destructive,
             ...baseBorderStyles,
           };
       }

@@ -31,11 +31,6 @@ export const TextAreaConfig = {
           ]
         },
         {
-          key: 'value',
-          label: 'Text Content',
-          type: 'textarea' as ControlType
-        },
-        {
           key: 'minRows',
           label: 'Minimum Rows',
           type: 'number' as ControlType
@@ -53,11 +48,6 @@ export const TextAreaConfig = {
         {
           key: 'autoResize',
           label: 'Auto Resize',
-          type: 'checkbox' as ControlType
-        },
-        {
-          key: 'showLineNumbers',
-          label: 'Show Line Numbers',
           type: 'checkbox' as ControlType
         },
         {

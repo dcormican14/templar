@@ -22,6 +22,7 @@ export const Toggle = forwardRef<ToggleRef, ToggleProps>((allProps, ref) => {
   // Destructure form props with defaults
   const {
     color = UNIVERSAL_DEFAULTS.color,
+    variant = UNIVERSAL_DEFAULTS.variant,
     size = UNIVERSAL_DEFAULTS.size,
     disabled = UNIVERSAL_DEFAULTS.disabled,
     label,
@@ -181,12 +182,12 @@ export const Toggle = forwardRef<ToggleRef, ToggleProps>((allProps, ref) => {
       {/* Toggle track with animated bubble */}
       <div
         role="presentation"
-        style={getToggleTrackStyles(size, color, isChecked, disabled || false, focused, cssVars)}
+        style={getToggleTrackStyles(size, color, variant, isChecked, disabled || false, focused, cssVars)}
       >
         {/* Main bubble */}
         <div
           role="presentation"
-          style={getBubbleStyles(size, color, isChecked, disabled || false, cssVars)}
+          style={getBubbleStyles(size, color, isChecked, disabled || false, cssVars, variant)}
         />
       </div>
       

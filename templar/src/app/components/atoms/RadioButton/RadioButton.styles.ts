@@ -72,7 +72,7 @@ export const getVariantStyles = (
 ): CSSProperties => {
   const colors = getColorVariables(color, customColor, cssVars);
 
-  // Error state override
+  // Error state override (matching Search component)
   if (error) {
     const baseErrorStyle = {
       borderWidth: '2px',
@@ -84,7 +84,7 @@ export const getVariantStyles = (
         return {
           ...baseErrorStyle,
           borderColor: cssVars.destructive,
-          backgroundColor: checked ? cssVars.destructive : cssVars.background,
+          backgroundColor: checked ? cssVars.destructive : (cssVars.destructiveAccent || cssVars.destructive),
         };
       case 'ghost':
         return {
@@ -110,39 +110,35 @@ export const getVariantStyles = (
     }
   }
 
-  // Normal state styles by variant
+  // Normal state styles by variant (matching Search component)
   switch (variant) {
     case 'solid':
       return {
-        borderColor: checked ? colors.main : colors.background,
-        backgroundColor: checked ? colors.main : colors.background,
+        borderColor: checked ? (colors.accent || colors.main) : cssVars.mutedForeground,
+        backgroundColor: checked ? (colors.accent || colors.main) : cssVars.mutedForeground,
         borderWidth: '2px',
         borderStyle: 'solid' as const,
       };
     case 'ghost':
       return {
-        borderColor: checked ? colors.main : cssVars.border,
+        borderColor: checked ? colors.main : 'transparent',
         backgroundColor: checked ? colors.main : 'transparent',
         borderWidth: '2px',
         borderStyle: 'solid' as const,
       };
     case 'glassmorphic':
-      const reflectionColor = colors.hover || colors.main || '#ffffff';
       return {
         borderColor: checked ? colors.main : colors.border,
+        backgroundColor: checked ? colors.main : colors.background,
         borderWidth: '2px',
         borderStyle: 'solid' as const,
         backdropFilter: 'blur(10px)',
         WebkitBackdropFilter: 'blur(10px)',
-        boxShadow: `0 4px 16px 0 ${colors.shadow || 'rgba(31, 38, 135, 0.37)'}`,
-        background: checked
-          ? colors.main
-          : `linear-gradient(135deg, transparent 0%, ${reflectionColor}20 20%, ${reflectionColor}15 25%, transparent 35%), ${colors.background}`,
       };
     case 'outline':
     default:
       return {
-        borderColor: checked ? colors.main : cssVars.border,
+        borderColor: checked ? colors.main : colors.main,
         backgroundColor: checked ? colors.main : cssVars.background,
         borderWidth: '2px',
         borderStyle: 'solid' as const,

@@ -98,7 +98,7 @@ export const getVariantStyles = (
   const colors = getColorVariables(color, customColor, cssVars);
   
   const baseStyles = {
-    borderWidth: '1px',
+    borderWidth: '2px',
     borderStyle: 'solid' as const,
   };
 
@@ -260,7 +260,7 @@ export const getInlineCodeStyles = (
     display: 'inline-block',
     fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Consolas, "Liberation Mono", Menlo, monospace',
     whiteSpace: 'nowrap',
-    borderWidth: '1px',
+    borderWidth: '2px',
     borderStyle: 'solid',
     verticalAlign: 'baseline',
     ...inlineShapeStyles,
@@ -292,12 +292,12 @@ export const getCopyButtonStyles = (
     right: sizeConfig.right,
     backgroundColor: cssVars.background,
     color: cssVars.mutedForeground,
-    border: `1px solid ${cssVars.border}`,
+    border: `2px solid ${cssVars.border}`,
     borderRadius: '8px',
     padding: sizeConfig.padding,
     fontSize: sizeConfig.fontSize,
     cursor: 'pointer',
-    transition: animationsEnabled 
+    transition: animationsEnabled
       ? 'background-color var(--duration-fast) var(--animation-smooth), color var(--duration-fast) var(--animation-smooth)'
       : 'none',
     fontFamily: 'inherit',
@@ -338,10 +338,10 @@ export const getLineNumberStyles = (
     bottom: '0',
     width: '44px',
     backgroundColor: cssVars.backgroundAccent,
-    borderRight: `1px solid ${colors.border || colors.main}`,
-    borderTop: `1px solid ${colors.border || colors.main}`,
-    borderBottom: `1px solid ${colors.border || colors.main}`,
-    borderLeft: `1px solid ${colors.border || colors.main}`,
+    borderRight: `2px solid ${colors.border || colors.main}`,
+    borderTop: `2px solid ${colors.border || colors.main}`,
+    borderBottom: `2px solid ${colors.border || colors.main}`,
+    borderLeft: `2px solid ${colors.border || colors.main}`,
     borderRadius: getBorderRadius(),
     padding: (typeof sizeConfig.padding === 'string' ? sizeConfig.padding.split(' ')[0] : '12px') + ' 8px',
     paddingTop: '32px', // Account for language label

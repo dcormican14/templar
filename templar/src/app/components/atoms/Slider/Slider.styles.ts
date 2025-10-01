@@ -210,13 +210,17 @@ export const getTrackContainerStyles = (
   const config = getSizeConfig(size, orientation);
   const trackLength = typeof length === 'number' ? `${length}px` : length || '300px';
 
+  // Add extra space for the thumb to properly center
+  const containerHeight = orientation === 'horizontal' ? config.thumbSize + 8 : trackLength;
+  const containerWidth = orientation === 'vertical' ? config.thumbSize + 8 : trackLength;
+
   return {
     position: 'relative',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    width: orientation === 'horizontal' ? trackLength : `${config.thumbSize}px`,
-    height: orientation === 'horizontal' ? `${config.thumbSize}px` : trackLength,
+    width: containerWidth,
+    height: containerHeight,
     transition: animationsEnabled ? 'opacity 0.2s ease-in-out' : 'none',
     userSelect: 'none',
   };
@@ -245,6 +249,9 @@ export const getTrackBackgroundStyles = (
     borderRadius: '9999px',
     width: orientation === 'horizontal' ? '100%' : `${config.trackThickness}px`,
     height: orientation === 'horizontal' ? `${config.trackThickness}px` : '100%',
+    top: orientation === 'horizontal' ? '50%' : undefined,
+    left: orientation === 'vertical' ? '50%' : undefined,
+    transform: orientation === 'horizontal' ? 'translateY(-50%)' : 'translateX(-50%)',
   };
 };
 
@@ -276,6 +283,9 @@ export const getTrackFillStyles = (
     width: orientation === 'horizontal' ? `${percentage}%` : `${config.trackThickness}px`,
     height: orientation === 'horizontal' ? `${config.trackThickness}px` : `${percentage}%`,
     [orientation === 'horizontal' ? 'left' : 'bottom']: 0,
+    top: orientation === 'horizontal' ? '50%' : undefined,
+    left: orientation === 'vertical' ? '50%' : 0,
+    transform: orientation === 'horizontal' ? 'translateY(-50%)' : 'translateX(-50%)',
     transition: animationsEnabled
       ? 'width 0.2s ease-in-out, height 0.2s ease-in-out, background 0.2s ease-in-out, box-shadow 0.2s ease-in-out'
       : 'none',

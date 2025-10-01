@@ -1,13 +1,15 @@
 import React from 'react';
-import type { 
-  WithFormProps, 
-  UniversalSize, 
-  UniversalColor 
+import type {
+  WithFormProps,
+  UniversalSize,
+  UniversalColor,
+  UniversalVariant
 } from '../types';
 
 // Component-specific type aliases (for backward compatibility)
 export type ToggleSize = UniversalSize;
 export type ToggleColor = UniversalColor;
+export type ToggleVariant = UniversalVariant;
 
 // Component-specific props (not covered by universal props)
 export interface ToggleSpecificProps {

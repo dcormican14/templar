@@ -85,11 +85,11 @@ export const getVariantStyles = (
 ): React.CSSProperties => {
   const colors = getColorVariables(color, customColor, cssVars);
 
-  // Error state override
+  // Error state override (matching Search component)
   if (error) {
     const baseErrorStyle = {
       color: cssVars.destructiveForeground,
-      borderWidth: '1px',
+      borderWidth: '2px',
       borderStyle: 'solid' as const,
     };
 
@@ -97,13 +97,13 @@ export const getVariantStyles = (
       case 'solid':
         return {
           ...baseErrorStyle,
-          borderColor: checked ? cssVars.destructive : cssVars.mutedForeground,
-          backgroundColor: checked ? cssVars.destructive : cssVars.mutedForeground,
+          borderColor: cssVars.destructive,
+          backgroundColor: checked ? cssVars.destructive : (cssVars.destructiveAccent || cssVars.destructive),
         };
       case 'ghost':
         return {
           ...baseErrorStyle,
-          borderColor: checked ? cssVars.destructive : cssVars.mutedForeground,
+          borderColor: cssVars.destructive,
           backgroundColor: checked ? cssVars.destructive : 'transparent',
         };
       case 'glassmorphic':
@@ -112,6 +112,7 @@ export const getVariantStyles = (
           borderColor: cssVars.destructive,
           backgroundColor: checked ? cssVars.destructive : cssVars.destructiveBackground,
           backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
         };
       case 'outline':
       default:
@@ -123,39 +124,40 @@ export const getVariantStyles = (
     }
   }
 
-  // Normal state styles by variant
+  // Normal state styles by variant (matching Search component)
   switch (variant) {
     case 'solid':
       return {
-        borderColor: checked ? colors.main : cssVars.mutedForeground,
-        backgroundColor: checked ? colors.main : cssVars.mutedForeground,
+        borderColor: checked ? (colors.accent || colors.main) : cssVars.mutedForeground,
+        backgroundColor: checked ? (colors.accent || colors.main) : cssVars.mutedForeground,
         color: colors.foreground,
-        borderWidth: '1px',
+        borderWidth: '2px',
         borderStyle: 'solid' as const,
       };
     case 'ghost':
       return {
-        borderColor: checked ? colors.main : cssVars.mutedForeground,
+        borderColor: checked ? colors.main : 'transparent',
         backgroundColor: checked ? colors.main : 'transparent',
-        color: colors.foreground,
-        borderWidth: '1px',
+        color: checked ? colors.foreground : cssVars.foreground,
+        borderWidth: '2px',
         borderStyle: 'solid' as const,
       };
     case 'glassmorphic':
       return {
         borderColor: checked ? colors.main : colors.border,
         backgroundColor: checked ? colors.main : colors.background,
-        color: colors.foreground,
-        borderWidth: '1px',
+        color: checked ? colors.foreground : colors.foreground,
+        borderWidth: '2px',
         borderStyle: 'solid' as const,
         backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
       };
     case 'invisible':
       return {
         borderColor: 'transparent',
         backgroundColor: 'transparent',
         color: colors.foreground,
-        borderWidth: '1px',
+        borderWidth: '2px',
         borderStyle: 'solid' as const,
       };
     case 'outline':
@@ -164,7 +166,7 @@ export const getVariantStyles = (
         borderColor: colors.main,
         backgroundColor: checked ? colors.main : cssVars.background,
         color: colors.foreground,
-        borderWidth: '1px',
+        borderWidth: '2px',
         borderStyle: 'solid' as const,
       };
   }

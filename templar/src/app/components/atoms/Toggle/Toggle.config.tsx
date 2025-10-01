@@ -7,7 +7,16 @@ export const ToggleConfig = {
   component: <Toggle label="Toggle me" />,
   leftControls: [universalColorControls, universalSizeShapeControls],
   rightControls: [
-    universalStateControls,
+    {
+      title: 'State',
+      controls: [
+        {
+          key: 'disabled',
+          label: 'Disabled',
+          type: 'checkbox' as ControlType
+        }
+      ]
+    },
     {
       title: 'Toggle Options',
       controls: [
@@ -16,17 +25,14 @@ export const ToggleConfig = {
           label: 'Label Text',
           type: 'text' as ControlType
         },
-        {
-          key: 'checked',
-          label: 'Checked',
-          type: 'checkbox' as ControlType
-        }
       ]
     }
   ],
   initialProps: {
     color: 'primary',
+    variant: 'solid',
     size: 'md',
+    shape: 'pill',
     label: 'Toggle me',
     checked: false
   }
