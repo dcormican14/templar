@@ -740,18 +740,22 @@ export function OverviewPage() {
                     size="lg"
                     shape="round"
                     color="primary"
+                    clickable={true}
+                    animationMode="parallax"
                     style={{
                       backgroundColor: `${cssVars.background}CC`,
                       backdropFilter: 'blur(20px)',
                       border: `1px solid ${cssVars.border}80`
                     }}
+                    onClick={() => window.open('https://github.com/dcormican14/templar', '_blank')}
                   >
                     <div style={{ padding: '32px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
                         <Icon name="Github" size="lg" style={{ color: cssVars.primary, flexShrink: 0 }} />
-                        <h2 style={{ fontSize: '24px', fontWeight: '600', color: cssVars.foreground, margin: 0 }}>
+                        <h2 style={{ fontSize: '24px', fontWeight: '600', color: cssVars.foreground, margin: 0, flex: 1 }}>
                           Open Source
                         </h2>
+                        <Icon name="OpenNewWindow" size="md" style={{ color: cssVars.foregroundAccent, flexShrink: 0 }} />
                       </div>
                       <div>
                         <p style={{ fontSize: '16px', color: cssVars.foregroundAccent, lineHeight: '1.6' }}>
@@ -768,6 +772,44 @@ export function OverviewPage() {
                 </AnimatedCard>
 
                 <AnimatedCard scrollY={scrollY} delay={200}>
+                  <Card
+                    variant="glassmorphic"
+                    size="lg"
+                    shape="round"
+                    color="destructive"
+                    clickable={true}
+                    animationMode="parallax"
+                    style={{
+                      backgroundColor: `${cssVars.background}CC`,
+                      backdropFilter: 'blur(20px)',
+                      border: `1px solid ${cssVars.border}80`
+                    }}
+                    onClick={() => window.open('https://www.npmjs.com/package/mournshire', '_blank')}
+                  >
+                    <div style={{ padding: '32px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
+                        <Icon name="Package" size="lg" style={{ color: cssVars.destructive, flexShrink: 0 }} />
+                        <h2 style={{ fontSize: '24px', fontWeight: '600', color: cssVars.foreground, margin: 0, flex: 1 }}>
+                          npm Package
+                        </h2>
+                        <Icon name="OpenNewWindow" size="md" style={{ color: cssVars.foregroundAccent, flexShrink: 0 }} />
+                      </div>
+                      <div>
+                        <p style={{ fontSize: '16px', color: cssVars.foregroundAccent, lineHeight: '1.6' }}>
+                          Install Mournshire from npm and start building with our themable component library. Get updates, view documentation, and explore the package ecosystem.
+                        </p>
+                        <ul style={{ fontSize: '14px', color: cssVars.foregroundAccent, lineHeight: '1.8', listStyle: 'none', paddingLeft: 0, marginTop: '16px' }}>
+                          <li>• Simple npm install</li>
+                          <li>• Regular updates and releases</li>
+                          <li>• Comprehensive package docs</li>
+                          <li>• Explore dependencies</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </Card>
+                </AnimatedCard>
+
+                <AnimatedCard scrollY={scrollY} delay={300}>
                   <Card
                     variant="glassmorphic"
                     size="lg"
@@ -801,7 +843,7 @@ export function OverviewPage() {
                   </Card>
                 </AnimatedCard>
 
-                <AnimatedCard scrollY={scrollY} delay={300}>
+                <AnimatedCard scrollY={scrollY} delay={400}>
                   <Card
                     variant="glassmorphic"
                     size="lg"

@@ -1514,7 +1514,7 @@ function isMournConfig(value) {
   return typeof value === "object" && value !== null && (!value.version || typeof value.version === "string") && (!value.name || typeof value.name === "string");
 }
 function mergeMournConfig(userConfig) {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k;
   return {
     version: (_a = userConfig.version) != null ? _a : DEFAULT_MOURN_CONFIG.version,
     name: (_b = userConfig.name) != null ? _b : DEFAULT_MOURN_CONFIG.name,
@@ -1525,7 +1525,7 @@ function mergeMournConfig(userConfig) {
       loading: __spreadValues(__spreadValues({}, DEFAULT_MOURN_CONFIG.providers.loading), (_f = userConfig.providers) == null ? void 0 : _f.loading),
       modal: __spreadValues(__spreadValues({}, DEFAULT_MOURN_CONFIG.providers.modal), (_g = userConfig.providers) == null ? void 0 : _g.modal),
       settings: __spreadProps(__spreadValues(__spreadValues({}, DEFAULT_MOURN_CONFIG.providers.settings), (_h = userConfig.providers) == null ? void 0 : _h.settings), {
-        defaultSettings: __spreadValues(__spreadValues({}, DEFAULT_MOURN_CONFIG.providers.settings.defaultSettings), (_j = (_i = userConfig.providers) == null ? void 0 : _i.settings) == null ? void 0 : _j.defaultSettings)
+        defaultSettings: __spreadValues(__spreadValues({}, (_i = DEFAULT_MOURN_CONFIG.providers.settings) == null ? void 0 : _i.defaultSettings), (_k = (_j = userConfig.providers) == null ? void 0 : _j.settings) == null ? void 0 : _k.defaultSettings)
       })
     },
     components: __spreadValues(__spreadValues({}, DEFAULT_MOURN_CONFIG.components), userConfig.components),
@@ -1735,54 +1735,49 @@ function RoundTableInner({ children }) {
   const modalEnabled = useProviderEnabled("modal");
   const settingsEnabled = useProviderEnabled("settings");
   let content = children;
-  if (modalEnabled) {
+  if (modalEnabled && config.providers.modal) {
     content = /* @__PURE__ */ React28__default.default.createElement(
       ModalProvider,
       {
-        maxModals: config.providers.modal.maxModals,
-        closeOnOverlayClick: config.providers.modal.closeOnOverlayClick,
-        closeOnEscape: config.providers.modal.closeOnEscape
+        maxModals: config.providers.modal.maxModals
       },
       content
     );
   }
-  if (toastEnabled) {
+  if (toastEnabled && config.providers.toast) {
     content = /* @__PURE__ */ React28__default.default.createElement(
       ToastProvider,
       {
         maxToasts: config.providers.toast.maxToasts,
-        defaultDuration: config.providers.toast.defaultDuration,
-        defaultPosition: config.providers.toast.defaultPosition
+        defaultDuration: config.providers.toast.defaultDuration
       },
       content
     );
   }
-  if (loadingEnabled) {
+  if (loadingEnabled && config.providers.loading) {
     content = /* @__PURE__ */ React28__default.default.createElement(
       LoadingProvider,
       {
-        showGlobalSpinner: config.providers.loading.showGlobalSpinner,
-        minLoadingTime: config.providers.loading.minLoadingTime
+        showGlobalSpinner: config.providers.loading.showGlobalSpinner
       },
       content
     );
   }
-  if (authEnabled) {
+  if (authEnabled && config.providers.auth) {
     content = /* @__PURE__ */ React28__default.default.createElement(AuthProvider, { storageKey: config.providers.auth.storageKey }, content);
   }
-  if (themeEnabled) {
+  if (themeEnabled && config.providers.theme) {
     content = /* @__PURE__ */ React28__default.default.createElement(
       ThemeProvider,
       {
         defaultTheme: config.providers.theme.defaultTheme,
         attribute: config.providers.theme.attribute,
-        storageKey: config.providers.theme.storageKey,
-        availableThemes: config.providers.theme.availableThemes
+        storageKey: config.providers.theme.storageKey
       },
       content
     );
   }
-  if (settingsEnabled) {
+  if (settingsEnabled && config.providers.settings) {
     content = /* @__PURE__ */ React28__default.default.createElement(
       SettingsProvider,
       {
@@ -3524,7 +3519,7 @@ var Button = React28.forwardRef((allProps, ref) => {
       return /* @__PURE__ */ React28__default.default.createElement(
         ProgressIndicator,
         {
-          type: "spinner",
+          type: "circular",
           size: spinnerSize,
           color: spinnerColor
         }
@@ -4082,8 +4077,7 @@ var createBadgeContent = (icon, iconPosition, badgeSize, children, removable, on
         {
           text: children,
           speed: 50,
-          startDelay: 100,
-          enabled: animationsEnabled || false
+          disabled: !animationsEnabled
         }
       );
     }
@@ -4151,6 +4145,7 @@ var Badge = React28.forwardRef(
     const animationsEnabled = ((_b = settings.appearance.animations) != null ? _b : true) && animate;
     const useAnimationMode = animationsEnabled && animationMode !== "none";
     const hasIsometricAnimation = useAnimationMode && animationMode === "isometric" && variant !== "ghost" && variant !== "glassmorphic";
+    const badgeAnimationMode = animationMode === "default" ? "none" : animationMode === "none" || animationMode === "typewriter" || animationMode === "isometric" ? animationMode : void 0;
     const baseStyles = React28.useMemo(() => createBaseStyles2(
       shape === "pill" || Boolean(rounded),
       isRemovable,
@@ -4190,7 +4185,7 @@ var Badge = React28.forwardRef(
         cssVars,
         animationsEnabled,
         useAnimationMode,
-        animationMode,
+        badgeAnimationMode,
         disabled
       )
     );
@@ -4655,7 +4650,7 @@ var Card = React28.forwardRef(
       loading && /* @__PURE__ */ React28__default.default.createElement("div", { style: loadingOverlayStyles }, /* @__PURE__ */ React28__default.default.createElement(
         ProgressIndicator,
         {
-          type: "spinner",
+          type: "circular",
           size: "md",
           color
         }
@@ -5028,12 +5023,9 @@ var CheckBox = React28.forwardRef(
   (allProps, ref) => {
     var _c;
     const _a = allProps, {
-      onChange,
-      _checkboxComputed: _checkboxComputed
+      onChange
     } = _a, propsWithoutOnChange = __objRest(_a, [
-      "onChange",
-      // Interactive config props to filter out
-      "_checkboxComputed"
+      "onChange"
     ]);
     const [formProps, componentProps] = extractFormProps(propsWithoutOnChange);
     const {
@@ -5816,9 +5808,7 @@ var CodeBlock = React28.forwardRef(
       highlight,
       syntaxHighlighting = true,
       inline = false,
-      onCopy,
-      showLineNumbers,
-      code: code
+      onCopy
     } = _a, restProps = __objRest(_a, [
       "language",
       "copyable",
@@ -5826,10 +5816,7 @@ var CodeBlock = React28.forwardRef(
       "highlight",
       "syntaxHighlighting",
       "inline",
-      "onCopy",
-      "showLineNumbers",
-      // Legacy prop that should not be passed to DOM
-      "code"
+      "onCopy"
     ]);
     const cssVars = useCSSVariables();
     const { settings } = useSettings();
@@ -8212,11 +8199,7 @@ var Notification = React28.forwardRef(
       duration,
       showProgress,
       toastPosition,
-      type,
-      hasActions: hasActions,
-      actionLabel1,
-      actionLabel2,
-      _actionsComputed
+      type
     } = _a, restProps = __objRest(_a, [
       "title",
       "description",
@@ -8228,13 +8211,7 @@ var Notification = React28.forwardRef(
       "duration",
       "showProgress",
       "toastPosition",
-      "type",
-      // Legacy prop
-      // Filter out interactive config props that shouldn't be passed to DOM
-      "hasActions",
-      "actionLabel1",
-      "actionLabel2",
-      "_actionsComputed"
+      "type"
     ]);
     const effectiveColor = type && allProps.color === void 0 ? type === "default" ? "primary" : type === "inverted" ? "secondary" : type : color;
     const cssVars = useCSSVariables();
@@ -8313,7 +8290,7 @@ var Notification = React28.forwardRef(
       } }, /* @__PURE__ */ React28__default.default.createElement("div", { style: { display: "flex", alignItems: "center", gap: "12px", flex: 1 } }, showIcon && /* @__PURE__ */ React28__default.default.createElement("div", { style: iconContainerStyles }, loading ? /* @__PURE__ */ React28__default.default.createElement(
         ProgressIndicator,
         {
-          type: "spinner",
+          type: "circular",
           size: size === "xs" ? "xs" : size === "sm" ? "sm" : size === "lg" ? "md" : "sm",
           color: variant === "outline" ? "primary" : effectiveColor,
           variant: variant === "solid" ? "solid" : "outline",
@@ -10423,7 +10400,6 @@ var RadioButtonGroup = ({
   size = UNIVERSAL_DEFAULTS.size,
   color = UNIVERSAL_DEFAULTS.color,
   customColor,
-  variant = UNIVERSAL_DEFAULTS.variant,
   shape = UNIVERSAL_DEFAULTS.shape,
   disabled = false,
   error = false,
@@ -10464,7 +10440,6 @@ var RadioButtonGroup = ({
         size,
         color,
         customColor,
-        variant,
         shape,
         label: option.label,
         header: option.header,
@@ -11153,8 +11128,7 @@ var Scrollbar = React28.forwardRef((allProps, ref) => {
     alignment = "end",
     smoothScrolling = true,
     momentum = true,
-    hideNative,
-    showIndicators: showIndicators = false,
+    showIndicators = false,
     onScroll,
     onScrollStart,
     onScrollEnd,
@@ -11170,8 +11144,6 @@ var Scrollbar = React28.forwardRef((allProps, ref) => {
     "alignment",
     "smoothScrolling",
     "momentum",
-    "hideNative",
-    // Remove this prop to prevent it from being passed to DOM
     "showIndicators",
     "onScroll",
     "onScrollStart",
@@ -11945,7 +11917,7 @@ var getLabelStyles3 = (size, disabled, position, cssVars) => {
     lineHeight: 1.4
   };
 };
-var getDescriptionStyles4 = (size, disabled, cssVars) => {
+var getDescriptionStyles3 = (size, disabled, cssVars) => {
   const fontSizeMap = {
     xs: "10px",
     sm: "12px",
@@ -12061,7 +12033,7 @@ var Toggle = React28.forwardRef((allProps, ref) => {
         "span",
         {
           id: descriptionId,
-          style: getDescriptionStyles4(size, disabled || false, cssVars)
+          style: getDescriptionStyles3(size, disabled || false, cssVars)
         },
         description
       ));
@@ -12392,7 +12364,6 @@ var getSegmentStyles = (size, variant, color, customColor, shape, isSelected2, d
     textOverflow: "ellipsis",
     userSelect: "none",
     outline: "none",
-    minWidth: 0,
     boxSizing: "border-box",
     borderRadius: "inherit",
     transform: textTransform
@@ -12585,7 +12556,7 @@ var getIsometricShadowStyles2 = (color, variant, shape, size, animationsEnabled)
 
 // src/app/components/atoms/SegmentedControl/SegmentedControl.utils.tsx
 var getDefaultSize3 = () => "md";
-var getDefaultVariant3 = () => "primary";
+var getDefaultVariant3 = () => "solid";
 var validateSegmentedControlProps = (props) => {
   if (process.env.NODE_ENV === "development") {
     if (props.items.length === 0) {
@@ -13452,7 +13423,7 @@ var Slider = React28.forwardRef((allProps, ref) => {
     "length",
     "formatValue"
   ]);
-  const step = rawStep === "" || rawStep === null || rawStep === void 0 || isNaN(Number(rawStep)) || Number(rawStep) <= 0 ? 1 : Number(rawStep);
+  const step = rawStep === null || rawStep === void 0 || isNaN(Number(rawStep)) || Number(rawStep) <= 0 ? 1 : Number(rawStep);
   const cssVars = useCSSVariables();
   const { settings } = useSettings();
   const animationsEnabled = ((_c = settings.appearance.animations) != null ? _c : true) && animate;
@@ -13955,7 +13926,7 @@ var getLabelStyles5 = (size, disabled, error, cssVars) => {
     display: "block"
   };
 };
-var getDescriptionStyles6 = (size, disabled, cssVars) => {
+var getDescriptionStyles5 = (size, disabled, cssVars) => {
   const fontSizeMap = {
     xs: "10px",
     sm: "12px",
@@ -14441,7 +14412,7 @@ var TextArea = React28.forwardRef(
         "div",
         {
           id: "textarea-description",
-          style: getDescriptionStyles6(size, disabled || false, cssVars)
+          style: getDescriptionStyles5(size, disabled || false, cssVars)
         },
         description
       ),
@@ -15056,34 +15027,7 @@ var Navigation = React28.forwardRef(
       fullWidth = false,
       maxWidth,
       className,
-      style,
-      disabled: disabled,
-      loading,
-      showBrand,
-      showBrandIcon,
-      tabCount,
-      showTabIcons,
-      showTabBadges,
-      tab1Label,
-      tab1Badge,
-      tab1Disabled,
-      tab2Label,
-      tab2Badge,
-      tab2Disabled,
-      tab3Label,
-      tab3Badge,
-      tab3Disabled,
-      tab4Label,
-      tab4Badge,
-      tab4Disabled,
-      tab5Label,
-      tab5Badge,
-      tab5Disabled,
-      showLeadingContent,
-      leadingContentType,
-      showTrailingContent,
-      trailingContentType,
-      _navigationComputed
+      style
     } = _b, props = __objRest(_b, [
       "icon",
       "appName",
@@ -15101,35 +15045,7 @@ var Navigation = React28.forwardRef(
       "fullWidth",
       "maxWidth",
       "className",
-      "style",
-      // Filter out interactive config props that shouldn't be passed to DOM
-      "disabled",
-      "loading",
-      "showBrand",
-      "showBrandIcon",
-      "tabCount",
-      "showTabIcons",
-      "showTabBadges",
-      "tab1Label",
-      "tab1Badge",
-      "tab1Disabled",
-      "tab2Label",
-      "tab2Badge",
-      "tab2Disabled",
-      "tab3Label",
-      "tab3Badge",
-      "tab3Disabled",
-      "tab4Label",
-      "tab4Badge",
-      "tab4Disabled",
-      "tab5Label",
-      "tab5Badge",
-      "tab5Disabled",
-      "showLeadingContent",
-      "leadingContentType",
-      "showTrailingContent",
-      "trailingContentType",
-      "_navigationComputed"
+      "style"
     ]);
     const cssVars = useCSSVariables();
     const navigationStyles = createNavigationStyles(variant, color, customColor, size, sticky, cssVars);
@@ -16127,7 +16043,7 @@ function ReadmeDisplay({ content, loading = false, className, style }) {
             {
               key: `code-${partIndex++}`,
               style: {
-                backgroundColor: cssVars.backgroundSecondary,
+                backgroundColor: cssVars.muted,
                 color: cssVars.foreground,
                 padding: "2px 4px",
                 borderRadius: "4px",
@@ -16155,7 +16071,7 @@ function ReadmeDisplay({ content, loading = false, className, style }) {
         flexDirection: "column",
         alignItems: "center",
         gap: "16px"
-      } }, /* @__PURE__ */ React28__default.default.createElement(ProgressIndicator, { variant: "circle", size: "lg", color: "primary" }), /* @__PURE__ */ React28__default.default.createElement("p", { style: { color: cssVars.foregroundAccent } }, "Loading documentation..."));
+      } }, /* @__PURE__ */ React28__default.default.createElement(ProgressIndicator, { type: "circular", size: "lg", color: "primary" }), /* @__PURE__ */ React28__default.default.createElement("p", { style: { color: cssVars.foregroundAccent } }, "Loading documentation..."));
     }
     const lines = content.split("\n");
     const elements = [];

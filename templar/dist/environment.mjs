@@ -86,7 +86,7 @@ function isMournConfig(value) {
   return typeof value === "object" && value !== null && (!value.version || typeof value.version === "string") && (!value.name || typeof value.name === "string");
 }
 function mergeMournConfig(userConfig) {
-  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j;
+  var _a, _b, _c, _d, _e, _f, _g, _h, _i, _j, _k;
   return {
     version: (_a = userConfig.version) != null ? _a : DEFAULT_MOURN_CONFIG.version,
     name: (_b = userConfig.name) != null ? _b : DEFAULT_MOURN_CONFIG.name,
@@ -97,7 +97,7 @@ function mergeMournConfig(userConfig) {
       loading: __spreadValues(__spreadValues({}, DEFAULT_MOURN_CONFIG.providers.loading), (_f = userConfig.providers) == null ? void 0 : _f.loading),
       modal: __spreadValues(__spreadValues({}, DEFAULT_MOURN_CONFIG.providers.modal), (_g = userConfig.providers) == null ? void 0 : _g.modal),
       settings: __spreadProps(__spreadValues(__spreadValues({}, DEFAULT_MOURN_CONFIG.providers.settings), (_h = userConfig.providers) == null ? void 0 : _h.settings), {
-        defaultSettings: __spreadValues(__spreadValues({}, DEFAULT_MOURN_CONFIG.providers.settings.defaultSettings), (_j = (_i = userConfig.providers) == null ? void 0 : _i.settings) == null ? void 0 : _j.defaultSettings)
+        defaultSettings: __spreadValues(__spreadValues({}, (_i = DEFAULT_MOURN_CONFIG.providers.settings) == null ? void 0 : _i.defaultSettings), (_k = (_j = userConfig.providers) == null ? void 0 : _j.settings) == null ? void 0 : _k.defaultSettings)
       })
     },
     components: __spreadValues(__spreadValues({}, DEFAULT_MOURN_CONFIG.components), userConfig.components),

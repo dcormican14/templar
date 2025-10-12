@@ -2398,7 +2398,7 @@ var Button = forwardRef((allProps, ref) => {
       return /* @__PURE__ */ React28.createElement(
         ProgressIndicator,
         {
-          type: "spinner",
+          type: "circular",
           size: spinnerSize,
           color: spinnerColor
         }
@@ -2956,8 +2956,7 @@ var createBadgeContent = (icon, iconPosition, badgeSize, children, removable, on
         {
           text: children,
           speed: 50,
-          startDelay: 100,
-          enabled: animationsEnabled || false
+          disabled: !animationsEnabled
         }
       );
     }
@@ -3025,6 +3024,7 @@ var Badge = forwardRef(
     const animationsEnabled = ((_b = settings.appearance.animations) != null ? _b : true) && animate;
     const useAnimationMode = animationsEnabled && animationMode !== "none";
     const hasIsometricAnimation = useAnimationMode && animationMode === "isometric" && variant !== "ghost" && variant !== "glassmorphic";
+    const badgeAnimationMode = animationMode === "default" ? "none" : animationMode === "none" || animationMode === "typewriter" || animationMode === "isometric" ? animationMode : void 0;
     const baseStyles = useMemo(() => createBaseStyles2(
       shape === "pill" || Boolean(rounded),
       isRemovable,
@@ -3064,7 +3064,7 @@ var Badge = forwardRef(
         cssVars,
         animationsEnabled,
         useAnimationMode,
-        animationMode,
+        badgeAnimationMode,
         disabled
       )
     );
@@ -3529,7 +3529,7 @@ var Card = forwardRef(
       loading && /* @__PURE__ */ React28.createElement("div", { style: loadingOverlayStyles }, /* @__PURE__ */ React28.createElement(
         ProgressIndicator,
         {
-          type: "spinner",
+          type: "circular",
           size: "md",
           color
         }
@@ -3902,12 +3902,9 @@ var CheckBox = forwardRef(
   (allProps, ref) => {
     var _c;
     const _a = allProps, {
-      onChange,
-      _checkboxComputed: _checkboxComputed
+      onChange
     } = _a, propsWithoutOnChange = __objRest(_a, [
-      "onChange",
-      // Interactive config props to filter out
-      "_checkboxComputed"
+      "onChange"
     ]);
     const [formProps, componentProps] = extractFormProps(propsWithoutOnChange);
     const {
@@ -4690,9 +4687,7 @@ var CodeBlock = forwardRef(
       highlight,
       syntaxHighlighting = true,
       inline = false,
-      onCopy,
-      showLineNumbers,
-      code: code
+      onCopy
     } = _a, restProps = __objRest(_a, [
       "language",
       "copyable",
@@ -4700,10 +4695,7 @@ var CodeBlock = forwardRef(
       "highlight",
       "syntaxHighlighting",
       "inline",
-      "onCopy",
-      "showLineNumbers",
-      // Legacy prop that should not be passed to DOM
-      "code"
+      "onCopy"
     ]);
     const cssVars = useCSSVariables();
     const { settings } = useSettings();
@@ -7086,11 +7078,7 @@ var Notification = forwardRef(
       duration,
       showProgress,
       toastPosition,
-      type,
-      hasActions: hasActions,
-      actionLabel1,
-      actionLabel2,
-      _actionsComputed
+      type
     } = _a, restProps = __objRest(_a, [
       "title",
       "description",
@@ -7102,13 +7090,7 @@ var Notification = forwardRef(
       "duration",
       "showProgress",
       "toastPosition",
-      "type",
-      // Legacy prop
-      // Filter out interactive config props that shouldn't be passed to DOM
-      "hasActions",
-      "actionLabel1",
-      "actionLabel2",
-      "_actionsComputed"
+      "type"
     ]);
     const effectiveColor = type && allProps.color === void 0 ? type === "default" ? "primary" : type === "inverted" ? "secondary" : type : color;
     const cssVars = useCSSVariables();
@@ -7187,7 +7169,7 @@ var Notification = forwardRef(
       } }, /* @__PURE__ */ React28.createElement("div", { style: { display: "flex", alignItems: "center", gap: "12px", flex: 1 } }, showIcon && /* @__PURE__ */ React28.createElement("div", { style: iconContainerStyles }, loading ? /* @__PURE__ */ React28.createElement(
         ProgressIndicator,
         {
-          type: "spinner",
+          type: "circular",
           size: size === "xs" ? "xs" : size === "sm" ? "sm" : size === "lg" ? "md" : "sm",
           color: variant === "outline" ? "primary" : effectiveColor,
           variant: variant === "solid" ? "solid" : "outline",
@@ -9297,7 +9279,6 @@ var RadioButtonGroup = ({
   size = UNIVERSAL_DEFAULTS.size,
   color = UNIVERSAL_DEFAULTS.color,
   customColor,
-  variant = UNIVERSAL_DEFAULTS.variant,
   shape = UNIVERSAL_DEFAULTS.shape,
   disabled = false,
   error = false,
@@ -9338,7 +9319,6 @@ var RadioButtonGroup = ({
         size,
         color,
         customColor,
-        variant,
         shape,
         label: option.label,
         header: option.header,
@@ -10027,8 +10007,7 @@ var Scrollbar = forwardRef((allProps, ref) => {
     alignment = "end",
     smoothScrolling = true,
     momentum = true,
-    hideNative,
-    showIndicators: showIndicators = false,
+    showIndicators = false,
     onScroll,
     onScrollStart,
     onScrollEnd,
@@ -10044,8 +10023,6 @@ var Scrollbar = forwardRef((allProps, ref) => {
     "alignment",
     "smoothScrolling",
     "momentum",
-    "hideNative",
-    // Remove this prop to prevent it from being passed to DOM
     "showIndicators",
     "onScroll",
     "onScrollStart",
@@ -10819,7 +10796,7 @@ var getLabelStyles3 = (size, disabled, position, cssVars) => {
     lineHeight: 1.4
   };
 };
-var getDescriptionStyles4 = (size, disabled, cssVars) => {
+var getDescriptionStyles3 = (size, disabled, cssVars) => {
   const fontSizeMap = {
     xs: "10px",
     sm: "12px",
@@ -10935,7 +10912,7 @@ var Toggle = forwardRef((allProps, ref) => {
         "span",
         {
           id: descriptionId,
-          style: getDescriptionStyles4(size, disabled || false, cssVars)
+          style: getDescriptionStyles3(size, disabled || false, cssVars)
         },
         description
       ));
@@ -11266,7 +11243,6 @@ var getSegmentStyles = (size, variant, color, customColor, shape, isSelected2, d
     textOverflow: "ellipsis",
     userSelect: "none",
     outline: "none",
-    minWidth: 0,
     boxSizing: "border-box",
     borderRadius: "inherit",
     transform: textTransform
@@ -11459,7 +11435,7 @@ var getIsometricShadowStyles2 = (color, variant, shape, size, animationsEnabled)
 
 // src/app/components/atoms/SegmentedControl/SegmentedControl.utils.tsx
 var getDefaultSize3 = () => "md";
-var getDefaultVariant3 = () => "primary";
+var getDefaultVariant3 = () => "solid";
 var validateSegmentedControlProps = (props) => {
   if (process.env.NODE_ENV === "development") {
     if (props.items.length === 0) {
@@ -12326,7 +12302,7 @@ var Slider = forwardRef((allProps, ref) => {
     "length",
     "formatValue"
   ]);
-  const step = rawStep === "" || rawStep === null || rawStep === void 0 || isNaN(Number(rawStep)) || Number(rawStep) <= 0 ? 1 : Number(rawStep);
+  const step = rawStep === null || rawStep === void 0 || isNaN(Number(rawStep)) || Number(rawStep) <= 0 ? 1 : Number(rawStep);
   const cssVars = useCSSVariables();
   const { settings } = useSettings();
   const animationsEnabled = ((_c = settings.appearance.animations) != null ? _c : true) && animate;
@@ -12829,7 +12805,7 @@ var getLabelStyles5 = (size, disabled, error, cssVars) => {
     display: "block"
   };
 };
-var getDescriptionStyles6 = (size, disabled, cssVars) => {
+var getDescriptionStyles5 = (size, disabled, cssVars) => {
   const fontSizeMap = {
     xs: "10px",
     sm: "12px",
@@ -13315,7 +13291,7 @@ var TextArea = forwardRef(
         "div",
         {
           id: "textarea-description",
-          style: getDescriptionStyles6(size, disabled || false, cssVars)
+          style: getDescriptionStyles5(size, disabled || false, cssVars)
         },
         description
       ),
