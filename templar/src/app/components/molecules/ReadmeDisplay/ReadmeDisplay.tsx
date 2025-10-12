@@ -8,6 +8,36 @@ import type { ReadmeDisplayProps } from './ReadmeDisplay.types';
 export function ReadmeDisplay({ content, loading = false, className, style }: ReadmeDisplayProps) {
   const cssVars = useCSSVariables();
 
+  // Split table row by pipes, but respect backticks
+  const splitTableCells = (line: string): string[] => {
+    const cells: string[] = [];
+    let currentCell = '';
+    let inBackticks = false;
+
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+
+      if (char === '`') {
+        inBackticks = !inBackticks;
+        currentCell += char;
+      } else if (char === '|' && !inBackticks) {
+        // This is a cell separator
+        cells.push(currentCell.trim());
+        currentCell = '';
+      } else {
+        currentCell += char;
+      }
+    }
+
+    // Add the last cell
+    if (currentCell) {
+      cells.push(currentCell.trim());
+    }
+
+    // Filter out empty cells
+    return cells.filter(cell => cell !== '');
+  };
+
   // Parse and render markdown text with inline formatting
   const parseInlineText = (text: string) => {
     const parts: (string | JSX.Element)[] = [];
@@ -91,12 +121,12 @@ export function ReadmeDisplay({ content, loading = false, className, style }: Re
   const renderContent = () => {
     if (loading) {
       return (
-        <div style={{ 
-          padding: '40px', 
-          display: 'flex', 
+        <div style={{
+          padding: '40px',
+          display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center', 
-          gap: '16px' 
+          alignItems: 'center',
+          gap: '16px'
         }}>
           <ProgressIndicator variant="circle" size="lg" color="primary" />
           <p style={{ color: cssVars.foregroundAccent }}>Loading documentation...</p>
@@ -109,6 +139,9 @@ export function ReadmeDisplay({ content, loading = false, className, style }: Re
     let inCodeBlock = false;
     let codeBlockContent: string[] = [];
     let codeBlockLanguage = '';
+    let inTable = false;
+    let tableRows: string[][] = [];
+    let tableHeaders: string[] = [];
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
@@ -147,6 +180,75 @@ export function ReadmeDisplay({ content, loading = false, className, style }: Re
       if (inCodeBlock) {
         codeBlockContent.push(line);
         continue;
+      }
+
+      // Handle markdown tables
+      if (line.trim().startsWith('|') && line.trim().endsWith('|')) {
+        if (!inTable) {
+          // Start of table
+          inTable = true;
+          tableRows = [];
+          tableHeaders = splitTableCells(line);
+        } else if (line.includes('---')) {
+          // Table separator line, skip it
+          continue;
+        } else {
+          // Table data row
+          const cells = splitTableCells(line);
+          tableRows.push(cells);
+        }
+        continue;
+      } else if (inTable) {
+        // End of table, render it
+        inTable = false;
+        elements.push(
+          <div key={`table-${i}`} style={{ overflowX: 'auto', marginBottom: '16px', marginTop: '12px' }}>
+            <table style={{
+              width: '100%',
+              borderCollapse: 'collapse',
+              border: `1px solid ${cssVars.border}`,
+              borderRadius: '8px'
+            }}>
+              <thead>
+                <tr style={{ backgroundColor: cssVars.backgroundAccent }}>
+                  {tableHeaders.map((header, idx) => (
+                    <th key={idx} style={{
+                      padding: '12px',
+                      textAlign: 'left',
+                      fontWeight: '600',
+                      color: cssVars.foreground,
+                      borderBottom: `2px solid ${cssVars.border}`,
+                      fontSize: '13px'
+                    }}>
+                      {parseInlineText(header)}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {tableRows.map((row, rowIdx) => (
+                  <tr key={rowIdx} style={{
+                    borderBottom: `1px solid ${cssVars.border}`,
+                    backgroundColor: rowIdx % 2 === 0 ? 'transparent' : cssVars.backgroundHover
+                  }}>
+                    {row.map((cell, cellIdx) => (
+                      <td key={cellIdx} style={{
+                        padding: '10px 12px',
+                        color: cssVars.foregroundAccent,
+                        fontSize: '13px',
+                        verticalAlign: 'top'
+                      }}>
+                        {parseInlineText(cell)}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+        tableRows = [];
+        tableHeaders = [];
       }
 
       // Handle headings
@@ -210,15 +312,63 @@ export function ReadmeDisplay({ content, loading = false, className, style }: Re
             {parseInlineText(line.replace('- ', ''))}
           </li>
         );
+      } else if (line.trim().startsWith('<details>')) {
+        // Handle collapsible details sections
+        let detailsContent: JSX.Element[] = [];
+        let summary = '';
+        let j = i + 1;
+
+        // Find the summary and content
+        while (j < lines.length && !lines[j].trim().startsWith('</details>')) {
+          if (lines[j].trim().startsWith('<summary>')) {
+            summary = lines[j].replace('<summary>', '').replace('</summary>', '').trim();
+          } else if (lines[j].trim() !== '' && !lines[j].trim().startsWith('<summary>')) {
+            // Process content lines as markdown
+            const contentLine = lines[j];
+            if (contentLine.trim().startsWith('|')) {
+              // Will be handled by table logic on next iteration
+            }
+          }
+          j++;
+        }
+
+        // Collect remaining lines for recursive processing
+        const detailsLines = lines.slice(i + 1, j);
+        const detailsMarkdown = detailsLines
+          .filter(l => !l.trim().startsWith('<summary>') && !l.trim().startsWith('</summary>'))
+          .join('\n');
+
+        elements.push(
+          <details key={`details-${i}`} style={{ marginBottom: '16px', marginTop: '12px' }}>
+            <summary style={{
+              cursor: 'pointer',
+              color: cssVars.primary,
+              fontWeight: '600',
+              padding: '8px',
+              backgroundColor: cssVars.backgroundAccent,
+              borderRadius: '6px',
+              marginBottom: '8px',
+              fontSize: '14px'
+            }}>
+              {summary}
+            </summary>
+            <div style={{ paddingLeft: '12px' }}>
+              <ReadmeDisplay content={detailsMarkdown} loading={false} />
+            </div>
+          </details>
+        );
+
+        i = j; // Skip processed lines
+        continue;
       } else if (line.trim() === '') {
         // Empty line
         elements.push(<br key={`br-${i}`} />);
       } else if (line.trim() !== '') {
         // Regular paragraph
         elements.push(
-          <p 
+          <p
             key={`p-${i}`}
-            style={{ 
+            style={{
               color: cssVars.foregroundAccent,
               marginBottom: '12px',
               lineHeight: '1.6'

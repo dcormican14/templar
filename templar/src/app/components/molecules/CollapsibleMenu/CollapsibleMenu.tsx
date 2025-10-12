@@ -26,7 +26,6 @@ export const CollapsibleMenu = forwardRef<CollapsibleMenuRef, CollapsibleMenuPro
     toggleContent,
     showToggle = true,
     toggleStyle,
-    toggleClassName,
     zIndex = 1000,
     overlay = false,
     animationDuration = 300,
@@ -166,31 +165,31 @@ export const CollapsibleMenu = forwardRef<CollapsibleMenuRef, CollapsibleMenuPro
     if (!showToggle) return null;
     
     const iconName = position === 'right' ? 'NavArrowRight' : 'NavArrowLeft';
-    
+
     return (
-      <Button
-        variant="solid"
-        color={color}
-        size={size}
-        shape="round"
-        style={{
-          ...toggleStyles,
-          ...toggleStyle,
-        }}
-        onClick={handleToggleClick}
-        onKeyDown={handleToggleKeyDown}
-        disabled={disabled}
-        aria-label={`${isCollapsed ? 'Expand' : 'Collapse'} menu`}
-        aria-expanded={!isCollapsed}
-        icon={toggleContent || (
-          <div style={toggleIconStyles}>
-            <Icon 
-              name={iconName} 
-              size={size as any}
-            />
-          </div>
-        )}
-      />
+      <div style={toggleStyles}>
+        <Button
+          variant="solid"
+          color={color}
+          size={size}
+          shape="pill"
+          animationMode="isometric"
+          style={toggleStyle}
+          onClick={handleToggleClick}
+          onKeyDown={handleToggleKeyDown}
+          disabled={disabled}
+          aria-label={`${isCollapsed ? 'Expand' : 'Collapse'} menu`}
+          aria-expanded={!isCollapsed}
+          icon={toggleContent || (
+            <div style={toggleIconStyles}>
+              <Icon
+                  name={iconName}
+                  size={size as any}
+                />
+            </div>
+          )}
+        />
+      </div>
     );
   };
   
@@ -213,8 +212,8 @@ export const CollapsibleMenu = forwardRef<CollapsibleMenuRef, CollapsibleMenuPro
       
       {/* Content area */}
       <Scrollbar
-        variant="solid"
-        color={color}
+        variant="ghost"
+        color="secondary"
         customColor={customColor}
         size={size}
         shape="round"
@@ -222,7 +221,6 @@ export const CollapsibleMenu = forwardRef<CollapsibleMenuRef, CollapsibleMenuPro
         visibility="always"
         smoothScrolling
         showIndicators
-        hideNative={false}
         disabled={disabled}
         animate={animate}
         height="100%"
@@ -230,6 +228,8 @@ export const CollapsibleMenu = forwardRef<CollapsibleMenuRef, CollapsibleMenuPro
           flex: 1,
           height: '100%',
           minHeight: 0, // Important for flex children
+          opacity: isCollapsed ? 0.3 : 1,
+          transition: `opacity ${effectiveAnimationDuration}ms var(--animation-smooth)`,
         }}
       >
         {children}

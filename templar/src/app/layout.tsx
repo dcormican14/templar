@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Templar",
+  title: "Mournshire",
   description: "A modern React component library built with Next.js and TypeScript",
 };
 

@@ -26,7 +26,9 @@ export interface NavigationProps {
   trailingContent?: React.ReactNode;
   
   // Styling
-  variant?: 'default' | 'elevated' | 'bordered' | 'minimal';
+  variant?: 'default' | 'elevated' | 'bordered' | 'minimal' | 'solid' | 'ghost' | 'outline' | 'glassmorphic';
+  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'custom';
+  customColor?: string;
   size?: 'sm' | 'md' | 'lg';
   sticky?: boolean;
   
@@ -44,6 +46,8 @@ export interface NavigationTabProps {
   isActive: boolean;
   onSelect: (tabId: string) => void;
   size: 'sm' | 'md' | 'lg';
+  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'destructive' | 'info' | 'custom';
+  customColor?: string;
 }
 
 export interface NavigationBrandProps {

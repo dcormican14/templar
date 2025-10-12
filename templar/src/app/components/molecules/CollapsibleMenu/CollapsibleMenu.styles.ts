@@ -125,7 +125,7 @@ export const getCollapsibleMenuContainerStyles = (
   disabled: boolean,
   cssVars: any
 ): React.CSSProperties => {
-  const width = collapsed 
+  const width = collapsed
     ? (typeof collapsedWidth === 'number' ? `${collapsedWidth}px` : collapsedWidth)
     : (typeof expandedWidth === 'number' ? `${expandedWidth}px` : expandedWidth);
 
@@ -142,15 +142,15 @@ export const getCollapsibleMenuContainerStyles = (
     zIndex,
     display: 'flex',
     flexDirection: 'column',
-    overflow: 'visible', // Changed from 'hidden' to 'visible' to prevent toggle button cutoff
+    overflow: 'visible', // Must be visible for isometric shadow
     opacity: disabled ? 0.6 : 1,
     pointerEvents: disabled ? 'none' : 'auto',
   };
 
   // Add shadow for overlay mode
   if (overlay) {
-    baseStyles.boxShadow = position === 'left' 
-      ? '2px 0 8px rgba(0, 0, 0, 0.1)' 
+    baseStyles.boxShadow = position === 'left'
+      ? '2px 0 8px rgba(0, 0, 0, 0.1)'
       : '-2px 0 8px rgba(0, 0, 0, 0.1)';
   }
 
@@ -176,7 +176,7 @@ export const getContentStyles = (
   };
 };
 
-// Toggle tag styles
+// Toggle tag styles - only positioning, let Button handle its own styling
 export const getToggleStyles = (
   position: CollapsibleMenuPosition,
   size: CollapsibleMenuSize,
@@ -188,32 +188,12 @@ export const getToggleStyles = (
   animationDuration: number,
   cssVars: any
 ): React.CSSProperties => {
-  const sizeConfig = getSizeConfig(size);
-  const colors = getColorVariables(color, customColor, cssVars);
-  const shapeStyles = getShapeStyles(shape);
-  
   const baseStyles: React.CSSProperties = {
     position: 'absolute',
     top: '16px',
     [position === 'left' ? 'right' : 'left']: '-20px',
-    width: sizeConfig.toggleSize,
-    height: sizeConfig.toggleSize,
-    backgroundColor: colors.main,
-    color: colors.foreground,
-    border: `1px solid ${colors.border}`,
-    cursor: disabled ? 'not-allowed' : 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    transition: `all ${animationDuration}ms var(--animation-spring)`,
     zIndex: 2,
-    ...shapeStyles,
   };
-
-  // Hover styles (applied via CSS-in-JS for pseudo-states)
-  if (!disabled) {
-    baseStyles.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
-  }
 
   return baseStyles;
 };

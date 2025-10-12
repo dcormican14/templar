@@ -1,0 +1,37 @@
+# Development files
+.next/
+node_modules/
+.turbo/
+.playwright-mcp/
+
+# Config files
+.eslintrc.json
+next.config.ts
+postcss.config.mjs
+tailwind.config.ts
+tsconfig.json
+
+# Documentation (keep only essential)
+CLAUDE.md
+MOURN_QUICKSTART.md
+MOURN_SETUP.md
+PUBLISHING_CHECKLIST.md
+
+# Development assets
+public/
+*.log
+.env*
+
+# Source files (only distribute built files)
+src/app/pages/
+src/app/page.tsx
+src/app/layout.tsx
+src/mourn.config.ts
+
+# Tests (when added)
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+__tests__/
+coverage/

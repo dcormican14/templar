@@ -1,27 +1,99 @@
 {
-  "name": "templar",
+  "name": "mournshire",
   "version": "0.1.0",
-  "private": true,
+  "description": "A React component library with atomic design, advanced theming, and .mourn configuration",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./providers": {
+      "types": "./dist/providers.d.ts",
+      "import": "./dist/providers.mjs",
+      "require": "./dist/providers.js"
+    },
+    "./environment": {
+      "types": "./dist/environment.d.ts",
+      "import": "./dist/environment.mjs",
+      "require": "./dist/environment.js"
+    },
+    "./atoms": {
+      "types": "./dist/components/atoms.d.ts",
+      "import": "./dist/components/atoms.mjs",
+      "require": "./dist/components/atoms.js"
+    },
+    "./molecules": {
+      "types": "./dist/components/molecules.d.ts",
+      "import": "./dist/components/molecules.mjs",
+      "require": "./dist/components/molecules.js"
+    },
+    "./styles": "./dist/globals.css"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "src/app/docs"
+  ],
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
+    "build:lib": "tsup",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prepublishOnly": "npm run build:lib"
+  },
+  "keywords": [
+    "react",
+    "components",
+    "ui",
+    "design-system",
+    "atomic-design",
+    "theming",
+    "typescript",
+    "nextjs"
+  ],
+  "author": "dcorm",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dcorm/templar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dcorm/templar/issues"
+  },
+  "homepage": "https://github.com/dcorm/templar#readme",
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "iconoir-react": "^7.11.0"
+  },
+  "peerDependenciesMeta": {
+    "iconoir-react": {
+      "optional": false
+    }
   },
   "dependencies": {
-    "iconoir": "^7.11.0",
-    "iconoir-react": "^7.11.0",
-    "next": "^15.5.2",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
     "react-parallax-tilt": "^1.7.307"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.1",
+    "@types/react-parallax-tilt": "^1.7.0",
+    "esbuild": "^0.25.10",
+    "iconoir": "^7.11.0",
+    "iconoir-react": "^7.11.0",
+    "next": "^15.5.2",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
     "tailwindcss": "^4",
+    "tsup": "^8.5.0",
     "typescript": "^5"
   }
 }

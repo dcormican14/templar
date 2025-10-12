@@ -9,11 +9,12 @@ import { useSafeCSSVariables } from '../hooks/useSafeCSSVariables';
 
 interface PageWrapperProps {
   children: React.ReactNode;
-  activeTab: 'overview' | 'docs' | 'components' | 'contact';
+  activeTab: 'overview' | 'docs' | 'components' | 'contact' | 'environment';
 }
 
 export function PageWrapper({ children, activeTab }: PageWrapperProps) {
   const [mounted, setMounted] = useState(false);
+  const [displayTab, setDisplayTab] = useState(activeTab);
   const router = useRouter();
   const { theme, cycleTheme } = useSafeTheme();
   const cssVars = useSafeCSSVariables();
@@ -22,6 +23,32 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Update display tab when activeTab changes
+  useEffect(() => {
+    setDisplayTab(activeTab);
+  }, [activeTab]);
+
+  // Handle scroll-based tab switching for overview/docs/contact
+  useEffect(() => {
+    if (activeTab !== 'overview') return;
+
+    const handleOverviewScroll = (event: Event) => {
+      const customEvent = event as CustomEvent;
+      const currentSection = customEvent.detail?.currentSection;
+
+      if (currentSection === 'contact') {
+        setDisplayTab('contact');
+      } else if (currentSection === 'docs') {
+        setDisplayTab('docs');
+      } else {
+        setDisplayTab('overview');
+      }
+    };
+
+    window.addEventListener('overviewScroll', handleOverviewScroll);
+    return () => window.removeEventListener('overviewScroll', handleOverviewScroll);
+  }, [activeTab]);
 
   // Don't render until mounted to avoid SSR issues
   if (!mounted) {
@@ -38,24 +65,57 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
   const tabs = [
     { id: 'overview', label: 'Overview'},
     { id: 'docs', label: 'Docs'},
+    { id: 'contact', label: 'Contact'},
     { id: 'components', label: 'Components'},
-    { id: 'contact', label: 'Contact'}
+    { id: 'environment', label: 'Environment'}
   ];
 
   const handleTabChange = (tabId: string) => {
     // Navigate based on tab selection
     switch (tabId) {
       case 'overview':
-        router.push('/overview');
+        if (activeTab === 'overview') {
+          // Scroll to top if already on overview page
+          const scrollContainer = (window as any).__overviewScrollContainer;
+          if (scrollContainer) {
+            scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
+          } else {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        } else {
+          // Navigate to overview page
+          router.push('/overview');
+        }
         break;
       case 'docs':
-        router.push('/docs');
+        // Scroll to docs section on overview page
+        if (activeTab === 'overview') {
+          const docsSection = document.getElementById('docs-section');
+          if (docsSection) {
+            docsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        } else {
+          // Navigate to overview and scroll after navigation
+          router.push('/overview#docs-section');
+        }
         break;
       case 'components':
         router.push('/components');
         break;
+      case 'environment':
+        router.push('/environment');
+        break;
       case 'contact':
-        router.push('/contact');
+        // Scroll to contact section on overview page
+        if (activeTab === 'overview') {
+          const contactSection = document.getElementById('contact-section');
+          if (contactSection) {
+            contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        } else {
+          // Navigate to overview and scroll after navigation
+          router.push('/overview#contact-section');
+        }
         break;
       default:
         router.push('/overview');
@@ -111,30 +171,47 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
         color: cssVars.foreground
       }}
     >
-      {/* Floating Navigation */}
-      <div className="fixed top-0 left-0 right-0 z-40 bg-opacity-95 backdrop-blur-sm" style={{ backgroundColor: cssVars.background }}>
+      {/* Background Image Strip (behind nav bar) - Not shown on overview page */}
+      {activeTab !== 'overview' && (
+        <div
+          className="fixed top-0 left-0 right-0 z-30"
+          style={{
+            height: '48px',
+            backgroundImage: 'url(/assets/knight_background.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            width: '100%'
+          }}
+        />
+      )}
+
+      {/* Navigation Bar */}
+      <div className="fixed top-0 left-0 right-0 z-40">
         <Navigation
           icon={<Icon name="HomeShield" size="lg" />}
-          appName="Templar Demo"
+          appName="Templar"
           tabs={tabs}
-          activeTab={activeTab}
+          activeTab={displayTab}
           onTabChange={handleTabChange}
+          variant="glassmorphic"
+          color="primary"
+          size="md"
           trailingContent={
-            <div className="flex items-center gap-2">
-              <span className="text-md" style={{color: 'var(--foreground)'}}>v1.0.0</span>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              color: cssVars.foregroundAccent,
+              fontSize: '14px',
+              fontWeight: '500'
+            }}>
+              v1.0.0
             </div>
           }
         />
-        {/* Subtle shadow for floating effect */}
-        <div 
-          className="h-px" 
-          style={{ 
-            background: `linear-gradient(90deg, transparent, ${cssVars.border}, transparent)`,
-            opacity: 0.5
-          }}
-        />
       </div>
-      
+
       {/* Main content */}
       <Scrollbar
         height="calc(100vh - 48px)"
@@ -148,6 +225,11 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
         {activeTab === 'overview' ? (
           // Full width and height for overview page
           <div style={{ width: '100vw', height: '100vh', margin: 0, padding: 0 }}>
+            {children}
+          </div>
+        ) : activeTab === 'components' || activeTab === 'environment' ? (
+          // Full width for components and environment pages (have their own side menu layout)
+          <div style={{ width: '100vw', height: '100%', margin: 0, padding: 0 }}>
             {children}
           </div>
         ) : (

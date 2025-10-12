@@ -62,13 +62,13 @@ NavigationBrand.displayName = 'NavigationBrand';
 
 // Tab Component
 const NavigationTab = forwardRef<HTMLButtonElement, NavigationTabProps>(
-  ({ tab, isActive, onSelect, size }, ref) => {
+  ({ tab, isActive, onSelect, size, color = 'primary', customColor }, ref) => {
     const cssVars = useCSSVariables();
     const [isHovered, setIsHovered] = useState(false);
-    
-    const tabStyles = createTabStyles(isActive, size, cssVars);
+
+    const tabStyles = createTabStyles(isActive, size, color, customColor, cssVars);
     const underlineStyles = createTabUnderlineStyles(isActive, cssVars);
-    const hoverStyles = isHovered && !isActive ? createTabHoverStyles(cssVars) : {};
+    const hoverStyles = isHovered && !isActive ? createTabHoverStyles(color, customColor, cssVars) : {};
     const hoverUnderlineStyles = isHovered && !isActive ? { width: '100%', opacity: 0.3 } : {};
 
     const handleClick = () => {
@@ -195,6 +195,8 @@ export const Navigation = forwardRef<HTMLElement, NavigationProps>(
     leadingContent,
     trailingContent,
     variant = 'default',
+    color = 'primary',
+    customColor,
     size = 'md',
     sticky = false,
     fullWidth = false,
@@ -233,7 +235,7 @@ export const Navigation = forwardRef<HTMLElement, NavigationProps>(
   }, ref) => {
     const cssVars = useCSSVariables();
 
-    const navigationStyles = createNavigationStyles(variant, size, sticky, cssVars);
+    const navigationStyles = createNavigationStyles(variant, color, customColor, size, sticky, cssVars);
     const containerStyles = createContainerStyles(fullWidth, maxWidth);
     const contentAreaStyles = createContentAreaStyles();
 
@@ -297,6 +299,8 @@ export const Navigation = forwardRef<HTMLElement, NavigationProps>(
                       isActive={activeTab === tab.id}
                       onSelect={handleTabSelect}
                       size={size}
+                      color={color}
+                      customColor={customColor}
                     />
                     {/* Add vertical divider between tabs (not after the last one) */}
                     {index < tabs.length - 1 && (

@@ -8,6 +8,7 @@ import { Scrollbar, Icon, Button, SegmentedControl, CodeBlock, Card } from '../a
 import { generateCodeString, getComponentName } from '../molecules/InteractiveComponentDisplay/InteractiveComponentDisplay.utils';
 import { getComponentType, getReadmePath } from '../../utils/componentUtils';
 import { getComponentInteractiveConfig } from './componentConfigs';
+import { getComponentProps, formatPropsAsMarkdown } from '../../utils/componentPropsData';
 
 interface ComponentShowcaseProps {
   componentName: string;
@@ -49,6 +50,21 @@ export function ComponentShowcase({ componentName }: ComponentShowcaseProps) {
   };
 
   const generatePlaceholderReadme = (name: string, type: string | null) => {
+    // Try to get real props data
+    const propsInfo = getComponentProps(name);
+    const propsSection = propsInfo
+      ? `## Props\n\n${formatPropsAsMarkdown(propsInfo)}`
+      : `## Props
+This component extends the Universal Props System, providing consistent theming, sizing, and behavior across all Templar components.
+
+### Universal Props
+- \`color\`: Color theme variant (primary, secondary, success, warning, destructive, info, custom)
+- \`variant\`: Visual variant (solid, ghost, outline)
+- \`size\`: Component size (xs, sm, md, lg, xl)
+- \`shape\`: Border radius style (sharp, round, pill)
+- \`disabled\`: Disabled state
+- \`loading\`: Loading state`;
+
     return `## Overview
 The ${name} component is a ${type} component in the Templar design system. It provides a consistent and accessible interface for ${name.toLowerCase()} functionality.
 
@@ -59,16 +75,7 @@ The ${name} component is a ${type} component in the Templar design system. It pr
 - **Responsive**: Works across all device sizes
 - **Customizable**: Extensive prop system for customization
 
-## Props
-This component extends the Universal Props System, providing consistent theming, sizing, and behavior across all Templar components.
-
-### Universal Props
-- \`color\`: Color theme variant (primary, secondary, success, warning, destructive, info, custom)
-- \`variant\`: Visual variant (solid, ghost, outline)
-- \`size\`: Component size (xs, sm, md, lg, xl)
-- \`shape\`: Border radius style (sharp, round, pill)
-- \`disabled\`: Disabled state
-- \`loading\`: Loading state
+${propsSection}
 
 ## Usage Examples
 
@@ -87,9 +94,9 @@ function Example() {
 
 ### With Props
 \`\`\`tsx
-<${name} 
-  color="primary" 
-  variant="solid" 
+<${name}
+  color="primary"
+  variant="solid"
   size="md"
 >
   Styled ${name}
@@ -285,6 +292,10 @@ For more detailed documentation, examples, and API reference, visit the [Templar
             items={['Overview', 'Interactive']}
             selectedIndex={activeTab === 'overview' ? 0 : 1}
             onChange={(index) => handleModeChange(index === 0 ? 'overview' : 'interactive')}
+            color="primary"
+            shape="pill"
+            variant="solid"
+            animationMode="isometric"
             size="sm"
           />
         </div>
@@ -292,8 +303,8 @@ For more detailed documentation, examples, and API reference, visit the [Templar
 
       {/* Content */}
       <Scrollbar
-        variant="solid"
-        color="primary"
+        variant="ghost"
+        color="secondary"
         size="md"
         shape="round"
         orientation="vertical"

@@ -1,6 +1,8 @@
 'use client';
 
 import { RoundTable } from "../providers";
+// Import the mourn configuration
+import "../../mourn.config";
 
 interface ClientProviderWrapperProps {
   children: React.ReactNode;
@@ -8,30 +10,7 @@ interface ClientProviderWrapperProps {
 
 export function ClientProviderWrapper({ children }: ClientProviderWrapperProps) {
   return (
-    <RoundTable
-      config={{
-        theme: {
-          defaultTheme: 'system',
-          storageKey: 'templar-theme',
-        },
-        auth: {
-          storageKey: 'templar-auth',
-        },
-        toast: {
-          maxToasts: 5,
-          defaultDuration: 5000,
-        },
-        loading: {
-          showGlobalSpinner: true,
-        },
-        modal: {
-          maxModals: 3,
-        },
-        settings: {
-          storageKey: 'templar-settings',
-        },
-      }}
-    >
+    <RoundTable>
       {children}
     </RoundTable>
   );
