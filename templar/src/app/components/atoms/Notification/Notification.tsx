@@ -69,11 +69,6 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>((allPr
     showProgress,
     toastPosition,
     type, // Legacy prop
-    // Filter out interactive config props that shouldn't be passed to DOM
-    hasActions,
-    actionLabel1,
-    actionLabel2,
-    _actionsComputed,
     ...restProps
   } = componentProps;
   
@@ -188,7 +183,7 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>((allPr
               <div style={iconContainerStyles}>
                 {loading ? (
                   <ProgressIndicator
-                    type="spinner"
+                    type="circular"
                     size={size === 'xs' ? 'xs' : size === 'sm' ? 'sm' : size === 'lg' ? 'md' : 'sm'}
                     color={variant === 'outline' ? 'primary' : effectiveColor}
                     variant={variant === 'solid' ? 'solid' : 'outline'}
@@ -347,7 +342,7 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>((allPr
                               e.currentTarget.style.backgroundColor = cssVars.foregroundAccent;
                             } else {
                               // Normal outline button hover - use notification color scheme
-                              const notificationBg = cssVars[`${effectiveColor}Background`] || cssVars.primaryBackground;
+                              const notificationBg = (cssVars as any)[`${effectiveColor}Background`] || cssVars.primaryBackground;
                               e.currentTarget.style.backgroundColor = notificationBg;
                               e.currentTarget.style.borderTopColor = hoverColor;
                               e.currentTarget.style.borderRightColor = hoverColor;
@@ -356,7 +351,7 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>((allPr
                               e.currentTarget.style.color = hoverColor;
                             }
                           } else if (actionVariant === 'ghost') {
-                            const ghostBg = cssVars[`${effectiveColor}Background`] || cssVars.primaryBackground;
+                            const ghostBg = (cssVars as any)[`${effectiveColor}Background`] || cssVars.primaryBackground;
                             e.currentTarget.style.backgroundColor = ghostBg;
                             e.currentTarget.style.color = hoverColor;
                           }

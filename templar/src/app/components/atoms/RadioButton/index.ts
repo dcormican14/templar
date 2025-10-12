@@ -14,7 +14,6 @@ export {
   getRadioButtonDotStyles,
   getHiddenInputStyles,
   getLabelStyles,
-  getDescriptionStyles,
   getLabelContainerStyles,
   getRadioButtonGroupStyles,
 } from './RadioButton.styles';

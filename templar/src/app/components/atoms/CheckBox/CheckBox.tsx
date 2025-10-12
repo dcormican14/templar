@@ -22,8 +22,6 @@ export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>((allProps, r
   // Filter out interactive config props that shouldn't be passed to DOM
   const {
     onChange,
-    // Interactive config props to filter out
-    _checkboxComputed,
     ...propsWithoutOnChange
   } = allProps;
 
@@ -87,7 +85,7 @@ export const CheckBox = forwardRef<HTMLInputElement, CheckBoxProps>((allProps, r
       switch (variant) {
         case 'solid':
           // For solid variant, use main color on foreground background when unchecked
-          return color === 'custom' && customColor ? customColor : cssVars[color] || cssVars.primary;
+          return color === 'custom' && customColor ? customColor : (cssVars as any)[color] || cssVars.primary;
         case 'glassmorphic':
           // For glassmorphic variant, use primary color when unchecked
           return cssVars.primary;

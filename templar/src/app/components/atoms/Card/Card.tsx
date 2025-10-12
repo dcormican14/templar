@@ -210,7 +210,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>((allProps, ref) => {
       {loading && (
         <div style={loadingOverlayStyles}>
           <ProgressIndicator
-            type="spinner"
+            type="circular"
             size="md"
             color={color}
           />

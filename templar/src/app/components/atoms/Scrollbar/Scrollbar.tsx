@@ -51,7 +51,7 @@ const createWebkitScrollbarCSS = (
   
   // Add hover state for the container
   if (hoverStyles) {
-    css += `#${uniqueId}:hover > div:first-child::-webkit-scrollbar-thumb { opacity: ${hoverStyles.opacity}; }`;
+    css += `#${uniqueId}:hover > div:first-child::-webkit-scrollbar-thumb { opacity: ${(hoverStyles as any).opacity}; }`;
   }
   
   return css;
@@ -111,7 +111,6 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
     alignment = 'end',
     smoothScrolling = true,
     momentum = true,
-    hideNative, // Remove this prop to prevent it from being passed to DOM
     showIndicators = false,
     onScroll,
     onScrollStart,

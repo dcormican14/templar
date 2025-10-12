@@ -47,7 +47,7 @@ import { TypewriterText } from '../Button/animations/TypewriterText';
 
 export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref) => {
   // Extract container props and component-specific props
-  const [containerProps, componentProps] = extractContainerProps(allProps);
+  const [containerProps, componentProps] = extractContainerProps(allProps) as any;
   
   // Destructure container props with defaults
   const {
@@ -469,7 +469,7 @@ export const Dropdown = forwardRef<HTMLDivElement, DropdownProps>((allProps, ref
 
       let globalIndex = 0;
 
-      return filteredOptions.map((item, groupIndex) => {
+      return filteredOptions.map((item: any, groupIndex: number) => {
         if (isGroup(item)) {
           return (
             <div key={`group-${groupIndex}`}>

@@ -165,7 +165,7 @@ export const getFilePickerDropZoneStyles = (
   cssVars: any,
   // Legacy support
   rounded?: boolean
-): React.CSSProperties => {
+): any => {
   const colors = getColorVariables(color, customColor, cssVars);
   const sizeConfig = getSizeConfig(size);
 

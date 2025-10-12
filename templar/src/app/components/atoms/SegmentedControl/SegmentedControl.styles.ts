@@ -341,7 +341,6 @@ export const getSegmentStyles = (
     textOverflow: 'ellipsis',
     userSelect: 'none',
     outline: 'none',
-    minWidth: 0,
     boxSizing: 'border-box',
     borderRadius: 'inherit',
     transform: textTransform,
@@ -360,7 +359,7 @@ export const getIndicatorStyles = (
   animationsEnabled: boolean,
   cssVars: any,
   hasIsometricAnimation?: boolean
-): CSSProperties => {
+): any => {
   const translateX = `${selectedIndex * 100}%`;
   const colors = getColorVariables(color, customColor, cssVars);
   const dimensions = getSegmentedControlDimensions(size);
@@ -510,7 +509,7 @@ export const getIsometricIndicatorStyles = (
   color: any,
   variant: SegmentedControlVariant,
   animationsEnabled: boolean
-): CSSProperties => {
+): any => {
   const baseStyles = {
     position: 'relative' as const,
     zIndex: 1,

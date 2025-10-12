@@ -56,6 +56,12 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>((allProps, ref) => 
   const useAnimationMode = animationsEnabled && animationMode !== 'none';
   const hasIsometricAnimation = useAnimationMode && animationMode === 'isometric' && variant !== 'ghost' && variant !== 'glassmorphic';
 
+  // Filter animationMode to supported Badge modes
+  const badgeAnimationMode: 'none' | 'typewriter' | 'isometric' | undefined =
+    animationMode === 'default' ? 'none' :
+    (animationMode === 'none' || animationMode === 'typewriter' || animationMode === 'isometric') ? animationMode :
+    undefined;
+
     // Styles
     const baseStyles = useMemo(() => createBaseStyles(
       shape === 'pill' || Boolean(rounded),
@@ -105,7 +111,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>((allProps, ref) => 
           cssVars,
           animationsEnabled,
           useAnimationMode,
-          animationMode,
+          badgeAnimationMode,
           disabled
         )}
       </span>

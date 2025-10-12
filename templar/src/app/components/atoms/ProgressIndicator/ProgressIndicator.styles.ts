@@ -166,7 +166,7 @@ export const getBarProgressStyles = (
   disabled: boolean,
   animationsEnabled: boolean,
   cssVars: any
-): React.CSSProperties => {
+): any => {
   const colors = getColorVariables(color, customColor, cssVars);
   const sizeConfig = getSizeConfig(size);
 

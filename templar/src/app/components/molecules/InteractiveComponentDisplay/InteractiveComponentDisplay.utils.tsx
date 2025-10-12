@@ -59,8 +59,8 @@ export const generateCodeString = (
         if (React.isValidElement(value)) {
           // Extract the component type and props for display
           const componentName = typeof value.type === 'string' ? value.type : (value.type as any)?.displayName || (value.type as any)?.name || 'Component';
-          const componentProps = value.props || {};
-          
+          const componentProps: any = value.props || {};
+
           // Simple case: if it's an Icon component with just a name prop
           if (componentName === 'Icon' && componentProps.name && Object.keys(componentProps).length === 1) {
             return `${key}={<Icon name="${componentProps.name}" />}`;

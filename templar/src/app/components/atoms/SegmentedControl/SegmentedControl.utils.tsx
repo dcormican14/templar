@@ -1,7 +1,7 @@
 import { SegmentedControlSize, SegmentedControlVariant } from './SegmentedControl.types';
 
 export const getDefaultSize = (): SegmentedControlSize => 'md';
-export const getDefaultVariant = (): SegmentedControlVariant => 'primary';
+export const getDefaultVariant = (): SegmentedControlVariant => 'solid';
 
 export const validateSegmentedControlProps = (props: {
   items: string[];

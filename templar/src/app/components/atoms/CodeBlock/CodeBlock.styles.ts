@@ -315,7 +315,7 @@ export const getLineNumberStyles = (
   shape: string
 ): React.CSSProperties => {
   const sizeConfig = getSizeStyles(size);
-  const colors = getColorVariables(color, customColor, cssVars);
+  const colors = getColorVariables(color as CodeBlockColor, customColor, cssVars);
   
   // Get border radius based on shape, but only apply to left corners
   const getBorderRadius = () => {

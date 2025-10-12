@@ -7,7 +7,7 @@ export type {
   ProgressIndicatorShape,
   ProgressIndicatorType 
 } from './ProgressIndicator.types';
-export { 
+export {
   getSizeConfig,
   getColorVariables,
   createProgressIndicatorContainerStyles,
@@ -16,8 +16,6 @@ export {
   getSpinnerStyles,
   getCircularProgressStyles,
   getCircularProgressSVGStyles,
-  getDotsProgressStyles,
-  getDotStyles,
   getTextStyles,
   getProgressTextStyles,
   getCircularTextStyles
