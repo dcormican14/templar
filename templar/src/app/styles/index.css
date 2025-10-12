@@ -1,5 +1,8 @@
 /* Templar Theme System - Import all individual theme files */
 
+/* Import animation system */
+@import './animations.css';
+
 /* Import all theme CSS files */
 @import './themes/light.css';
 @import './themes/dark.css';
@@ -7,6 +10,8 @@
 @import './themes/sepia-light.css';
 @import './themes/sepia-dark.css';
 @import './themes/solarized-dark.css';
+@import './themes/valor.css';
+@import './themes/valor-dark.css';
 
 /* Base theme system styles */
 * {
@@ -18,10 +23,10 @@
 *::before,
 *::after {
   transition: 
-    background-color 0.3s ease,
-    color 0.3s ease,
-    border-color 0.3s ease,
-    box-shadow 0.3s ease;
+    background-color var(--duration-medium) var(--animation-smooth),
+    color var(--duration-medium) var(--animation-smooth),
+    border-color var(--duration-medium) var(--animation-smooth),
+    box-shadow var(--duration-medium) var(--animation-smooth);
 }
 
 /* Base component styles using CSS variables */
@@ -36,7 +41,7 @@
   background: var(--primary);
   color: var(--primary-foreground);
   border: 1px solid var(--primary);
-  transition: all 0.2s ease;
+  transition: all var(--duration-fast) var(--animation-smooth);
 }
 
 .templar-button:hover {

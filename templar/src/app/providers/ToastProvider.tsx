@@ -1,8 +1,10 @@
 'use client';
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
+import { Notification } from '../components/atoms';
+import type { NotificationAction } from '../components/atoms/Notification/Notification.types';
 
-export type ToastType = 'success' | 'error' | 'warning' | 'info';
+export type ToastType = 'primary' | 'secondary' | 'warning' | 'destructive' | 'success' | 'default' | 'inverted' | 'info';
 
 export interface Toast {
   id: string;
@@ -10,10 +12,15 @@ export interface Toast {
   title: string;
   description?: string;
   duration?: number;
-  action?: {
+  actions?: Array<{
     label: string;
     onClick: () => void;
-  };
+    variant?: string; // Flexible to support both legacy and new variants
+    disabled?: boolean;
+  }>;
+  showIcon?: boolean;
+  dismissible?: boolean;
+  showProgress?: boolean;
 }
 
 interface ToastContextType {
@@ -25,6 +32,10 @@ interface ToastContextType {
   error: (title: string, description?: string) => string;
   warning: (title: string, description?: string) => string;
   info: (title: string, description?: string) => string;
+  primary: (title: string, description?: string) => string;
+  secondary: (title: string, description?: string) => string;
+  destructive: (title: string, description?: string) => string;
+  inverted: (title: string, description?: string) => string;
 }
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
@@ -38,7 +49,7 @@ interface ToastProviderProps {
 export function ToastProvider({ 
   children, 
   maxToasts = 5,
-  defaultDuration = 5000 
+  defaultDuration = 7000 
 }: ToastProviderProps) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
@@ -49,6 +60,9 @@ export function ToastProvider({
   const addToast = useCallback((toast: Omit<Toast, 'id'>) => {
     const id = Math.random().toString(36).substr(2, 9);
     const newToast: Toast = {
+      showIcon: true,
+      dismissible: true,
+      showProgress: false,
       ...toast,
       id,
       duration: toast.duration ?? defaultDuration,
@@ -63,12 +77,12 @@ export function ToastProvider({
       return updated;
     });
 
-    // Auto-remove toast after duration
-    if (newToast.duration && newToast.duration > 0) {
-      setTimeout(() => {
-        removeToast(id);
-      }, newToast.duration);
-    }
+    // Auto-remove toast after duration (handled by Notification component now)
+    // if (newToast.duration && newToast.duration > 0) {
+    //   setTimeout(() => {
+    //     removeToast(id);
+    //   }, newToast.duration);
+    // }
 
     return id;
   }, [defaultDuration, maxToasts, removeToast]);
@@ -83,7 +97,7 @@ export function ToastProvider({
   }, [addToast]);
 
   const error = useCallback((title: string, description?: string) => {
-    return addToast({ type: 'error', title, description });
+    return addToast({ type: 'destructive', title, description });
   }, [addToast]);
 
   const warning = useCallback((title: string, description?: string) => {
@@ -91,7 +105,23 @@ export function ToastProvider({
   }, [addToast]);
 
   const info = useCallback((title: string, description?: string) => {
-    return addToast({ type: 'info', title, description });
+    return addToast({ type: 'primary', title, description });
+  }, [addToast]);
+
+  const primary = useCallback((title: string, description?: string) => {
+    return addToast({ type: 'primary', title, description });
+  }, [addToast]);
+
+  const secondary = useCallback((title: string, description?: string) => {
+    return addToast({ type: 'secondary', title, description });
+  }, [addToast]);
+
+  const destructive = useCallback((title: string, description?: string) => {
+    return addToast({ type: 'destructive', title, description });
+  }, [addToast]);
+
+  const inverted = useCallback((title: string, description?: string) => {
+    return addToast({ type: 'inverted', title, description });
   }, [addToast]);
 
   const value: ToastContextType = {
@@ -103,6 +133,10 @@ export function ToastProvider({
     error,
     warning,
     info,
+    primary,
+    secondary,
+    destructive,
+    inverted,
   };
 
   return (
@@ -116,67 +150,53 @@ export function ToastProvider({
 function ToastContainer() {
   const { toasts, removeToast } = useToast();
 
-  return (
-    <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-md">
-      {toasts.map((toast) => (
-        <ToastItem
-          key={toast.id}
-          toast={toast}
-          onRemove={() => removeToast(toast.id)}
-        />
-      ))}
-    </div>
-  );
-}
-
-interface ToastItemProps {
-  toast: Toast;
-  onRemove: () => void;
-}
-
-function ToastItem({ toast, onRemove }: ToastItemProps) {
-  const getToastStyles = (type: ToastType) => {
-    const baseStyles = "p-4 rounded-lg shadow-lg border transition-all duration-300 ease-in-out";
-    
-    switch (type) {
+  // Map legacy action variants to UniversalVariant
+  const mapActionVariant = (variant?: string): 'solid' | 'ghost' | 'outline' => {
+    switch (variant) {
+      case 'primary':
+      case 'secondary': 
       case 'success':
-        return `${baseStyles} bg-green-50 border-green-200 text-green-800 dark:bg-green-900/20 dark:border-green-800 dark:text-green-200`;
-      case 'error':
-        return `${baseStyles} bg-red-50 border-red-200 text-red-800 dark:bg-red-900/20 dark:border-red-800 dark:text-red-200`;
       case 'warning':
-        return `${baseStyles} bg-yellow-50 border-yellow-200 text-yellow-800 dark:bg-yellow-900/20 dark:border-yellow-800 dark:text-yellow-200`;
+      case 'destructive':
       case 'info':
-        return `${baseStyles} bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-900/20 dark:border-blue-800 dark:text-blue-200`;
+        return 'solid';
+      case 'ghost':
+        return 'ghost';
+      case 'outline':
       default:
-        return `${baseStyles} bg-gray-50 border-gray-200 text-gray-800 dark:bg-gray-900/20 dark:border-gray-800 dark:text-gray-200`;
+        return 'outline';
     }
   };
 
   return (
-    <div className={getToastStyles(toast.type)}>
-      <div className="flex justify-between items-start">
-        <div className="flex-1">
-          <h4 className="font-medium">{toast.title}</h4>
-          {toast.description && (
-            <p className="mt-1 text-sm opacity-90">{toast.description}</p>
-          )}
-          {toast.action && (
-            <button
-              onClick={toast.action.onClick}
-              className="mt-2 text-sm font-medium underline hover:no-underline"
-            >
-              {toast.action.label}
-            </button>
-          )}
-        </div>
-        <button
-          onClick={onRemove}
-          className="ml-4 text-lg leading-none opacity-70 hover:opacity-100"
-          aria-label="Close notification"
-        >
-          ×
-        </button>
-      </div>
+    <div className="fixed top-4 right-4 z-50 flex flex-col gap-3 max-w-md">
+      {toasts.map((toast) => (
+        <Notification
+          key={toast.id}
+          id={toast.id}
+          color={toast.type === 'default' ? 'primary' : 
+                 toast.type === 'inverted' ? 'secondary' : 
+                 toast.type === 'info' ? 'info' :
+                 toast.type}
+          title={toast.title}
+          description={toast.description}
+          duration={toast.duration || undefined}
+          actions={toast.actions?.map(action => ({
+            label: action.label,
+            onClick: action.onClick,
+            variant: mapActionVariant(action.variant),
+            disabled: action.disabled
+          })) as NotificationAction[] | undefined}
+          showIcon={toast.showIcon}
+          dismissible={toast.dismissible}
+          showProgress={toast.showProgress}
+          onDismiss={() => removeToast(toast.id)}
+          style={{
+            minWidth: '320px',
+            maxWidth: '400px'
+          }}
+        />
+      ))}
     </div>
   );
 }

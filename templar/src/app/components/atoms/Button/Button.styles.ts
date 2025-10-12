@@ -1,50 +1,198 @@
 import React from 'react';
-import type { ButtonVariant, ButtonSize } from './Button.types';
+import type { ButtonColor, ButtonVariant, ButtonSize, ButtonShape } from './Button.types';
 
-export const getVariantStyles = (variant: ButtonVariant, cssVars: any) => {
+// Get color variables based on color prop
+export const getColorVariables = (color: ButtonColor, customColor: string | undefined, cssVars: any) => {
+  if (color === 'custom' && customColor) {
+    return {
+      main: customColor,
+      foreground: '#ffffff', // Default to white text for custom colors
+      hover: customColor + '20', // Add opacity for hover
+      disabled: customColor + '40',
+    };
+  }
+
+
+  const colorMap: Record<string, any> = {
+    primary: {
+      main: cssVars.primary,
+      background: cssVars.primaryBackground,
+      foreground: cssVars.primaryForeground,
+      hover: cssVars.primaryHover,
+      accent: cssVars.primaryAccent,
+      shadow: cssVars.primaryShadow,
+      disabled: cssVars.primaryDisabled,
+      border: cssVars.primaryBorder,
+    },
+    secondary: {
+      main: cssVars.secondary,
+      background: cssVars.secondaryBackground,
+      foreground: cssVars.secondaryForeground,
+      hover: cssVars.secondaryHover,
+      accent: cssVars.secondaryAccent,
+      shadow: cssVars.secondaryShadow,
+      disabled: cssVars.secondaryDisabled,
+      border: cssVars.secondaryBorder,
+    },
+    success: {
+      main: cssVars.success,
+      background: cssVars.successBackground,
+      foreground: cssVars.successForeground,
+      hover: cssVars.successHover,
+      accent: cssVars.successAccent,
+      shadow: cssVars.successShadow,
+      disabled: cssVars.successDisabled,
+      border: cssVars.successBorder,
+    },
+    warning: {
+      main: cssVars.warning,
+      background: cssVars.warningBackground,
+      foreground: cssVars.warningForeground,
+      hover: cssVars.warningHover,
+      accent: cssVars.warningAccent,
+      shadow: cssVars.warningShadow,
+      disabled: cssVars.warningDisabled,
+      border: cssVars.warningBorder,
+    },
+    destructive: {
+      main: cssVars.destructive,
+      background: cssVars.destructiveBackground,
+      foreground: cssVars.destructiveForeground,
+      hover: cssVars.destructiveHover,
+      accent: cssVars.destructiveAccent,
+      shadow: cssVars.destructiveShadow,
+      disabled: cssVars.destructiveDisabled,
+      border: cssVars.destructiveBorder,
+    },
+    info: {
+      main: cssVars.info,
+      background: cssVars.infoBackground,
+      foreground: cssVars.infoForeground,
+      hover: cssVars.infoHover,
+      accent: cssVars.infoAccent,
+      shadow: cssVars.infoShadow,
+      disabled: cssVars.infoDisabled,
+      border: cssVars.infoBorder,
+    },
+  };
+
+  return colorMap[color] || colorMap.primary;
+};
+
+export const getVariantStyles = (
+  color: ButtonColor,
+  variant: ButtonVariant,
+  customColor: string | undefined,
+  cssVars: any
+) => {
+  const colors = getColorVariables(color, customColor, cssVars);
+
   const baseStyles = {
-    borderWidth: '0',
-    borderStyle: 'solid' as const,
-    borderColor: 'transparent',
+    borderTopWidth: '2px',
+    borderRightWidth: '2px',
+    borderBottomWidth: '2px',
+    borderLeftWidth: '2px',
+    borderTopStyle: 'solid' as const,
+    borderRightStyle: 'solid' as const,
+    borderBottomStyle: 'solid' as const,
+    borderLeftStyle: 'solid' as const,
   };
 
   switch (variant) {
-    case 'primary':
+    case 'solid':
       return {
-        backgroundColor: cssVars.primary,
-        color: cssVars.primaryForeground,
+        backgroundColor: colors.accent || colors.main,
+        color: colors.foreground,
+        borderTopColor: colors.accent || colors.main,
+        borderRightColor: colors.accent || colors.main,
+        borderLeftColor: colors.accent || colors.main,
+        borderBottomColor: colors.accent || colors.main,
         ...baseStyles,
-      };
-    case 'secondary':
-      return {
-        backgroundColor: cssVars.secondary,
-        color: cssVars.secondaryForeground,
-        ...baseStyles,
-      };
-    case 'destructive':
-      return {
-        backgroundColor: cssVars.error,
-        color: cssVars.errorForeground,
-        ...baseStyles,
+        '&:hover:not(:disabled)': {
+          backgroundColor: colors.hover,
+          borderTopColor: colors.hover,
+          borderRightColor: colors.hover,
+          borderLeftColor: colors.hover,
+          borderBottomColor: colors.hover,
+        },
       };
     case 'outline':
       return {
-        backgroundColor: 'transparent',
-        color: cssVars.primary,
-        borderWidth: '1px',
-        borderStyle: 'solid' as const,
-        borderColor: cssVars.primary,
+        backgroundColor: cssVars.background,
+        color: colors.main,
+        borderTopColor: colors.main,
+        borderRightColor: colors.main,
+        borderLeftColor: colors.main,
+        borderBottomColor: colors.main,
+        ...baseStyles,
+        '&:hover:not(:disabled)': {
+          backgroundColor: colors.background || colors.main + '10',
+          borderTopColor: colors.hover,
+          borderRightColor: colors.hover,
+          borderLeftColor: colors.hover,
+          borderBottomColor: colors.hover,
+          color: colors.hover,
+        },
       };
     case 'ghost':
       return {
         backgroundColor: 'transparent',
-        color: cssVars.primary,
+        color: colors.main,
+        borderTopColor: 'transparent',
+        borderRightColor: 'transparent',
+        borderLeftColor: 'transparent',
+        borderBottomColor: 'transparent',
         ...baseStyles,
+        '&:hover:not(:disabled)': {
+          backgroundColor: colors.background || colors.main + '10',
+          color: colors.hover,
+        },
+      };
+    case 'glassmorphic':
+      // Create reflection gradient lines using the hover color with transparency
+      const reflectionColor = colors.hover || colors.main || '#ffffff';
+      const topReflectionGradient = `linear-gradient(135deg, transparent 0%, ${reflectionColor}20 20%, ${reflectionColor}15 25%, transparent 35%)`;
+      const bottomReflectionGradient = `linear-gradient(135deg, transparent 45%, ${reflectionColor}25 55%, ${reflectionColor}20 65%, transparent 80%)`;
+      
+      return {
+        background: `
+          ${topReflectionGradient},
+          ${bottomReflectionGradient},
+          rgba(255, 255, 255, 0.1)
+        `,
+        backdropFilter: 'blur(10px)',
+        color: colors.main,
+        boxShadow: `0 8px 32px 0 ${colors.shadow || 'rgba(31, 38, 135, 0.37)'}`,
+        position: 'relative',
+        overflow: 'hidden',
+        ...baseStyles,
+        borderTopColor: 'rgba(255, 255, 255, 0.2)',
+        borderRightColor: 'rgba(255, 255, 255, 0.2)',
+        borderLeftColor: 'rgba(255, 255, 255, 0.2)',
+        borderBottomColor: 'rgba(255, 255, 255, 0.2)',
+        '&:hover:not(:disabled)': {
+          background: `
+            linear-gradient(135deg, transparent 0%, ${reflectionColor}30 20%, ${reflectionColor}25 25%, transparent 35%),
+            linear-gradient(135deg, transparent 45%, ${reflectionColor}35 55%, ${reflectionColor}30 65%, transparent 80%),
+            rgba(255, 255, 255, 0.15)
+          `,
+          backdropFilter: 'blur(15px)',
+          borderTopColor: 'rgba(255, 255, 255, 0.3)',
+          borderRightColor: 'rgba(255, 255, 255, 0.3)',
+          borderLeftColor: 'rgba(255, 255, 255, 0.3)',
+          borderBottomColor: 'rgba(255, 255, 255, 0.3)',
+          transform: 'translateY(-1px)',
+          boxShadow: `0 12px 40px 0 ${colors.shadow || 'rgba(31, 38, 135, 0.45)'}`,
+        },
       };
     default:
       return {
-        backgroundColor: cssVars.primary,
-        color: cssVars.primaryForeground,
+        backgroundColor: colors.main,
+        color: colors.foreground,
+        borderTopColor: colors.main,
+        borderRightColor: colors.main,
+        borderLeftColor: colors.main,
+        borderBottomColor: colors.main,
         ...baseStyles,
       };
   }
@@ -52,13 +200,67 @@ export const getVariantStyles = (variant: ButtonVariant, cssVars: any) => {
 
 export const getSizeStyles = (size: ButtonSize): React.CSSProperties => {
   const sizeMap = {
-    xs: { padding: '4px 8px', fontSize: '14px', minWidth: '82px', height: '40px' },
-    sm: { padding: '6px 12px', fontSize: '16px', minWidth: '82px', height: '40px' },
-    md: { padding: '8px 16px', fontSize: '18px', minWidth: '112px', height: '48px' },
-    lg: { padding: '10px 20px', fontSize: '20px', minWidth: '112px', height: '52px' },
-    xl: { padding: '12px 24px', fontSize: '22px', minWidth: '142px', height: '60px' },
+    xs: { 
+      paddingTop: '4px',
+      paddingRight: '12px', 
+      paddingBottom: '4px',
+      paddingLeft: '12px',
+      fontSize: '14px', 
+      minWidth: '82px', 
+      height: '40px' 
+    },
+    sm: { 
+      paddingTop: '6px',
+      paddingRight: '12px', 
+      paddingBottom: '6px',
+      paddingLeft: '12px',
+      fontSize: '14px', 
+      minWidth: '82px', 
+      height: '40px' 
+    },
+    md: { 
+      paddingTop: '8px',
+      paddingRight: '16px', 
+      paddingBottom: '8px',
+      paddingLeft: '16px',
+      fontSize: '16px', 
+      minWidth: '112px', 
+      height: '48px' 
+    },
+    lg: { 
+      paddingTop: '10px',
+      paddingRight: '20px', 
+      paddingBottom: '10px',
+      paddingLeft: '20px',
+      fontSize: '16px', 
+      minWidth: '112px', 
+      height: '52px' 
+    },
+    xl: { 
+      paddingTop: '12px',
+      paddingRight: '24px', 
+      paddingBottom: '12px',
+      paddingLeft: '24px',
+      fontSize: '18px', 
+      minWidth: '142px', 
+      height: '60px' 
+    },
   };
   return sizeMap[size];
+};
+
+// Get shape styles based on shape prop
+export const getShapeStyles = (shape: ButtonShape): React.CSSProperties => {
+  switch (shape) {
+    case 'sharp':
+      return { borderRadius: '0' };
+    case 'round':
+      return { borderRadius: '12px' };
+    case 'pill':
+      return { borderRadius: '9999px' };
+    default:
+      return { borderRadius: '12px' };
+  }
 };
 
 export const getIconSize = (buttonSize: ButtonSize): 'xs' | 'sm' | 'md' | 'lg' | 'xl' => {
@@ -72,26 +274,142 @@ export const getIconSize = (buttonSize: ButtonSize): 'xs' | 'sm' | 'md' | 'lg' |
   return iconSizeMap[buttonSize];
 };
 
+// Get icon-only styles (square/circular based on shape)
+export const getIconOnlyStyles = (size: ButtonSize, shape: ButtonShape): React.CSSProperties => {
+  // Get the height from the size styles to make width match height
+  const sizeStyles = getSizeStyles(size);
+  const height = sizeStyles.height;
+  
+  return {
+    width: height, // Make width equal to height for square/circle
+    minWidth: height, // Override minWidth from size styles
+    paddingLeft: '0', // Center the icon
+    paddingRight: '0', // Center the icon
+    aspectRatio: '1', // Ensure 1:1 aspect ratio
+  };
+};
+
 export const createBaseStyles = (
   fullWidth: boolean,
   isDisabled: boolean,
   hasIcon: boolean,
-  rounded: boolean,
-  animationsEnabled: boolean
-): React.CSSProperties => ({
-  width: fullWidth ? '100%' : 'auto',
-  opacity: isDisabled ? 0.6 : 1,
-  cursor: isDisabled ? 'not-allowed' : 'pointer',
-  pointerEvents: isDisabled ? 'none' : 'auto',
-  transition: animationsEnabled ? 'all 0.2s ease' : 'none',
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  verticalAlign: 'top',
-  borderRadius: rounded ? '24px' : '8px',
-  fontWeight: '500',
-  outline: 'none',
+  shape: ButtonShape,
+  animationsEnabled: boolean,
+  // Legacy support
+  rounded?: boolean
+): React.CSSProperties => {
+  // Handle legacy rounded prop
+  const finalShape = rounded !== undefined ? (rounded ? 'pill' : 'round') : shape;
+  
+  return {
+    width: fullWidth ? '100%' : 'auto',
+    opacity: isDisabled ? 0.6 : 1,
+    cursor: isDisabled ? 'not-allowed' : 'pointer',
+    pointerEvents: isDisabled ? 'none' : 'auto',
+    transition: animationsEnabled 
+      ? 'background-color var(--duration-fast) var(--animation-smooth), color var(--duration-fast) var(--animation-smooth), border-color var(--duration-fast) var(--animation-smooth), transform var(--duration-fast) var(--animation-smooth), box-shadow var(--duration-fast) var(--animation-smooth)'
+      : 'none',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    verticalAlign: 'top',
+    fontWeight: '500',
+    outline: 'none',
+    position: 'relative',
+    fontFamily: 'inherit',
+    userSelect: 'none',
+    ...getShapeStyles(finalShape),
+  };
+};
+
+
+// Get isometric container styles (wrapper for button + shadow)
+export const getIsometricContainerStyles = (): React.CSSProperties => ({
   position: 'relative',
-  fontFamily: 'inherit',
-  userSelect: 'none',
+  display: 'inline-block',
+});
+
+// Get isometric button styles (the main button element)
+export const getIsometricButtonStyles = (
+  color: any,
+  variant: string,
+  animationsEnabled: boolean
+): React.CSSProperties => {
+  const baseStyles = {
+    position: 'relative' as const,
+    zIndex: 1,
+    transform: 'translate(0, 0)',
+    transition: animationsEnabled
+      ? 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+      : 'none',
+  };
+
+  // For solid variant with isometric, override border colors to use foreground (white)
+  if (variant === 'solid') {
+    return {
+      ...baseStyles,
+      borderTopColor: color.foreground,
+      borderRightColor: color.foreground,
+      borderLeftColor: color.foreground,
+      borderBottomColor: color.foreground,
+    };
+  }
+
+  return baseStyles;
+};
+
+// Get isometric shadow element styles
+export const getIsometricShadowStyles = (
+  color: any,
+  variant: string,
+  shape: string,
+  size: any,
+  animationsEnabled: boolean
+): React.CSSProperties => {
+  // Ghost and glassmorphic variants don't support isometric animation
+  if (variant === 'ghost' || variant === 'glassmorphic') {
+    return { display: 'none' };
+  }
+
+  // Get the same border radius as the button based on shape
+  const shapeStyles = getShapeStyles(shape);
+
+  // Base shadow styles
+  const baseStyles = {
+    position: 'absolute' as const,
+    top: '4px',
+    left: '4px',
+    width: '100%',
+    height: '100%',
+    ...shapeStyles, // Apply the same border radius as the button
+    zIndex: 0,
+    transition: animationsEnabled
+      ? 'transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+      : 'none',
+    transform: 'translate(0, 0)',
+  };
+
+  // Different shadow styling based on variant
+  if (variant === 'solid') {
+    return {
+      ...baseStyles,
+      backgroundColor: color.foreground, // White background for solid variant
+    };
+  } else {
+    // For outline variant, use the main color
+    return {
+      ...baseStyles,
+      backgroundColor: color.main,
+    };
+  }
+};
+
+// Get isometric hover styles for button
+export const getIsometricHoverButtonStyles = (): React.CSSProperties => ({
+  transform: 'translate(3px, 3px)',
+});
+
+// Get isometric hover styles for shadow
+export const getIsometricHoverShadowStyles = (): React.CSSProperties => ({
+  transform: 'translate(-1px, -1px)',
 });

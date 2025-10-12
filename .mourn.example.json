@@ -1,0 +1,66 @@
+{
+  "version": "1.0",
+  "name": "My Templar Project",
+  "providers": {
+    "auth": {
+      "enabled": true,
+      "storageKey": "my-app-auth"
+    },
+    "theme": {
+      "enabled": true,
+      "defaultTheme": "system",
+      "attribute": "data-theme",
+      "storageKey": "my-app-theme",
+      "availableThemes": ["light", "dark", "high-contrast"],
+      "includeCustomThemes": true
+    },
+    "toast": {
+      "enabled": true,
+      "maxToasts": 5,
+      "defaultDuration": 5000,
+      "defaultPosition": "top-right"
+    },
+    "loading": {
+      "enabled": true,
+      "showGlobalSpinner": true,
+      "minLoadingTime": 300
+    },
+    "modal": {
+      "enabled": true,
+      "maxModals": 3,
+      "closeOnOverlayClick": true,
+      "closeOnEscape": true
+    },
+    "settings": {
+      "enabled": true,
+      "storageKey": "my-app-settings",
+      "defaultSettings": {
+        "language": "en",
+        "notifications": {
+          "enabled": true,
+          "sound": true,
+          "desktop": false
+        },
+        "appearance": {
+          "animations": true,
+          "reducedMotion": false,
+          "fontSize": "md"
+        }
+      }
+    }
+  },
+  "components": {
+    "includeAnimations": true,
+    "includeGlassmorphic": true
+  },
+  "build": {
+    "treeShake": true,
+    "includeCSSVariables": true,
+    "sourceMaps": false,
+    "cssPrefix": "tpl-"
+  },
+  "customVariables": {
+    "primary": "#3b82f6",
+    "secondary": "#8b5cf6"
+  }
+}

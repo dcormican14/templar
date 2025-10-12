@@ -1,62 +1,44 @@
-export type CardVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'default';
-export type CardSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-export type CardPadding = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+import type { 
+  WithContainerProps, 
+  UniversalSize, 
+  UniversalColor, 
+  UniversalVariant, 
+  UniversalShape 
+} from '../types';
 
-export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+// Component-specific type aliases (for backward compatibility)
+export type CardColor = UniversalColor;
+export type CardVariant = UniversalVariant;
+export type CardSize = UniversalSize;
+export type CardShape = UniversalShape;
+
+// Text alignment options for header and footer
+export type CardTextAlignment = 'left' | 'center' | 'right';
+
+// Component-specific props (not covered by universal props)
+export interface CardSpecificProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
-   * Visual style variant of the card
-   * @default 'default'
-   */
-  variant?: CardVariant;
-  
-  /**
-   * Size affects border radius and minimum dimensions
-   * @default 'md'
-   */
-  size?: CardSize;
-  
-  /**
-   * Internal padding of the card (follows 4px spacing system)
-   * @default 'md'
-   */
-  padding?: CardPadding;
-  
-  /**
-   * Whether the card should have rounded corners (24px vs 8px)
-   * @default false
-   */
-  rounded?: boolean;
-  
-  /**
-   * Whether the card is clickable (adds hover effects)
-   * @default false
-   */
-  clickable?: boolean;
-  
-  /**
-   * Whether the card is disabled (affects styling and interactions)
-   * @default false
-   */
-  disabled?: boolean;
-  
-  /**
-   * Whether to show loading state
-   * @default false
-   */
-  loading?: boolean;
-  
-  /**
-   * Optional header content
+   * Optional header content (rendered above the card)
    */
   header?: React.ReactNode;
   
   /**
-   * Optional footer content
+   * Optional footer content (rendered below the card)
    */
   footer?: React.ReactNode;
   
   /**
-   * Async click handler for clickable cards
+   * Alignment for header text
+   * @default 'left'
    */
-  onAsyncClick?: () => Promise<void>;
+  headerAlignment?: CardTextAlignment;
+  
+  /**
+   * Alignment for footer text
+   * @default 'left'
+   */
+  footerAlignment?: CardTextAlignment;
 }
+
+// Complete Card props interface extending universal props
+export interface CardProps extends WithContainerProps<CardSpecificProps> {}

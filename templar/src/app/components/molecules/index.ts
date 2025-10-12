@@ -5,3 +5,30 @@ export type {
   NavigationTabProps,
   NavigationBrandProps 
 } from './Navigation';
+
+export { CollapsibleMenu } from './CollapsibleMenu';
+export type { 
+  CollapsibleMenuProps, 
+  CollapsibleMenuRef, 
+  CollapsibleMenuSize, 
+  CollapsibleMenuColor, 
+  CollapsibleMenuShape,
+  CollapsibleMenuPosition
+} from './CollapsibleMenu';
+
+export { InteractiveComponentDisplay } from './InteractiveComponentDisplay';
+export type {
+  InteractiveComponentDisplayProps,
+  InteractiveComponentDisplayRef,
+  PropControl,
+  PropControlGroup,
+  ControlType,
+} from './InteractiveComponentDisplay';
+export {
+  createUniversalControls,
+  generateCodeString,
+  getComponentName,
+} from './InteractiveComponentDisplay';
+
+export { ReadmeDisplay } from './ReadmeDisplay';
+export type { ReadmeDisplayProps } from './ReadmeDisplay';

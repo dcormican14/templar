@@ -2,16 +2,25 @@ export { ProgressIndicator } from './ProgressIndicator';
 export type { 
   ProgressIndicatorProps, 
   ProgressIndicatorSize, 
+  ProgressIndicatorColor,
   ProgressIndicatorVariant,
+  ProgressIndicatorShape,
   ProgressIndicatorType 
 } from './ProgressIndicator.types';
 export { 
-  getSizeValue, 
-  getColorValue, 
-  createSpinnerStyles,
-  createProgressBarStyles,
-  createProgressBarFillStyles,
-  createProgressBarTextStyles
+  getSizeConfig,
+  getColorVariables,
+  createProgressIndicatorContainerStyles,
+  getBarProgressStyles,
+  getProgressFillStyles,
+  getSpinnerStyles,
+  getCircularProgressStyles,
+  getCircularProgressSVGStyles,
+  getDotsProgressStyles,
+  getDotStyles,
+  getTextStyles,
+  getProgressTextStyles,
+  getCircularTextStyles
 } from './ProgressIndicator.styles';
 
 // Legacy exports for backward compatibility

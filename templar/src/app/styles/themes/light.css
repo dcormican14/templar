@@ -1,60 +1,104 @@
 /* Light Theme - Bright environments */
 [data-theme="light"] {
   /* Base colors */
-  --background: #eef0f2; /* antiflash-white */
-  --foreground: #171717; /* eerie-black */
+  --background: #eef0f2;
+  --background-hover: #dde1e6;
+  --background-accent: #d5d9e2;
+  --background-shadow: rgba(0, 0, 0, 0.1);
+  --background-disabled: #f5f6f7;
+  --background-border: #d5d9e2;
+  --background-font: #171717;
+  
+  --foreground: #171717;
+  --foreground-hover: #000000;
+  --foreground-accent: #3c4043;
+  --foreground-shadow: rgba(23, 23, 23, 0.1);
+  --foreground-disabled: #9aa0a6;
+  --foreground-border: #b5bbc8;
+  --foreground-font: #eef0f2;
   
   /* Primary colors */
-  --primary: #c30b4e; /* rose-red */
-  --primary-foreground: #ffffff; /* near white */
-  --primary-hover: #d43b6d; /* lighter rose-red */
+  --primary: #c30b4e;
+  --primary-background: #fce8f3;
+  --primary-foreground: #ffffff;
+  --primary-hover: #d43b6d;
+  --primary-accent: #a8084a;
+  --primary-shadow: rgba(195, 11, 78, 0.3);
+  --primary-disabled: #e8a4c4;
+  --primary-border: #d43b6d;
+  --primary-font: #ffffff;
   
   /* Secondary colors */
-  --secondary: #90caf9; /* light-sky-blue */
-  --secondary-foreground: #171717; /* deep neutral */
-  --secondary-hover: #add8ff; /* lighter blue */
-  
-  /* Accent colors */
-  --accent: #d5d9e2; /* platinum */
-  --accent-foreground: #171717; /* deep neutral */
-  
-  /* Border and dividers */
-  --border: #d5d9e2; /* platinum */
-  --border-hover: #b5bbc8; /* slightly darker platinum */
-  
-  /* Muted elements */
-  --muted: #d5d9e2; /* platinum */
-  --muted-foreground: #171717; /* deep neutral */
+  --secondary: #6cb9f8;
+  --secondary-background: #e6f4ff;
+  --secondary-foreground: #ffffff;
+  --secondary-hover: #add8ff;
+  --secondary-accent: #4285f4;
+  --secondary-shadow: rgba(108, 185, 248, 0.3);
+  --secondary-disabled: #b3d9f5;
+  --secondary-border: #4285f4;
+  --secondary-font: #ffffff;
   
   /* Success colors */
-  --success: #6ee7b7; /* soft mint green */
-  --success-foreground: #171717; /* deep neutral */
+  --success: #6ee7b7;
+  --success-background: #e6f7f1;
+  --success-foreground: #ffffff;
+  --success-hover: #8aedc7;
+  --success-accent: #4ade80;
+  --success-shadow: rgba(110, 231, 183, 0.3);
+  --success-disabled: #b7f3d6;
+  --success-border: #4ade80;
+  --success-font: #ffffff;
   
-  /* Warning colors (coral tone for brand harmony) */
-  --warning: #ff7f7f; /* warm pink-coral */
-  --warning-foreground: #171717; /* deep neutral */
+  /* Warning colors */
+  --warning: #ff7f7f;
+  --warning-background: #fff2f2;
+  --warning-foreground: #ffffff;
+  --warning-hover: #ff9999;
+  --warning-accent: #ff5757;
+  --warning-shadow: rgba(255, 127, 127, 0.3);
+  --warning-disabled: #ffbfbf;
+  --warning-border: #ff5757;
+  --warning-font: #ffffff;
   
-  /* Error colors (magenta for brand harmony) */
-  --error: #e84c88; /* magenta-red */
-  --error-foreground: #ffffff; /* near white */
+  /* Destructive colors */
+  --destructive: #e84c88;
+  --destructive-background: #fce8f3;
+  --destructive-foreground: #ffffff;
+  --destructive-hover: #ed70a0;
+  --destructive-accent: #dc2464;
+  --destructive-shadow: rgba(232, 76, 136, 0.3);
+  --destructive-disabled: #f4a6c4;
+  --destructive-border: #dc2464;
+  --destructive-font: #ffffff;
   
-  /* Info colors (brand blue) */
-  --info: #90caf9; /* light-sky-blue */
-  --info-foreground: #171717; /* deep neutral */
+  /* Info colors */
+  --info: #90caf9;
+  --info-background: #e6f4ff;
+  --info-foreground: #ffffff;
+  --info-hover: #add8ff;
+  --info-accent: #6bb6ff;
+  --info-shadow: rgba(144, 202, 249, 0.3);
+  --info-disabled: #c8e5fc;
+  --info-border: #6bb6ff;
+  --info-font: #ffffff;
   
-  /* Card and surface colors */
-  --card: #ffffff; /* pure white for clarity */
-  --card-foreground: #171717; /* deep neutral */
-  
-  /* Input colors */
-  --input: #ffffff; /* white */
-  --input-border: #d5d9e2; /* platinum */
-  --input-placeholder: #b5bbc8; /* softer platinum */
-  --input-foreground: #171717; /* deep neutral */
-  
-  /* Progress indicator colors */
-  --progress-track: #e5e5e5; /* light gray track */
-  --progress-track-text: #6b7280; /* steel-gray-3 for percentage text */
+  /* Legacy compatibility */
+  --accent: #d5d9e2;
+  --accent-foreground: #171717;
+  --border: #d5d9e2;
+  --border-hover: #b5bbc8;
+  --muted: #d5d9e2;
+  --muted-foreground: #171717;
+  --error: #e84c88;
+  --error-foreground: #ffffff;
+  --card: #ffffff;
+  --card-foreground: #171717;
+  --input: #ffffff;
+  --input-border: #d5d9e2;
+  --input-placeholder: #b5bbc8;
+  --progress-track: #e5e5e5;
+  --progress-track-text: #6b7280;
   
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);

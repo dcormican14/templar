@@ -62,13 +62,13 @@ NavigationBrand.displayName = 'NavigationBrand';
 
 // Tab Component
 const NavigationTab = forwardRef<HTMLButtonElement, NavigationTabProps>(
-  ({ tab, isActive, onSelect, size }, ref) => {
+  ({ tab, isActive, onSelect, size, color = 'primary', customColor }, ref) => {
     const cssVars = useCSSVariables();
     const [isHovered, setIsHovered] = useState(false);
-    
-    const tabStyles = createTabStyles(isActive, size, cssVars);
+
+    const tabStyles = createTabStyles(isActive, size, color, customColor, cssVars);
     const underlineStyles = createTabUnderlineStyles(isActive, cssVars);
-    const hoverStyles = isHovered && !isActive ? createTabHoverStyles(cssVars) : {};
+    const hoverStyles = isHovered && !isActive ? createTabHoverStyles(color, customColor, cssVars) : {};
     const hoverUnderlineStyles = isHovered && !isActive ? { width: '100%', opacity: 0.3 } : {};
 
     const handleClick = () => {
@@ -195,17 +195,47 @@ export const Navigation = forwardRef<HTMLElement, NavigationProps>(
     leadingContent,
     trailingContent,
     variant = 'default',
+    color = 'primary',
+    customColor,
     size = 'md',
     sticky = false,
     fullWidth = false,
     maxWidth,
     className,
     style,
+    // Filter out interactive config props that shouldn't be passed to DOM
+    disabled,
+    loading,
+    showBrand,
+    showBrandIcon,
+    tabCount,
+    showTabIcons,
+    showTabBadges,
+    tab1Label,
+    tab1Badge,
+    tab1Disabled,
+    tab2Label,
+    tab2Badge,
+    tab2Disabled,
+    tab3Label,
+    tab3Badge,
+    tab3Disabled,
+    tab4Label,
+    tab4Badge,
+    tab4Disabled,
+    tab5Label,
+    tab5Badge,
+    tab5Disabled,
+    showLeadingContent,
+    leadingContentType,
+    showTrailingContent,
+    trailingContentType,
+    _navigationComputed,
     ...props
   }, ref) => {
     const cssVars = useCSSVariables();
 
-    const navigationStyles = createNavigationStyles(variant, size, sticky, cssVars);
+    const navigationStyles = createNavigationStyles(variant, color, customColor, size, sticky, cssVars);
     const containerStyles = createContainerStyles(fullWidth, maxWidth);
     const contentAreaStyles = createContentAreaStyles();
 
@@ -269,6 +299,8 @@ export const Navigation = forwardRef<HTMLElement, NavigationProps>(
                       isActive={activeTab === tab.id}
                       onSelect={handleTabSelect}
                       size={size}
+                      color={color}
+                      customColor={customColor}
                     />
                     {/* Add vertical divider between tabs (not after the last one) */}
                     {index < tabs.length - 1 && (

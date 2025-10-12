@@ -2,59 +2,104 @@
 [data-theme="dark"] {
   /* Base colors */
   --background: #2c2f3e;
-  --foreground: #d7dae9; /* near white */
+  --background-hover: #3a3f53;
+  --background-accent: #323345;
+  --background-shadow: rgba(0, 0, 0, 0.8);
+  --background-disabled: #1f2029;
+  --background-border: #3a3f53;
+  --background-font: #d7dae9;
+  
+  --foreground: #d7dae9;
+  --foreground-hover: #ffffff;
+  --foreground-accent: #b8bcc8;
+  --foreground-shadow: rgba(215, 218, 233, 0.1);
+  --foreground-disabled: #6d7a8b;
+  --foreground-border: #4a5066;
+  --foreground-font: #2c2f3e;
   
   /* Primary colors */
-  --primary: #ff90e8; /* violet-web-color */
-  --primary-foreground: #323345; /* space-cadet (deep purple) */
+  --primary: #ff90e8;
+  --primary-background: #4a1844;
+  --primary-foreground: #ffffff;
   --primary-hover: #ffb3ed;
+  --primary-accent: #e066cc;
+  --primary-shadow: rgba(255, 144, 232, 0.3);
+  --primary-disabled: #664d63;
+  --primary-border: #b366a4;
+  --primary-font: #ffffff;
   
   /* Secondary colors */
-  --secondary: #90caf9; /* light-sky-blue */
-  --secondary-foreground: #323345; /* deep purple */
+  --secondary: #90caf9;
+  --secondary-background: #1a2332;
+  --secondary-foreground: #ffffff;
   --secondary-hover: #add8ff;
-  
-  /* Accent colors */
-  --accent: #ffb347; /* amber glow */
-  --accent-foreground: #323345; /* deep purple */
-  
-  /* Border and dividers */
-  --border: #3a3f53; /* charcoal */
-  --border-hover: #6d7a8b; /* slate mist */
-  
-  /* Muted elements */
-  --muted: #323345; /* space-cadet */
-  --muted-foreground: #ffffff; /* near white */
+  --secondary-accent: #6bb6ff;
+  --secondary-shadow: rgba(144, 202, 249, 0.3);
+  --secondary-disabled: #4a5f73;
+  --secondary-border: #6bb6ff;
+  --secondary-font: #ffffff;
   
   /* Success colors */
-  --success: #6ee7b7; /* soft mint green */
-  --success-foreground: #323345; /* deep purple */
+  --success: #6ee7b7;
+  --success-background: #1a2e23;
+  --success-foreground: #ffffff;
+  --success-hover: #8aedc7;
+  --success-accent: #4ade80;
+  --success-shadow: rgba(110, 231, 183, 0.3);
+  --success-disabled: #3d5447;
+  --success-border: #4ade80;
+  --success-font: #ffffff;
   
-  /* Warning colors (coral) */
-  --warning: #ff7f7f; /* warm pink-coral */
-  --warning-foreground: #323345; /* deep purple */
+  /* Warning colors */
+  --warning: #ff7f7f;
+  --warning-background: #332020;
+  --warning-foreground: #ffffff;
+  --warning-hover: #ff9999;
+  --warning-accent: #ff5757;
+  --warning-shadow: rgba(255, 127, 127, 0.3);
+  --warning-disabled: #664040;
+  --warning-border: #ff5757;
+  --warning-font: #ffffff;
   
-  /* Error colors (magenta) */
-  --error: #e84c88; /* magenta-red */
-  --error-foreground: #ffffff; /* near white */
+  /* Destructive colors */
+  --destructive: #e84c88;
+  --destructive-background: #3d1a2b;
+  --destructive-foreground: #ffffff;
+  --destructive-hover: #ed70a0;
+  --destructive-accent: #dc2464;
+  --destructive-shadow: rgba(232, 76, 136, 0.3);
+  --destructive-disabled: #5c3444;
+  --destructive-border: #dc2464;
+  --destructive-font: #ffffff;
   
-  /* Info colors (brand blue) */
-  --info: #90caf9; /* light-sky-blue */
-  --info-foreground: #323345; /* deep purple */
+  /* Info colors */
+  --info: #90caf9;
+  --info-background: #1a2332;
+  --info-foreground: #ffffff;
+  --info-hover: #add8ff;
+  --info-accent: #6bb6ff;
+  --info-shadow: rgba(144, 202, 249, 0.3);
+  --info-disabled: #4a5f73;
+  --info-border: #6bb6ff;
+  --info-font: #ffffff;
   
-  /* Card and surface colors */
+  /* Legacy compatibility */
+  --accent: #ffb347;
+  --accent-foreground: #323345;
+  --border: #3a3f53;
+  --border-hover: #6d7a8b;
+  --muted: #323345;
+  --muted-foreground: #ffffff;
+  --error: #e84c88;
+  --error-foreground: #ffffff;
   --card: #3a3f53;
-  --card-foreground: #ffffff; /* near white */
-  
-  /* Input colors */
+  --card-foreground: #ffffff;
   --input: #1f2029;
   --input-border: #3a3f53;
   --input-placeholder: #6d7a8b;
-  --input-foreground: #ffffff; /* near white */
-  
-  /* Progress indicator colors */
-  --progress-track: #4a5066; /* visible gray track on dark background */
-  --progress-track-text: #b8bcc8; /* light gray for percentage text */
+  --input-foreground: #ffffff;
+  --progress-track: #4a5066;
+  --progress-track-text: #b8bcc8;
   
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);

@@ -1,15 +1,38 @@
-export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'destructive';
-export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+import type { 
+  WithInteractiveProps, 
+  UniversalSize, 
+  UniversalColor, 
+  UniversalVariant, 
+  UniversalShape,
+  UniversalAnimationMode 
+} from '../types';
+
+// Component-specific type aliases (for backward compatibility)
+export type ButtonColor = UniversalColor;
+export type ButtonVariant = UniversalVariant;
+export type ButtonSize = UniversalSize;
+export type ButtonShape = UniversalShape;
+export type ButtonAnimationMode = UniversalAnimationMode;
 export type IconPosition = 'leading' | 'trailing';
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  loading?: boolean;
-  loadingKey?: string;
+// Component-specific props (not covered by universal props)
+export interface ButtonSpecificProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  /**
+   * Icon to display in the button
+   */
   icon?: React.ReactNode;
+  
+  /**
+   * Position of the icon relative to the text
+   * @default 'leading'
+   */
   iconPosition?: IconPosition;
-  fullWidth?: boolean;
-  rounded?: boolean;
+  
+  /**
+   * Async click handler for loading states
+   */
   onAsyncClick?: () => Promise<void>;
 }
+
+// Complete Button props interface extending universal props
+export interface ButtonProps extends WithInteractiveProps<ButtonSpecificProps> {}

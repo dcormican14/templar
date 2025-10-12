@@ -1,72 +1,5 @@
-'use client';
-
-import React from 'react';
-import { AuthProvider } from './AuthProvider';
-import { ThemeProvider } from './ThemeProvider';
-import { ToastProvider } from './ToastProvider';
-import { LoadingProvider } from './LoadingProvider';
-import { ModalProvider } from './ModalProvider';
-import { SettingsProvider } from './SettingsProvider';
-
-interface RoundTableProps {
-  children: React.ReactNode;
-  config?: {
-    auth?: {
-      storageKey?: string;
-    };
-    theme?: {
-      defaultTheme?: 'light' | 'dark' | 'high-contrast' | 'sepia-light' | 'solarized-dark' | 'system' | 'auto';
-      attribute?: string;
-      storageKey?: string;
-    };
-    toast?: {
-      maxToasts?: number;
-      defaultDuration?: number;
-    };
-    loading?: {
-      showGlobalSpinner?: boolean;
-    };
-    modal?: {
-      maxModals?: number;
-    };
-    settings?: {
-      storageKey?: string;
-      defaultSettings?: Partial<any>;
-    };
-  };
-}
-
-/**
- * Combined provider component that wraps your app with all Templar providers.
- * This creates a complete context ecosystem for modern React applications.
- */
-export function RoundTable({ children, config = {} }: RoundTableProps) {
-  return (
-    <SettingsProvider
-      storageKey={config.settings?.storageKey}
-      defaultSettings={config.settings?.defaultSettings}
-    >
-      <ThemeProvider
-        defaultTheme={config.theme?.defaultTheme}
-        attribute={config.theme?.attribute}
-        storageKey={config.theme?.storageKey}
-      >
-        <AuthProvider storageKey={config.auth?.storageKey}>
-          <LoadingProvider showGlobalSpinner={config.loading?.showGlobalSpinner}>
-            <ToastProvider
-              maxToasts={config.toast?.maxToasts}
-              defaultDuration={config.toast?.defaultDuration}
-            >
-              <ModalProvider maxModals={config.modal?.maxModals}>
-                {children}
-              </ModalProvider>
-            </ToastProvider>
-          </LoadingProvider>
-        </AuthProvider>
-      </ThemeProvider>
-    </SettingsProvider>
-  );
-}
+// Export the RoundTable provider (now reads from .mourn configuration)
+export { RoundTable } from './RoundTable';
 
 // Re-export all providers and hooks for individual use
 export { AuthProvider, useAuth } from './AuthProvider';
@@ -83,9 +16,19 @@ export {
 } from './SettingsProvider';
 export { useCSSVariables } from './useCSSVariables';
 
+// Re-export environment configuration utilities
+export {
+  EnvironmentProvider,
+  useEnvironment,
+  useMournConfig,
+  useProviderEnabled,
+  useProviderConfig,
+} from '../environment';
+
 // Re-export types
 export type { User, AuthContextType } from './AuthProvider';
 export type { Theme, ResolvedTheme, ThemeContextType, ThemeVariables } from './ThemeProvider';
 export type { Toast, ToastType } from './ToastProvider';
 export type { ModalConfig } from './ModalProvider';
 export type { AppSettings } from './SettingsProvider';
+export type { MournConfig } from '../environment';

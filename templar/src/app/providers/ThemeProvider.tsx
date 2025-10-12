@@ -2,8 +2,8 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-type Theme = 'light' | 'dark' | 'high-contrast' | 'sepia-light' | 'sepia-dark' | 'solarized-dark' | 'system' | 'auto';
-type ResolvedTheme = 'light' | 'dark' | 'high-contrast' | 'sepia-light' | 'sepia-dark' | 'solarized-dark';
+type Theme = 'light' | 'dark' | 'high-contrast' | 'sepia-light' | 'sepia-dark' | 'solarized-dark' | 'valor' | 'valor-dark' | 'system' | 'auto';
+type ResolvedTheme = 'light' | 'dark' | 'high-contrast' | 'sepia-light' | 'sepia-dark' | 'solarized-dark' | 'valor' | 'valor-dark';
 
 interface ThemeContextType {
   theme: Theme;
@@ -18,33 +18,104 @@ interface ThemeContextType {
 }
 
 interface ThemeVariables {
+  // Base colors
   background: string;
+  backgroundHover: string;
+  backgroundAccent: string;
+  backgroundShadow: string;
+  backgroundDisabled: string;
+  backgroundBorder: string;
+  backgroundFont: string;
+  
   foreground: string;
+  foregroundHover: string;
+  foregroundAccent: string;
+  foregroundShadow: string;
+  foregroundDisabled: string;
+  foregroundBorder: string;
+  foregroundFont: string;
+  
+  // Primary colors
   primary: string;
+  primaryBackground: string;
   primaryForeground: string;
   primaryHover: string;
+  primaryAccent: string;
+  primaryShadow: string;
+  primaryDisabled: string;
+  primaryBorder: string;
+  primaryFont: string;
+  
+  // Secondary colors
   secondary: string;
+  secondaryBackground: string;
   secondaryForeground: string;
   secondaryHover: string;
+  secondaryAccent: string;
+  secondaryShadow: string;
+  secondaryDisabled: string;
+  secondaryBorder: string;
+  secondaryFont: string;
+  
+  // Success colors
+  success: string;
+  successBackground: string;
+  successForeground: string;
+  successHover: string;
+  successAccent: string;
+  successShadow: string;
+  successDisabled: string;
+  successBorder: string;
+  successFont: string;
+  
+  // Warning colors
+  warning: string;
+  warningBackground: string;
+  warningForeground: string;
+  warningHover: string;
+  warningAccent: string;
+  warningShadow: string;
+  warningDisabled: string;
+  warningBorder: string;
+  warningFont: string;
+  
+  // Destructive colors
+  destructive: string;
+  destructiveBackground: string;
+  destructiveForeground: string;
+  destructiveHover: string;
+  destructiveAccent: string;
+  destructiveShadow: string;
+  destructiveDisabled: string;
+  destructiveBorder: string;
+  destructiveFont: string;
+  
+  // Info colors
+  info: string;
+  infoBackground: string;
+  infoForeground: string;
+  infoHover: string;
+  infoAccent: string;
+  infoShadow: string;
+  infoDisabled: string;
+  infoBorder: string;
+  infoFont: string;
+  
+  // Legacy compatibility
   accent: string;
   accentForeground: string;
   border: string;
   borderHover: string;
   muted: string;
   mutedForeground: string;
-  success: string;
-  successForeground: string;
-  warning: string;
-  warningForeground: string;
   error: string;
   errorForeground: string;
-  info: string;
-  infoForeground: string;
   card: string;
   cardForeground: string;
   input: string;
   inputBorder: string;
   inputPlaceholder: string;
+  inputForeground: string;
   shadowSm: string;
   shadow: string;
   shadowMd: string;
@@ -53,7 +124,7 @@ interface ThemeVariables {
   progressTrackText: string;
 }
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+export const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 interface ThemeProviderProps {
   children: React.ReactNode;
@@ -62,7 +133,7 @@ interface ThemeProviderProps {
   storageKey?: string;
 }
 
-const availableThemes: Theme[] = ['light', 'dark', 'high-contrast', 'sepia-light', 'sepia-dark', 'solarized-dark', 'system', 'auto'];
+const availableThemes: Theme[] = ['light', 'dark', 'high-contrast', 'sepia-light', 'sepia-dark', 'solarized-dark', 'valor', 'valor-dark', 'system', 'auto'];
 
 export function ThemeProvider({
   children,
@@ -86,33 +157,104 @@ export function ThemeProvider({
     if (typeof window === 'undefined') return;
     
     const variables: ThemeVariables = {
+      // Base colors
       background: getCSSVariable('background'),
+      backgroundHover: getCSSVariable('background-hover'),
+      backgroundAccent: getCSSVariable('background-accent'),
+      backgroundShadow: getCSSVariable('background-shadow'),
+      backgroundDisabled: getCSSVariable('background-disabled'),
+      backgroundBorder: getCSSVariable('background-border'),
+      backgroundFont: getCSSVariable('background-font'),
+      
       foreground: getCSSVariable('foreground'),
+      foregroundHover: getCSSVariable('foreground-hover'),
+      foregroundAccent: getCSSVariable('foreground-accent'),
+      foregroundShadow: getCSSVariable('foreground-shadow'),
+      foregroundDisabled: getCSSVariable('foreground-disabled'),
+      foregroundBorder: getCSSVariable('foreground-border'),
+      foregroundFont: getCSSVariable('foreground-font'),
+      
+      // Primary colors
       primary: getCSSVariable('primary'),
+      primaryBackground: getCSSVariable('primary-background'),
       primaryForeground: getCSSVariable('primary-foreground'),
       primaryHover: getCSSVariable('primary-hover'),
+      primaryAccent: getCSSVariable('primary-accent'),
+      primaryShadow: getCSSVariable('primary-shadow'),
+      primaryDisabled: getCSSVariable('primary-disabled'),
+      primaryBorder: getCSSVariable('primary-border'),
+      primaryFont: getCSSVariable('primary-font'),
+      
+      // Secondary colors
       secondary: getCSSVariable('secondary'),
+      secondaryBackground: getCSSVariable('secondary-background'),
       secondaryForeground: getCSSVariable('secondary-foreground'),
       secondaryHover: getCSSVariable('secondary-hover'),
+      secondaryAccent: getCSSVariable('secondary-accent'),
+      secondaryShadow: getCSSVariable('secondary-shadow'),
+      secondaryDisabled: getCSSVariable('secondary-disabled'),
+      secondaryBorder: getCSSVariable('secondary-border'),
+      secondaryFont: getCSSVariable('secondary-font'),
+      
+      // Success colors
+      success: getCSSVariable('success'),
+      successBackground: getCSSVariable('success-background'),
+      successForeground: getCSSVariable('success-foreground'),
+      successHover: getCSSVariable('success-hover'),
+      successAccent: getCSSVariable('success-accent'),
+      successShadow: getCSSVariable('success-shadow'),
+      successDisabled: getCSSVariable('success-disabled'),
+      successBorder: getCSSVariable('success-border'),
+      successFont: getCSSVariable('success-font'),
+      
+      // Warning colors
+      warning: getCSSVariable('warning'),
+      warningBackground: getCSSVariable('warning-background'),
+      warningForeground: getCSSVariable('warning-foreground'),
+      warningHover: getCSSVariable('warning-hover'),
+      warningAccent: getCSSVariable('warning-accent'),
+      warningShadow: getCSSVariable('warning-shadow'),
+      warningDisabled: getCSSVariable('warning-disabled'),
+      warningBorder: getCSSVariable('warning-border'),
+      warningFont: getCSSVariable('warning-font'),
+      
+      // Destructive colors
+      destructive: getCSSVariable('destructive'),
+      destructiveBackground: getCSSVariable('destructive-background'),
+      destructiveForeground: getCSSVariable('destructive-foreground'),
+      destructiveHover: getCSSVariable('destructive-hover'),
+      destructiveAccent: getCSSVariable('destructive-accent'),
+      destructiveShadow: getCSSVariable('destructive-shadow'),
+      destructiveDisabled: getCSSVariable('destructive-disabled'),
+      destructiveBorder: getCSSVariable('destructive-border'),
+      destructiveFont: getCSSVariable('destructive-font'),
+      
+      // Info colors
+      info: getCSSVariable('info'),
+      infoBackground: getCSSVariable('info-background'),
+      infoForeground: getCSSVariable('info-foreground'),
+      infoHover: getCSSVariable('info-hover'),
+      infoAccent: getCSSVariable('info-accent'),
+      infoShadow: getCSSVariable('info-shadow'),
+      infoDisabled: getCSSVariable('info-disabled'),
+      infoBorder: getCSSVariable('info-border'),
+      infoFont: getCSSVariable('info-font'),
+      
+      // Legacy compatibility
       accent: getCSSVariable('accent'),
       accentForeground: getCSSVariable('accent-foreground'),
       border: getCSSVariable('border'),
       borderHover: getCSSVariable('border-hover'),
       muted: getCSSVariable('muted'),
       mutedForeground: getCSSVariable('muted-foreground'),
-      success: getCSSVariable('success'),
-      successForeground: getCSSVariable('success-foreground'),
-      warning: getCSSVariable('warning'),
-      warningForeground: getCSSVariable('warning-foreground'),
       error: getCSSVariable('error'),
       errorForeground: getCSSVariable('error-foreground'),
-      info: getCSSVariable('info'),
-      infoForeground: getCSSVariable('info-foreground'),
       card: getCSSVariable('card'),
       cardForeground: getCSSVariable('card-foreground'),
       input: getCSSVariable('input'),
       inputBorder: getCSSVariable('input-border'),
       inputPlaceholder: getCSSVariable('input-placeholder'),
+      inputForeground: getCSSVariable('input-foreground'),
       shadowSm: getCSSVariable('shadow-sm'),
       shadow: getCSSVariable('shadow'),
       shadowMd: getCSSVariable('shadow-md'),
@@ -155,6 +297,8 @@ export function ThemeProvider({
       case 'sepia-light':
       case 'sepia-dark':
       case 'solarized-dark':
+      case 'valor':
+      case 'valor-dark':
         return theme;
       default:
         return 'light';
@@ -178,13 +322,13 @@ export function ThemeProvider({
     root.setAttribute(attribute, resolvedTheme);
     
     // Remove all theme classes first
-    root.classList.remove('light', 'dark', 'high-contrast', 'sepia-light', 'sepia-dark', 'solarized-dark');
-    
+    root.classList.remove('light', 'dark', 'high-contrast', 'sepia-light', 'sepia-dark', 'solarized-dark', 'valor', 'valor-dark');
+
     // Add the resolved theme class
     root.classList.add(resolvedTheme);
-    
+
     // Also handle dark mode class for Tailwind CSS compatibility
-    if (resolvedTheme === 'dark' || resolvedTheme === 'sepia-dark' || resolvedTheme === 'solarized-dark') {
+    if (resolvedTheme === 'dark' || resolvedTheme === 'sepia-dark' || resolvedTheme === 'solarized-dark' || resolvedTheme === 'valor-dark') {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
@@ -203,7 +347,7 @@ export function ThemeProvider({
       const root = document.documentElement;
       const newResolvedTheme = mediaQuery.matches ? 'dark' : 'light';
       root.setAttribute(attribute, newResolvedTheme);
-      root.classList.remove('light', 'dark', 'high-contrast', 'sepia-light', 'sepia-dark', 'solarized-dark');
+      root.classList.remove('light', 'dark', 'high-contrast', 'sepia-light', 'sepia-dark', 'solarized-dark', 'valor', 'valor-dark');
       root.classList.add(newResolvedTheme);
       root.classList.toggle('dark', newResolvedTheme === 'dark');
       setTimeout(updateThemeVariables, 0);
@@ -221,7 +365,7 @@ export function ThemeProvider({
       const root = document.documentElement;
       const newResolvedTheme = getAutoTheme();
       root.setAttribute(attribute, newResolvedTheme);
-      root.classList.remove('light', 'dark', 'high-contrast', 'sepia-light', 'sepia-dark', 'solarized-dark');
+      root.classList.remove('light', 'dark', 'high-contrast', 'sepia-light', 'sepia-dark', 'solarized-dark', 'valor', 'valor-dark');
       root.classList.add(newResolvedTheme);
       root.classList.toggle('dark', newResolvedTheme === 'dark');
       setTimeout(updateThemeVariables, 0);
@@ -282,6 +426,12 @@ export function useTheme() {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;
+}
+
+// Dedicated hook for CSS variables access (as mentioned in CSS_VARIABLES.md)
+export function useCSSVariables(): ThemeVariables {
+  const { themeVariables } = useTheme();
+  return themeVariables;
 }
 
 // Alias for backward compatibility

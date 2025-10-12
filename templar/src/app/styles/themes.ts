@@ -9,6 +9,8 @@ export const THEME_NAMES = {
   SEPIA: 'sepia',
   SEPIA_DARK: 'sepia-dark',
   SOLARIZED_DARK: 'solarized-dark',
+  VALOR: 'valor',
+  VALOR_DARK: 'valor-dark',
   SYSTEM: 'system',
   AUTO: 'auto',
 } as const;
@@ -73,6 +75,22 @@ export const THEME_REGISTRY: Record<ThemeName, ThemeInfo> = {
     cssFile: '/styles/themes/solarized-dark.css',
     isDeveloperFriendly: true,
   },
+  [THEME_NAMES.VALOR]: {
+    name: 'valor',
+    displayName: 'Valor',
+    description: 'A knightly cream theme inspired by medieval aesthetics',
+    category: 'light',
+    cssFile: '/styles/themes/valor.css',
+    isDeveloperFriendly: true,
+  },
+  [THEME_NAMES.VALOR_DARK]: {
+    name: 'valor-dark',
+    displayName: 'Valor Dark',
+    description: 'Navy blue dark mode complementing the rust-colored light theme',
+    category: 'dark',
+    cssFile: '/styles/themes/valor-dark.css',
+    isDeveloperFriendly: true,
+  },
   [THEME_NAMES.SYSTEM]: {
     name: 'system',
     displayName: 'System',
@@ -124,22 +142,6 @@ export function getComfortReadingThemes(): ThemeInfo[] {
 export function isDarkTheme(themeName: ThemeName): boolean {
   const theme = getThemeInfo(themeName);
   return theme?.category === 'dark' || themeName === 'solarized-dark';
-}
-
-/**
- * Get the opposite theme (light <-> dark)
- */
-export function getOppositeTheme(themeName: ThemeName): ThemeName {
-  switch (themeName) {
-    case 'light':
-      return 'dark';
-    case 'dark':
-      return 'light';
-    case 'solarized-dark':
-      return 'light';
-    default:
-      return themeName; // Return same for special themes
-  }
 }
 
 /**

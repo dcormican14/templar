@@ -1,0 +1,109 @@
+/* Valor Dark Theme - Navy blue base complementing rust-colored light mode */
+[data-theme="valor-dark"] {
+  /* Base colors */
+  --background: #1E2A3A; /* Deep Navy */
+  --background-hover: #243244;
+  --background-accent: #2C3A4C; /* Medium Navy */
+  --background-shadow: rgba(30, 42, 58, 0.8);
+  --background-disabled: #16202A;
+  --background-border: #243244;
+  --background-font: #F4E8D2; /* Warm cream text */
+
+  --foreground: #F4E8D2;
+  --foreground-hover: #FFFFFF;
+  --foreground-accent: #D4C4A8; /* Light brown */
+  --foreground-shadow: rgba(244, 232, 210, 0.1);
+  --foreground-disabled: #8B7D6B;
+  --foreground-border: #3C4A5C;
+  --foreground-font: #1E2A3A;
+
+  /* Primary colors (Rust accents) */
+  --primary: #A63C2E; /* Rusted Red */
+  --primary-background: #2C1F1E; /* Dark rust background */
+  --primary-foreground: #F4E8D2;
+  --primary-hover: #C24C3B;
+  --primary-accent: #903B19; /* Deep rust */
+  --primary-shadow: rgba(166, 60, 46, 0.3);
+  --primary-disabled: #3C2A26;
+  --primary-border: #C24C3B;
+  --primary-font: #F4E8D2;
+
+  /* Secondary colors (Golden accents) */
+  --secondary: #D9A441; /* Golden Wheat */
+  --secondary-background: #2A241C; /* Dark gold background */
+  --secondary-foreground: #F4E8D2;
+  --secondary-hover: #E6B95E;
+  --secondary-accent: #B8842D;
+  --secondary-shadow: rgba(217, 164, 65, 0.3);
+  --secondary-disabled: #3C3428;
+  --secondary-border: #E6B95E;
+  --secondary-font: #F4E8D2;
+
+  /* Success colors */
+  --success: #4ADE80;
+  --success-background: #1A2E23; /* Dark green */
+  --success-foreground: #F4E8D2;
+  --success-hover: #6EE7B7;
+  --success-accent: #22C55E;
+  --success-shadow: rgba(74, 222, 128, 0.3);
+  --success-disabled: #243034;
+  --success-border: #22C55E;
+  --success-font: #F4E8D2;
+
+  /* Warning colors (Amber tones) */
+  --warning: #E67E22;
+  --warning-background: #2A1F1A; /* Dark amber */
+  --warning-foreground: #F4E8D2;
+  --warning-hover: #F39C46;
+  --warning-accent: #CC5C00;
+  --warning-shadow: rgba(230, 126, 34, 0.3);
+  --warning-disabled: #342922;
+  --warning-border: #CC5C00;
+  --warning-font: #F4E8D2;
+
+  /* Destructive colors (Deep crimson) */
+  --destructive: #B22234;
+  --destructive-background: #2A1A1F; /* Dark crimson */
+  --destructive-foreground: #F4E8D2;
+  --destructive-hover: #D42C44;
+  --destructive-accent: #8A1C27;
+  --destructive-shadow: rgba(178, 34, 52, 0.3);
+  --destructive-disabled: #342027;
+  --destructive-border: #D42C44;
+  --destructive-font: #F4E8D2;
+
+  /* Info colors (Steel blue) */
+  --info: #3C82E3;
+  --info-background: #1F2832; /* Dark steel blue */
+  --info-foreground: #F4E8D2;
+  --info-hover: #5699F0;
+  --info-accent: #2B5BBF;
+  --info-shadow: rgba(60, 130, 227, 0.3);
+  --info-disabled: #273040;
+  --info-border: #2B5BBF;
+  --info-font: #F4E8D2;
+
+  /* Legacy compatibility */
+  --accent: #D9A441; /* Golden Wheat */
+  --accent-foreground: #F4E8D2;
+  --border: #243244;
+  --border-hover: #3C4A5C;
+  --muted: #2C3A4C;
+  --muted-foreground: #F4E8D2;
+  --error: #B22234;
+  --error-foreground: #F4E8D2;
+  --card: #243244;
+  --card-foreground: #F4E8D2;
+  --input: #16202A;
+  --input-border: #243244;
+  --input-placeholder: #8B7D6B;
+  --input-foreground: #F4E8D2;
+  --progress-track: #3C4A5C;
+  --progress-track-text: #D4C4A8;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.5), 0 1px 2px -1px rgb(0 0 0 / 0.5);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+}
