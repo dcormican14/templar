@@ -109,7 +109,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>((allProps, ref)
   const isometricButtonStyles = useMemo(() => hasIsometricAnimation ? getIsometricButtonStyles(getColorVariables(color, customColor, cssVars), variant, animationsEnabled) : {}, [hasIsometricAnimation, color, customColor, cssVars, variant, animationsEnabled]);
   const isometricShadowStyles = useMemo(() => hasIsometricAnimation ? getIsometricShadowStyles(getColorVariables(color, customColor, cssVars), variant, shape, sizeStyles, animationsEnabled) : {}, [hasIsometricAnimation, color, customColor, cssVars, variant, shape, sizeStyles, animationsEnabled]);
 
-  const combinedStyles: React.CSSProperties = {
+  const combinedStyles: any = {
     ...baseStyles,
     ...sizeStyles,
     ...variantStyles,
@@ -142,8 +142,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>((allProps, ref)
       const spinnerColor = color;
       
       return (
-        <ProgressIndicator 
-          type="spinner"
+        <ProgressIndicator
+          type="circular"
           size={spinnerSize}
           color={spinnerColor}
         />

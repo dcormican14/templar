@@ -20,7 +20,7 @@ import {
 
 export const RadioButton = forwardRef<RadioButtonRef, RadioButtonProps>((allProps, ref) => {
   // Extract form props and component-specific props
-  const [formProps, componentProps] = extractFormProps(allProps);
+  const [formProps, componentProps] = extractFormProps(allProps as any);
 
   // Destructure form props with defaults
   const {
@@ -277,7 +277,6 @@ export const RadioButtonGroup: React.FC<RadioButtonGroupProps> = ({
   size = UNIVERSAL_DEFAULTS.size,
   color = UNIVERSAL_DEFAULTS.color,
   customColor,
-  variant = UNIVERSAL_DEFAULTS.variant,
   shape = UNIVERSAL_DEFAULTS.shape,
   disabled = false,
   error = false,
@@ -322,7 +321,6 @@ export const RadioButtonGroup: React.FC<RadioButtonGroupProps> = ({
           size={size}
           color={color}
           customColor={customColor}
-          variant={variant}
           shape={shape}
           label={option.label}
           header={option.header}

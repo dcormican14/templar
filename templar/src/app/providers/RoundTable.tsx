@@ -41,12 +41,10 @@ function RoundTableInner({ children }: { children: React.ReactNode }) {
   let content = children;
 
   // Wrap with ModalProvider if enabled
-  if (modalEnabled) {
+  if (modalEnabled && config.providers.modal) {
     content = (
       <ModalProvider
         maxModals={config.providers.modal.maxModals}
-        closeOnOverlayClick={config.providers.modal.closeOnOverlayClick}
-        closeOnEscape={config.providers.modal.closeOnEscape}
       >
         {content}
       </ModalProvider>
@@ -54,12 +52,11 @@ function RoundTableInner({ children }: { children: React.ReactNode }) {
   }
 
   // Wrap with ToastProvider if enabled
-  if (toastEnabled) {
+  if (toastEnabled && config.providers.toast) {
     content = (
       <ToastProvider
         maxToasts={config.providers.toast.maxToasts}
         defaultDuration={config.providers.toast.defaultDuration}
-        defaultPosition={config.providers.toast.defaultPosition}
       >
         {content}
       </ToastProvider>
@@ -67,11 +64,10 @@ function RoundTableInner({ children }: { children: React.ReactNode }) {
   }
 
   // Wrap with LoadingProvider if enabled
-  if (loadingEnabled) {
+  if (loadingEnabled && config.providers.loading) {
     content = (
       <LoadingProvider
         showGlobalSpinner={config.providers.loading.showGlobalSpinner}
-        minLoadingTime={config.providers.loading.minLoadingTime}
       >
         {content}
       </LoadingProvider>
@@ -79,7 +75,7 @@ function RoundTableInner({ children }: { children: React.ReactNode }) {
   }
 
   // Wrap with AuthProvider if enabled
-  if (authEnabled) {
+  if (authEnabled && config.providers.auth) {
     content = (
       <AuthProvider storageKey={config.providers.auth.storageKey}>
         {content}
@@ -88,13 +84,12 @@ function RoundTableInner({ children }: { children: React.ReactNode }) {
   }
 
   // Wrap with ThemeProvider if enabled
-  if (themeEnabled) {
+  if (themeEnabled && config.providers.theme) {
     content = (
       <ThemeProvider
         defaultTheme={config.providers.theme.defaultTheme}
         attribute={config.providers.theme.attribute}
         storageKey={config.providers.theme.storageKey}
-        availableThemes={config.providers.theme.availableThemes}
       >
         {content}
       </ThemeProvider>
@@ -102,11 +97,11 @@ function RoundTableInner({ children }: { children: React.ReactNode }) {
   }
 
   // Wrap with SettingsProvider if enabled (outermost)
-  if (settingsEnabled) {
+  if (settingsEnabled && config.providers.settings) {
     content = (
       <SettingsProvider
         storageKey={config.providers.settings.storageKey}
-        defaultSettings={config.providers.settings.defaultSettings}
+        defaultSettings={config.providers.settings.defaultSettings as any}
       >
         {content}
       </SettingsProvider>

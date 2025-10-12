@@ -56,7 +56,6 @@ const DynamicRadioButtonDemo: React.FC<any> = (props) => {
       onChange={setSelectedValue}
       options={options}
       color={props.color}
-      variant={props.variant}
       size={props.size}
       shape={props.shape}
       disabled={props.disabled}
@@ -103,7 +102,7 @@ export const RadioButtonConfig = {
       const optionLabels = ['First', 'Second', 'Third', 'Fourth', 'Fifth'];
 
       const optionsArray = Array.from({ length: optionCount }, (_, i) => {
-        const option = {
+        const option: any = {
           value: `option${i + 1}`,
           label: `${optionLabels[i]} Option`,
         };

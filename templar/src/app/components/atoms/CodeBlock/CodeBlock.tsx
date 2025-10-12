@@ -62,8 +62,6 @@ export const CodeBlock = forwardRef<HTMLElement, CodeBlockProps>((allProps, ref)
     syntaxHighlighting = true,
     inline = false,
     onCopy,
-    showLineNumbers, // Legacy prop that should not be passed to DOM
-    code, // Legacy prop that should not be passed to DOM
     ...restProps
   } = componentProps;
     // Hooks

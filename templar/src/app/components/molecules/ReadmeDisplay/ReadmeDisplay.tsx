@@ -40,7 +40,7 @@ export function ReadmeDisplay({ content, loading = false, className, style }: Re
 
   // Parse and render markdown text with inline formatting
   const parseInlineText = (text: string) => {
-    const parts: (string | JSX.Element)[] = [];
+    const parts: (string | React.ReactElement)[] = [];
     let currentIndex = 0;
     let partIndex = 0;
 
@@ -92,8 +92,8 @@ export function ReadmeDisplay({ content, loading = false, className, style }: Re
         parts.push(
           <code 
             key={`code-${partIndex++}`}
-            style={{ 
-              backgroundColor: cssVars.backgroundSecondary,
+            style={{
+              backgroundColor: cssVars.muted,
               color: cssVars.foreground,
               padding: '2px 4px',
               borderRadius: '4px',
@@ -128,14 +128,14 @@ export function ReadmeDisplay({ content, loading = false, className, style }: Re
           alignItems: 'center',
           gap: '16px'
         }}>
-          <ProgressIndicator variant="circle" size="lg" color="primary" />
+          <ProgressIndicator type="circular" size="lg" color="primary" />
           <p style={{ color: cssVars.foregroundAccent }}>Loading documentation...</p>
         </div>
       );
     }
 
     const lines = content.split('\n');
-    const elements: JSX.Element[] = [];
+    const elements: React.ReactElement[] = [];
     let inCodeBlock = false;
     let codeBlockContent: string[] = [];
     let codeBlockLanguage = '';
@@ -314,7 +314,7 @@ export function ReadmeDisplay({ content, loading = false, className, style }: Re
         );
       } else if (line.trim().startsWith('<details>')) {
         // Handle collapsible details sections
-        let detailsContent: JSX.Element[] = [];
+        let detailsContent: React.ReactElement[] = [];
         let summary = '';
         let j = i + 1;
 

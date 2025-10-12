@@ -110,8 +110,7 @@ export const createBadgeContent = (
         <TypewriterText
           text={children}
           speed={50}
-          startDelay={100}
-          enabled={animationsEnabled || false}
+          disabled={!animationsEnabled}
         />
       );
     }

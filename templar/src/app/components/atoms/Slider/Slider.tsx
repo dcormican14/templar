@@ -84,7 +84,7 @@ export const Slider = forwardRef<SliderRef, SliderProps>((allProps, ref) => {
   } = componentProps;
 
   // Handle empty or invalid step values
-  const step = rawStep === '' || rawStep === null || rawStep === undefined || isNaN(Number(rawStep)) || Number(rawStep) <= 0 ? 1 : Number(rawStep);
+  const step = rawStep === null || rawStep === undefined || isNaN(Number(rawStep)) || Number(rawStep) <= 0 ? 1 : Number(rawStep);
   
   // Get CSS variables and settings
   const cssVars = useCSSVariables();

@@ -362,10 +362,10 @@ export const getIsometricButtonStyles = (
 export const getIsometricShadowStyles = (
   color: any,
   variant: string,
-  shape: string,
+  shape: ButtonShape,
   size: any,
   animationsEnabled: boolean
-): React.CSSProperties => {
+): any => {
   // Ghost and glassmorphic variants don't support isometric animation
   if (variant === 'ghost' || variant === 'glassmorphic') {
     return { display: 'none' };

@@ -5,7 +5,7 @@ import { ComponentsPage } from '../pages';
 
 export default function Components() {
   return (
-    <PageWrapper activeTab="components" useScrollbar={false}>
+    <PageWrapper activeTab="components">
       <ComponentsPage />
     </PageWrapper>
   );

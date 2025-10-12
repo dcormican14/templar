@@ -410,7 +410,7 @@ export function mergeMournConfig(
         ...DEFAULT_MOURN_CONFIG.providers.settings,
         ...userConfig.providers?.settings,
         defaultSettings: {
-          ...DEFAULT_MOURN_CONFIG.providers.settings.defaultSettings,
+          ...DEFAULT_MOURN_CONFIG.providers.settings?.defaultSettings,
           ...userConfig.providers?.settings?.defaultSettings,
         },
       },
