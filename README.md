@@ -1,6 +1,6 @@
-# Templar
+# Mournshire
 
-**Templar** is a modern React component library built with Next.js 15, featuring a comprehensive atomic design system with advanced theming capabilities. It provides a complete set of reusable UI components following atomic design principles with built-in accessibility, multiple theme support, and provider-based state management.
+**Mournshire** (previously Templar) is a modern React component library built with Next.js 15, featuring a comprehensive atomic design system with advanced theming capabilities. It provides a complete set of reusable UI components following atomic design principles with built-in accessibility, multiple theme support, and provider-based state management.
 
 ## ✨ Features
 
@@ -105,7 +105,7 @@ templar/
 
 ## 🎨 Theming System
 
-Templar includes a sophisticated theming system with 6 built-in themes:
+Mournshire includes a sophisticated theming system with 6 built-in themes:
 
 - **Light**: Clean, minimal light theme
 - **Dark**: Modern dark theme
