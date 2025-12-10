@@ -19,7 +19,7 @@ const config: Partial<MournConfig> = {
     },
     theme: {
       enabled: true,
-      defaultTheme: 'system',
+      defaultTheme: 'valor-dark',
       attribute: 'data-theme',
       storageKey: 'templar-theme',
       includeCustomThemes: true,

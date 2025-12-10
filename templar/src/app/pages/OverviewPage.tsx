@@ -142,28 +142,27 @@ export function OverviewPage() {
 
       // Use window height for consistent viewport calculation
       const viewportHeight = window.innerHeight;
+      const viewportTop = 0;
       const viewportMiddle = viewportHeight / 2;
 
       let currentSection = 'overview';
 
-      // Check which section the middle of the viewport is in
-      // The section's top should be above viewport middle, and bottom should be below it
-
-      // Contact section (check this first since it's last)
-      if (contactSection) {
+      // Check which section is closest to the top of the viewport
+      if (contactSection && docsSection) {
         const contactRect = contactSection.getBoundingClientRect();
-        // If section spans across the viewport middle
-        if (contactRect.top <= viewportMiddle && contactRect.bottom >= viewportMiddle) {
+        const docsRect = docsSection.getBoundingClientRect();
+
+        // If contact section has entered the viewport (top is above middle)
+        if (contactRect.top <= viewportMiddle) {
           currentSection = 'contact';
         }
-      }
-
-      // Docs section (only if we haven't found contact)
-      if (currentSection === 'overview' && docsSection) {
-        const docsRect = docsSection.getBoundingClientRect();
-        // If section spans across the viewport middle
-        if (docsRect.top <= viewportMiddle && docsRect.bottom >= viewportMiddle) {
+        // If docs section has entered the viewport (top is above middle), but contact hasn't
+        else if (docsRect.top <= viewportMiddle) {
           currentSection = 'docs';
+        }
+        // Otherwise we're still in overview
+        else {
+          currentSection = 'overview';
         }
       }
 
@@ -239,7 +238,10 @@ export function OverviewPage() {
           alt="Knight Background"
           style={{
             width: '100%',
+            minHeight: '100vh',
             height: 'auto',
+            objectFit: 'cover',
+            objectPosition: 'center top',
             transform: `translateY(-${imageOffset}px)`,
             transition: isDragging ? 'none' : 'transform 0.1s ease-out'
           }}
@@ -272,14 +274,14 @@ export function OverviewPage() {
           <div style={{ position: 'relative', marginBottom: '24px', opacity: Math.max(0, 1 - scrollY / 400) }}>
             {/* Navy shadow text */}
             <h1 style={{
-              fontSize: '6rem',
+              fontSize: window.innerWidth < 768 ? '3.5rem' : '6rem',
               fontWeight: 'bold',
               color: '#1E2A3A',
               letterSpacing: '0.02em',
               lineHeight: '1.1',
               position: 'absolute',
-              top: '8px',
-              left: '8px',
+              top: window.innerWidth < 768 ? '5px' : '8px',
+              left: window.innerWidth < 768 ? '5px' : '8px',
               zIndex: 1,
               whiteSpace: 'nowrap'
             }}>
@@ -287,7 +289,7 @@ export function OverviewPage() {
             </h1>
             {/* Main text */}
             <h1 style={{
-              fontSize: '6rem',
+              fontSize: window.innerWidth < 768 ? '3.5rem' : '6rem',
               fontWeight: 'bold',
               color: cssVars.foreground,
               textShadow: `2px 2px 4px ${cssVars.backgroundShadow}`,
@@ -315,14 +317,15 @@ export function OverviewPage() {
           </p>
         </div>
 
-        {/* Knight image */}
+        {/* Knight image - hidden on mobile */}
         <img
           src="/assets/knight_1.gif"
           alt="Knight"
           style={{
             width: '250px',
             height: 'auto',
-            opacity: Math.max(0, 1 - scrollY / 400)
+            opacity: Math.max(0, 1 - scrollY / 400),
+            display: window.innerWidth < 768 ? 'none' : 'block'
           }}
         />
       </div>
@@ -444,32 +447,34 @@ export function OverviewPage() {
             }}>
               <div style={{ marginBottom: '48px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '16px' }}>
-                  <div style={{ position: 'relative' }}>
-                    {/* Icon shadow */}
-                    <Icon name="BookSolid" size="xl" style={{
-                      color: cssVars.foreground,
-                      position: 'absolute',
-                      top: '3px',
-                      left: '3px',
-                      zIndex: 1
-                    }} />
-                    {/* Main icon */}
-                    <Icon name="BookSolid" size="xl" style={{
-                      color: cssVars.info,
-                      position: 'relative',
-                      zIndex: 2
-                    }} />
-                  </div>
+                  {window.innerWidth >= 768 && (
+                    <div style={{ position: 'relative' }}>
+                      {/* Icon shadow */}
+                      <Icon name="BookSolid" size="xl" style={{
+                        color: cssVars.foreground,
+                        position: 'absolute',
+                        top: '3px',
+                        left: '3px',
+                        zIndex: 1
+                      }} />
+                      {/* Main icon */}
+                      <Icon name="BookSolid" size="xl" style={{
+                        color: cssVars.info,
+                        position: 'relative',
+                        zIndex: 2
+                      }} />
+                    </div>
+                  )}
                   <div style={{ position: 'relative' }}>
                     {/* Navy shadow text */}
                     <h1 style={{
-                      fontSize: '3.5rem',
+                      fontSize: window.innerWidth < 768 ? '2.5rem' : '3.5rem',
                       fontWeight: 'bold',
                       color: '#1E2A3A',
                       letterSpacing: '0.02em',
                       position: 'absolute',
-                      top: '4px',
-                      left: '4px',
+                      top: window.innerWidth < 768 ? '3px' : '4px',
+                      left: window.innerWidth < 768 ? '3px' : '4px',
                       margin: 0,
                       zIndex: 1
                     }}>
@@ -477,7 +482,7 @@ export function OverviewPage() {
                     </h1>
                     {/* Main text */}
                     <h1 style={{
-                      fontSize: '3.5rem',
+                      fontSize: window.innerWidth < 768 ? '2.5rem' : '3.5rem',
                       fontWeight: 'bold',
                       color: cssVars.foreground,
                       textShadow: `2px 2px 4px ${cssVars.backgroundShadow}`,
@@ -672,32 +677,34 @@ export function OverviewPage() {
             }}>
               <div style={{ marginBottom: '48px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '16px' }}>
-                  <div style={{ position: 'relative' }}>
-                    {/* Icon shadow */}
-                    <Icon name="ChatLinesSolid" size="xl" style={{
-                      color: cssVars.foreground,
-                      position: 'absolute',
-                      top: '3px',
-                      left: '3px',
-                      zIndex: 1
-                    }} />
-                    {/* Main icon */}
-                    <Icon name="ChatLinesSolid" size="xl" style={{
-                      color: cssVars.secondary,
-                      position: 'relative',
-                      zIndex: 2
-                    }} />
-                  </div>
+                  {window.innerWidth >= 768 && (
+                    <div style={{ position: 'relative' }}>
+                      {/* Icon shadow */}
+                      <Icon name="ChatLinesSolid" size="xl" style={{
+                        color: cssVars.foreground,
+                        position: 'absolute',
+                        top: '3px',
+                        left: '3px',
+                        zIndex: 1
+                      }} />
+                      {/* Main icon */}
+                      <Icon name="ChatLinesSolid" size="xl" style={{
+                        color: cssVars.secondary,
+                        position: 'relative',
+                        zIndex: 2
+                      }} />
+                    </div>
+                  )}
                   <div style={{ position: 'relative' }}>
                     {/* Navy shadow text */}
                     <h1 style={{
-                      fontSize: '3.5rem',
+                      fontSize: window.innerWidth < 768 ? '2.5rem' : '3.5rem',
                       fontWeight: 'bold',
                       color: '#1E2A3A',
                       letterSpacing: '0.02em',
                       position: 'absolute',
-                      top: '4px',
-                      left: '4px',
+                      top: window.innerWidth < 768 ? '3px' : '4px',
+                      left: window.innerWidth < 768 ? '3px' : '4px',
                       margin: 0,
                       zIndex: 1,
                       whiteSpace: 'nowrap'
@@ -706,7 +713,7 @@ export function OverviewPage() {
                     </h1>
                     {/* Main text */}
                     <h1 style={{
-                      fontSize: '3.5rem',
+                      fontSize: window.innerWidth < 768 ? '2.5rem' : '3.5rem',
                       fontWeight: 'bold',
                       color: cssVars.foreground,
                       textShadow: `2px 2px 4px ${cssVars.backgroundShadow}`,

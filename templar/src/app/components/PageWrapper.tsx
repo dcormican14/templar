@@ -16,8 +16,17 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
   const [mounted, setMounted] = useState(false);
   const [displayTab, setDisplayTab] = useState(activeTab);
   const router = useRouter();
-  const { theme, cycleTheme } = useSafeTheme();
+  const { theme, setTheme } = useSafeTheme();
   const cssVars = useSafeCSSVariables();
+
+  // Custom theme cycling for demo website - only cycles through selected themes
+  const allowedThemes = ['sepia-dark', 'solarized-dark', 'valor-dark', 'dark', 'high-contrast'] as const;
+
+  const cycleTheme = () => {
+    const currentIndex = allowedThemes.indexOf(theme as any);
+    const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % allowedThemes.length;
+    setTheme(allowedThemes[nextIndex]);
+  };
 
   // Ensure component is mounted on client side
   useEffect(() => {
@@ -151,13 +160,13 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
       case 'high-contrast':
         return 'High Contrast';
       case 'sepia-dark':
-        return 'Sepia Dark';
+        return 'Sepia';
       case 'sepia-light':
         return 'Sepia Light';
       case 'solarized-dark':
-        return 'Solarized Dark';
+        return 'Solarized';
       case 'valor-dark':
-        return 'Valor Dark';
+        return 'Valor';
       default:
         return themeName.charAt(0).toUpperCase() + themeName.slice(1);
     }
@@ -187,7 +196,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
       )}
 
       {/* Navigation Bar */}
-      <div className="fixed top-0 left-0 right-0 z-40">
+      <div className="fixed top-0 left-0 right-0" style={{ zIndex: 9999 }}>
         <Navigation
           icon={<Icon name="HomeShield" size="lg" />}
           appName="Templar"
