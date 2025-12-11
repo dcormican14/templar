@@ -136,7 +136,7 @@ export function FallingLeaves({
           src={leaf.image}
           alt="Falling leaf"
           onError={(e) => console.error('Failed to load leaf image:', leaf.image)}
-          onLoad={() => console.log('Loaded leaf image:', leaf.image)}
+          onLoad={() => {/* console.log('Loaded leaf image:', leaf.image) */}}
           style={{
             position: 'absolute',
             left: `${leaf.x}px`,

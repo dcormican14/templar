@@ -235,7 +235,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
             variant="ghost"
             color="secondary"
             size="md"
-            visibility="hidden"
+            visibility="always"
             disabled={false}
             smoothScrolling={true}
             height="100%"

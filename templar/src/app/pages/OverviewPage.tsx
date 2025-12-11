@@ -188,26 +188,26 @@ export function OverviewPage() {
   const backgroundSpeed = maxImageMovement / targetScrollForFullReveal;
   const imageOffset = Math.min(scrollY * backgroundSpeed, maxImageMovement);
 
-  // Debug logging
-  React.useEffect(() => {
-    if (scrollY > 0 && scrollY % 500 < 50) {
-      console.log('Parallax Debug:', {
-        scrollY,
-        imageHeight,
-        calculatedImageHeight,
-        effectiveImageHeight,
-        viewportHeight,
-        viewportWidth,
-        maxImageMovement,
-        H,
-        targetScrollForFullReveal,
-        backgroundSpeed,
-        imageOffset,
-        imageRevealPercentage: (imageOffset / maxImageMovement * 100).toFixed(2) + '%',
-        clampingActive: scrollY * backgroundSpeed > maxImageMovement
-      });
-    }
-  }, [scrollY, maxImageMovement, imageOffset, H, targetScrollForFullReveal, backgroundSpeed]);
+  // Debug logging - disabled
+  // React.useEffect(() => {
+  //   if (scrollY > 0 && scrollY % 500 < 50) {
+  //     console.log('Parallax Debug:', {
+  //       scrollY,
+  //       imageHeight,
+  //       calculatedImageHeight,
+  //       effectiveImageHeight,
+  //       viewportHeight,
+  //       viewportWidth,
+  //       maxImageMovement,
+  //       H,
+  //       targetScrollForFullReveal,
+  //       backgroundSpeed,
+  //       imageOffset,
+  //       imageRevealPercentage: (imageOffset / maxImageMovement * 100).toFixed(2) + '%',
+  //       clampingActive: scrollY * backgroundSpeed > maxImageMovement
+  //     });
+  //   }
+  // }, [scrollY, maxImageMovement, imageOffset, H, targetScrollForFullReveal, backgroundSpeed]);
 
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative', margin: 0, padding: 0 }}>
@@ -257,7 +257,7 @@ export function OverviewPage() {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        zIndex: 10,
+        zIndex: 5,
         pointerEvents: 'none',
         padding: '80px 32px',
         gap: '48px'
@@ -336,7 +336,7 @@ export function OverviewPage() {
         color="secondary"
         size="md"
         visibility="hover"
-        smoothScrolling={!isDragging}
+        smoothScrolling={false}
         orientation="vertical"
         style={{ position: 'absolute', top: 0, left: 0, zIndex: 50 }}
         onScroll={handleScroll}
