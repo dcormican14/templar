@@ -523,7 +523,7 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
   const webkitCSS = useMemo(() => {
     if (!supportsWebKitScrollbar()) return '';
     return createWebkitScrollbarCSS(uniqueId, webkitStyles);
-  }, [uniqueId, color, customColor, variant, size, shape, orientation, visibility, alignment, disabled, animationsEnabled]);
+  }, [uniqueId, color, customColor, variant, size, shape, orientation, visibility, alignment, disabled, animationsEnabled, cssVars]);
 
   useEffect(() => {
     const isWebKitSupported = supportsWebKitScrollbar();
