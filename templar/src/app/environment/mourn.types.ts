@@ -9,7 +9,7 @@
 export type ThemeName =
   | 'light'
   | 'dark'
-  | 'high-contrast'
+  | 'contrast'
   | 'sepia-light'
   | 'sepia-dark'
   | 'solarized-dark'

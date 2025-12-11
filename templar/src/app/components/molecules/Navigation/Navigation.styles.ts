@@ -200,9 +200,28 @@ export const createNavigationStyles = (
   };
 };
 
+// Brand-specific size mapping - always larger than navigation tabs
+export const getBrandSizeStyles = (size: NavigationProps['size']) => {
+  switch (size) {
+    case 'sm':
+      return {
+        fontSize: '18px',
+      };
+    case 'lg':
+      return {
+        fontSize: '24px',
+      };
+    case 'md':
+    default:
+      return {
+        fontSize: '20px',
+      };
+  }
+};
+
 export const createBrandStyles = (size: NavigationProps['size'], cssVars: any) => {
-  const sizeStyles = getSizeStyles('lg'); // Use large size for brand
-  
+  const brandSizeStyles = getBrandSizeStyles(size);
+
   return {
     display: 'flex',
     alignItems: 'center',
@@ -212,10 +231,9 @@ export const createBrandStyles = (size: NavigationProps['size'], cssVars: any) =
     padding: '8px 12px',
     textDecoration: 'none',
     color: cssVars.primary,
-    fontSize: sizeStyles.fontSize,
+    fontSize: brandSizeStyles.fontSize,
     fontWeight: '600',
     height: '100%',
-    minHeight: sizeStyles.height,
   } as React.CSSProperties;
 };
 

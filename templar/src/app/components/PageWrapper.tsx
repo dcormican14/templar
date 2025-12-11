@@ -20,7 +20,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
   const cssVars = useSafeCSSVariables();
 
   // Custom theme cycling for demo website - only cycles through selected themes
-  const allowedThemes = ['sepia-dark', 'solarized-dark', 'valor-dark', 'dark', 'high-contrast'] as const;
+  const allowedThemes = ['sepia-dark', 'solarized-dark', 'valor-dark', 'dark', 'contrast'] as const;
 
   const cycleTheme = () => {
     const currentIndex = allowedThemes.indexOf(theme as any);
@@ -138,7 +138,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
         return 'SunLight';
       case 'dark':
         return 'HalfMoon';
-      case 'high-contrast':
+      case 'contrast':
         return 'Lens';
       case 'sepia-light':
         return 'Lamp';
@@ -157,7 +157,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
 
   const getThemeLabel = (themeName: string) => {
     switch (themeName) {
-      case 'high-contrast':
+      case 'contrast':
         return 'High Contrast';
       case 'sepia-dark':
         return 'Sepia';
@@ -199,7 +199,8 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
       <div className="fixed top-0 left-0 right-0" style={{ zIndex: 9999 }}>
         <Navigation
           icon={<Icon name="HomeShield" size="lg" />}
-          appName="Templar"
+          appName="Mournshire Design"
+          onBrandClick={() => router.push('/')}
           tabs={tabs}
           activeTab={displayTab}
           onTabChange={handleTabChange}
@@ -222,32 +223,38 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
       </div>
 
       {/* Main content */}
-      <Scrollbar
-        height="calc(100vh - 48px)"
-        variant="ghost"
-        color="secondary"
-        size="md"
-        visibility="hover"
-        smoothScrolling={true}
-        style={{ marginTop: '48px' }}
-      >
-        {activeTab === 'overview' ? (
-          // Full width and height for overview page
-          <div style={{ width: '100vw', height: '100vh', margin: 0, padding: 0 }}>
-            {children}
-          </div>
-        ) : activeTab === 'components' || activeTab === 'environment' ? (
-          // Full width for components and environment pages (have their own side menu layout)
-          <div style={{ width: '100vw', height: '100%', margin: 0, padding: 0 }}>
-            {children}
-          </div>
-        ) : (
-          // Container for other pages
-          <main className="container mx-auto px-6 py-8">
-            {children}
-          </main>
-        )}
-      </Scrollbar>
+      {activeTab === 'overview' ? (
+        // Overview page has its own scrolling system with parallax - don't wrap in Scrollbar
+        <div style={{ marginTop: '48px', height: 'calc(100vh - 48px)', width: '100%' }}>
+          {children}
+        </div>
+      ) : (
+        // Other pages use PageWrapper's Scrollbar
+        <div className="flex flex-col" style={{ marginTop: '48px', height: 'calc(100vh - 48px)' }}>
+          <Scrollbar
+            variant="ghost"
+            color="secondary"
+            size="md"
+            visibility="hidden"
+            disabled={false}
+            smoothScrolling={true}
+            height="100%"
+            width="100%"
+          >
+            {activeTab === 'components' || activeTab === 'environment' ? (
+              // Full width for components and environment pages (have their own side menu layout)
+              <div style={{ width: '100%', margin: 0, padding: 0 }}>
+                {children}
+              </div>
+            ) : (
+              // Container for other pages
+              <main className="container mx-auto px-6 py-8">
+                {children}
+              </main>
+            )}
+          </Scrollbar>
+        </div>
+      )}
       
       {/* Floating Theme Switcher */}
       <div className="fixed bottom-6 right-6 z-50">

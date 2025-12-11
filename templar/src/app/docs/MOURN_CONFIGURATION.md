@@ -434,8 +434,8 @@ module.exports = {
   providers: {
     theme: {
       enabled: true,
-      defaultTheme: 'high-contrast',
-      availableThemes: ['high-contrast', 'light', 'dark'],
+      defaultTheme: 'contrast',
+      availableThemes: ['contrast', 'light', 'dark'],
     },
     settings: {
       enabled: true,

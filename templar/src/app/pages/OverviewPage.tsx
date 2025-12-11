@@ -17,19 +17,17 @@ const AnimatedCard: React.FC<AnimatedCardProps> = ({ children, delay = 0, scroll
   const cardRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    if (cardRef.current) {
+    if (cardRef.current && !isVisible) {
       const rect = cardRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;
 
-      // Card is visible when its top is within viewport
-      // Card becomes invisible when it scrolls past the top
+      // Card becomes visible when its top is within viewport
+      // Once visible, stay visible (no flickering)
       if (rect.top < windowHeight * 0.8 && rect.bottom > 0) {
         setIsVisible(true);
-      } else if (rect.top > windowHeight || rect.bottom < -100) {
-        setIsVisible(false);
       }
     }
-  }, [scrollY]);
+  }, [scrollY, isVisible]);
 
   return (
     <div
@@ -212,7 +210,7 @@ export function OverviewPage() {
   }, [scrollY, maxImageMovement, imageOffset, H, targetScrollForFullReveal, backgroundSpeed]);
 
   return (
-    <div style={{ width: '100vw', height: '100vh', position: 'relative', margin: 0, padding: 0 }}>
+    <div style={{ width: '100%', height: '100%', position: 'relative', margin: 0, padding: 0 }}>
       {/* Falling leaves effect */}
       <FallingLeaves
         leafCount={5}
@@ -332,15 +330,15 @@ export function OverviewPage() {
 
       {/* Scrollable content overlay */}
       <Scrollbar
-        height="100vh"
-        width="100vw"
+        height="100%"
+        width="100%"
         variant="ghost"
         color="secondary"
         size="md"
         visibility="hover"
         smoothScrolling={!isDragging}
         orientation="vertical"
-        style={{ position: 'relative', zIndex: 50 }}
+        style={{ position: 'absolute', top: 0, left: 0, zIndex: 50 }}
         onScroll={handleScroll}
         onScrollStart={handleScrollStart}
         onScrollEnd={handleScrollEnd}
@@ -376,11 +374,6 @@ export function OverviewPage() {
                   size="lg"
                   shape="round"
                   color="secondary"
-                  style={{
-                    backgroundColor: `${cssVars.background}E6`,
-                    backdropFilter: 'blur(20px)',
-                    border: `1px solid ${cssVars.border}80`
-                  }}
                 >
                   <div style={{ padding: '32px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
@@ -409,11 +402,6 @@ export function OverviewPage() {
                   size="lg"
                   shape="round"
                   color="info"
-                  style={{
-                    backgroundColor: `${cssVars.background}E6`,
-                    backdropFilter: 'blur(20px)',
-                    border: `1px solid ${cssVars.border}80`
-                  }}
                 >
                   <div style={{ padding: '32px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
@@ -515,11 +503,6 @@ export function OverviewPage() {
                     size="lg"
                     shape="round"
                     color="secondary"
-                    style={{
-                      backgroundColor: `${cssVars.background}CC`,
-                      backdropFilter: 'blur(20px)',
-                      border: `1px solid ${cssVars.border}80`
-                    }}
                   >
                     <div style={{ padding: '32px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
@@ -548,11 +531,6 @@ export function OverviewPage() {
                     size="lg"
                     shape="round"
                     color="primary"
-                    style={{
-                      backgroundColor: `${cssVars.background}CC`,
-                      backdropFilter: 'blur(20px)',
-                      border: `1px solid ${cssVars.border}80`
-                    }}
                   >
                     <div style={{ padding: '32px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
@@ -576,11 +554,6 @@ export function OverviewPage() {
                     size="lg"
                     shape="round"
                     color="secondary"
-                    style={{
-                      backgroundColor: `${cssVars.background}CC`,
-                      backdropFilter: 'blur(20px)',
-                      border: `1px solid ${cssVars.border}80`
-                    }}
                   >
                     <div style={{ padding: '32px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
@@ -609,11 +582,6 @@ export function OverviewPage() {
                     size="lg"
                     shape="round"
                     color="primary"
-                    style={{
-                      backgroundColor: `${cssVars.background}CC`,
-                      backdropFilter: 'blur(20px)',
-                      border: `1px solid ${cssVars.border}80`
-                    }}
                   >
                     <div style={{ padding: '32px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
@@ -644,11 +612,6 @@ export function OverviewPage() {
                     size="lg"
                     shape="round"
                     color="info"
-                    style={{
-                      backgroundColor: `${cssVars.background}CC`,
-                      backdropFilter: 'blur(20px)',
-                      border: `1px solid ${cssVars.border}80`
-                    }}
                   >
                     <div style={{ padding: '32px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
@@ -749,11 +712,6 @@ export function OverviewPage() {
                     color="primary"
                     clickable={true}
                     animationMode="parallax"
-                    style={{
-                      backgroundColor: `${cssVars.background}CC`,
-                      backdropFilter: 'blur(20px)',
-                      border: `1px solid ${cssVars.border}80`
-                    }}
                     onClick={() => window.open('https://github.com/dcormican14/templar', '_blank')}
                   >
                     <div style={{ padding: '32px' }}>
@@ -786,11 +744,6 @@ export function OverviewPage() {
                     color="destructive"
                     clickable={true}
                     animationMode="parallax"
-                    style={{
-                      backgroundColor: `${cssVars.background}CC`,
-                      backdropFilter: 'blur(20px)',
-                      border: `1px solid ${cssVars.border}80`
-                    }}
                     onClick={() => window.open('https://www.npmjs.com/package/mournshire', '_blank')}
                   >
                     <div style={{ padding: '32px' }}>
@@ -822,11 +775,6 @@ export function OverviewPage() {
                     size="lg"
                     shape="round"
                     color="info"
-                    style={{
-                      backgroundColor: `${cssVars.background}CC`,
-                      backdropFilter: 'blur(20px)',
-                      border: `1px solid ${cssVars.border}80`
-                    }}
                   >
                     <div style={{ padding: '32px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
@@ -856,11 +804,6 @@ export function OverviewPage() {
                     size="lg"
                     shape="round"
                     color="secondary"
-                    style={{
-                      backgroundColor: `${cssVars.background}CC`,
-                      backdropFilter: 'blur(20px)',
-                      border: `1px solid ${cssVars.border}80`
-                    }}
                   >
                     <div style={{ padding: '32px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
@@ -884,11 +827,6 @@ export function OverviewPage() {
                     size="lg"
                     shape="round"
                     color="primary"
-                    style={{
-                      backgroundColor: `${cssVars.background}CC`,
-                      backdropFilter: 'blur(20px)',
-                      border: `1px solid ${cssVars.border}80`
-                    }}
                   >
                     <div style={{ padding: '32px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>

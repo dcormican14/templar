@@ -404,17 +404,15 @@ export const Navigation = forwardRef<HTMLElement, NavigationProps>(
               top: '100%',
               left: 0,
               right: 0,
-              backgroundColor: `${cssVars.background}E6`,
+              backgroundColor: cssVars.getColorWithOpacity('background', 0.9),
               backdropFilter: 'blur(20px)',
               WebkitBackdropFilter: 'blur(20px)',
-              borderTop: `1px solid ${cssVars.border}80`,
-              boxShadow: `0 8px 16px ${cssVars.backgroundShadow}40`,
+              borderTop: `1px solid ${cssVars.getColorWithOpacity('border', 0.5)}`,
+              boxShadow: `0 8px 16px ${cssVars.getColorWithOpacity('background-shadow', 0.25)}`,
               zIndex: 10000,
               maxHeight: '70vh',
               overflowY: 'auto',
-              pointerEvents: 'auto',
-              animation: 'dropdownSlideInAttached 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
-              transformOrigin: 'top center'
+              pointerEvents: 'auto'
             }}
           >
             {tabs.map((tab) => (

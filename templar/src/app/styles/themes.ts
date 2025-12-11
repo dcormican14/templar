@@ -5,7 +5,7 @@
 export const THEME_NAMES = {
   LIGHT: 'light',
   DARK: 'dark',
-  HIGH_CONTRAST: 'high-contrast',
+  HIGH_CONTRAST: 'contrast',
   SEPIA: 'sepia',
   SEPIA_DARK: 'sepia-dark',
   SOLARIZED_DARK: 'solarized-dark',
@@ -44,11 +44,11 @@ export const THEME_REGISTRY: Record<ThemeName, ThemeInfo> = {
     cssFile: '/styles/themes/dark.css',
   },
   [THEME_NAMES.HIGH_CONTRAST]: {
-    name: 'high-contrast',
+    name: 'contrast',
     displayName: 'High Contrast',
     description: 'Maximum readability for low-vision users',
     category: 'special',
-    cssFile: '/styles/themes/high-contrast.css',
+    cssFile: '/styles/themes/contrast.css',
     isAccessibility: true,
   },
   [THEME_NAMES.SEPIA]: {

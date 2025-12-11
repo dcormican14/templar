@@ -1,7 +1,7 @@
 /* High Contrast Theme - Accessibility Focused */
-[data-theme="high-contrast"] {
+[data-theme="contrast"] {
   /* Base colors */
-  --background: #000000;
+  --background: #0d0d0d;
   --background-hover: #1a1a1a;
   --background-accent: #0d0d0d;
   --background-shadow: rgba(255, 255, 255, 0.8);

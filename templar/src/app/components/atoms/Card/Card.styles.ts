@@ -119,27 +119,34 @@ export const getVariantStyles = (
         ...baseStyles,
       };
     case 'glassmorphic':
-      // Create reflection gradient lines using the hover color with transparency
-      const reflectionColor = colors.hover || colors.main || '#ffffff';
-      const topReflectionGradient = `linear-gradient(135deg, transparent 0%, ${reflectionColor}20 20%, ${reflectionColor}15 25%, transparent 35%)`;
-      const bottomReflectionGradient = `linear-gradient(135deg, transparent 45%, ${reflectionColor}25 55%, ${reflectionColor}20 65%, transparent 80%)`;
-      
+      // Helper function to convert hex to rgba
+      const hexToRgba = (hex: string, alpha: number): string => {
+        if (!hex || !hex.startsWith('#')) return `rgba(0, 0, 0, ${alpha})`;
+        const cleanHex = hex.slice(1);
+        const r = parseInt(cleanHex.substr(0, 2), 16);
+        const g = parseInt(cleanHex.substr(2, 2), 16);
+        const b = parseInt(cleanHex.substr(4, 2), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      };
+
+      // Use theme background color with opacity for darker translucent effect
+      const backgroundWithOpacity = hexToRgba(cssVars.background, 0.85);
+      const borderWithOpacity = hexToRgba(cssVars.border, 0.5);
+
       return {
-        background: `
-          ${topReflectionGradient},
-          ${bottomReflectionGradient},
-          rgba(255, 255, 255, 0.1)
-        `,
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)', // Safari support
+        backgroundColor: backgroundWithOpacity,
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)', // Safari support
         color: colors.main,
-        borderTopColor: 'rgba(255, 255, 255, 0.2)',
-        borderRightColor: 'rgba(255, 255, 255, 0.2)',
-        borderBottomColor: 'rgba(255, 255, 255, 0.2)',
-        borderLeftColor: 'rgba(255, 255, 255, 0.2)',
-        boxShadow: `0 8px 32px 0 ${colors.main}40`, // Use card color with transparency for shadow
+        borderTopColor: borderWithOpacity,
+        borderRightColor: borderWithOpacity,
+        borderBottomColor: borderWithOpacity,
+        borderLeftColor: borderWithOpacity,
+        boxShadow: `0 8px 32px 0 rgba(0, 0, 0, 0.3)`,
         position: 'relative',
         overflow: 'hidden',
+        transform: 'translateZ(0)', // Force GPU acceleration
+        willChange: 'auto', // Let browser optimize
         ...baseStyles,
       };
     default:

@@ -38,20 +38,21 @@ body {
 @keyframes dropdownSlideInAttached {
   0% {
     opacity: 0;
-    clip-path: inset(0 0 100% 0);
-    transform: translateY(-10px);
+    transform: translateY(-8px) scaleY(0.95);
   }
-  60% {
+  50% {
+    opacity: 0.8;
+  }
+  70% {
     opacity: 1;
-    clip-path: inset(0 0 0 0);
+    transform: translateY(0) scaleY(1);
   }
-  80% {
-    transform: translateY(5px);
+  85% {
+    transform: translateY(2px) scaleY(1.01);
   }
   100% {
     opacity: 1;
-    clip-path: inset(0 0 0 0);
-    transform: translateY(0);
+    transform: translateY(0) scaleY(1);
   }
 }
 

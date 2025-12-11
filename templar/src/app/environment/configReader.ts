@@ -149,7 +149,7 @@ export function validateMournConfig(config: any): string[] {
       const validThemes = [
         'light',
         'dark',
-        'high-contrast',
+        'contrast',
         'sepia-light',
         'sepia-dark',
         'solarized-dark',
