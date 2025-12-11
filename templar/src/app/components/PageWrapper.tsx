@@ -216,7 +216,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
               fontSize: '14px',
               fontWeight: '500'
             }}>
-              v1.2.1
+              v1.2.2
             </div>
           }
         />

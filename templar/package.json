@@ -1,6 +1,6 @@
 {
   "name": "mournshire",
-  "version": "0.1.1",
+  "version": "1.2.2",
   "description": "A React component library with atomic design, advanced theming, and .mourn configuration",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -66,7 +66,7 @@
   "bugs": {
     "url": "https://github.com/dcorm/templar/issues"
   },
-  "homepage": "https://github.com/dcorm/templar#readme",
+  "homepage": "https://mournshire.vercel.app/overview",
   "peerDependencies": {
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0",

@@ -1,4 +1,5 @@
-import React22, { createContext, forwardRef, useState, useEffect, useMemo, useRef, useLayoutEffect, useCallback, useImperativeHandle, useId, useContext, isValidElement, cloneElement } from 'react';
+import React21, { createContext, forwardRef, useState, useEffect, useMemo, useRef, useLayoutEffect, useCallback, useImperativeHandle, useId, useContext, isValidElement, cloneElement } from 'react';
+import { jsxs, Fragment, jsx } from 'react/jsx-runtime';
 import Tilt from 'react-parallax-tilt';
 import * as IconoirIcons from 'iconoir-react';
 import { createPortal } from 'react-dom';
@@ -145,7 +146,7 @@ function AuthProvider({
     updateUser,
     refreshAuth
   };
-  return /* @__PURE__ */ React22.createElement(AuthContext.Provider, { value }, children);
+  return /* @__PURE__ */ jsx(AuthContext.Provider, { value, children });
 }
 function useAuth() {
   const context = useContext(AuthContext);
@@ -155,7 +156,7 @@ function useAuth() {
   return context;
 }
 var ThemeContext = createContext(void 0);
-var availableThemes = ["light", "dark", "high-contrast", "sepia-light", "sepia-dark", "solarized-dark", "valor", "valor-dark", "system", "auto"];
+var availableThemes = ["light", "dark", "contrast", "sepia-light", "sepia-dark", "solarized-dark", "valor", "valor-dark", "system", "auto"];
 function ThemeProvider({
   children,
   defaultTheme = "system",
@@ -293,7 +294,7 @@ function ThemeProvider({
         return getAutoTheme();
       case "light":
       case "dark":
-      case "high-contrast":
+      case "contrast":
       case "sepia-light":
       case "sepia-dark":
       case "solarized-dark":
@@ -315,7 +316,7 @@ function ThemeProvider({
     if (!mounted) return;
     const root = document.documentElement;
     root.setAttribute(attribute, resolvedTheme);
-    root.classList.remove("light", "dark", "high-contrast", "sepia-light", "sepia-dark", "solarized-dark", "valor", "valor-dark");
+    root.classList.remove("light", "dark", "contrast", "sepia-light", "sepia-dark", "solarized-dark", "valor", "valor-dark");
     root.classList.add(resolvedTheme);
     if (resolvedTheme === "dark" || resolvedTheme === "sepia-dark" || resolvedTheme === "solarized-dark" || resolvedTheme === "valor-dark") {
       root.classList.add("dark");
@@ -331,7 +332,7 @@ function ThemeProvider({
       const root = document.documentElement;
       const newResolvedTheme = mediaQuery.matches ? "dark" : "light";
       root.setAttribute(attribute, newResolvedTheme);
-      root.classList.remove("light", "dark", "high-contrast", "sepia-light", "sepia-dark", "solarized-dark", "valor", "valor-dark");
+      root.classList.remove("light", "dark", "contrast", "sepia-light", "sepia-dark", "solarized-dark", "valor", "valor-dark");
       root.classList.add(newResolvedTheme);
       root.classList.toggle("dark", newResolvedTheme === "dark");
       setTimeout(updateThemeVariables, 0);
@@ -345,7 +346,7 @@ function ThemeProvider({
       const root = document.documentElement;
       const newResolvedTheme = getAutoTheme();
       root.setAttribute(attribute, newResolvedTheme);
-      root.classList.remove("light", "dark", "high-contrast", "sepia-light", "sepia-dark", "solarized-dark", "valor", "valor-dark");
+      root.classList.remove("light", "dark", "contrast", "sepia-light", "sepia-dark", "solarized-dark", "valor", "valor-dark");
       root.classList.add(newResolvedTheme);
       root.classList.toggle("dark", newResolvedTheme === "dark");
       setTimeout(updateThemeVariables, 0);
@@ -372,7 +373,7 @@ function ThemeProvider({
     setTheme(availableThemes[nextIndex]);
   };
   if (!mounted) {
-    return /* @__PURE__ */ React22.createElement("div", { style: { visibility: "hidden" } }, children);
+    return /* @__PURE__ */ jsx("div", { style: { visibility: "hidden" }, children });
   }
   const value = {
     theme,
@@ -384,7 +385,7 @@ function ThemeProvider({
     getCSSVariable,
     themeVariables
   };
-  return /* @__PURE__ */ React22.createElement(ThemeContext.Provider, { value }, children);
+  return /* @__PURE__ */ jsx(ThemeContext.Provider, { value, children });
 }
 function useTheme() {
   const context = useContext(ThemeContext);
@@ -1227,27 +1228,27 @@ var getIsometricShadowStyles = (color, variant, shape, size, animationsEnabled) 
 };
 var renderIcon = (iconElement, buttonSize) => {
   if (!iconElement) return null;
-  if (React22.isValidElement(iconElement)) {
-    return React22.cloneElement(iconElement, {
+  if (React21.isValidElement(iconElement)) {
+    return React21.cloneElement(iconElement, {
       size: getIconSize(buttonSize)
     });
   }
   return iconElement;
 };
-var createTextContainer = (children) => /* @__PURE__ */ React22.createElement("span", { style: {
+var createTextContainer = (children) => /* @__PURE__ */ jsx("span", { style: {
   flex: 1,
   display: "flex",
   justifyContent: "center",
   alignItems: "center"
-} }, children);
+}, children });
 var createCenteredContent = (icon, iconPosition, buttonSize, children) => {
   const hasChildren = Boolean(children && (typeof children === "string" ? children.trim() : children));
   if (!hasChildren) {
-    return /* @__PURE__ */ React22.createElement("span", { style: {
+    return /* @__PURE__ */ jsx("span", { style: {
       display: "flex",
       alignItems: "center",
       justifyContent: "center"
-    } }, renderIcon(icon, buttonSize));
+    }, children: renderIcon(icon, buttonSize) });
   }
   const getSpacing = (size) => {
     const spacingMap = {
@@ -1260,12 +1261,16 @@ var createCenteredContent = (icon, iconPosition, buttonSize, children) => {
     return spacingMap[size];
   };
   const spacing = getSpacing(buttonSize);
-  return /* @__PURE__ */ React22.createElement("span", { style: {
+  return /* @__PURE__ */ jsxs("span", { style: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     gap: spacing
-  } }, iconPosition === "leading" && renderIcon(icon, buttonSize), /* @__PURE__ */ React22.createElement("span", null, children), iconPosition === "trailing" && renderIcon(icon, buttonSize));
+  }, children: [
+    iconPosition === "leading" && renderIcon(icon, buttonSize),
+    /* @__PURE__ */ jsx("span", { children }),
+    iconPosition === "trailing" && renderIcon(icon, buttonSize)
+  ] });
 };
 
 // src/app/components/atoms/ProgressIndicator/ProgressIndicator.styles.ts
@@ -1742,8 +1747,6 @@ var getCircularTextStyles = (size, color, customColor, cssVars) => {
     pointerEvents: "none"
   };
 };
-
-// src/app/components/atoms/ProgressIndicator/ProgressIndicator.tsx
 var ProgressIndicator = forwardRef((allProps, ref) => {
   var _b;
   const [containerProps, componentProps] = extractContainerProps(allProps);
@@ -1842,7 +1845,8 @@ var ProgressIndicator = forwardRef((allProps, ref) => {
       const barStyles = getBarProgressStyles(color, customColor, variant, size, shape, width, disabled, animationsEnabled, cssVars);
       const fillStyles = getProgressFillStyles(color, customColor, variant, size, shape, percentage, striped, stripedAnimation, indeterminate, animationsEnabled, cssVars);
       const textStyles = getProgressTextStyles(size, color, customColor, cssVars);
-      return /* @__PURE__ */ React22.createElement(React22.Fragment, null, animationsEnabled && /* @__PURE__ */ React22.createElement("style", { jsx: true, global: true }, `
+      return /* @__PURE__ */ jsxs(Fragment, { children: [
+        animationsEnabled && /* @__PURE__ */ jsx("style", { jsx: true, global: true, children: `
               @keyframes progress-indeterminate {
                 0% { left: 0%; }
                 100% { left: 70%; }
@@ -1851,29 +1855,36 @@ var ProgressIndicator = forwardRef((allProps, ref) => {
                 from { background-position: 1rem 0; }
                 to { background-position: 0 0; }
               }
-            `), /* @__PURE__ */ React22.createElement(
-        "div",
-        __spreadValues({
-          ref,
-          className,
-          style: combinedStyles,
-          role: "progressbar",
-          "aria-label": accessibilityLabel,
-          "aria-valuenow": value,
-          "aria-valuemin": 0,
-          "aria-valuemax": max,
-          id,
-          "data-testid": dataTestId
-        }, restProps),
-        /* @__PURE__ */ React22.createElement("div", { style: barStyles }, /* @__PURE__ */ React22.createElement("div", { style: fillStyles }), (showPercentage || showValue) && /* @__PURE__ */ React22.createElement("div", { style: textStyles }, showValue ? `${value}/${max}` : `${Math.round(percentage)}%`))
-      ));
+            ` }),
+        /* @__PURE__ */ jsx(
+          "div",
+          __spreadProps(__spreadValues({
+            ref,
+            className,
+            style: combinedStyles,
+            role: "progressbar",
+            "aria-label": accessibilityLabel,
+            "aria-valuenow": value,
+            "aria-valuemin": 0,
+            "aria-valuemax": max,
+            id,
+            "data-testid": dataTestId
+          }, restProps), {
+            children: /* @__PURE__ */ jsxs("div", { style: barStyles, children: [
+              /* @__PURE__ */ jsx("div", { style: fillStyles }),
+              (showPercentage || showValue) && /* @__PURE__ */ jsx("div", { style: textStyles, children: showValue ? `${value}/${max}` : `${Math.round(percentage)}%` })
+            ] })
+          })
+        )
+      ] });
     }
     case "circular": {
       if (indeterminate) {
         const circularStyles2 = getCircularProgressStyles(color, customColor, variant, size, percentage, disabled, animationsEnabled, cssVars);
         const svgStyles2 = getCircularIndeterminateProgressSVGStyles(color, customColor, variant, size, animationsEnabled, cssVars);
         const textStyles2 = getCircularTextStyles(size, color, customColor, cssVars);
-        return /* @__PURE__ */ React22.createElement(React22.Fragment, null, animationsEnabled && /* @__PURE__ */ React22.createElement("style", { jsx: true, global: true }, `
+        return /* @__PURE__ */ jsxs(Fragment, { children: [
+          animationsEnabled && /* @__PURE__ */ jsx("style", { jsx: true, global: true, children: `
                 @keyframes progress-circular-indeterminate {
                   0% {
                     transform: rotate(-90deg);
@@ -1882,59 +1893,68 @@ var ProgressIndicator = forwardRef((allProps, ref) => {
                     transform: rotate(270deg);
                   }
                 }
-              `), /* @__PURE__ */ React22.createElement(
-          "div",
-          __spreadValues({
-            ref,
-            className,
-            style: __spreadValues(__spreadValues({}, combinedStyles), circularStyles2),
-            role: "status",
-            "aria-label": accessibilityLabel,
-            id,
-            "data-testid": dataTestId
-          }, restProps),
-          /* @__PURE__ */ React22.createElement("svg", { style: svgStyles2.svg, viewBox: "0 0 36 36" }, svgStyles2.gradientDefs && /* @__PURE__ */ React22.createElement("defs", null, /* @__PURE__ */ React22.createElement(
-            "linearGradient",
-            {
-              id: svgStyles2.gradientDefs.gradientId,
-              x1: "0%",
-              y1: "0%",
-              x2: "100%",
-              y2: "0%"
-            },
-            svgStyles2.gradientDefs.stops.map((stop, index) => /* @__PURE__ */ React22.createElement(
-              "stop",
-              {
-                key: index,
-                offset: stop.offset,
-                stopColor: stop.stopColor,
-                stopOpacity: stop.stopOpacity
-              }
-            ))
-          )), /* @__PURE__ */ React22.createElement(
-            "path",
-            {
-              style: svgStyles2.track,
-              d: "M18,2.0845 a 16,16 0 0,1 0,32 a 16,16 0 0,1 0,-32"
-            }
-          ), /* @__PURE__ */ React22.createElement(
-            "path",
-            {
-              style: svgStyles2.progress,
-              d: "M18,2.0845 a 16,16 0 0,1 0,32 a 16,16 0 0,1 0,-32"
-            }
-          )),
-          (showPercentage || showValue) && /* @__PURE__ */ React22.createElement("div", { style: textStyles2 }, showValue ? `${actualValue}/${max}` : `${Math.round(percentage)}%`)
-        ));
+              ` }),
+          /* @__PURE__ */ jsxs(
+            "div",
+            __spreadProps(__spreadValues({
+              ref,
+              className,
+              style: __spreadValues(__spreadValues({}, combinedStyles), circularStyles2),
+              role: "status",
+              "aria-label": accessibilityLabel,
+              id,
+              "data-testid": dataTestId
+            }, restProps), {
+              children: [
+                /* @__PURE__ */ jsxs("svg", { style: svgStyles2.svg, viewBox: "0 0 36 36", children: [
+                  svgStyles2.gradientDefs && /* @__PURE__ */ jsx("defs", { children: /* @__PURE__ */ jsx(
+                    "linearGradient",
+                    {
+                      id: svgStyles2.gradientDefs.gradientId,
+                      x1: "0%",
+                      y1: "0%",
+                      x2: "100%",
+                      y2: "0%",
+                      children: svgStyles2.gradientDefs.stops.map((stop, index) => /* @__PURE__ */ jsx(
+                        "stop",
+                        {
+                          offset: stop.offset,
+                          stopColor: stop.stopColor,
+                          stopOpacity: stop.stopOpacity
+                        },
+                        index
+                      ))
+                    }
+                  ) }),
+                  /* @__PURE__ */ jsx(
+                    "path",
+                    {
+                      style: svgStyles2.track,
+                      d: "M18,2.0845 a 16,16 0 0,1 0,32 a 16,16 0 0,1 0,-32"
+                    }
+                  ),
+                  /* @__PURE__ */ jsx(
+                    "path",
+                    {
+                      style: svgStyles2.progress,
+                      d: "M18,2.0845 a 16,16 0 0,1 0,32 a 16,16 0 0,1 0,-32"
+                    }
+                  )
+                ] }),
+                (showPercentage || showValue) && /* @__PURE__ */ jsx("div", { style: textStyles2, children: showValue ? `${actualValue}/${max}` : `${Math.round(percentage)}%` })
+              ]
+            })
+          )
+        ] });
       }
       const circularStyles = getCircularProgressStyles(color, customColor, variant, size, percentage, disabled, animationsEnabled, cssVars);
       const svgStyles = getCircularProgressSVGStyles(color, customColor, variant, size, cssVars);
       const textStyles = getCircularTextStyles(size, color, customColor, cssVars);
       const strokeDasharray = svgStyles.circumference;
       const strokeDashoffset = svgStyles.circumference - percentage / 100 * svgStyles.circumference;
-      return /* @__PURE__ */ React22.createElement(
+      return /* @__PURE__ */ jsxs(
         "div",
-        __spreadValues({
+        __spreadProps(__spreadValues({
           ref,
           className,
           style: __spreadValues(__spreadValues({}, combinedStyles), circularStyles),
@@ -1945,49 +1965,57 @@ var ProgressIndicator = forwardRef((allProps, ref) => {
           "aria-valuemax": max,
           id,
           "data-testid": dataTestId
-        }, restProps),
-        /* @__PURE__ */ React22.createElement("svg", { style: svgStyles.svg, viewBox: "0 0 36 36" }, svgStyles.gradientDefs && /* @__PURE__ */ React22.createElement("defs", null, /* @__PURE__ */ React22.createElement(
-          "linearGradient",
-          {
-            id: svgStyles.gradientDefs.gradientId,
-            x1: "0%",
-            y1: "0%",
-            x2: "100%",
-            y2: "0%"
-          },
-          svgStyles.gradientDefs.stops.map((stop, index) => /* @__PURE__ */ React22.createElement(
-            "stop",
-            {
-              key: index,
-              offset: stop.offset,
-              stopColor: stop.stopColor,
-              stopOpacity: stop.stopOpacity
-            }
-          ))
-        )), /* @__PURE__ */ React22.createElement(
-          "path",
-          {
-            style: svgStyles.track,
-            d: "M18,2.0845 a 16,16 0 0,1 0,32 a 16,16 0 0,1 0,-32"
-          }
-        ), /* @__PURE__ */ React22.createElement(
-          "path",
-          {
-            style: __spreadProps(__spreadValues({}, svgStyles.progress), {
-              strokeDasharray,
-              strokeDashoffset
-            }),
-            d: "M18,2.0845 a 16,16 0 0,1 0,32 a 16,16 0 0,1 0,-32"
-          }
-        )),
-        (showPercentage || showValue) && /* @__PURE__ */ React22.createElement("div", { style: textStyles }, showValue ? `${value}/${max}` : `${Math.round(percentage)}%`)
+        }, restProps), {
+          children: [
+            /* @__PURE__ */ jsxs("svg", { style: svgStyles.svg, viewBox: "0 0 36 36", children: [
+              svgStyles.gradientDefs && /* @__PURE__ */ jsx("defs", { children: /* @__PURE__ */ jsx(
+                "linearGradient",
+                {
+                  id: svgStyles.gradientDefs.gradientId,
+                  x1: "0%",
+                  y1: "0%",
+                  x2: "100%",
+                  y2: "0%",
+                  children: svgStyles.gradientDefs.stops.map((stop, index) => /* @__PURE__ */ jsx(
+                    "stop",
+                    {
+                      offset: stop.offset,
+                      stopColor: stop.stopColor,
+                      stopOpacity: stop.stopOpacity
+                    },
+                    index
+                  ))
+                }
+              ) }),
+              /* @__PURE__ */ jsx(
+                "path",
+                {
+                  style: svgStyles.track,
+                  d: "M18,2.0845 a 16,16 0 0,1 0,32 a 16,16 0 0,1 0,-32"
+                }
+              ),
+              /* @__PURE__ */ jsx(
+                "path",
+                {
+                  style: __spreadProps(__spreadValues({}, svgStyles.progress), {
+                    strokeDasharray,
+                    strokeDashoffset
+                  }),
+                  d: "M18,2.0845 a 16,16 0 0,1 0,32 a 16,16 0 0,1 0,-32"
+                }
+              )
+            ] }),
+            (showPercentage || showValue) && /* @__PURE__ */ jsx("div", { style: textStyles, children: showValue ? `${value}/${max}` : `${Math.round(percentage)}%` })
+          ]
+        })
       );
     }
     default: {
       const barStyles = getBarProgressStyles(color, customColor, variant, size, shape, width, disabled, animationsEnabled, cssVars);
       const fillStyles = getProgressFillStyles(color, customColor, variant, size, shape, percentage, striped, stripedAnimation, indeterminate, animationsEnabled, cssVars);
       const textStyles = getProgressTextStyles(size, color, customColor, cssVars);
-      return /* @__PURE__ */ React22.createElement(React22.Fragment, null, animationsEnabled && /* @__PURE__ */ React22.createElement("style", { jsx: true, global: true }, `
+      return /* @__PURE__ */ jsxs(Fragment, { children: [
+        animationsEnabled && /* @__PURE__ */ jsx("style", { jsx: true, global: true, children: `
               @keyframes progress-indeterminate {
                 0% { left: 0%; }
                 100% { left: 70%; }
@@ -1996,22 +2024,28 @@ var ProgressIndicator = forwardRef((allProps, ref) => {
                 from { background-position: 1rem 0; }
                 to { background-position: 0 0; }
               }
-            `), /* @__PURE__ */ React22.createElement(
-        "div",
-        __spreadValues({
-          ref,
-          className,
-          style: combinedStyles,
-          role: "progressbar",
-          "aria-label": accessibilityLabel,
-          "aria-valuenow": actualValue,
-          "aria-valuemin": 0,
-          "aria-valuemax": max,
-          id,
-          "data-testid": dataTestId
-        }, restProps),
-        /* @__PURE__ */ React22.createElement("div", { style: barStyles }, /* @__PURE__ */ React22.createElement("div", { style: fillStyles }), (showPercentage || showValue) && /* @__PURE__ */ React22.createElement("div", { style: textStyles }, showValue ? `${actualValue}/${max}` : `${Math.round(percentage)}%`))
-      ));
+            ` }),
+        /* @__PURE__ */ jsx(
+          "div",
+          __spreadProps(__spreadValues({
+            ref,
+            className,
+            style: combinedStyles,
+            role: "progressbar",
+            "aria-label": accessibilityLabel,
+            "aria-valuenow": actualValue,
+            "aria-valuemin": 0,
+            "aria-valuemax": max,
+            id,
+            "data-testid": dataTestId
+          }, restProps), {
+            children: /* @__PURE__ */ jsxs("div", { style: barStyles, children: [
+              /* @__PURE__ */ jsx("div", { style: fillStyles }),
+              (showPercentage || showValue) && /* @__PURE__ */ jsx("div", { style: textStyles, children: showValue ? `${actualValue}/${max}` : `${Math.round(percentage)}%` })
+            ] })
+          })
+        )
+      ] });
     }
   }
 });
@@ -2084,7 +2118,7 @@ var ParallaxTiltWrapper = ({
   style
 }) => {
   if (disabled) {
-    return /* @__PURE__ */ React22.createElement("div", { className, style }, children);
+    return /* @__PURE__ */ jsx("div", { className, style, children });
   }
   let childBorderRadius = "0px";
   let childBoxShadow = "none";
@@ -2100,7 +2134,7 @@ var ParallaxTiltWrapper = ({
       shouldPreserveShadow = childBoxShadow.includes("32px") || childBoxShadow.includes("40px");
     }
   }
-  return /* @__PURE__ */ React22.createElement(
+  return /* @__PURE__ */ jsx(
     Tilt,
     {
       className,
@@ -2123,13 +2157,13 @@ var ParallaxTiltWrapper = ({
       glareColor: "#ffffff",
       glarePosition: "all",
       glareReverse: false,
-      glareBorderRadius: childBorderRadius
-    },
-    shouldPreserveShadow && isValidElement(children) && children.props && typeof children.props === "object" ? cloneElement(children, {
-      style: __spreadProps(__spreadValues({}, children.props.style), {
-        boxShadow: "none"
-      })
-    }) : children
+      glareBorderRadius: childBorderRadius,
+      children: shouldPreserveShadow && isValidElement(children) && children.props && typeof children.props === "object" ? cloneElement(children, {
+        style: __spreadProps(__spreadValues({}, children.props.style), {
+          boxShadow: "none"
+        })
+      }) : children
+    }
   );
 };
 var TypewriterText = ({
@@ -2207,21 +2241,22 @@ var TypewriterText = ({
     }
   }, [text, disabled]);
   if (disabled) {
-    return /* @__PURE__ */ React22.createElement(React22.Fragment, null, children || text);
+    return /* @__PURE__ */ jsx(Fragment, { children: children || text });
   }
-  return /* @__PURE__ */ React22.createElement(React22.Fragment, null, displayText, showCursor && /* @__PURE__ */ React22.createElement(
-    "span",
-    {
-      style: {
-        opacity: showCursorBlink ? 1 : 0,
-        transition: "opacity 0.1s ease-in-out"
+  return /* @__PURE__ */ jsxs(Fragment, { children: [
+    displayText,
+    showCursor && /* @__PURE__ */ jsx(
+      "span",
+      {
+        style: {
+          opacity: showCursorBlink ? 1 : 0,
+          transition: "opacity 0.1s ease-in-out"
+        },
+        children: cursorChar
       }
-    },
-    cursorChar
-  ));
+    )
+  ] });
 };
-
-// src/app/components/atoms/Button/Button.tsx
 var Button = forwardRef((allProps, ref) => {
   var _b;
   const [interactiveProps, componentProps] = extractInteractiveProps(allProps);
@@ -2309,7 +2344,7 @@ var Button = forwardRef((allProps, ref) => {
   }), style);
   const renderTextContent = useMemo(() => {
     if (useAnimationMode && animationMode === "typewriter" && typeof children === "string") {
-      return /* @__PURE__ */ React22.createElement(
+      return /* @__PURE__ */ jsx(
         TypewriterText,
         {
           text: children,
@@ -2324,7 +2359,7 @@ var Button = forwardRef((allProps, ref) => {
     if (isButtonLoading) {
       const spinnerSize = size === "xs" ? "xs" : size === "sm" ? "xs" : "sm";
       const spinnerColor = color;
-      return /* @__PURE__ */ React22.createElement(
+      return /* @__PURE__ */ jsx(
         ProgressIndicator,
         {
           type: "circular",
@@ -2333,11 +2368,11 @@ var Button = forwardRef((allProps, ref) => {
         }
       );
     }
-    return /* @__PURE__ */ React22.createElement(React22.Fragment, null, hasIcon ? createCenteredContent(icon, iconPosition, size, renderTextContent) : createTextContainer(renderTextContent));
+    return /* @__PURE__ */ jsx(Fragment, { children: hasIcon ? createCenteredContent(icon, iconPosition, size, renderTextContent) : createTextContainer(renderTextContent) });
   };
-  const buttonElement = /* @__PURE__ */ React22.createElement(
+  const buttonElement = /* @__PURE__ */ jsx(
     "button",
-    __spreadValues({
+    __spreadProps(__spreadValues({
       ref,
       id,
       disabled: Boolean(isDisabled),
@@ -2347,17 +2382,21 @@ var Button = forwardRef((allProps, ref) => {
       style: combinedStyles,
       className: className || "",
       "data-testid": dataTestId
-    }, restProps),
-    renderContent()
+    }, restProps), {
+      children: renderContent()
+    })
   );
-  const isometricWrappedButton = hasIsometricAnimation ? /* @__PURE__ */ React22.createElement("div", { style: isometricContainerStyles }, /* @__PURE__ */ React22.createElement("div", { style: isometricShadowStyles }), buttonElement) : buttonElement;
+  const isometricWrappedButton = hasIsometricAnimation ? /* @__PURE__ */ jsxs("div", { style: isometricContainerStyles, children: [
+    /* @__PURE__ */ jsx("div", { style: isometricShadowStyles }),
+    buttonElement
+  ] }) : buttonElement;
   if (useAnimationMode && animationMode === "parallax") {
-    return /* @__PURE__ */ React22.createElement(
+    return /* @__PURE__ */ jsx(
       ParallaxTiltWrapper,
       {
-        disabled: isDisabled || !useAnimationMode
-      },
-      isometricWrappedButton
+        disabled: isDisabled || !useAnimationMode,
+        children: isometricWrappedButton
+      }
     );
   }
   return isometricWrappedButton;
@@ -2731,7 +2770,7 @@ var IconAnimations = ({
   if (!hasAnimations || !spin && !pulse) {
     return null;
   }
-  return /* @__PURE__ */ React22.createElement("style", { jsx: true, global: true }, `
+  return /* @__PURE__ */ jsx("style", { jsx: true, global: true, children: `
       @keyframes icon-spin {
         from {
           transform: rotate(0deg);
@@ -2749,10 +2788,8 @@ var IconAnimations = ({
           opacity: 0.5;
         }
       }
-    `);
+    ` });
 };
-
-// src/app/components/atoms/Icon/Icon.tsx
 var Icon = forwardRef(
   (_a, ref) => {
     var _b = _a, {
@@ -2797,23 +2834,24 @@ var Icon = forwardRef(
       ref,
       props
     );
-    return /* @__PURE__ */ React22.createElement(React22.Fragment, null, /* @__PURE__ */ React22.createElement(
-      IconAnimations,
-      {
-        hasAnimations: animationsEnabled,
-        spin,
-        pulse
-      }
-    ), /* @__PURE__ */ React22.createElement(IconComponent, __spreadValues({}, iconProps)));
+    return /* @__PURE__ */ jsxs(Fragment, { children: [
+      /* @__PURE__ */ jsx(
+        IconAnimations,
+        {
+          hasAnimations: animationsEnabled,
+          spin,
+          pulse
+        }
+      ),
+      /* @__PURE__ */ jsx(IconComponent, __spreadValues({}, iconProps))
+    ] });
   }
 );
 Icon.displayName = "Icon";
-
-// src/app/components/atoms/Badge/Badge.utils.tsx
 var renderIcon2 = (iconElement, badgeSize) => {
   if (!iconElement) return null;
-  if (React22.isValidElement(iconElement)) {
-    return React22.cloneElement(iconElement, {
+  if (React21.isValidElement(iconElement)) {
+    return React21.cloneElement(iconElement, {
       size: getIconSize2(badgeSize)
     });
   }
@@ -2822,7 +2860,7 @@ var renderIcon2 = (iconElement, badgeSize) => {
 var createRemoveButton = (onRemove, badgeSize, cssVars, animationsEnabled) => {
   const buttonSize = badgeSize === "xs" ? "16px" : badgeSize === "sm" ? "18px" : "20px";
   const iconSize = badgeSize === "xs" ? "xs" : "sm";
-  return /* @__PURE__ */ React22.createElement(
+  return /* @__PURE__ */ jsx(
     "button",
     {
       onClick: (e) => {
@@ -2857,9 +2895,9 @@ var createRemoveButton = (onRemove, badgeSize, cssVars, animationsEnabled) => {
         e.currentTarget.style.backgroundColor = "transparent";
       },
       title: "Remove",
-      "aria-label": "Remove badge"
-    },
-    /* @__PURE__ */ React22.createElement(Icon, { name: "Xmark", size: iconSize })
+      "aria-label": "Remove badge",
+      children: /* @__PURE__ */ jsx(Icon, { name: "Xmark", size: iconSize })
+    }
   );
 };
 var createBadgeContent = (icon, iconPosition, badgeSize, children, removable, onRemove, cssVars, animationsEnabled, useAnimationMode, animationMode, disabled) => {
@@ -2880,7 +2918,7 @@ var createBadgeContent = (icon, iconPosition, badgeSize, children, removable, on
   const renderContent = () => {
     if (!hasChildren) return null;
     if (shouldUseTypewriter && typeof children === "string") {
-      return /* @__PURE__ */ React22.createElement(
+      return /* @__PURE__ */ jsx(
         TypewriterText,
         {
           text: children,
@@ -2889,25 +2927,31 @@ var createBadgeContent = (icon, iconPosition, badgeSize, children, removable, on
         }
       );
     }
-    return /* @__PURE__ */ React22.createElement("span", null, children);
+    return /* @__PURE__ */ jsx("span", { children });
   };
   const spacing = getSpacing(badgeSize);
   if (!hasChildren) {
-    return /* @__PURE__ */ React22.createElement(React22.Fragment, null, hasIcon && /* @__PURE__ */ React22.createElement("span", { style: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center"
-    } }, renderIcon2(icon, badgeSize)), hasRemove && createRemoveButton(onRemove, badgeSize, cssVars, animationsEnabled || false));
+    return /* @__PURE__ */ jsxs(Fragment, { children: [
+      hasIcon && /* @__PURE__ */ jsx("span", { style: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+      }, children: renderIcon2(icon, badgeSize) }),
+      hasRemove && createRemoveButton(onRemove, badgeSize, cssVars, animationsEnabled || false)
+    ] });
   }
-  return /* @__PURE__ */ React22.createElement("span", { style: {
+  return /* @__PURE__ */ jsxs("span", { style: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     gap: spacing
-  } }, hasIcon && iconPosition === "leading" && renderIcon2(icon, badgeSize), renderContent(), hasIcon && iconPosition === "trailing" && renderIcon2(icon, badgeSize), hasRemove && createRemoveButton(onRemove, badgeSize, cssVars, animationsEnabled || false));
+  }, children: [
+    hasIcon && iconPosition === "leading" && renderIcon2(icon, badgeSize),
+    renderContent(),
+    hasIcon && iconPosition === "trailing" && renderIcon2(icon, badgeSize),
+    hasRemove && createRemoveButton(onRemove, badgeSize, cssVars, animationsEnabled || false)
+  ] });
 };
-
-// src/app/components/atoms/Badge/Badge.tsx
 var Badge = forwardRef(
   (allProps, ref) => {
     var _b;
@@ -2974,28 +3018,29 @@ var Badge = forwardRef(
       width,
       height
     }), style);
-    return /* @__PURE__ */ React22.createElement(
+    return /* @__PURE__ */ jsx(
       "span",
-      __spreadValues({
+      __spreadProps(__spreadValues({
         ref,
         id,
         style: combinedStyles,
         className,
         "data-testid": dataTestId
-      }, restProps),
-      createBadgeContent(
-        icon,
-        iconPosition,
-        size,
-        children,
-        removable,
-        onRemove,
-        cssVars,
-        animationsEnabled,
-        useAnimationMode,
-        badgeAnimationMode,
-        disabled
-      )
+      }, restProps), {
+        children: createBadgeContent(
+          icon,
+          iconPosition,
+          size,
+          children,
+          removable,
+          onRemove,
+          cssVars,
+          animationsEnabled,
+          useAnimationMode,
+          badgeAnimationMode,
+          disabled
+        )
+      })
     );
   }
 );
@@ -3105,27 +3150,32 @@ var getVariantStyles3 = (color, variant, customColor, cssVars) => {
         borderLeftColor: "transparent"
       }, baseStyles);
     case "glassmorphic":
-      const reflectionColor = colors.hover || colors.main || "#ffffff";
-      const topReflectionGradient = `linear-gradient(135deg, transparent 0%, ${reflectionColor}20 20%, ${reflectionColor}15 25%, transparent 35%)`;
-      const bottomReflectionGradient = `linear-gradient(135deg, transparent 45%, ${reflectionColor}25 55%, ${reflectionColor}20 65%, transparent 80%)`;
+      const hexToRgba = (hex, alpha) => {
+        if (!hex || !hex.startsWith("#")) return `rgba(0, 0, 0, ${alpha})`;
+        const cleanHex = hex.slice(1);
+        const r = parseInt(cleanHex.substr(0, 2), 16);
+        const g = parseInt(cleanHex.substr(2, 2), 16);
+        const b = parseInt(cleanHex.substr(4, 2), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      };
+      const backgroundWithOpacity = hexToRgba(cssVars.background, 0.85);
+      const borderWithOpacity = hexToRgba(cssVars.border, 0.5);
       return __spreadValues({
-        background: `
-          ${topReflectionGradient},
-          ${bottomReflectionGradient},
-          rgba(255, 255, 255, 0.1)
-        `,
-        backdropFilter: "blur(10px)",
-        WebkitBackdropFilter: "blur(10px)",
+        backgroundColor: backgroundWithOpacity,
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
         // Safari support
         color: colors.main,
-        borderTopColor: "rgba(255, 255, 255, 0.2)",
-        borderRightColor: "rgba(255, 255, 255, 0.2)",
-        borderBottomColor: "rgba(255, 255, 255, 0.2)",
-        borderLeftColor: "rgba(255, 255, 255, 0.2)",
-        boxShadow: `0 8px 32px 0 ${colors.main}40`,
-        // Use card color with transparency for shadow
+        borderTopColor: borderWithOpacity,
+        borderRightColor: borderWithOpacity,
+        borderBottomColor: borderWithOpacity,
+        borderLeftColor: borderWithOpacity,
+        boxShadow: `0 8px 32px 0 rgba(0, 0, 0, 0.3)`,
         position: "relative",
-        overflow: "hidden"
+        overflow: "hidden",
+        transform: "translateZ(0)",
+        // Force GPU acceleration
+        willChange: "auto"
       }, baseStyles);
     default:
       return __spreadValues({
@@ -3306,8 +3356,6 @@ var createHoverHandlers = (clickable, disabled, cssVars, elementRef) => {
     onMouseLeave: handleMouseLeave
   };
 };
-
-// src/app/components/atoms/Card/Card.tsx
 var Card = forwardRef(
   (allProps, ref) => {
     var _b;
@@ -3405,7 +3453,7 @@ var Card = forwardRef(
         const rect = cardRef.current.getBoundingClientRect();
         setCardWidth(rect.width);
       }
-    }, [children, combinedStyles, header, footer]);
+    }, [header, footer]);
     const [sharedCursorVisible, setSharedCursorVisible] = useState(true);
     useLayoutEffect(() => {
       if (!useAnimationMode || animationMode !== "typewriter" || isDisabled) {
@@ -3420,29 +3468,32 @@ var Card = forwardRef(
       if (!isTypewriter || typeof text !== "string") {
         return text;
       }
-      return /* @__PURE__ */ React22.createElement(React22.Fragment, null, /* @__PURE__ */ React22.createElement(
-        TypewriterText,
-        {
-          text,
-          speed: 100,
-          deleteSpeed: 50,
-          showCursor: false,
-          disabled: isDisabled
-        }
-      ), /* @__PURE__ */ React22.createElement(
-        "span",
-        {
-          style: {
-            opacity: sharedCursorVisible ? 1 : 0,
-            transition: "opacity 0.1s ease-in-out"
+      return /* @__PURE__ */ jsxs(Fragment, { children: [
+        /* @__PURE__ */ jsx(
+          TypewriterText,
+          {
+            text,
+            speed: 100,
+            deleteSpeed: 50,
+            showCursor: false,
+            disabled: isDisabled
           }
-        },
-        "|"
-      ));
+        ),
+        /* @__PURE__ */ jsx(
+          "span",
+          {
+            style: {
+              opacity: sharedCursorVisible ? 1 : 0,
+              transition: "opacity 0.1s ease-in-out"
+            },
+            children: "|"
+          }
+        )
+      ] });
     };
-    const cardElement = /* @__PURE__ */ React22.createElement(
+    const cardElement = /* @__PURE__ */ jsxs(
       "div",
-      __spreadValues({
+      __spreadProps(__spreadValues({
         ref: cardRef,
         id,
         className,
@@ -3454,64 +3505,71 @@ var Card = forwardRef(
         tabIndex: isClickable ? 0 : void 0,
         "aria-disabled": isDisabled,
         "data-testid": dataTestId
-      }, restProps),
-      loading && /* @__PURE__ */ React22.createElement("div", { style: loadingOverlayStyles }, /* @__PURE__ */ React22.createElement(
-        ProgressIndicator,
-        {
-          type: "circular",
-          size: "md",
-          color
-        }
-      )),
-      /* @__PURE__ */ React22.createElement("div", { style: { flex: "1", display: "flex", flexDirection: "column" } }, children)
+      }, restProps), {
+        children: [
+          loading && /* @__PURE__ */ jsx("div", { style: loadingOverlayStyles, children: /* @__PURE__ */ jsx(
+            ProgressIndicator,
+            {
+              type: "circular",
+              size: "md",
+              color
+            }
+          ) }),
+          /* @__PURE__ */ jsx("div", { style: { flex: "1", display: "flex", flexDirection: "column" }, children })
+        ]
+      })
     );
-    const wrappedCardElement = useAnimationMode && animationMode === "parallax" ? /* @__PURE__ */ React22.createElement(ParallaxTiltWrapper, { disabled: isDisabled || !useAnimationMode }, cardElement) : cardElement;
-    return /* @__PURE__ */ React22.createElement("div", { style: {
+    const wrappedCardElement = useAnimationMode && animationMode === "parallax" ? /* @__PURE__ */ jsx(ParallaxTiltWrapper, { disabled: isDisabled || !useAnimationMode, children: cardElement }) : cardElement;
+    return /* @__PURE__ */ jsxs("div", { style: {
       display: "flex",
       flexDirection: "column",
       alignItems: "flex-start",
       // Prevent stretching
       width: "fit-content"
       // Let card determine width
-    } }, /* @__PURE__ */ React22.createElement("div", { style: {
-      width: cardWidth ? `${cardWidth}px` : "100%",
-      marginBottom: "4px"
-    } }, header && /* @__PURE__ */ React22.createElement(
-      "div",
-      {
-        style: {
-          textAlign: headerAlignment,
-          color: headerFooterColor,
-          // Use selected color to match borders
-          fontWeight: "500",
-          fontSize: "14px",
-          fontFamily: "inherit",
-          wordWrap: "break-word",
-          overflowWrap: "break-word",
-          hyphens: "auto"
+    }, children: [
+      /* @__PURE__ */ jsx("div", { style: {
+        width: cardWidth ? `${cardWidth}px` : "100%",
+        marginBottom: "4px"
+      }, children: header && /* @__PURE__ */ jsx(
+        "div",
+        {
+          style: {
+            textAlign: headerAlignment,
+            color: headerFooterColor,
+            // Use selected color to match borders
+            fontWeight: "500",
+            fontSize: "14px",
+            fontFamily: "inherit",
+            wordWrap: "break-word",
+            overflowWrap: "break-word",
+            hyphens: "auto"
+          },
+          children: renderAnimatedText(header, useAnimationMode && animationMode === "typewriter")
         }
-      },
-      renderAnimatedText(header, useAnimationMode && animationMode === "typewriter")
-    )), wrappedCardElement, /* @__PURE__ */ React22.createElement("div", { style: {
-      width: cardWidth ? `${cardWidth}px` : "100%",
-      marginTop: "4px"
-    } }, footer && /* @__PURE__ */ React22.createElement(
-      "div",
-      {
-        style: {
-          textAlign: footerAlignment,
-          color: headerFooterColor,
-          // Use selected color to match borders
-          fontWeight: "500",
-          fontSize: "14px",
-          fontFamily: "inherit",
-          wordWrap: "break-word",
-          overflowWrap: "break-word",
-          hyphens: "auto"
+      ) }),
+      wrappedCardElement,
+      /* @__PURE__ */ jsx("div", { style: {
+        width: cardWidth ? `${cardWidth}px` : "100%",
+        marginTop: "4px"
+      }, children: footer && /* @__PURE__ */ jsx(
+        "div",
+        {
+          style: {
+            textAlign: footerAlignment,
+            color: headerFooterColor,
+            // Use selected color to match borders
+            fontWeight: "500",
+            fontSize: "14px",
+            fontFamily: "inherit",
+            wordWrap: "break-word",
+            overflowWrap: "break-word",
+            hyphens: "auto"
+          },
+          children: renderAnimatedText(footer, useAnimationMode && animationMode === "typewriter")
         }
-      },
-      renderAnimatedText(footer, useAnimationMode && animationMode === "typewriter")
-    )));
+      ) })
+    ] });
   }
 );
 Card.displayName = "Card";
@@ -3785,13 +3843,13 @@ var getIconColor = (color, customColor, error, checked, cssVars) => {
 };
 var createCheckIcon = (checked, indeterminate, error, size, color) => {
   if (indeterminate) {
-    return /* @__PURE__ */ React22.createElement(Icon, { name: "Minus", size, style: { color } });
+    return /* @__PURE__ */ jsx(Icon, { name: "Minus", size, style: { color } });
   }
   if (checked) {
-    return /* @__PURE__ */ React22.createElement(Icon, { name: "Check", size, style: { color } });
+    return /* @__PURE__ */ jsx(Icon, { name: "Check", size, style: { color } });
   }
   if (error && !checked) {
-    return /* @__PURE__ */ React22.createElement(Icon, { name: "Asterisk", size, style: { color } });
+    return /* @__PURE__ */ jsx(Icon, { name: "Asterisk", size, style: { color } });
   }
   return null;
 };
@@ -3825,8 +3883,6 @@ var handleKeyDown = (event, onChange, checked) => {
     }
   }
 };
-
-// src/app/components/atoms/CheckBox/CheckBox.tsx
 var CheckBox = forwardRef(
   (allProps, ref) => {
     var _c;
@@ -3935,81 +3991,90 @@ var CheckBox = forwardRef(
     const wrapperStyles = useMemo(() => getWrapperStyles(), []);
     const checkboxWrapperStyles = useMemo(() => getCheckboxWrapperStyles(), []);
     const combinedCheckboxStyles = __spreadValues(__spreadValues(__spreadValues(__spreadValues({}, baseStyles), sizeStyles), variantStyles), style);
-    const [focused, setFocused] = React22.useState(false);
+    const [focused, setFocused] = React21.useState(false);
     const focusStyles = focused ? getFocusStyles(color, customColor, cssVars, Boolean(error)) : {};
     const finalCheckboxStyles = __spreadValues(__spreadValues({}, combinedCheckboxStyles), focusStyles);
-    return /* @__PURE__ */ React22.createElement("div", { style: wrapperStyles, className }, /* @__PURE__ */ React22.createElement("div", { style: checkboxWrapperStyles }, /* @__PURE__ */ React22.createElement("div", { style: finalCheckboxStyles }, /* @__PURE__ */ React22.createElement(
-      "input",
-      __spreadValues({
-        ref: inputRef,
-        type: "checkbox",
-        id,
-        checked: checkedValue,
-        disabled,
-        required,
-        onChange: handleChange,
-        onKeyDown: handleKeyDownInternal,
-        onFocus: () => setFocused(true),
-        onBlur: () => setFocused(false),
-        style: inputStyles,
-        "data-testid": dataTestId,
-        "aria-checked": indeterminate ? "mixed" : checkedValue,
-        "aria-describedby": description ? `${id}-description` : void 0
-      }, restProps)
-    ), required && !checkedValue && !indeterminate ? (
-      // Show asterisk for required unchecked state
-      /* @__PURE__ */ React22.createElement(
-        "div",
-        {
-          style: {
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            pointerEvents: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }
-        },
-        /* @__PURE__ */ React22.createElement(
-          Icon,
+    return /* @__PURE__ */ jsxs("div", { style: wrapperStyles, className, children: [
+      /* @__PURE__ */ jsxs("div", { style: checkboxWrapperStyles, children: [
+        /* @__PURE__ */ jsxs("div", { style: finalCheckboxStyles, children: [
+          /* @__PURE__ */ jsx(
+            "input",
+            __spreadValues({
+              ref: inputRef,
+              type: "checkbox",
+              id,
+              checked: checkedValue,
+              disabled,
+              required,
+              onChange: handleChange,
+              onKeyDown: handleKeyDownInternal,
+              onFocus: () => setFocused(true),
+              onBlur: () => setFocused(false),
+              style: inputStyles,
+              "data-testid": dataTestId,
+              "aria-checked": indeterminate ? "mixed" : checkedValue,
+              "aria-describedby": description ? `${id}-description` : void 0
+            }, restProps)
+          ),
+          required && !checkedValue && !indeterminate ? (
+            // Show asterisk for required unchecked state
+            /* @__PURE__ */ jsx(
+              "div",
+              {
+                style: {
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  pointerEvents: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                },
+                children: /* @__PURE__ */ jsx(
+                  Icon,
+                  {
+                    name: "Asterisk",
+                    size: asteriskSize,
+                    color: getAsteriskColor()
+                  }
+                )
+              }
+            )
+          ) : (
+            // Show normal check icon
+            createCheckIcon(
+              checkedValue,
+              indeterminate,
+              Boolean(error),
+              iconSize,
+              getIconColor(color, customColor, Boolean(error), checkedValue, cssVars)
+            )
+          )
+        ] }),
+        label && /* @__PURE__ */ jsx(
+          "label",
           {
-            name: "Asterisk",
-            size: asteriskSize,
-            color: getAsteriskColor()
+            htmlFor: contentToggleable ? id : void 0,
+            style: labelStyles,
+            children: label
           }
         )
+      ] }),
+      description && /* @__PURE__ */ jsx(
+        "div",
+        {
+          id: `${id}-description`,
+          style: descriptionStyles,
+          onClick: contentToggleable ? () => {
+            if (!disabled && inputRef.current) {
+              inputRef.current.click();
+            }
+          } : void 0,
+          children: description
+        }
       )
-    ) : (
-      // Show normal check icon
-      createCheckIcon(
-        checkedValue,
-        indeterminate,
-        Boolean(error),
-        iconSize,
-        getIconColor(color, customColor, Boolean(error), checkedValue, cssVars)
-      )
-    )), label && /* @__PURE__ */ React22.createElement(
-      "label",
-      {
-        htmlFor: contentToggleable ? id : void 0,
-        style: labelStyles
-      },
-      label
-    )), description && /* @__PURE__ */ React22.createElement(
-      "div",
-      {
-        id: `${id}-description`,
-        style: descriptionStyles,
-        onClick: contentToggleable ? () => {
-          if (!disabled && inputRef.current) {
-            inputRef.current.click();
-          }
-        } : void 0
-      },
-      description
-    ));
+    ] });
   }
 );
 CheckBox.displayName = "CheckBox";
@@ -4332,7 +4397,7 @@ var extractTextContent = (children) => {
   if (typeof children === "string") {
     return children;
   }
-  if (React22.isValidElement(children)) {
+  if (React21.isValidElement(children)) {
     const element = children;
     return extractTextContent(element.props.children);
   }
@@ -4343,28 +4408,28 @@ var extractTextContent = (children) => {
 };
 var createLineNumbers = (content, styles) => {
   const lines = content.split("\n");
-  return /* @__PURE__ */ React22.createElement("div", { style: styles }, lines.map((_, index) => /* @__PURE__ */ React22.createElement("div", { key: index + 1 }, index + 1)));
+  return /* @__PURE__ */ jsx("div", { style: styles, children: lines.map((_, index) => /* @__PURE__ */ jsx("div", { children: index + 1 }, index + 1)) });
 };
 var highlightLines = (content, highlight, cssVars) => {
   const lines = content.split("\n");
   const highlightArray = Array.isArray(highlight) ? highlight : [highlight];
-  return /* @__PURE__ */ React22.createElement(React22.Fragment, null, lines.map((line, index) => {
+  return /* @__PURE__ */ jsx(Fragment, { children: lines.map((line, index) => {
     var _a;
     const lineNumber = index + 1;
     const isHighlighted = highlightArray.includes(lineNumber);
-    return /* @__PURE__ */ React22.createElement(
+    return /* @__PURE__ */ jsx(
       "div",
       {
-        key: lineNumber,
         style: {
           backgroundColor: isHighlighted ? ((_a = cssVars.getColorWithOpacity) == null ? void 0 : _a.call(cssVars, "primary", 0.1)) || "rgba(59, 130, 246, 0.1)" : "transparent",
           padding: "0 4px",
           margin: "0 -4px"
-        }
+        },
+        children: line
       },
-      line
+      lineNumber
     );
-  }));
+  }) });
 };
 var getLanguageLabel = (language) => {
   const languageMap = {
@@ -4532,7 +4597,7 @@ var getLanguagePatterns = (language) => {
 };
 var highlightSyntax = (code, language, theme) => {
   if (!language || language === "text" || language === "plain") {
-    return [/* @__PURE__ */ React22.createElement("span", { key: 0 }, code)];
+    return [/* @__PURE__ */ jsx("span", { children: code }, 0)];
   }
   const patterns = getLanguagePatterns(language);
   const tokens = [];
@@ -4565,22 +4630,20 @@ var highlightSyntax = (code, language, theme) => {
   mergedTokens.forEach((token, index) => {
     if (token.start > currentIndex) {
       const text = code.slice(currentIndex, token.start);
-      elements.push(/* @__PURE__ */ React22.createElement("span", { key: `text-${index}` }, text));
+      elements.push(/* @__PURE__ */ jsx("span", { children: text }, `text-${index}`));
     }
     const color = theme[token.type] || theme.punctuation;
     elements.push(
-      /* @__PURE__ */ React22.createElement("span", { key: `token-${index}`, style: { color } }, token.content)
+      /* @__PURE__ */ jsx("span", { style: { color }, children: token.content }, `token-${index}`)
     );
     currentIndex = token.end;
   });
   if (currentIndex < code.length) {
     const text = code.slice(currentIndex);
-    elements.push(/* @__PURE__ */ React22.createElement("span", { key: "text-end" }, text));
+    elements.push(/* @__PURE__ */ jsx("span", { children: text }, "text-end"));
   }
-  return elements.length > 0 ? elements : [/* @__PURE__ */ React22.createElement("span", { key: 0 }, code)];
+  return elements.length > 0 ? elements : [/* @__PURE__ */ jsx("span", { children: code }, 0)];
 };
-
-// src/app/components/atoms/CodeBlock/CodeBlock.tsx
 var CodeBlock = forwardRef(
   (allProps, ref) => {
     var _b;
@@ -4677,18 +4740,20 @@ var CodeBlock = forwardRef(
               const lineNumber = index + 1;
               const isHighlighted = highlightArray.includes(lineNumber);
               const lineHighlighted = highlightSyntax(line, language, syntaxTheme);
-              return /* @__PURE__ */ React22.createElement(
+              return /* @__PURE__ */ jsxs(
                 "div",
                 {
-                  key: lineNumber,
                   style: {
                     backgroundColor: isHighlighted ? ((_a2 = cssVars.getColorWithOpacity) == null ? void 0 : _a2.call(cssVars, "primary", 0.1)) || "rgba(59, 130, 246, 0.1)" : "transparent",
                     padding: "0 4px",
                     margin: "0 -4px"
-                  }
+                  },
+                  children: [
+                    lineHighlighted,
+                    index < lines.length - 1 && "\n"
+                  ]
                 },
-                lineHighlighted,
-                index < lines.length - 1 && "\n"
+                lineNumber
               );
             });
           }
@@ -4701,74 +4766,81 @@ var CodeBlock = forwardRef(
       return children;
     };
     if (isInline) {
-      return /* @__PURE__ */ React22.createElement(
+      return /* @__PURE__ */ jsx(
         "code",
-        __spreadValues({
+        __spreadProps(__spreadValues({
           ref,
           id,
           style: __spreadValues(__spreadValues({}, inlineStyles), style),
           className,
           "data-testid": dataTestId
-        }, restProps),
-        children
+        }, restProps), {
+          children
+        })
       );
     }
-    return /* @__PURE__ */ React22.createElement("div", { style: { position: "relative" } }, language && /* @__PURE__ */ React22.createElement(
-      "div",
-      {
-        style: {
-          position: "absolute",
-          top: "12px",
-          left: lineNumbers ? "52px" : "16px",
-          // Move right when line numbers are present
-          fontSize: "12px",
-          color: variant === "solid" ? getColorVariables7(color, customColor, cssVars).foreground : getColorVariables7(color, customColor, cssVars).main,
-          fontFamily: "inherit",
-          zIndex: 2,
-          // Higher z-index to appear above line numbers
-          opacity: 0.8,
-          userSelect: "none",
-          fontWeight: "500"
-        }
-      },
-      getLanguageLabel(language)
-    ), copyable && /* @__PURE__ */ React22.createElement("div", { style: {
-      position: "absolute",
-      top: "4px",
-      right: "8px",
-      zIndex: 2
-    } }, /* @__PURE__ */ React22.createElement(
-      Button,
-      {
-        size: "sm",
-        variant: "ghost",
-        color,
-        onClick: handleCopy,
-        animate: animationsEnabled,
-        style: {
-          minWidth: "auto",
-          padding: "6px 8px",
-          color: variant === "solid" ? getColorVariables7(color, customColor, cssVars).foreground : variant === "outline" || variant === "glassmorphic" || variant === "ghost" ? getColorVariables7(color, customColor, cssVars).main : void 0
-        }
-      },
-      /* @__PURE__ */ React22.createElement(
-        Icon,
+    return /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
+      language && /* @__PURE__ */ jsx(
+        "div",
         {
-          name: copied ? "CheckCircle" : "Copy",
-          size: "sm"
+          style: {
+            position: "absolute",
+            top: "12px",
+            left: lineNumbers ? "52px" : "16px",
+            // Move right when line numbers are present
+            fontSize: "12px",
+            color: variant === "solid" ? getColorVariables7(color, customColor, cssVars).foreground : getColorVariables7(color, customColor, cssVars).main,
+            fontFamily: "inherit",
+            zIndex: 2,
+            // Higher z-index to appear above line numbers
+            opacity: 0.8,
+            userSelect: "none",
+            fontWeight: "500"
+          },
+          children: getLanguageLabel(language)
         }
+      ),
+      copyable && /* @__PURE__ */ jsx("div", { style: {
+        position: "absolute",
+        top: "4px",
+        right: "8px",
+        zIndex: 2
+      }, children: /* @__PURE__ */ jsx(
+        Button,
+        {
+          size: "sm",
+          variant: "ghost",
+          color,
+          onClick: handleCopy,
+          animate: animationsEnabled,
+          style: {
+            minWidth: "auto",
+            padding: "6px 8px",
+            color: variant === "solid" ? getColorVariables7(color, customColor, cssVars).foreground : variant === "outline" || variant === "glassmorphic" || variant === "ghost" ? getColorVariables7(color, customColor, cssVars).main : void 0
+          },
+          children: /* @__PURE__ */ jsx(
+            Icon,
+            {
+              name: copied ? "CheckCircle" : "Copy",
+              size: "sm"
+            }
+          )
+        }
+      ) }),
+      lineNumbers && createLineNumbers(textContent, lineNumberStyles),
+      /* @__PURE__ */ jsx(
+        "pre",
+        __spreadProps(__spreadValues({
+          ref,
+          id,
+          style: combinedStyles,
+          className,
+          "data-testid": dataTestId
+        }, restProps), {
+          children: /* @__PURE__ */ jsx("code", { children: renderContent() })
+        })
       )
-    )), lineNumbers && createLineNumbers(textContent, lineNumberStyles), /* @__PURE__ */ React22.createElement(
-      "pre",
-      __spreadValues({
-        ref,
-        id,
-        style: combinedStyles,
-        className,
-        "data-testid": dataTestId
-      }, restProps),
-      /* @__PURE__ */ React22.createElement("code", null, renderContent())
-    ));
+    ] });
   }
 );
 CodeBlock.displayName = "CodeBlock";
@@ -5084,8 +5156,6 @@ var createGappedDividerStyles = (orientation, labelPosition, variantStyles, size
     return { beforeStyles, afterStyles, containerStyles };
   }
 };
-
-// src/app/components/atoms/Divider/Divider.utils.tsx
 var createAccessibilityProps = (label) => ({
   role: "separator",
   "aria-orientation": "horizontal",
@@ -5105,12 +5175,10 @@ var validateDividerProps = (dashed, dotted, orientation, fullSize) => {
 };
 var createLabelContent = (label, cssVars) => {
   if (typeof label === "string") {
-    return /* @__PURE__ */ React.createElement("span", null, label);
+    return /* @__PURE__ */ jsx("span", { children: label });
   }
   return label;
 };
-
-// src/app/components/atoms/Divider/Divider.tsx
 var Divider = forwardRef(
   (allProps, ref) => {
     const [containerProps, componentProps] = extractContainerProps(allProps);
@@ -5203,21 +5271,24 @@ var Divider = forwardRef(
       height
     }), style);
     if (hasLabel && gappedStyles) {
-      return /* @__PURE__ */ React22.createElement(
+      return /* @__PURE__ */ jsxs(
         "div",
-        __spreadValues(__spreadValues({
+        __spreadProps(__spreadValues(__spreadValues({
           ref,
           id,
           className,
           style: __spreadProps(__spreadValues(__spreadValues({}, gappedStyles.containerStyles), spacingStyles), { width, height }),
           "data-testid": dataTestId
-        }, accessibilityProps), restProps),
-        /* @__PURE__ */ React22.createElement("div", { style: gappedStyles.beforeStyles }),
-        /* @__PURE__ */ React22.createElement("div", { style: labelStyles }, createLabelContent(label)),
-        /* @__PURE__ */ React22.createElement("div", { style: gappedStyles.afterStyles })
+        }, accessibilityProps), restProps), {
+          children: [
+            /* @__PURE__ */ jsx("div", { style: gappedStyles.beforeStyles }),
+            /* @__PURE__ */ jsx("div", { style: labelStyles, children: createLabelContent(label) }),
+            /* @__PURE__ */ jsx("div", { style: gappedStyles.afterStyles })
+          ]
+        })
       );
     }
-    return /* @__PURE__ */ React22.createElement(
+    return /* @__PURE__ */ jsx(
       "div",
       __spreadValues(__spreadValues({
         ref,
@@ -5957,7 +6028,7 @@ var createOptionAccessibilityProps = (id, index, selected, disabled) => ({
   "aria-disabled": disabled
 });
 var useClickOutside = (ref, handler, enabled = true) => {
-  React22.useEffect(() => {
+  React21.useEffect(() => {
     if (!enabled) return;
     const handleClickOutside = (event) => {
       if (ref.current && !ref.current.contains(event.target)) {
@@ -5971,8 +6042,8 @@ var useClickOutside = (ref, handler, enabled = true) => {
   }, [ref, handler, enabled]);
 };
 var useFocusManagement = (isOpen, triggerRef, menuRef) => {
-  const previousOpenRef = React22.useRef(isOpen);
-  React22.useEffect(() => {
+  const previousOpenRef = React21.useRef(isOpen);
+  React21.useEffect(() => {
     if (previousOpenRef.current !== isOpen) {
       if (isOpen && triggerRef.current) {
         triggerRef.current.focus();
@@ -5986,8 +6057,6 @@ var createDropdownPortal = (children, container) => {
   const portalContainer = document.body;
   return createPortal(children, portalContainer);
 };
-
-// src/app/components/atoms/Dropdown/Dropdown.tsx
 var Dropdown = forwardRef(
   (allProps, ref) => {
     var _b;
@@ -6105,7 +6174,7 @@ var Dropdown = forwardRef(
       if (!isTypewriter || typeof text !== "string") {
         return text;
       }
-      return /* @__PURE__ */ React22.createElement(
+      return /* @__PURE__ */ jsx(
         TypewriterText,
         {
           text,
@@ -6237,20 +6306,20 @@ var Dropdown = forwardRef(
     }, [disabled, hasIsometricAnimation, variant, colorVariables]);
     const renderTrigger = () => {
       if (trigger) {
-        const customTrigger = React22.cloneElement(trigger, __spreadValues({
+        const customTrigger = React21.cloneElement(trigger, __spreadValues({
           onClick: handleToggle,
           onKeyDown: handleKeyDownInternal,
           onFocus: () => setIsFocused(true),
           onBlur: () => setIsFocused(false)
         }, accessibilityProps));
         if (useAnimationMode && animationMode === "parallax") {
-          return /* @__PURE__ */ React22.createElement(ParallaxTiltWrapper, { disabled: disabled || !useAnimationMode }, customTrigger);
+          return /* @__PURE__ */ jsx(ParallaxTiltWrapper, { disabled: disabled || !useAnimationMode, children: customTrigger });
         }
         return customTrigger;
       }
-      const triggerButton = /* @__PURE__ */ React22.createElement(
+      const triggerButton = /* @__PURE__ */ jsxs(
         "button",
-        __spreadValues({
+        __spreadProps(__spreadValues({
           ref: triggerRef,
           type: "button",
           style: triggerStyles,
@@ -6261,16 +6330,28 @@ var Dropdown = forwardRef(
           onMouseEnter: handleMouseEnter,
           onMouseLeave: handleMouseLeave,
           disabled
-        }, accessibilityProps),
-        /* @__PURE__ */ React22.createElement("div", { style: getValueDisplayStyles() }, icon && /* @__PURE__ */ React22.createElement("span", { style: { marginRight: "8px" } }, icon), multiple && Array.isArray(value) && value.length > 0 ? /* @__PURE__ */ React22.createElement("div", { style: { display: "flex", flexWrap: "wrap", gap: "2px" } }, value.slice(0, 3).map((val) => {
-          const option = flatOptions.find((opt) => opt.value === val);
-          const label = typeof (option == null ? void 0 : option.label) === "string" ? option.label : val.toString();
-          return /* @__PURE__ */ React22.createElement("span", { key: val, style: getMultiValueStyles(size, Boolean(rounded) || shape === "round", cssVars, variant, colorVariables) }, label);
-        }), value.length > 3 && /* @__PURE__ */ React22.createElement("span", { style: getMultiValueStyles(size, Boolean(rounded) || shape === "round", cssVars, variant, colorVariables) }, "+", value.length - 3)) : /* @__PURE__ */ React22.createElement("span", { style: value ? {} : getPlaceholderStyles(cssVars, variant, colorVariables) }, renderAnimatedText(displayText, useAnimationMode && animationMode === "typewriter"))),
-        showArrow && /* @__PURE__ */ React22.createElement("div", { style: arrowStyles }, /* @__PURE__ */ React22.createElement(Icon, { name: "NavArrowDown", size: size === "lg" ? "md" : "sm" }))
+        }, accessibilityProps), {
+          children: [
+            /* @__PURE__ */ jsxs("div", { style: getValueDisplayStyles(), children: [
+              icon && /* @__PURE__ */ jsx("span", { style: { marginRight: "8px" }, children: icon }),
+              multiple && Array.isArray(value) && value.length > 0 ? /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexWrap: "wrap", gap: "2px" }, children: [
+                value.slice(0, 3).map((val) => {
+                  const option = flatOptions.find((opt) => opt.value === val);
+                  const label = typeof (option == null ? void 0 : option.label) === "string" ? option.label : val.toString();
+                  return /* @__PURE__ */ jsx("span", { style: getMultiValueStyles(size, Boolean(rounded) || shape === "round", cssVars, variant, colorVariables), children: label }, val);
+                }),
+                value.length > 3 && /* @__PURE__ */ jsxs("span", { style: getMultiValueStyles(size, Boolean(rounded) || shape === "round", cssVars, variant, colorVariables), children: [
+                  "+",
+                  value.length - 3
+                ] })
+              ] }) : /* @__PURE__ */ jsx("span", { style: value ? {} : getPlaceholderStyles(cssVars, variant, colorVariables), children: renderAnimatedText(displayText, useAnimationMode && animationMode === "typewriter") })
+            ] }),
+            showArrow && /* @__PURE__ */ jsx("div", { style: arrowStyles, children: /* @__PURE__ */ jsx(Icon, { name: "NavArrowDown", size: size === "lg" ? "md" : "sm" }) })
+          ]
+        })
       );
       if (useAnimationMode && animationMode === "parallax") {
-        return /* @__PURE__ */ React22.createElement(ParallaxTiltWrapper, { disabled: disabled || !useAnimationMode }, triggerButton);
+        return /* @__PURE__ */ jsx(ParallaxTiltWrapper, { disabled: disabled || !useAnimationMode, children: triggerButton });
       }
       return triggerButton;
     };
@@ -6279,38 +6360,50 @@ var Dropdown = forwardRef(
       const highlighted = globalIndex === highlightedIndex;
       const optionStyles = getOptionStyles(size, selected, !!option.disabled, highlighted, cssVars, animationsEnabled, variant, colorVariables);
       const optionAccessibilityProps = createOptionAccessibilityProps(dropdownId, globalIndex, selected, !!option.disabled);
-      return /* @__PURE__ */ React22.createElement(React22.Fragment, { key: option.value }, option.divider && /* @__PURE__ */ React22.createElement("div", { style: getDividerStyles(cssVars) }), /* @__PURE__ */ React22.createElement(
-        "button",
-        __spreadValues({
-          type: "button",
-          style: optionStyles,
-          onClick: () => !option.disabled && handleOptionClick(option),
-          onMouseEnter: () => setHighlightedIndex(globalIndex),
-          disabled: option.disabled
-        }, optionAccessibilityProps),
-        option.icon && /* @__PURE__ */ React22.createElement("span", { style: { marginRight: "8px" } }, option.icon),
-        /* @__PURE__ */ React22.createElement("div", { style: { flex: 1, textAlign: "left" } }, /* @__PURE__ */ React22.createElement("div", null, option.label), option.description && /* @__PURE__ */ React22.createElement("div", { style: {
-          fontSize: "0.875em",
-          opacity: 0.7,
-          marginTop: "2px"
-        } }, option.description)),
-        selected && multiple && /* @__PURE__ */ React22.createElement("span", { style: { marginLeft: "8px" } }, /* @__PURE__ */ React22.createElement(Icon, { name: "Check", size: "sm" }))
-      ));
+      return /* @__PURE__ */ jsxs(React21.Fragment, { children: [
+        option.divider && /* @__PURE__ */ jsx("div", { style: getDividerStyles(cssVars) }),
+        /* @__PURE__ */ jsxs(
+          "button",
+          __spreadProps(__spreadValues({
+            type: "button",
+            style: optionStyles,
+            onClick: () => !option.disabled && handleOptionClick(option),
+            onMouseEnter: () => setHighlightedIndex(globalIndex),
+            disabled: option.disabled
+          }, optionAccessibilityProps), {
+            children: [
+              option.icon && /* @__PURE__ */ jsx("span", { style: { marginRight: "8px" }, children: option.icon }),
+              /* @__PURE__ */ jsxs("div", { style: { flex: 1, textAlign: "left" }, children: [
+                /* @__PURE__ */ jsx("div", { children: option.label }),
+                option.description && /* @__PURE__ */ jsx("div", { style: {
+                  fontSize: "0.875em",
+                  opacity: 0.7,
+                  marginTop: "2px"
+                }, children: option.description })
+              ] }),
+              selected && multiple && /* @__PURE__ */ jsx("span", { style: { marginLeft: "8px" }, children: /* @__PURE__ */ jsx(Icon, { name: "Check", size: "sm" }) })
+            ]
+          })
+        )
+      ] }, option.value);
     };
     const renderMenuContent = () => {
       if (loading) {
-        return /* @__PURE__ */ React22.createElement("div", { style: getLoadingStyles(size, cssVars) }, "Loading...");
+        return /* @__PURE__ */ jsx("div", { style: getLoadingStyles(size, cssVars), children: "Loading..." });
       }
       if (filteredOptions.length === 0) {
-        return /* @__PURE__ */ React22.createElement("div", { style: getEmptyStyles(size, cssVars) }, searchQuery ? noResultsMessage : emptyMessage);
+        return /* @__PURE__ */ jsx("div", { style: getEmptyStyles(size, cssVars), children: searchQuery ? noResultsMessage : emptyMessage });
       }
       let globalIndex = 0;
       return filteredOptions.map((item, groupIndex) => {
         if (isGroup(item)) {
-          return /* @__PURE__ */ React22.createElement("div", { key: `group-${groupIndex}` }, item.label && /* @__PURE__ */ React22.createElement("div", { style: getGroupLabelStyles(size, cssVars) }, item.label), item.options.map((option, optionIndex) => {
-            const currentGlobalIndex = globalIndex++;
-            return renderOption(option, optionIndex, currentGlobalIndex);
-          }));
+          return /* @__PURE__ */ jsxs("div", { children: [
+            item.label && /* @__PURE__ */ jsx("div", { style: getGroupLabelStyles(size, cssVars), children: item.label }),
+            item.options.map((option, optionIndex) => {
+              const currentGlobalIndex = globalIndex++;
+              return renderOption(option, optionIndex, currentGlobalIndex);
+            })
+          ] }, `group-${groupIndex}`);
         } else {
           const currentGlobalIndex = globalIndex++;
           return renderOption(item, groupIndex, currentGlobalIndex);
@@ -6319,62 +6412,68 @@ var Dropdown = forwardRef(
     };
     const renderMenu = () => {
       if (!isOpen) return null;
-      const menuContent = /* @__PURE__ */ React22.createElement(
+      const menuContent = /* @__PURE__ */ jsxs(
         "div",
-        __spreadValues({
+        __spreadProps(__spreadValues({
           ref: menuRef,
           style: combinedMenuStyles,
           className: menuClassName
-        }, menuAccessibilityProps),
-        searchable && /* @__PURE__ */ React22.createElement("div", { style: {
-          padding: "8px",
-          borderBottom: `1px solid ${cssVars.border}`,
-          position: "relative",
-          display: "flex",
-          alignItems: "center"
-        } }, /* @__PURE__ */ React22.createElement(
-          Icon,
-          {
-            name: "Search",
-            size: "sm",
-            style: {
-              position: "absolute",
-              left: "16px",
-              zIndex: 1,
-              color: cssVars.foregroundAccent || cssVars.foreground,
-              pointerEvents: "none"
-            }
-          }
-        ), /* @__PURE__ */ React22.createElement(
-          "input",
-          {
-            ref: searchRef,
-            type: "text",
-            placeholder: searchPlaceholder,
-            value: searchQuery,
-            onChange: handleSearchChange,
-            style: __spreadProps(__spreadValues({}, searchStyles), {
-              paddingLeft: "36px"
-              // Add space for the icon
-            }),
-            autoComplete: "off"
-          }
-        )),
-        /* @__PURE__ */ React22.createElement(
-          "div",
-          {
-            className: "dropdown-scrollable-content",
-            style: {
-              maxHeight,
-              overflowY: "auto",
-              // Hide scrollbar for IE and Edge
-              msOverflowStyle: "none",
-              // Hide scrollbar for Firefox
-              scrollbarWidth: "none"
-            }
-          },
-          renderMenuContent()
-        )
+        }, menuAccessibilityProps), {
+          children: [
+            searchable && /* @__PURE__ */ jsxs("div", { style: {
+              padding: "8px",
+              borderBottom: `1px solid ${cssVars.border}`,
+              position: "relative",
+              display: "flex",
+              alignItems: "center"
+            }, children: [
+              /* @__PURE__ */ jsx(
+                Icon,
+                {
+                  name: "Search",
+                  size: "sm",
+                  style: {
+                    position: "absolute",
+                    left: "16px",
+                    zIndex: 1,
+                    color: cssVars.foregroundAccent || cssVars.foreground,
+                    pointerEvents: "none"
+                  }
+                }
+              ),
+              /* @__PURE__ */ jsx(
+                "input",
+                {
+                  ref: searchRef,
+                  type: "text",
+                  placeholder: searchPlaceholder,
+                  value: searchQuery,
+                  onChange: handleSearchChange,
+                  style: __spreadProps(__spreadValues({}, searchStyles), {
+                    paddingLeft: "36px"
+                    // Add space for the icon
+                  }),
+                  autoComplete: "off"
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsx(
+              "div",
+              {
+                className: "dropdown-scrollable-content",
+                style: {
+                  maxHeight,
+                  overflowY: "auto",
+                  // Hide scrollbar for IE and Edge
+                  msOverflowStyle: "none",
+                  // Hide scrollbar for Firefox
+                  scrollbarWidth: "none"
+                },
+                children: renderMenuContent()
+              }
+            )
+          ]
+        })
       );
       return portal ? createDropdownPortal(menuContent) : menuContent;
     };
@@ -6390,7 +6489,7 @@ var Dropdown = forwardRef(
       }
       if (!headerText || headerText.toString().trim() === "") return null;
       const headerColor = isErrorText ? cssVars.destructive : colorVariables.main || cssVars.primary;
-      return /* @__PURE__ */ React22.createElement(
+      return /* @__PURE__ */ jsx(
         "div",
         {
           style: {
@@ -6408,36 +6507,42 @@ var Dropdown = forwardRef(
             overflow: "hidden",
             // Hide any overflow
             boxSizing: "border-box"
-          }
-        },
-        renderAnimatedText(headerText, useAnimationMode && animationMode === "typewriter")
+          },
+          children: renderAnimatedText(headerText, useAnimationMode && animationMode === "typewriter")
+        }
       );
     };
-    const dropdownElement = /* @__PURE__ */ React22.createElement(
+    const dropdownElement = /* @__PURE__ */ jsxs(
       "div",
-      __spreadValues({
+      __spreadProps(__spreadValues({
         ref: ref || containerRef,
         style: combinedStyles,
         id,
         className,
         "data-testid": dataTestId
-      }, restProps),
-      renderTrigger(),
-      renderMenu()
+      }, restProps), {
+        children: [
+          renderTrigger(),
+          renderMenu()
+        ]
+      })
     );
     const shouldIncludeHeader = header || error && errorText;
-    const completeElement = shouldIncludeHeader ? /* @__PURE__ */ React22.createElement("div", { style: {
+    const completeElement = shouldIncludeHeader ? /* @__PURE__ */ jsxs("div", { style: {
       position: "relative",
       display: "inline-block"
-    } }, /* @__PURE__ */ React22.createElement("div", { style: {
-      // Position header absolutely to avoid affecting container size
-      position: "absolute",
-      top: 0,
-      left: 0,
-      right: 0,
-      transform: "translateY(calc(-100% - 8px))"
-      // Move up by full height + spacing
-    } }, renderHeader()), dropdownElement) : dropdownElement;
+    }, children: [
+      /* @__PURE__ */ jsx("div", { style: {
+        // Position header absolutely to avoid affecting container size
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        transform: "translateY(calc(-100% - 8px))"
+        // Move up by full height + spacing
+      }, children: renderHeader() }),
+      dropdownElement
+    ] }) : dropdownElement;
     return completeElement;
   }
 );
@@ -6928,12 +7033,12 @@ var getTypeColor = (color, cssVars, variant) => {
 };
 var createTypeIcon = (color, size, cssVars, customIcon, variant) => {
   if (customIcon) {
-    return /* @__PURE__ */ React22.createElement("span", null, customIcon);
+    return /* @__PURE__ */ jsx("span", { children: customIcon });
   }
   const iconName = getTypeIcon(color);
   const iconSize = getIconSize4(size);
   const iconColor = getTypeColor(color, cssVars, variant);
-  return /* @__PURE__ */ React22.createElement(
+  return /* @__PURE__ */ jsx(
     Icon,
     {
       name: iconName,
@@ -6968,8 +7073,6 @@ var getAriaLabel = (color, title, description) => {
   }
   return baseLabel;
 };
-
-// src/app/components/atoms/Notification/Notification.tsx
 var Notification = forwardRef(
   (allProps, ref) => {
     var _b;
@@ -7076,9 +7179,9 @@ var Notification = forwardRef(
       cursor: disabled ? "not-allowed" : loading ? "wait" : void 0
     }), style);
     const ariaLabel = getAriaLabel(effectiveColor, title, description);
-    return /* @__PURE__ */ React22.createElement(
+    return /* @__PURE__ */ jsxs(
       "div",
-      __spreadValues({
+      __spreadProps(__spreadValues({
         ref,
         id: id || notificationId,
         role: "alert",
@@ -7089,146 +7192,161 @@ var Notification = forwardRef(
         tabIndex: dismissible ? 0 : void 0,
         "data-testid": dataTestId,
         onClick
-      }, restProps),
-      /* @__PURE__ */ React22.createElement("div", { style: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "flex-start",
-        width: "100%"
-      } }, /* @__PURE__ */ React22.createElement("div", { style: { display: "flex", alignItems: "center", gap: "12px", flex: 1 } }, showIcon && /* @__PURE__ */ React22.createElement("div", { style: iconContainerStyles }, loading ? /* @__PURE__ */ React22.createElement(
-        ProgressIndicator,
-        {
-          type: "circular",
-          size: size === "xs" ? "xs" : size === "sm" ? "sm" : size === "lg" ? "md" : "sm",
-          color: variant === "outline" ? "primary" : effectiveColor,
-          variant: variant === "solid" ? "solid" : "outline",
-          disabled
-        }
-      ) : createTypeIcon(effectiveColor, size, cssVars, customIcon, variant)), /* @__PURE__ */ React22.createElement("h4", { style: titleStyles }, title)), dismissible && onDismiss && !loading && !disabled && /* @__PURE__ */ React22.createElement(
-        "button",
-        {
-          onClick: handleDismiss,
-          style: {
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            opacity: 0.6,
-            color: "inherit",
+      }, restProps), {
+        children: [
+          /* @__PURE__ */ jsxs("div", { style: {
             display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: "4px",
-            transition: animationsEnabled ? "opacity 0.2s ease-in-out" : "none",
-            width: size === "sm" ? "20px" : size === "lg" ? "28px" : "24px",
-            height: size === "sm" ? "20px" : size === "lg" ? "28px" : "24px",
-            fontSize: size === "sm" ? "16px" : size === "lg" ? "20px" : "18px",
-            marginLeft: "12px",
-            flexShrink: 0
-          },
-          "aria-label": "Dismiss notification",
-          onMouseEnter: (e) => {
-            if (animationsEnabled) {
-              e.currentTarget.style.opacity = "1";
-            }
-          },
-          onMouseLeave: (e) => {
-            if (animationsEnabled) {
-              e.currentTarget.style.opacity = "0.6";
-            }
-          }
-        },
-        /* @__PURE__ */ React22.createElement(Icon, { name: "Xmark", size: size === "lg" ? "md" : "sm" })
-      )),
-      (description || children || actions && actions.length > 0) && /* @__PURE__ */ React22.createElement("div", { style: { margin: "4px 0" } }, /* @__PURE__ */ React22.createElement(
-        Divider,
-        {
-          color: effectiveColor === "primary" ? "primary" : effectiveColor === "secondary" ? "secondary" : effectiveColor === "warning" ? "warning" : effectiveColor === "destructive" ? "destructive" : effectiveColor === "success" ? "success" : effectiveColor === "info" ? "info" : "primary",
-          rounded: shape === "pill" || Boolean(rounded),
-          size: "sm"
-        }
-      )),
-      (description || children || actions && actions.length > 0) && /* @__PURE__ */ React22.createElement("div", { style: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "flex-start",
-        width: "100%",
-        gap: "12px"
-      } }, /* @__PURE__ */ React22.createElement("div", { style: { flex: 1 } }, description && /* @__PURE__ */ React22.createElement("p", { style: __spreadProps(__spreadValues({}, descriptionStyles), {
-        margin: "0"
-      }) }, description), children && /* @__PURE__ */ React22.createElement("div", { style: { marginTop: description ? "4px" : "0" } }, children)), actions && actions.length > 0 && !loading && !disabled && /* @__PURE__ */ React22.createElement("div", { style: {
-        display: "flex",
-        gap: "8px",
-        alignItems: "flex-start",
-        flexWrap: "wrap",
-        flexShrink: 0
-      } }, actions.map((action, index) => {
-        const actionVariant = action.variant || "outline";
-        const baseStyles2 = getActionButtonStyles(actionVariant, size, cssVars, animationsEnabled, variant, effectiveColor);
-        const getHoverColors = (color2) => {
-          var _a2;
-          const colorMap = {
-            primary: { hover: cssVars.primaryHover },
-            secondary: { hover: cssVars.secondaryHover },
-            success: { hover: cssVars.successHover },
-            warning: { hover: cssVars.warningHover },
-            destructive: { hover: cssVars.destructiveHover },
-            info: { hover: cssVars.infoHover }
-          };
-          return ((_a2 = colorMap[color2]) == null ? void 0 : _a2.hover) || cssVars.primaryHover;
-        };
-        const hoverColor = getHoverColors(effectiveColor);
-        return /* @__PURE__ */ React22.createElement(
-          "button",
-          {
-            key: index,
-            onClick: action.onClick,
-            style: baseStyles2,
-            onMouseEnter: (e) => {
-              if (animationsEnabled) {
-                const isInSolidNotification = variant === "solid";
-                if (actionVariant === "solid") {
-                  if (isInSolidNotification) {
-                    e.currentTarget.style.backgroundColor = cssVars.foregroundAccent;
-                    e.currentTarget.style.borderTopColor = cssVars.foregroundAccent;
-                    e.currentTarget.style.borderRightColor = cssVars.foregroundAccent;
-                    e.currentTarget.style.borderBottomColor = cssVars.foregroundAccent;
-                    e.currentTarget.style.borderLeftColor = cssVars.foregroundAccent;
-                    e.currentTarget.style.color = hoverColor;
-                  } else {
-                    e.currentTarget.style.backgroundColor = hoverColor;
-                    e.currentTarget.style.borderTopColor = hoverColor;
-                    e.currentTarget.style.borderRightColor = hoverColor;
-                    e.currentTarget.style.borderBottomColor = hoverColor;
-                    e.currentTarget.style.borderLeftColor = hoverColor;
-                  }
-                } else if (actionVariant === "outline") {
-                  if (isInSolidNotification) {
-                    e.currentTarget.style.backgroundColor = cssVars.foregroundAccent;
-                  } else {
-                    const notificationBg = cssVars[`${effectiveColor}Background`] || cssVars.primaryBackground;
-                    e.currentTarget.style.backgroundColor = notificationBg;
-                    e.currentTarget.style.borderTopColor = hoverColor;
-                    e.currentTarget.style.borderRightColor = hoverColor;
-                    e.currentTarget.style.borderBottomColor = hoverColor;
-                    e.currentTarget.style.borderLeftColor = hoverColor;
-                    e.currentTarget.style.color = hoverColor;
-                  }
-                } else if (actionVariant === "ghost") {
-                  const ghostBg = cssVars[`${effectiveColor}Background`] || cssVars.primaryBackground;
-                  e.currentTarget.style.backgroundColor = ghostBg;
-                  e.currentTarget.style.color = hoverColor;
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            width: "100%"
+          }, children: [
+            /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: "12px", flex: 1 }, children: [
+              showIcon && /* @__PURE__ */ jsx("div", { style: iconContainerStyles, children: loading ? /* @__PURE__ */ jsx(
+                ProgressIndicator,
+                {
+                  type: "circular",
+                  size: size === "xs" ? "xs" : size === "sm" ? "sm" : size === "lg" ? "md" : "sm",
+                  color: variant === "outline" ? "primary" : effectiveColor,
+                  variant: variant === "solid" ? "solid" : "outline",
+                  disabled
                 }
+              ) : createTypeIcon(effectiveColor, size, cssVars, customIcon, variant) }),
+              /* @__PURE__ */ jsx("h4", { style: titleStyles, children: title })
+            ] }),
+            dismissible && onDismiss && !loading && !disabled && /* @__PURE__ */ jsx(
+              "button",
+              {
+                onClick: handleDismiss,
+                style: {
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  opacity: 0.6,
+                  color: "inherit",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: "4px",
+                  transition: animationsEnabled ? "opacity 0.2s ease-in-out" : "none",
+                  width: size === "sm" ? "20px" : size === "lg" ? "28px" : "24px",
+                  height: size === "sm" ? "20px" : size === "lg" ? "28px" : "24px",
+                  fontSize: size === "sm" ? "16px" : size === "lg" ? "20px" : "18px",
+                  marginLeft: "12px",
+                  flexShrink: 0
+                },
+                "aria-label": "Dismiss notification",
+                onMouseEnter: (e) => {
+                  if (animationsEnabled) {
+                    e.currentTarget.style.opacity = "1";
+                  }
+                },
+                onMouseLeave: (e) => {
+                  if (animationsEnabled) {
+                    e.currentTarget.style.opacity = "0.6";
+                  }
+                },
+                children: /* @__PURE__ */ jsx(Icon, { name: "Xmark", size: size === "lg" ? "md" : "sm" })
               }
-            },
-            onMouseLeave: (e) => {
-              if (animationsEnabled) {
-                Object.assign(e.currentTarget.style, baseStyles2);
-              }
+            )
+          ] }),
+          (description || children || actions && actions.length > 0) && /* @__PURE__ */ jsx("div", { style: { margin: "4px 0" }, children: /* @__PURE__ */ jsx(
+            Divider,
+            {
+              color: effectiveColor === "primary" ? "primary" : effectiveColor === "secondary" ? "secondary" : effectiveColor === "warning" ? "warning" : effectiveColor === "destructive" ? "destructive" : effectiveColor === "success" ? "success" : effectiveColor === "info" ? "info" : "primary",
+              rounded: shape === "pill" || Boolean(rounded),
+              size: "sm"
             }
-          },
-          action.label
-        );
-      })))
+          ) }),
+          (description || children || actions && actions.length > 0) && /* @__PURE__ */ jsxs("div", { style: {
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            width: "100%",
+            gap: "12px"
+          }, children: [
+            /* @__PURE__ */ jsxs("div", { style: { flex: 1 }, children: [
+              description && /* @__PURE__ */ jsx("p", { style: __spreadProps(__spreadValues({}, descriptionStyles), {
+                margin: "0"
+              }), children: description }),
+              children && /* @__PURE__ */ jsx("div", { style: { marginTop: description ? "4px" : "0" }, children })
+            ] }),
+            actions && actions.length > 0 && !loading && !disabled && /* @__PURE__ */ jsx("div", { style: {
+              display: "flex",
+              gap: "8px",
+              alignItems: "flex-start",
+              flexWrap: "wrap",
+              flexShrink: 0
+            }, children: actions.map((action, index) => {
+              const actionVariant = action.variant || "outline";
+              const baseStyles2 = getActionButtonStyles(actionVariant, size, cssVars, animationsEnabled, variant, effectiveColor);
+              const getHoverColors = (color2) => {
+                var _a2;
+                const colorMap = {
+                  primary: { hover: cssVars.primaryHover },
+                  secondary: { hover: cssVars.secondaryHover },
+                  success: { hover: cssVars.successHover },
+                  warning: { hover: cssVars.warningHover },
+                  destructive: { hover: cssVars.destructiveHover },
+                  info: { hover: cssVars.infoHover }
+                };
+                return ((_a2 = colorMap[color2]) == null ? void 0 : _a2.hover) || cssVars.primaryHover;
+              };
+              const hoverColor = getHoverColors(effectiveColor);
+              return /* @__PURE__ */ jsx(
+                "button",
+                {
+                  onClick: action.onClick,
+                  style: baseStyles2,
+                  onMouseEnter: (e) => {
+                    if (animationsEnabled) {
+                      const isInSolidNotification = variant === "solid";
+                      if (actionVariant === "solid") {
+                        if (isInSolidNotification) {
+                          e.currentTarget.style.backgroundColor = cssVars.foregroundAccent;
+                          e.currentTarget.style.borderTopColor = cssVars.foregroundAccent;
+                          e.currentTarget.style.borderRightColor = cssVars.foregroundAccent;
+                          e.currentTarget.style.borderBottomColor = cssVars.foregroundAccent;
+                          e.currentTarget.style.borderLeftColor = cssVars.foregroundAccent;
+                          e.currentTarget.style.color = hoverColor;
+                        } else {
+                          e.currentTarget.style.backgroundColor = hoverColor;
+                          e.currentTarget.style.borderTopColor = hoverColor;
+                          e.currentTarget.style.borderRightColor = hoverColor;
+                          e.currentTarget.style.borderBottomColor = hoverColor;
+                          e.currentTarget.style.borderLeftColor = hoverColor;
+                        }
+                      } else if (actionVariant === "outline") {
+                        if (isInSolidNotification) {
+                          e.currentTarget.style.backgroundColor = cssVars.foregroundAccent;
+                        } else {
+                          const notificationBg = cssVars[`${effectiveColor}Background`] || cssVars.primaryBackground;
+                          e.currentTarget.style.backgroundColor = notificationBg;
+                          e.currentTarget.style.borderTopColor = hoverColor;
+                          e.currentTarget.style.borderRightColor = hoverColor;
+                          e.currentTarget.style.borderBottomColor = hoverColor;
+                          e.currentTarget.style.borderLeftColor = hoverColor;
+                          e.currentTarget.style.color = hoverColor;
+                        }
+                      } else if (actionVariant === "ghost") {
+                        const ghostBg = cssVars[`${effectiveColor}Background`] || cssVars.primaryBackground;
+                        e.currentTarget.style.backgroundColor = ghostBg;
+                        e.currentTarget.style.color = hoverColor;
+                      }
+                    }
+                  },
+                  onMouseLeave: (e) => {
+                    if (animationsEnabled) {
+                      Object.assign(e.currentTarget.style, baseStyles2);
+                    }
+                  },
+                  children: action.label
+                },
+                index
+              );
+            }) })
+          ] })
+        ]
+      })
     );
   }
 );
@@ -7578,8 +7696,6 @@ var useFocusManagement2 = (inputRef, autoFocus = false) => {
   }, [inputRef]);
   return { focus, blur, select };
 };
-
-// src/app/components/atoms/Search/Search.tsx
 var Search = forwardRef((allProps, ref) => {
   var _b;
   const [formProps, componentProps] = extractFormProps(allProps);
@@ -7778,70 +7894,72 @@ var Search = forwardRef((allProps, ref) => {
     "aria-required": Boolean(required),
     "aria-disabled": Boolean(disabled)
   };
-  return /* @__PURE__ */ React22.createElement(
+  return /* @__PURE__ */ jsxs(
     "div",
     {
       className,
       style: combinedStyles,
-      "data-testid": dataTestId
-    },
-    showSearchIcon && searchIconPosition === "left" && /* @__PURE__ */ React22.createElement(
-      "button",
-      {
-        type: "button",
-        onClick: handleSearchClick,
-        disabled,
-        style: searchIconStyles,
-        tabIndex: -1,
-        "aria-label": "Search"
-      },
-      loading ? /* @__PURE__ */ React22.createElement("div", { style: loadingStyles }, /* @__PURE__ */ React22.createElement(Icon, { name: "Refresh", size: iconSize })) : searchIcon ? searchIcon : /* @__PURE__ */ React22.createElement(Icon, { name: "Search", size: iconSize })
-    ),
-    /* @__PURE__ */ React22.createElement(
-      "input",
-      __spreadValues(__spreadValues({
-        ref: combinedRef,
-        type: "text",
-        id: searchId,
-        name,
-        value,
-        onChange: handleInputChange,
-        onKeyDown: handleKeyDown6,
-        onFocus: handleFocus,
-        onBlur: handleBlur,
-        placeholder,
-        disabled,
-        required,
-        readOnly,
-        autoComplete,
-        autoFocus,
-        style: inputStyles
-      }, accessibilityProps), rest)
-    ),
-    showClearButton && value && !loading && /* @__PURE__ */ React22.createElement(
-      "button",
-      {
-        type: "button",
-        onClick: handleClearIconClick,
-        disabled,
-        style: clearIconStyles,
-        tabIndex: -1,
-        "aria-label": "Clear search"
-      },
-      clearIcon ? clearIcon : /* @__PURE__ */ React22.createElement(Icon, { name: "Cancel", size: iconSize })
-    ),
-    showSearchIcon && searchIconPosition === "right" && (!showClearButton || !value) && /* @__PURE__ */ React22.createElement(
-      "button",
-      {
-        type: "button",
-        onClick: handleSearchClick,
-        disabled,
-        style: searchIconStyles,
-        tabIndex: -1,
-        "aria-label": "Search"
-      },
-      loading ? /* @__PURE__ */ React22.createElement("div", { style: loadingStyles }, /* @__PURE__ */ React22.createElement(Icon, { name: "Refresh", size: iconSize })) : searchIcon ? searchIcon : /* @__PURE__ */ React22.createElement(Icon, { name: "Search", size: iconSize })
-    )
+      "data-testid": dataTestId,
+      children: [
+        showSearchIcon && searchIconPosition === "left" && /* @__PURE__ */ jsx(
+          "button",
+          {
+            type: "button",
+            onClick: handleSearchClick,
+            disabled,
+            style: searchIconStyles,
+            tabIndex: -1,
+            "aria-label": "Search",
+            children: loading ? /* @__PURE__ */ jsx("div", { style: loadingStyles, children: /* @__PURE__ */ jsx(Icon, { name: "Refresh", size: iconSize }) }) : searchIcon ? searchIcon : /* @__PURE__ */ jsx(Icon, { name: "Search", size: iconSize })
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          "input",
+          __spreadValues(__spreadValues({
+            ref: combinedRef,
+            type: "text",
+            id: searchId,
+            name,
+            value,
+            onChange: handleInputChange,
+            onKeyDown: handleKeyDown6,
+            onFocus: handleFocus,
+            onBlur: handleBlur,
+            placeholder,
+            disabled,
+            required,
+            readOnly,
+            autoComplete,
+            autoFocus,
+            style: inputStyles
+          }, accessibilityProps), rest)
+        ),
+        showClearButton && value && !loading && /* @__PURE__ */ jsx(
+          "button",
+          {
+            type: "button",
+            onClick: handleClearIconClick,
+            disabled,
+            style: clearIconStyles,
+            tabIndex: -1,
+            "aria-label": "Clear search",
+            children: clearIcon ? clearIcon : /* @__PURE__ */ jsx(Icon, { name: "Cancel", size: iconSize })
+          }
+        ),
+        showSearchIcon && searchIconPosition === "right" && (!showClearButton || !value) && /* @__PURE__ */ jsx(
+          "button",
+          {
+            type: "button",
+            onClick: handleSearchClick,
+            disabled,
+            style: searchIconStyles,
+            tabIndex: -1,
+            "aria-label": "Search",
+            children: loading ? /* @__PURE__ */ jsx("div", { style: loadingStyles, children: /* @__PURE__ */ jsx(Icon, { name: "Refresh", size: iconSize }) }) : searchIcon ? searchIcon : /* @__PURE__ */ jsx(Icon, { name: "Search", size: iconSize })
+          }
+        )
+      ]
+    }
   );
 });
 Search.displayName = "Search";
@@ -8275,9 +8393,9 @@ var handleFileInputChange = (event, accept, maxSize, maxFiles, multiple = false)
   return { validFiles, errors };
 };
 var useDragAndDrop = (onFilesChange, onError, accept, maxSize, maxFiles, multiple = false, disabled = false) => {
-  const [isDragActive, setIsDragActive] = React22.useState(false);
-  const dragCounter = React22.useRef(0);
-  const handleDragEnter = React22.useCallback((e) => {
+  const [isDragActive, setIsDragActive] = React21.useState(false);
+  const dragCounter = React21.useRef(0);
+  const handleDragEnter = React21.useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     if (disabled) return;
@@ -8286,7 +8404,7 @@ var useDragAndDrop = (onFilesChange, onError, accept, maxSize, maxFiles, multipl
       setIsDragActive(true);
     }
   }, [disabled]);
-  const handleDragLeave = React22.useCallback((e) => {
+  const handleDragLeave = React21.useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     if (disabled) return;
@@ -8295,13 +8413,13 @@ var useDragAndDrop = (onFilesChange, onError, accept, maxSize, maxFiles, multipl
       setIsDragActive(false);
     }
   }, [disabled]);
-  const handleDragOver = React22.useCallback((e) => {
+  const handleDragOver = React21.useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     if (disabled) return;
     e.dataTransfer.dropEffect = "copy";
   }, [disabled]);
-  const handleDrop = React22.useCallback((e) => {
+  const handleDrop = React21.useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     if (disabled) return;
@@ -8348,8 +8466,6 @@ var createFilePickerAccessibilityProps = (id, disabled, error, accept, multiple)
     "aria-label": `File upload area.${acceptDescription}${multipleDescription} Click to browse or drag and drop files here.`
   };
 };
-
-// src/app/components/atoms/FilePicker/FilePicker.tsx
 var FilePicker = forwardRef((allProps, ref) => {
   const [formProps, componentProps] = extractFormProps(allProps);
   const {
@@ -8403,10 +8519,10 @@ var FilePicker = forwardRef((allProps, ref) => {
   if (!cssVars) {
     return null;
   }
-  const [internalFiles, setInternalFiles] = React22.useState([]);
-  const [internalError, setInternalError] = React22.useState("");
+  const [internalFiles, setInternalFiles] = React21.useState([]);
+  const [internalError, setInternalError] = React21.useState("");
   const fileInputRef = useRef(null);
-  const filePickerId = React22.useMemo(() => id || generateFilePickerId(), [id]);
+  const filePickerId = React21.useMemo(() => id || generateFilePickerId(), [id]);
   const currentFiles = files !== void 0 ? files : internalFiles;
   const setCurrentFiles = files !== void 0 ? (newFiles) => onFilesChange == null ? void 0 : onFilesChange(newFiles) : setInternalFiles;
   const currentError = errorText || internalError;
@@ -8506,137 +8622,152 @@ var FilePicker = forwardRef((allProps, ref) => {
     accept,
     multiple
   );
-  return /* @__PURE__ */ React22.createElement(
+  return /* @__PURE__ */ jsxs(
     "div",
     {
       className,
       style: __spreadValues(__spreadValues({}, createFilePickerContainerStyles(shape, width, height, animationsEnabled, rounded)), style),
-      "data-testid": dataTestId
-    },
-    /* @__PURE__ */ React22.createElement(
-      "div",
-      __spreadValues(__spreadProps(__spreadValues(__spreadValues({}, dragProps), accessibilityProps), {
-        onClick: handleDropZoneClick,
-        onKeyDown: handleKeyDown6,
-        style: getFilePickerDropZoneStyles(
-          color,
-          customColor,
-          variant,
-          size,
-          shape,
-          disabled,
-          isError,
-          isDragActive,
-          animationsEnabled,
-          cssVars,
-          rounded
-        )
-      }), restProps),
-      /* @__PURE__ */ React22.createElement("div", { style: getIconStyles2(size) }, icon || /* @__PURE__ */ React22.createElement(
-        Icon,
-        {
-          name: "CloudUpload",
-          size: "lg"
-        }
-      )),
-      /* @__PURE__ */ React22.createElement("div", { style: getUploadTextStyles(size) }, isDragActive ? "Drop files here" : uploadText || "Drop files here or click to browse"),
-      subText && /* @__PURE__ */ React22.createElement("div", { style: getSubTextStyles(size, cssVars) }, subText)
-    ),
-    helperText && !isError && /* @__PURE__ */ React22.createElement(
-      "div",
-      {
-        id: `${filePickerId}-description`,
-        style: getHelperTextStyles(size, disabled, false, cssVars)
-      },
-      helperText
-    ),
-    /* @__PURE__ */ React22.createElement(
-      "input",
-      {
-        ref: fileInputRef,
-        type: "file",
-        id: filePickerId,
-        multiple,
-        accept,
-        onChange: handleInputChange,
-        style: getHiddenInputStyles(),
-        tabIndex: -1,
-        "aria-hidden": "true"
-      }
-    ),
-    isError && /* @__PURE__ */ React22.createElement(
-      "div",
-      {
-        id: `${filePickerId}-error`,
-        style: getHelperTextStyles(size, disabled, true, cssVars),
-        role: "alert",
-        "aria-live": "polite"
-      },
-      /* @__PURE__ */ React22.createElement(Icon, { name: "WarningCircle", size: "sm", style: { marginRight: "6px" } }),
-      currentError
-    ),
-    showFileList && currentFiles.length > 0 && /* @__PURE__ */ React22.createElement("div", { style: getFileListStyles() }, currentFiles.map((file, index) => /* @__PURE__ */ React22.createElement(
-      "div",
-      {
-        key: `${file.name}-${file.size}-${index}`,
-        style: getFileItemStyles(
-          color,
-          customColor,
-          variant,
-          size,
-          shape,
-          disabled,
-          animationsEnabled,
-          cssVars,
-          rounded
-        )
-      },
-      /* @__PURE__ */ React22.createElement("div", { style: getFileInfoStyles() }, /* @__PURE__ */ React22.createElement(
-        Icon,
-        {
-          name: "Attachment",
-          size: "sm",
-          style: {
-            marginRight: "8px",
-            flexShrink: 0
-          }
-        }
-      ), /* @__PURE__ */ React22.createElement("div", { style: {
-        flex: 1,
-        minWidth: 0,
-        display: "flex",
-        flexDirection: "column"
-      } }, /* @__PURE__ */ React22.createElement("span", { style: getFileNameStyles() }, file.name), /* @__PURE__ */ React22.createElement("span", { style: getFileSizeStyles(cssVars) }, formatFileSize(file.size)))),
-      /* @__PURE__ */ React22.createElement(
-        Button,
-        {
-          variant: "ghost",
-          size: "sm",
-          color: variant === "outline" || variant === "solid" ? "custom" : color,
-          customColor: variant === "outline" || variant === "solid" ? cssVars.foreground : void 0,
-          onClick: (e) => {
-            e.stopPropagation();
-            handleRemoveFile(index);
-          },
-          "aria-label": `Remove ${file.name}`,
-          disabled,
-          animate: animationsEnabled,
-          style: {
-            minWidth: "auto",
-            padding: "4px",
-            borderRadius: "50%",
-            aspectRatio: "1"
-          }
-        },
-        /* @__PURE__ */ React22.createElement(
-          Icon,
+      "data-testid": dataTestId,
+      children: [
+        /* @__PURE__ */ jsxs(
+          "div",
+          __spreadProps(__spreadValues(__spreadProps(__spreadValues(__spreadValues({}, dragProps), accessibilityProps), {
+            onClick: handleDropZoneClick,
+            onKeyDown: handleKeyDown6,
+            style: getFilePickerDropZoneStyles(
+              color,
+              customColor,
+              variant,
+              size,
+              shape,
+              disabled,
+              isError,
+              isDragActive,
+              animationsEnabled,
+              cssVars,
+              rounded
+            )
+          }), restProps), {
+            children: [
+              /* @__PURE__ */ jsx("div", { style: getIconStyles2(size), children: icon || /* @__PURE__ */ jsx(
+                Icon,
+                {
+                  name: "CloudUpload",
+                  size: "lg"
+                }
+              ) }),
+              /* @__PURE__ */ jsx("div", { style: getUploadTextStyles(size), children: isDragActive ? "Drop files here" : uploadText || "Drop files here or click to browse" }),
+              subText && /* @__PURE__ */ jsx("div", { style: getSubTextStyles(size, cssVars), children: subText })
+            ]
+          })
+        ),
+        helperText && !isError && /* @__PURE__ */ jsx(
+          "div",
           {
-            name: "Xmark",
-            size: "sm"
+            id: `${filePickerId}-description`,
+            style: getHelperTextStyles(size, disabled, false, cssVars),
+            children: helperText
           }
-        )
-      )
-    )))
+        ),
+        /* @__PURE__ */ jsx(
+          "input",
+          {
+            ref: fileInputRef,
+            type: "file",
+            id: filePickerId,
+            multiple,
+            accept,
+            onChange: handleInputChange,
+            style: getHiddenInputStyles(),
+            tabIndex: -1,
+            "aria-hidden": "true"
+          }
+        ),
+        isError && /* @__PURE__ */ jsxs(
+          "div",
+          {
+            id: `${filePickerId}-error`,
+            style: getHelperTextStyles(size, disabled, true, cssVars),
+            role: "alert",
+            "aria-live": "polite",
+            children: [
+              /* @__PURE__ */ jsx(Icon, { name: "WarningCircle", size: "sm", style: { marginRight: "6px" } }),
+              currentError
+            ]
+          }
+        ),
+        showFileList && currentFiles.length > 0 && /* @__PURE__ */ jsx("div", { style: getFileListStyles(), children: currentFiles.map((file, index) => /* @__PURE__ */ jsxs(
+          "div",
+          {
+            style: getFileItemStyles(
+              color,
+              customColor,
+              variant,
+              size,
+              shape,
+              disabled,
+              animationsEnabled,
+              cssVars,
+              rounded
+            ),
+            children: [
+              /* @__PURE__ */ jsxs("div", { style: getFileInfoStyles(), children: [
+                /* @__PURE__ */ jsx(
+                  Icon,
+                  {
+                    name: "Attachment",
+                    size: "sm",
+                    style: {
+                      marginRight: "8px",
+                      flexShrink: 0
+                    }
+                  }
+                ),
+                /* @__PURE__ */ jsxs("div", { style: {
+                  flex: 1,
+                  minWidth: 0,
+                  display: "flex",
+                  flexDirection: "column"
+                }, children: [
+                  /* @__PURE__ */ jsx("span", { style: getFileNameStyles(), children: file.name }),
+                  /* @__PURE__ */ jsx("span", { style: getFileSizeStyles(cssVars), children: formatFileSize(file.size) })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsx(
+                Button,
+                {
+                  variant: "ghost",
+                  size: "sm",
+                  color: variant === "outline" || variant === "solid" ? "custom" : color,
+                  customColor: variant === "outline" || variant === "solid" ? cssVars.foreground : void 0,
+                  onClick: (e) => {
+                    e.stopPropagation();
+                    handleRemoveFile(index);
+                  },
+                  "aria-label": `Remove ${file.name}`,
+                  disabled,
+                  animate: animationsEnabled,
+                  style: {
+                    minWidth: "auto",
+                    padding: "4px",
+                    borderRadius: "50%",
+                    aspectRatio: "1"
+                  },
+                  children: /* @__PURE__ */ jsx(
+                    Icon,
+                    {
+                      name: "Xmark",
+                      size: "sm"
+                    }
+                  )
+                }
+              )
+            ]
+          },
+          `${file.name}-${file.size}-${index}`
+        )) })
+      ]
+    }
   );
 });
 FilePicker.displayName = "FilePicker";
@@ -8986,8 +9117,6 @@ var getAriaAttributes = (props) => {
     "aria-labelledby": labelledBy || void 0
   };
 };
-
-// src/app/components/atoms/RadioButton/RadioButton.tsx
 var RadioButton = forwardRef((allProps, ref) => {
   var _b;
   const [formProps, componentProps] = extractFormProps(allProps);
@@ -9143,55 +9272,63 @@ var RadioButton = forwardRef((allProps, ref) => {
     labelledBy: label ? `${id}-label` : void 0
   });
   const combinedStyles = __spreadValues(__spreadValues({}, containerStyles), style);
-  return /* @__PURE__ */ React22.createElement(
+  return /* @__PURE__ */ jsxs(
     "div",
     {
       className,
       style: combinedStyles,
-      "data-testid": dataTestId
-    },
-    header && /* @__PURE__ */ React22.createElement(
-      "div",
-      {
-        id: `${id}-header`,
-        style: headerStyles,
-        onClick: handleContentClick
-      },
-      header
-    ),
-    /* @__PURE__ */ React22.createElement("div", { style: {
-      position: "relative",
-      display: "flex",
-      alignItems: "center",
-      gap: "4px"
-      // 4px spacing between radio button and label
-    } }, /* @__PURE__ */ React22.createElement("div", { style: { position: "relative" } }, /* @__PURE__ */ React22.createElement(
-      "input",
-      __spreadValues(__spreadValues({
-        ref: inputRef,
-        type: "radio",
-        id,
-        name,
-        value,
-        checked: isChecked,
-        onChange: handleChange,
-        onFocus: handleFocus,
-        onBlur: handleBlur,
-        disabled,
-        required,
-        "aria-label": ariaLabel,
-        style: hiddenInputStyles
-      }, ariaAttributes), rest)
-    ), /* @__PURE__ */ React22.createElement("div", { style: circleStyles, onClick: handleCircleClick }, isChecked && /* @__PURE__ */ React22.createElement("div", { style: dotStyles }))), label && /* @__PURE__ */ React22.createElement(
-      "label",
-      {
-        id: `${id}-label`,
-        htmlFor: id,
-        style: labelStyles,
-        onClick: handleContentClick
-      },
-      label
-    ))
+      "data-testid": dataTestId,
+      children: [
+        header && /* @__PURE__ */ jsx(
+          "div",
+          {
+            id: `${id}-header`,
+            style: headerStyles,
+            onClick: handleContentClick,
+            children: header
+          }
+        ),
+        /* @__PURE__ */ jsxs("div", { style: {
+          position: "relative",
+          display: "flex",
+          alignItems: "center",
+          gap: "4px"
+          // 4px spacing between radio button and label
+        }, children: [
+          /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
+            /* @__PURE__ */ jsx(
+              "input",
+              __spreadValues(__spreadValues({
+                ref: inputRef,
+                type: "radio",
+                id,
+                name,
+                value,
+                checked: isChecked,
+                onChange: handleChange,
+                onFocus: handleFocus,
+                onBlur: handleBlur,
+                disabled,
+                required,
+                "aria-label": ariaLabel,
+                style: hiddenInputStyles
+              }, ariaAttributes), rest)
+            ),
+            /* @__PURE__ */ jsx("div", { style: circleStyles, onClick: handleCircleClick, children: isChecked && /* @__PURE__ */ jsx("div", { style: dotStyles }) })
+          ] }),
+          label && /* @__PURE__ */ jsx(
+            "label",
+            {
+              id: `${id}-label`,
+              htmlFor: id,
+              style: labelStyles,
+              onClick: handleContentClick,
+              children: label
+            }
+          )
+        ] })
+      ]
+    }
   );
 });
 RadioButton.displayName = "RadioButton";
@@ -9378,7 +9515,7 @@ var getWebKitScrollbarStyles = (color, customColor, variant, size, shape, orient
   const shapeStyles = getShapeStyles13(shape);
   const isHoverOnly = visibility === "hover";
   const isHidden = visibility === "hidden";
-  if (isHidden) {
+  if (isHidden || variant === "invisible") {
     return {
       "&::-webkit-scrollbar": {
         display: "none"
@@ -9419,16 +9556,6 @@ var getWebKitScrollbarStyles = (color, customColor, variant, size, shape, orient
           buttonColor: colors.main,
           backdropFilter: "blur(10px)",
           webkitBackdropFilter: "blur(10px)"
-        };
-      case "invisible":
-        return {
-          thumb: "transparent",
-          thumbHover: "transparent",
-          track: "transparent",
-          trackBorder: "none",
-          border: "none",
-          showButtons: false,
-          buttonColor: "transparent"
         };
       case "outline":
       default:
@@ -9475,17 +9602,26 @@ var getWebKitScrollbarStyles = (color, customColor, variant, size, shape, orient
       border: `${Math.max(2, Math.floor((scrollbarThickness - sizeConfig.thumbThickness) / 2))}px solid transparent`,
       backgroundClip: "padding-box",
       transition: animationsEnabled ? "background-color var(--duration-fast) var(--animation-smooth), opacity var(--duration-fast) var(--animation-smooth)" : "none",
-      opacity: variant === "invisible" ? 0 : isHoverOnly ? 0 : 1,
-      cursor: disabled ? "not-allowed" : variant === "invisible" ? "default" : "pointer",
+      // visibility logic: 'always' = opacity 1, 'hover' = opacity 0 until hover
+      opacity: isHoverOnly ? 0 : 1,
+      cursor: disabled ? "not-allowed" : "grab",
       backdropFilter: variantColors.backdropFilter || "none",
       WebkitBackdropFilter: variantColors.webkitBackdropFilter || "none",
       boxShadow: variant === "glassmorphic" ? `0 2px 4px ${cssVars == null ? void 0 : cssVars.shadow}20` : "none"
     },
     // Thumb hover state
     "&::-webkit-scrollbar-thumb:hover": {
-      backgroundColor: disabled ? variantColors.thumb : variant === "invisible" ? "transparent" : variantColors.thumbHover,
-      opacity: variant === "invisible" ? 0 : 1,
+      backgroundColor: disabled ? variantColors.thumb : variantColors.thumbHover,
+      opacity: 1,
+      cursor: disabled ? "not-allowed" : "grab",
       boxShadow: variant === "glassmorphic" ? `0 4px 8px ${cssVars == null ? void 0 : cssVars.shadow}30` : "none"
+    },
+    // Thumb active state (while dragging)
+    "&::-webkit-scrollbar-thumb:active": {
+      backgroundColor: disabled ? variantColors.thumb : variantColors.thumbHover,
+      cursor: disabled ? "not-allowed" : "grabbing",
+      opacity: 1,
+      boxShadow: variant === "glassmorphic" ? `0 6px 12px ${cssVars == null ? void 0 : cssVars.shadow}40` : "none"
     },
     // Corner where scrollbars meet
     "&::-webkit-scrollbar-corner": {
@@ -9807,8 +9943,6 @@ var throttleScrollEvent = (func, delay = 16) => {
     }
   });
 };
-
-// src/app/components/atoms/Scrollbar/Scrollbar.tsx
 var createWebkitScrollbarCSS = (uniqueId, webkitStyles) => {
   let css = "";
   let hoverStyles = null;
@@ -9908,7 +10042,6 @@ var Scrollbar = forwardRef((allProps, ref) => {
   );
   const animationsEnabled = ((_b = settings.appearance.animations) != null ? _b : true) && animate;
   validateScrollbarProps({ height, width, orientation });
-  const isStartBothCase = alignment === "start" && orientation === "both";
   const containerRef = useRef(null);
   const contentRef = useRef(null);
   const verticalTrackRef = useRef(null);
@@ -10205,230 +10338,241 @@ var Scrollbar = forwardRef((allProps, ref) => {
     animationsEnabled,
     cssVars
   );
+  const webkitCSS = useMemo(() => {
+    if (!supportsWebKitScrollbar()) return "";
+    return createWebkitScrollbarCSS(uniqueId, webkitStyles);
+  }, [uniqueId, color, customColor, variant, size, shape, orientation, visibility, alignment, disabled, animationsEnabled, cssVars]);
   useEffect(() => {
-    if (supportsWebKitScrollbar()) {
-      let css = createWebkitScrollbarCSS(uniqueId, webkitStyles);
-      if (css) {
-        injectCSS(uniqueId, css);
-      }
+    const isWebKitSupported = supportsWebKitScrollbar();
+    if (isWebKitSupported && webkitCSS) {
+      injectCSS(uniqueId, webkitCSS);
     }
     return () => {
       cleanupCSS(uniqueId);
     };
-  }, [uniqueId, color, customColor, variant, size, shape, orientation, visibility, alignment, disabled, animationsEnabled, cssVars, isStartBothCase]);
+  }, [uniqueId, webkitCSS]);
   const ariaAttributes = getScrollbarAriaAttributes(
     orientation,
     orientation === "vertical" ? scrollState.scrollTop : scrollState.scrollLeft,
     orientation === "vertical" ? scrollState.scrollHeight - scrollState.clientHeight : scrollState.scrollWidth - scrollState.clientWidth,
     Boolean(disabled)
   );
-  return /* @__PURE__ */ React22.createElement(
+  return /* @__PURE__ */ jsxs(
     "div",
-    __spreadValues(__spreadValues({
+    __spreadProps(__spreadValues(__spreadValues({
       className,
       style: combinedStyles,
       id: uniqueId
-    }, ariaAttributes), rest),
-    /* @__PURE__ */ React22.createElement(
-      "div",
-      {
-        ref: containerRef,
-        style: contentStyles,
-        onScroll: handleScroll,
-        tabIndex: disabled ? -1 : 0
-      },
-      /* @__PURE__ */ React22.createElement("div", { ref: contentRef, style: contentDirectionStyles }, children)
-    ),
-    !supportsWebKitScrollbar() && needsVerticalScrollbar && (orientation === "vertical" || orientation === "both") && variant !== "invisible" && /* @__PURE__ */ React22.createElement(
-      "div",
-      {
-        ref: verticalTrackRef,
-        style: verticalTrackStyles,
-        onClick: (e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          const clickY = e.clientY - rect.top;
-          const trackHeight = rect.height;
-          const scrollPercentage = clickY / trackHeight;
-          const newScrollTop = scrollPercentage * (scrollState.scrollHeight - scrollState.clientHeight);
-          if (containerRef.current) {
-            containerRef.current.scrollTop = newScrollTop;
+    }, ariaAttributes), rest), {
+      children: [
+        /* @__PURE__ */ jsx(
+          "div",
+          {
+            ref: containerRef,
+            style: contentStyles,
+            onScroll: handleScroll,
+            tabIndex: disabled ? -1 : 0,
+            children: /* @__PURE__ */ jsx("div", { ref: contentRef, style: contentDirectionStyles, children })
           }
-        }
-      },
-      /* @__PURE__ */ React22.createElement(
-        "div",
-        {
-          ref: verticalThumbRef,
-          style: verticalThumbStyles,
-          onMouseDown: (e) => handleThumbMouseDown(e, "vertical")
-        }
-      )
-    ),
-    !supportsWebKitScrollbar() && needsHorizontalScrollbar && (orientation === "horizontal" || orientation === "both") && variant !== "invisible" && /* @__PURE__ */ React22.createElement(
-      "div",
-      {
-        ref: horizontalTrackRef,
-        style: horizontalTrackStyles,
-        onClick: (e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          const clickX = e.clientX - rect.left;
-          const trackWidth = rect.width;
-          const scrollPercentage = clickX / trackWidth;
-          const newScrollLeft = scrollPercentage * (scrollState.scrollWidth - scrollState.clientWidth);
-          if (containerRef.current) {
-            containerRef.current.scrollLeft = newScrollLeft;
-          }
-        }
-      },
-      /* @__PURE__ */ React22.createElement(
-        "div",
-        {
-          ref: horizontalThumbRef,
-          style: horizontalThumbStyles,
-          onMouseDown: (e) => handleThumbMouseDown(e, "horizontal")
-        }
-      )
-    ),
-    showIndicators && needsVerticalScrollbar && (orientation === "vertical" || orientation === "both") && variant !== "invisible" && /* @__PURE__ */ React22.createElement(React22.Fragment, null, /* @__PURE__ */ React22.createElement(
-      "div",
-      {
-        style: getScrollIndicatorStyles(
-          "vertical",
-          color,
-          customColor,
-          size,
-          "top",
-          scrollState.scrollTop > 0,
-          Boolean(disabled),
-          animationsEnabled,
-          cssVars,
-          alignment,
-          variant
         ),
-        onClick: () => {
-          if (containerRef.current && !disabled) {
-            containerRef.current.scrollTop = Math.max(0, scrollState.scrollTop - 100);
+        !supportsWebKitScrollbar() && needsVerticalScrollbar && (orientation === "vertical" || orientation === "both") && variant !== "invisible" && /* @__PURE__ */ jsx(
+          "div",
+          {
+            ref: verticalTrackRef,
+            style: verticalTrackStyles,
+            onClick: (e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const clickY = e.clientY - rect.top;
+              const trackHeight = rect.height;
+              const scrollPercentage = clickY / trackHeight;
+              const newScrollTop = scrollPercentage * (scrollState.scrollHeight - scrollState.clientHeight);
+              if (containerRef.current) {
+                containerRef.current.scrollTop = newScrollTop;
+              }
+            },
+            children: /* @__PURE__ */ jsx(
+              "div",
+              {
+                ref: verticalThumbRef,
+                style: verticalThumbStyles,
+                onMouseDown: (e) => handleThumbMouseDown(e, "vertical")
+              }
+            )
           }
-        }
-      },
-      /* @__PURE__ */ React22.createElement(
-        Icon,
-        {
-          name: "NavArrowUpSolid",
-          size: size === "xs" ? 12 : size === "sm" ? 14 : size === "md" ? 16 : size === "lg" ? 18 : 20,
-          style: {
-            transform: "rotate(0deg)",
-            opacity: scrollState.scrollTop > 0 ? 1 : 0.3
-          }
-        }
-      )
-    ), /* @__PURE__ */ React22.createElement(
-      "div",
-      {
-        style: getScrollIndicatorStyles(
-          "vertical",
-          color,
-          customColor,
-          size,
-          "bottom",
-          scrollState.scrollTop < scrollState.scrollHeight - scrollState.clientHeight,
-          Boolean(disabled),
-          animationsEnabled,
-          cssVars,
-          alignment,
-          variant
         ),
-        onClick: () => {
-          if (containerRef.current && !disabled) {
-            containerRef.current.scrollTop = Math.min(
-              scrollState.scrollHeight - scrollState.clientHeight,
-              scrollState.scrollTop + 100
-            );
+        !supportsWebKitScrollbar() && needsHorizontalScrollbar && (orientation === "horizontal" || orientation === "both") && variant !== "invisible" && /* @__PURE__ */ jsx(
+          "div",
+          {
+            ref: horizontalTrackRef,
+            style: horizontalTrackStyles,
+            onClick: (e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const clickX = e.clientX - rect.left;
+              const trackWidth = rect.width;
+              const scrollPercentage = clickX / trackWidth;
+              const newScrollLeft = scrollPercentage * (scrollState.scrollWidth - scrollState.clientWidth);
+              if (containerRef.current) {
+                containerRef.current.scrollLeft = newScrollLeft;
+              }
+            },
+            children: /* @__PURE__ */ jsx(
+              "div",
+              {
+                ref: horizontalThumbRef,
+                style: horizontalThumbStyles,
+                onMouseDown: (e) => handleThumbMouseDown(e, "horizontal")
+              }
+            )
           }
-        }
-      },
-      /* @__PURE__ */ React22.createElement(
-        Icon,
-        {
-          name: "NavArrowUpSolid",
-          size: size === "xs" ? 12 : size === "sm" ? 14 : size === "md" ? 16 : size === "lg" ? 18 : 20,
-          style: {
-            transform: "rotate(180deg)",
-            opacity: scrollState.scrollTop < scrollState.scrollHeight - scrollState.clientHeight ? 1 : 0.3
-          }
-        }
-      )
-    )),
-    showIndicators && needsHorizontalScrollbar && (orientation === "horizontal" || orientation === "both") && variant !== "invisible" && /* @__PURE__ */ React22.createElement(React22.Fragment, null, /* @__PURE__ */ React22.createElement(
-      "div",
-      {
-        style: getScrollIndicatorStyles(
-          "horizontal",
-          color,
-          customColor,
-          size,
-          "left",
-          scrollState.scrollLeft > 0,
-          Boolean(disabled),
-          animationsEnabled,
-          cssVars,
-          alignment,
-          variant
         ),
-        onClick: () => {
-          if (containerRef.current && !disabled) {
-            containerRef.current.scrollLeft = Math.max(0, scrollState.scrollLeft - 100);
-          }
-        }
-      },
-      /* @__PURE__ */ React22.createElement(
-        Icon,
-        {
-          name: "NavArrowUpSolid",
-          size: size === "xs" ? 12 : size === "sm" ? 14 : size === "md" ? 16 : size === "lg" ? 18 : 20,
-          style: {
-            transform: "rotate(-90deg)",
-            opacity: scrollState.scrollLeft > 0 ? 1 : 0.3
-          }
-        }
-      )
-    ), /* @__PURE__ */ React22.createElement(
-      "div",
-      {
-        style: getScrollIndicatorStyles(
-          "horizontal",
-          color,
-          customColor,
-          size,
-          "right",
-          scrollState.scrollLeft < scrollState.scrollWidth - scrollState.clientWidth,
-          Boolean(disabled),
-          animationsEnabled,
-          cssVars,
-          alignment,
-          variant
-        ),
-        onClick: () => {
-          if (containerRef.current && !disabled) {
-            containerRef.current.scrollLeft = Math.min(
-              scrollState.scrollWidth - scrollState.clientWidth,
-              scrollState.scrollLeft + 100
-            );
-          }
-        }
-      },
-      /* @__PURE__ */ React22.createElement(
-        Icon,
-        {
-          name: "NavArrowUpSolid",
-          size: size === "xs" ? 12 : size === "sm" ? 14 : size === "md" ? 16 : size === "lg" ? 18 : 20,
-          style: {
-            transform: "rotate(90deg)",
-            opacity: scrollState.scrollLeft < scrollState.scrollWidth - scrollState.clientWidth ? 1 : 0.3
-          }
-        }
-      )
-    ))
+        showIndicators && needsVerticalScrollbar && (orientation === "vertical" || orientation === "both") && variant !== "invisible" && /* @__PURE__ */ jsxs(Fragment, { children: [
+          /* @__PURE__ */ jsx(
+            "div",
+            {
+              style: getScrollIndicatorStyles(
+                "vertical",
+                color,
+                customColor,
+                size,
+                "top",
+                scrollState.scrollTop > 0,
+                Boolean(disabled),
+                animationsEnabled,
+                cssVars,
+                alignment,
+                variant
+              ),
+              onClick: () => {
+                if (containerRef.current && !disabled) {
+                  containerRef.current.scrollTop = Math.max(0, scrollState.scrollTop - 100);
+                }
+              },
+              children: /* @__PURE__ */ jsx(
+                Icon,
+                {
+                  name: "NavArrowUpSolid",
+                  size: size === "xs" ? 12 : size === "sm" ? 14 : size === "md" ? 16 : size === "lg" ? 18 : 20,
+                  style: {
+                    transform: "rotate(0deg)",
+                    opacity: scrollState.scrollTop > 0 ? 1 : 0.3
+                  }
+                }
+              )
+            }
+          ),
+          /* @__PURE__ */ jsx(
+            "div",
+            {
+              style: getScrollIndicatorStyles(
+                "vertical",
+                color,
+                customColor,
+                size,
+                "bottom",
+                scrollState.scrollTop < scrollState.scrollHeight - scrollState.clientHeight,
+                Boolean(disabled),
+                animationsEnabled,
+                cssVars,
+                alignment,
+                variant
+              ),
+              onClick: () => {
+                if (containerRef.current && !disabled) {
+                  containerRef.current.scrollTop = Math.min(
+                    scrollState.scrollHeight - scrollState.clientHeight,
+                    scrollState.scrollTop + 100
+                  );
+                }
+              },
+              children: /* @__PURE__ */ jsx(
+                Icon,
+                {
+                  name: "NavArrowUpSolid",
+                  size: size === "xs" ? 12 : size === "sm" ? 14 : size === "md" ? 16 : size === "lg" ? 18 : 20,
+                  style: {
+                    transform: "rotate(180deg)",
+                    opacity: scrollState.scrollTop < scrollState.scrollHeight - scrollState.clientHeight ? 1 : 0.3
+                  }
+                }
+              )
+            }
+          )
+        ] }),
+        showIndicators && needsHorizontalScrollbar && (orientation === "horizontal" || orientation === "both") && variant !== "invisible" && /* @__PURE__ */ jsxs(Fragment, { children: [
+          /* @__PURE__ */ jsx(
+            "div",
+            {
+              style: getScrollIndicatorStyles(
+                "horizontal",
+                color,
+                customColor,
+                size,
+                "left",
+                scrollState.scrollLeft > 0,
+                Boolean(disabled),
+                animationsEnabled,
+                cssVars,
+                alignment,
+                variant
+              ),
+              onClick: () => {
+                if (containerRef.current && !disabled) {
+                  containerRef.current.scrollLeft = Math.max(0, scrollState.scrollLeft - 100);
+                }
+              },
+              children: /* @__PURE__ */ jsx(
+                Icon,
+                {
+                  name: "NavArrowUpSolid",
+                  size: size === "xs" ? 12 : size === "sm" ? 14 : size === "md" ? 16 : size === "lg" ? 18 : 20,
+                  style: {
+                    transform: "rotate(-90deg)",
+                    opacity: scrollState.scrollLeft > 0 ? 1 : 0.3
+                  }
+                }
+              )
+            }
+          ),
+          /* @__PURE__ */ jsx(
+            "div",
+            {
+              style: getScrollIndicatorStyles(
+                "horizontal",
+                color,
+                customColor,
+                size,
+                "right",
+                scrollState.scrollLeft < scrollState.scrollWidth - scrollState.clientWidth,
+                Boolean(disabled),
+                animationsEnabled,
+                cssVars,
+                alignment,
+                variant
+              ),
+              onClick: () => {
+                if (containerRef.current && !disabled) {
+                  containerRef.current.scrollLeft = Math.min(
+                    scrollState.scrollWidth - scrollState.clientWidth,
+                    scrollState.scrollLeft + 100
+                  );
+                }
+              },
+              children: /* @__PURE__ */ jsx(
+                Icon,
+                {
+                  name: "NavArrowUpSolid",
+                  size: size === "xs" ? 12 : size === "sm" ? 14 : size === "md" ? 16 : size === "lg" ? 18 : 20,
+                  style: {
+                    transform: "rotate(90deg)",
+                    opacity: scrollState.scrollLeft < scrollState.scrollWidth - scrollState.clientWidth ? 1 : 0.3
+                  }
+                }
+              )
+            }
+          )
+        ] })
+      ]
+    })
   );
 });
 Scrollbar.displayName = "Scrollbar";
@@ -10684,8 +10828,6 @@ var getLabelContainerStyles2 = (position) => ({
   flexDirection: "column",
   order: position === "left" ? -1 : 1
 });
-
-// src/app/components/atoms/Toggle/Toggle.tsx
 var Toggle = forwardRef((allProps, ref) => {
   const _a = allProps, { onChange } = _a, propsForExtraction = __objRest(_a, ["onChange"]);
   const [formProps, componentProps] = extractFormProps(propsForExtraction);
@@ -10766,75 +10908,80 @@ var Toggle = forwardRef((allProps, ref) => {
   const renderLabelContent = () => {
     if (!label && !description) return null;
     if (description) {
-      return /* @__PURE__ */ React22.createElement("div", { style: getLabelContainerStyles2(labelPosition) }, label && /* @__PURE__ */ React22.createElement(
-        "label",
-        {
-          id: labelId,
-          htmlFor: id,
-          style: getLabelStyles3(size, disabled || false, labelPosition, cssVars)
-        },
-        label
-      ), /* @__PURE__ */ React22.createElement(
-        "span",
-        {
-          id: descriptionId,
-          style: getDescriptionStyles3(size, disabled || false, cssVars)
-        },
-        description
-      ));
+      return /* @__PURE__ */ jsxs("div", { style: getLabelContainerStyles2(labelPosition), children: [
+        label && /* @__PURE__ */ jsx(
+          "label",
+          {
+            id: labelId,
+            htmlFor: id,
+            style: getLabelStyles3(size, disabled || false, labelPosition, cssVars),
+            children: label
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          "span",
+          {
+            id: descriptionId,
+            style: getDescriptionStyles3(size, disabled || false, cssVars),
+            children: description
+          }
+        )
+      ] });
     }
-    return /* @__PURE__ */ React22.createElement(
+    return /* @__PURE__ */ jsx(
       "label",
       {
         id: labelId,
         htmlFor: id,
-        style: getLabelStyles3(size, disabled || false, labelPosition, cssVars)
-      },
-      label
+        style: getLabelStyles3(size, disabled || false, labelPosition, cssVars),
+        children: label
+      }
     );
   };
-  return /* @__PURE__ */ React22.createElement(
+  return /* @__PURE__ */ jsxs(
     "div",
     {
       className,
       style: __spreadValues(__spreadValues({}, getToggleContainerStyles(size, disabled || false)), style),
-      onClick: handleContainerClick
-    },
-    /* @__PURE__ */ React22.createElement(
-      "input",
-      {
-        ref: inputRef,
-        type: "checkbox",
-        id,
-        name,
-        value,
-        checked: isChecked,
-        onChange: handleChange,
-        onFocus: handleFocus,
-        onBlur: handleBlur,
-        disabled,
-        required,
-        "aria-label": ariaLabel,
-        "aria-describedby": ariaDescribedByValue,
-        "aria-labelledby": labelId,
-        style: getHiddenInputStyles3()
-      }
-    ),
-    /* @__PURE__ */ React22.createElement(
-      "div",
-      {
-        role: "presentation",
-        style: getToggleTrackStyles(size, color, variant, isChecked, disabled || false, focused, cssVars)
-      },
-      /* @__PURE__ */ React22.createElement(
-        "div",
-        {
-          role: "presentation",
-          style: getBubbleStyles(size, color, isChecked, disabled || false, cssVars, variant)
-        }
-      )
-    ),
-    renderLabelContent()
+      onClick: handleContainerClick,
+      children: [
+        /* @__PURE__ */ jsx(
+          "input",
+          {
+            ref: inputRef,
+            type: "checkbox",
+            id,
+            name,
+            value,
+            checked: isChecked,
+            onChange: handleChange,
+            onFocus: handleFocus,
+            onBlur: handleBlur,
+            disabled,
+            required,
+            "aria-label": ariaLabel,
+            "aria-describedby": ariaDescribedByValue,
+            "aria-labelledby": labelId,
+            style: getHiddenInputStyles3()
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          "div",
+          {
+            role: "presentation",
+            style: getToggleTrackStyles(size, color, variant, isChecked, disabled || false, focused, cssVars),
+            children: /* @__PURE__ */ jsx(
+              "div",
+              {
+                role: "presentation",
+                style: getBubbleStyles(size, color, isChecked, disabled || false, cssVars, variant)
+              }
+            )
+          }
+        ),
+        renderLabelContent()
+      ]
+    }
   );
 });
 Toggle.displayName = "Toggle";
@@ -11005,10 +11152,10 @@ var getVariantStyles10 = (variant, color, customColor, cssVars, error) => {
   switch (variant) {
     case "solid":
       return {
-        borderColor: colors.main,
-        // --{{color}}
-        backgroundColor: colors.main,
-        // --{{color}}
+        borderColor: colors.accent || colors.main,
+        // --{{color}}-accent or --{{color}}
+        backgroundColor: colors.accent || colors.main,
+        // --{{color}}-accent or --{{color}}
         borderWidth: "2px",
         borderStyle: "solid"
       };
@@ -11077,10 +11224,11 @@ var getSegmentStyles = (size, variant, color, customColor, shape, isSelected2, d
       return getCSSVar(cssVars, "mutedForeground", "#9ca3af");
     }
     if (variant === "solid") {
-      if (isSelected2) {
-        return colors.main;
+      if (hasIsometricAnimation) {
+        return colors.foreground;
+      } else {
+        return isSelected2 ? colors.main : colors.foreground;
       }
-      return getCSSVar(cssVars, "foreground", "#ffffff");
     }
     if (isSelected2) {
       return colors.main;
@@ -11121,8 +11269,8 @@ var getIndicatorStyles = (selectedIndex, itemCount, variant, color, customColor,
   const getIndicatorBackground = () => {
     switch (variant) {
       case "solid":
-        return colors.foreground;
-      // white --{{color}}-foreground
+        return hasIsometricAnimation ? colors.accent || colors.main : colors.foreground;
+      // white for default
       case "outline":
         return getCSSVar(cssVars, "background", "#ffffff");
       case "ghost":
@@ -11250,8 +11398,8 @@ var getIsometricIndicatorStyles = (color, variant, animationsEnabled) => {
     return __spreadProps(__spreadValues({}, baseStyles), {
       borderWidth: "2px",
       borderStyle: "solid",
-      borderColor: color.hover || color.main
-      // Match shadow color for consistency
+      borderColor: color.foreground
+      // White border for isometric solid variant
     });
   }
   return baseStyles;
@@ -11286,15 +11434,12 @@ var getIsometricShadowStyles2 = (color, variant, shape, size, animationsEnabled)
   };
   if (variant === "solid") {
     return __spreadProps(__spreadValues({}, baseStyles), {
-      backgroundColor: color.hover || color.main,
-      // Use darker hover color for better contrast
-      opacity: 0.85
-      // Slightly transparent for depth effect
+      backgroundColor: color.foreground
+      // White background for solid variant
     });
   } else {
     return __spreadProps(__spreadValues({}, baseStyles), {
       backgroundColor: color.main
-      // --{{color}} for outline variant
     });
   }
 };
@@ -11358,8 +11503,6 @@ var handleKeyboardNavigation = (event, currentIndex, itemsLength, onIndexChange,
     onIndexChange(newIndex);
   }
 };
-
-// src/app/components/atoms/SegmentedControl/SegmentedControl.tsx
 var SegmentedControl = forwardRef((_a, ref) => {
   var _b = _a, {
     items,
@@ -11424,6 +11567,9 @@ var SegmentedControl = forwardRef((_a, ref) => {
   const [internalSelectedIndex, setInternalSelectedIndex] = useState(defaultSelectedIndex);
   const isControlled = selectedIndex !== void 0;
   const currentSelectedIndex = isControlled ? selectedIndex : internalSelectedIndex;
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartXRef = useRef(0);
+  const dragStartIndexRef = useRef(0);
   const containerRef = useRef(null);
   const segmentRefs = useRef([]);
   const indicatorRef = useRef(null);
@@ -11456,7 +11602,7 @@ var SegmentedControl = forwardRef((_a, ref) => {
     }, 0);
   };
   const handleSegmentClick = (index) => {
-    if (disabled || index === currentSelectedIndex) return;
+    if (disabled || index === currentSelectedIndex || isDragging) return;
     handleIndexChange(index);
   };
   const handleKeyDown6 = (event) => {
@@ -11490,6 +11636,41 @@ var SegmentedControl = forwardRef((_a, ref) => {
       }
     }
   };
+  const handleMouseDown = (event) => {
+    if (disabled) return;
+    event.preventDefault();
+    setIsDragging(true);
+    dragStartXRef.current = event.clientX;
+    dragStartIndexRef.current = currentSelectedIndex;
+  };
+  const handleMouseMove = (event) => {
+    if (!isDragging || disabled || !containerRef.current) return;
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const segmentWidth = containerRect.width / items.length;
+    const relativeX = event.clientX - containerRect.left;
+    const hoveredIndex = Math.floor(relativeX / segmentWidth);
+    const newIndex = Math.max(0, Math.min(items.length - 1, hoveredIndex));
+    if (newIndex !== currentSelectedIndex) {
+      handleIndexChange(newIndex);
+    }
+  };
+  const handleMouseUp = () => {
+    if (isDragging) {
+      setIsDragging(false);
+    }
+  };
+  const handleMouseLeave = () => {
+    if (isDragging) {
+      setIsDragging(false);
+    }
+  };
+  React21.useEffect(() => {
+    if (isDragging) {
+      const handleGlobalMouseUp = () => setIsDragging(false);
+      window.addEventListener("mouseup", handleGlobalMouseUp);
+      return () => window.removeEventListener("mouseup", handleGlobalMouseUp);
+    }
+  }, [isDragging]);
   const containerAriaAttributes = getAriaAttributes2({
     disabled,
     name
@@ -11520,7 +11701,7 @@ var SegmentedControl = forwardRef((_a, ref) => {
       cssVars,
       hasIsometricAnimation
     );
-    const indicatorElement = /* @__PURE__ */ React22.createElement(
+    const indicatorElement = /* @__PURE__ */ jsx(
       "div",
       {
         ref: indicatorRef,
@@ -11535,64 +11716,78 @@ var SegmentedControl = forwardRef((_a, ref) => {
         variant,
         rounded ? "pill" : shape,
         size);
-      return /* @__PURE__ */ React22.createElement("div", { style: getIsometricContainerStyles2(currentSelectedIndex, items.length) }, /* @__PURE__ */ React22.createElement("div", { ref: shadowRef, style: shadowStyles }), indicatorElement);
+      return /* @__PURE__ */ jsxs("div", { style: getIsometricContainerStyles2(currentSelectedIndex, items.length), children: [
+        /* @__PURE__ */ jsx("div", { ref: shadowRef, style: shadowStyles }),
+        indicatorElement
+      ] });
     }
     return indicatorElement;
   };
-  return /* @__PURE__ */ React22.createElement(
+  return /* @__PURE__ */ jsxs(
     "div",
-    __spreadValues(__spreadValues({
+    __spreadProps(__spreadValues(__spreadValues({
       ref: containerRef,
       className,
-      style: containerStyles,
-      onKeyDown: handleKeyDown6
-    }, containerAriaAttributes), props),
-    renderIndicator(),
-    items.map((item, index) => {
-      const isSelected2 = index === currentSelectedIndex;
-      const segmentId = `${id}-segment-${index}`;
-      const segmentAriaAttributes = getSegmentAriaAttributes({
-        isSelected: isSelected2,
-        disabled,
-        item,
-        segmentId
-      });
-      const renderSegmentText = () => item;
-      return /* @__PURE__ */ React22.createElement(
-        "button",
-        __spreadValues({
-          key: `${item}-${index}`,
-          ref: (el) => {
-            segmentRefs.current[index] = el;
-          },
-          type: "button",
-          disabled,
-          onClick: () => handleSegmentClick(index),
-          onMouseEnter: isSelected2 && hasIsometricAnimation ? handleSelectedSegmentMouseEnter : void 0,
-          onMouseLeave: isSelected2 && hasIsometricAnimation ? handleSelectedSegmentMouseLeave : void 0,
-          style: getSegmentStyles(
-            size,
-            variant,
-            color,
-            customColor,
-            rounded ? "pill" : shape,
-            isSelected2,
+      style: __spreadProps(__spreadValues({}, containerStyles), {
+        cursor: isDragging ? "grabbing" : "grab",
+        userSelect: isDragging ? "none" : "auto"
+      }),
+      onKeyDown: handleKeyDown6,
+      onMouseDown: handleMouseDown,
+      onMouseMove: handleMouseMove,
+      onMouseUp: handleMouseUp,
+      onMouseLeave: handleMouseLeave
+    }, containerAriaAttributes), props), {
+      children: [
+        renderIndicator(),
+        items.map((item, index) => {
+          const isSelected2 = index === currentSelectedIndex;
+          const segmentId = `${id}-segment-${index}`;
+          const segmentAriaAttributes = getSegmentAriaAttributes({
+            isSelected: isSelected2,
             disabled,
-            animate,
-            cssVars,
-            hasIsometricAnimation
-          )
-        }, segmentAriaAttributes),
-        /* @__PURE__ */ React22.createElement("span", { style: {
-          width: "100%",
-          display: "block",
-          textAlign: "center",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          minWidth: 0
-        } }, renderSegmentText())
-      );
+            item,
+            segmentId
+          });
+          const renderSegmentText = () => item;
+          return /* @__PURE__ */ jsx(
+            "button",
+            __spreadProps(__spreadValues({
+              ref: (el) => {
+                segmentRefs.current[index] = el;
+              },
+              type: "button",
+              disabled,
+              onClick: () => handleSegmentClick(index),
+              onMouseEnter: isSelected2 && hasIsometricAnimation ? handleSelectedSegmentMouseEnter : void 0,
+              onMouseLeave: isSelected2 && hasIsometricAnimation ? handleSelectedSegmentMouseLeave : void 0,
+              style: getSegmentStyles(
+                size,
+                variant,
+                color,
+                customColor,
+                rounded ? "pill" : shape,
+                isSelected2,
+                disabled,
+                animate,
+                cssVars,
+                hasIsometricAnimation
+              )
+            }, segmentAriaAttributes), {
+              children: /* @__PURE__ */ jsx("span", { style: {
+                width: "100%",
+                display: "block",
+                textAlign: "center",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                minWidth: 0
+              }, children: renderSegmentText() })
+            }),
+            `${item}-${index}`
+          );
+        })
+      ]
     })
   );
 });
@@ -12109,8 +12304,6 @@ var getAriaAttributes3 = (props) => {
     tabIndex: disabled ? -1 : 0
   };
 };
-
-// src/app/components/atoms/Slider/Slider.tsx
 var Slider = forwardRef((allProps, ref) => {
   var _c;
   const _a = allProps, { onChange, onInput } = _a, propsForExtraction = __objRest(_a, ["onChange", "onInput"]);
@@ -12268,7 +12461,7 @@ var Slider = forwardRef((allProps, ref) => {
     setDragging(false);
     setShowTooltipState(false);
   }, []);
-  React22.useEffect(() => {
+  React21.useEffect(() => {
     if (dragging) {
       const handleMouseMove = (e) => handlePointerMove(e);
       const handleMouseUp = () => handlePointerUp();
@@ -12328,102 +12521,116 @@ var Slider = forwardRef((allProps, ref) => {
     label,
     describedBy: description ? `${id}-description` : void 0
   });
-  return /* @__PURE__ */ React22.createElement(
+  return /* @__PURE__ */ jsxs(
     "div",
     {
       className,
-      style: __spreadValues(__spreadValues({}, getSliderContainerStyles(orientation, length, disabled)), style)
-    },
-    label && /* @__PURE__ */ React22.createElement(
-      "label",
-      {
-        htmlFor: id,
-        style: getLabelStyles4(size, disabled || false, error || false, cssVars)
-      },
-      label
-    ),
-    /* @__PURE__ */ React22.createElement("div", { style: { display: "flex", alignItems: "center", gap: "12px", width: "100%" } }, orientation === "horizontal" && header && /* @__PURE__ */ React22.createElement("span", { style: getMinMaxLabelStyles(size, orientation, disabled || false, color, customColor, cssVars) }, header), /* @__PURE__ */ React22.createElement(
-      "div",
-      {
-        ref: trackRef,
-        style: __spreadProps(__spreadValues({}, getTrackContainerStyles(orientation, size, animationsEnabled, length)), {
-          cursor: disabled ? "not-allowed" : dragging ? "grabbing" : hovering ? "grab" : "pointer"
-        }),
-        onMouseDown: handlePointerDown,
-        onTouchStart: handlePointerDown,
-        onMouseEnter: handleMouseEnter,
-        onMouseLeave: handleMouseLeave
-      },
-      /* @__PURE__ */ React22.createElement("div", { style: getTrackBackgroundStyles(orientation, size, variant, color, customColor, cssVars) }),
-      /* @__PURE__ */ React22.createElement(
-        "div",
-        {
-          style: getTrackFillStyles(
-            orientation,
-            size,
-            color,
-            customColor,
-            currentValue,
-            min,
-            max,
-            error || false,
-            animationsEnabled && !dragging,
-            variant,
-            cssVars
-          )
-        }
-      ),
-      tickMarks.map((tick) => /* @__PURE__ */ React22.createElement("div", { key: tick.value }, /* @__PURE__ */ React22.createElement("div", { style: getTickStyles(orientation, size, tick.value, min, max, cssVars) }), tick.label && /* @__PURE__ */ React22.createElement("div", { style: getTickLabelStyles(orientation, size, tick.value, min, max, cssVars) }, tick.label))),
-      /* @__PURE__ */ React22.createElement(
-        "div",
-        {
-          style: __spreadProps(__spreadValues({}, getThumbStyles(
-            orientation,
-            size,
-            color,
-            customColor,
-            currentValue,
-            min,
-            max,
-            error || false,
-            focused || hovering,
-            animationsEnabled && !dragging,
-            variant,
-            cssVars
-          )), {
-            cursor: disabled ? "not-allowed" : dragging ? "grabbing" : "grab"
-          })
-        }
-      ),
-      showTooltip && showTooltipState && /* @__PURE__ */ React22.createElement("div", { style: getTooltipStyles(orientation, size, currentValue, min, max, cssVars) }, formatValue(currentValue, customFormatter)),
-      /* @__PURE__ */ React22.createElement(
-        "input",
-        __spreadValues(__spreadProps(__spreadValues({
-          ref: inputRef,
-          type: "range",
-          id,
-          min,
-          max,
-          step,
-          value: currentValue,
-          disabled,
-          onChange: handleChange,
-          onInput: handleInput,
-          onKeyDown: handleKeyDown6,
-          onFocus: handleFocus,
-          onBlur: handleBlur,
-          style: getHiddenInputStyles4()
-        }, ariaAttributes), {
-          name,
-          required,
-          readOnly,
-          autoComplete,
-          autoFocus,
-          "data-testid": dataTestId
-        }), rest)
-      )
-    ), orientation === "horizontal" && footer && /* @__PURE__ */ React22.createElement("span", { style: getMinMaxLabelStyles(size, orientation, disabled || false, color, customColor, cssVars) }, footer)),
-    orientation === "vertical" && (header || footer) && /* @__PURE__ */ React22.createElement("div", { style: getLabelsContainerStyles(orientation) }, header && /* @__PURE__ */ React22.createElement("span", { style: getMinMaxLabelStyles(size, orientation, disabled || false, color, customColor, cssVars) }, header), footer && /* @__PURE__ */ React22.createElement("span", { style: getMinMaxLabelStyles(size, orientation, disabled || false, color, customColor, cssVars) }, footer))
+      style: __spreadValues(__spreadValues({}, getSliderContainerStyles(orientation, length, disabled)), style),
+      children: [
+        label && /* @__PURE__ */ jsx(
+          "label",
+          {
+            htmlFor: id,
+            style: getLabelStyles4(size, disabled || false, error || false, cssVars),
+            children: label
+          }
+        ),
+        /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: "12px", width: "100%" }, children: [
+          orientation === "horizontal" && header && /* @__PURE__ */ jsx("span", { style: getMinMaxLabelStyles(size, orientation, disabled || false, color, customColor, cssVars), children: header }),
+          /* @__PURE__ */ jsxs(
+            "div",
+            {
+              ref: trackRef,
+              style: __spreadProps(__spreadValues({}, getTrackContainerStyles(orientation, size, animationsEnabled, length)), {
+                cursor: disabled ? "not-allowed" : dragging ? "grabbing" : hovering ? "grab" : "pointer"
+              }),
+              onMouseDown: handlePointerDown,
+              onTouchStart: handlePointerDown,
+              onMouseEnter: handleMouseEnter,
+              onMouseLeave: handleMouseLeave,
+              children: [
+                /* @__PURE__ */ jsx("div", { style: getTrackBackgroundStyles(orientation, size, variant, color, customColor, cssVars) }),
+                /* @__PURE__ */ jsx(
+                  "div",
+                  {
+                    style: getTrackFillStyles(
+                      orientation,
+                      size,
+                      color,
+                      customColor,
+                      currentValue,
+                      min,
+                      max,
+                      error || false,
+                      animationsEnabled && !dragging,
+                      variant,
+                      cssVars
+                    )
+                  }
+                ),
+                tickMarks.map((tick) => /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx("div", { style: getTickStyles(orientation, size, tick.value, min, max, cssVars) }),
+                  tick.label && /* @__PURE__ */ jsx("div", { style: getTickLabelStyles(orientation, size, tick.value, min, max, cssVars), children: tick.label })
+                ] }, tick.value)),
+                /* @__PURE__ */ jsx(
+                  "div",
+                  {
+                    style: __spreadProps(__spreadValues({}, getThumbStyles(
+                      orientation,
+                      size,
+                      color,
+                      customColor,
+                      currentValue,
+                      min,
+                      max,
+                      error || false,
+                      focused || hovering,
+                      animationsEnabled && !dragging,
+                      variant,
+                      cssVars
+                    )), {
+                      cursor: disabled ? "not-allowed" : dragging ? "grabbing" : "grab"
+                    })
+                  }
+                ),
+                showTooltip && showTooltipState && /* @__PURE__ */ jsx("div", { style: getTooltipStyles(orientation, size, currentValue, min, max, cssVars), children: formatValue(currentValue, customFormatter) }),
+                /* @__PURE__ */ jsx(
+                  "input",
+                  __spreadValues(__spreadProps(__spreadValues({
+                    ref: inputRef,
+                    type: "range",
+                    id,
+                    min,
+                    max,
+                    step,
+                    value: currentValue,
+                    disabled,
+                    onChange: handleChange,
+                    onInput: handleInput,
+                    onKeyDown: handleKeyDown6,
+                    onFocus: handleFocus,
+                    onBlur: handleBlur,
+                    style: getHiddenInputStyles4()
+                  }, ariaAttributes), {
+                    name,
+                    required,
+                    readOnly,
+                    autoComplete,
+                    autoFocus,
+                    "data-testid": dataTestId
+                  }), rest)
+                )
+              ]
+            }
+          ),
+          orientation === "horizontal" && footer && /* @__PURE__ */ jsx("span", { style: getMinMaxLabelStyles(size, orientation, disabled || false, color, customColor, cssVars), children: footer })
+        ] }),
+        orientation === "vertical" && (header || footer) && /* @__PURE__ */ jsxs("div", { style: getLabelsContainerStyles(orientation), children: [
+          header && /* @__PURE__ */ jsx("span", { style: getMinMaxLabelStyles(size, orientation, disabled || false, color, customColor, cssVars), children: header }),
+          footer && /* @__PURE__ */ jsx("span", { style: getMinMaxLabelStyles(size, orientation, disabled || false, color, customColor, cssVars), children: footer })
+        ] })
+      ]
+    }
   );
 });
 Slider.displayName = "Slider";
@@ -12921,8 +13128,6 @@ var debounce = (func, wait) => {
     timeout = setTimeout(() => func(...args), wait);
   };
 };
-
-// src/app/components/atoms/TextArea/TextArea.tsx
 var TextArea = forwardRef(
   (allProps, ref) => {
     var _c;
@@ -13139,100 +13344,108 @@ var TextArea = forwardRef(
       errorMessage,
       maxLength
     });
-    return /* @__PURE__ */ React22.createElement(
+    return /* @__PURE__ */ jsxs(
       "div",
       {
         className,
-        style: __spreadValues(__spreadValues({}, getTextAreaContainerStyles(width, height, disabled)), style)
-      },
-      label && /* @__PURE__ */ React22.createElement(
-        "label",
-        {
-          htmlFor: id,
-          style: getLabelStyles5(size, disabled || false, error || false, cssVars)
-        },
-        label
-      ),
-      description && /* @__PURE__ */ React22.createElement(
-        "div",
-        {
-          id: "textarea-description",
-          style: getDescriptionStyles5(size, disabled || false, cssVars)
-        },
-        description
-      ),
-      /* @__PURE__ */ React22.createElement("div", { style: getInputWrapperStyles() }, showLineNumbers && /* @__PURE__ */ React22.createElement("div", { style: getLineNumbersStyles(size, disabled || false, cssVars) }, lineNumbers), /* @__PURE__ */ React22.createElement(
-        "textarea",
-        __spreadValues(__spreadProps(__spreadValues({
-          ref: textareaRef,
-          id,
-          value: currentValue,
-          disabled,
-          onChange: handleChange,
-          onFocus: handleFocus,
-          onBlur: handleBlur,
-          onKeyDown: handleKeyDown6,
-          onPaste: handlePasteEvent,
-          style: getTextAreaInputStyles(
-            color,
-            customColor,
-            variant,
-            shape,
-            size,
-            resize,
-            disabled || false,
-            error || false,
-            focused,
-            minRows,
-            maxRows,
-            autoResize,
-            showLineNumbers,
-            animationsEnabled,
-            cssVars
-          )
-        }, ariaAttributes), {
-          name,
-          required,
-          readOnly,
-          autoComplete,
-          autoFocus,
-          "data-testid": dataTestId
-        }), rest)
-      ), icon && /* @__PURE__ */ React22.createElement(
-        "div",
-        {
-          style: getIconStyles3(size, iconPosition, iconClickable, disabled || false, cssVars),
-          onClick: handleIconClick
-        },
-        icon
-      ), loading && /* @__PURE__ */ React22.createElement("div", { style: getLoadingOverlayStyles(cssVars) }, /* @__PURE__ */ React22.createElement("div", { style: {
-        width: "20px",
-        height: "20px",
-        border: `2px solid ${cssVars.border}`,
-        borderTop: `2px solid ${cssVars.primary}`,
-        borderRadius: "50%",
-        animation: "spin 1s linear infinite"
-      } }))),
-      (helperText || errorMessage || showCharacterCount) && /* @__PURE__ */ React22.createElement("div", { style: getBottomSectionStyles() }, /* @__PURE__ */ React22.createElement("div", { style: { flex: 1 } }, (helperText || error && errorMessage) && /* @__PURE__ */ React22.createElement(
-        "div",
-        {
-          id: error && errorMessage ? "textarea-error" : "textarea-helper",
-          style: getHelperTextStyles2(size, disabled || false, error || false, cssVars)
-        },
-        error && errorMessage ? errorMessage : helperText
-      )), showCharacterCount && /* @__PURE__ */ React22.createElement("div", { style: getCharacterCountStyles(size, disabled || false, isOverLimit, cssVars) }, formatCharacterCount(characterCount, maxLength))),
-      /* @__PURE__ */ React22.createElement("style", { dangerouslySetInnerHTML: { __html: `
+        style: __spreadValues(__spreadValues({}, getTextAreaContainerStyles(width, height, disabled)), style),
+        children: [
+          label && /* @__PURE__ */ jsx(
+            "label",
+            {
+              htmlFor: id,
+              style: getLabelStyles5(size, disabled || false, error || false, cssVars),
+              children: label
+            }
+          ),
+          description && /* @__PURE__ */ jsx(
+            "div",
+            {
+              id: "textarea-description",
+              style: getDescriptionStyles5(size, disabled || false, cssVars),
+              children: description
+            }
+          ),
+          /* @__PURE__ */ jsxs("div", { style: getInputWrapperStyles(), children: [
+            showLineNumbers && /* @__PURE__ */ jsx("div", { style: getLineNumbersStyles(size, disabled || false, cssVars), children: lineNumbers }),
+            /* @__PURE__ */ jsx(
+              "textarea",
+              __spreadValues(__spreadProps(__spreadValues({
+                ref: textareaRef,
+                id,
+                value: currentValue,
+                disabled,
+                onChange: handleChange,
+                onFocus: handleFocus,
+                onBlur: handleBlur,
+                onKeyDown: handleKeyDown6,
+                onPaste: handlePasteEvent,
+                style: getTextAreaInputStyles(
+                  color,
+                  customColor,
+                  variant,
+                  shape,
+                  size,
+                  resize,
+                  disabled || false,
+                  error || false,
+                  focused,
+                  minRows,
+                  maxRows,
+                  autoResize,
+                  showLineNumbers,
+                  animationsEnabled,
+                  cssVars
+                )
+              }, ariaAttributes), {
+                name,
+                required,
+                readOnly,
+                autoComplete,
+                autoFocus,
+                "data-testid": dataTestId
+              }), rest)
+            ),
+            icon && /* @__PURE__ */ jsx(
+              "div",
+              {
+                style: getIconStyles3(size, iconPosition, iconClickable, disabled || false, cssVars),
+                onClick: handleIconClick,
+                children: icon
+              }
+            ),
+            loading && /* @__PURE__ */ jsx("div", { style: getLoadingOverlayStyles(cssVars), children: /* @__PURE__ */ jsx("div", { style: {
+              width: "20px",
+              height: "20px",
+              border: `2px solid ${cssVars.border}`,
+              borderTop: `2px solid ${cssVars.primary}`,
+              borderRadius: "50%",
+              animation: "spin 1s linear infinite"
+            } }) })
+          ] }),
+          (helperText || errorMessage || showCharacterCount) && /* @__PURE__ */ jsxs("div", { style: getBottomSectionStyles(), children: [
+            /* @__PURE__ */ jsx("div", { style: { flex: 1 }, children: (helperText || error && errorMessage) && /* @__PURE__ */ jsx(
+              "div",
+              {
+                id: error && errorMessage ? "textarea-error" : "textarea-helper",
+                style: getHelperTextStyles2(size, disabled || false, error || false, cssVars),
+                children: error && errorMessage ? errorMessage : helperText
+              }
+            ) }),
+            showCharacterCount && /* @__PURE__ */ jsx("div", { style: getCharacterCountStyles(size, disabled || false, isOverLimit, cssVars), children: formatCharacterCount(characterCount, maxLength) })
+          ] }),
+          /* @__PURE__ */ jsx("style", { dangerouslySetInnerHTML: { __html: `
           @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
           }
         ` } })
+        ]
+      }
     );
   }
 );
 TextArea.displayName = "TextArea";
-
-// src/app/providers/ToastProvider.tsx
 var ToastContext = createContext(void 0);
 function ToastProvider({
   children,
@@ -13304,7 +13517,10 @@ function ToastProvider({
     destructive,
     inverted
   };
-  return /* @__PURE__ */ React22.createElement(ToastContext.Provider, { value }, children, /* @__PURE__ */ React22.createElement(ToastContainer, null));
+  return /* @__PURE__ */ jsxs(ToastContext.Provider, { value, children: [
+    children,
+    /* @__PURE__ */ jsx(ToastContainer, {})
+  ] });
 }
 function ToastContainer() {
   const { toasts, removeToast } = useToast();
@@ -13324,12 +13540,11 @@ function ToastContainer() {
         return "outline";
     }
   };
-  return /* @__PURE__ */ React22.createElement("div", { className: "fixed top-4 right-4 z-50 flex flex-col gap-3 max-w-md" }, toasts.map((toast) => {
+  return /* @__PURE__ */ jsx("div", { className: "fixed top-4 right-4 z-50 flex flex-col gap-3 max-w-md", children: toasts.map((toast) => {
     var _a;
-    return /* @__PURE__ */ React22.createElement(
+    return /* @__PURE__ */ jsx(
       Notification,
       {
-        key: toast.id,
         id: toast.id,
         color: toast.type === "default" ? "primary" : toast.type === "inverted" ? "secondary" : toast.type === "info" ? "info" : toast.type,
         title: toast.title,
@@ -13349,9 +13564,10 @@ function ToastContainer() {
           minWidth: "320px",
           maxWidth: "400px"
         }
-      }
+      },
+      toast.id
     );
-  }));
+  }) });
 }
 function useToast() {
   const context = useContext(ToastContext);
@@ -13392,12 +13608,18 @@ function LoadingProvider({
     stopLoading,
     isAnyLoading
   };
-  return /* @__PURE__ */ React22.createElement(LoadingContext.Provider, { value }, children, showGlobalSpinner && /* @__PURE__ */ React22.createElement(GlobalLoadingSpinner, null));
+  return /* @__PURE__ */ jsxs(LoadingContext.Provider, { value, children: [
+    children,
+    showGlobalSpinner && /* @__PURE__ */ jsx(GlobalLoadingSpinner, {})
+  ] });
 }
 function GlobalLoadingSpinner() {
   const { isAnyLoading } = useLoading();
   if (!isAnyLoading) return null;
-  return /* @__PURE__ */ React22.createElement("div", { className: "fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm" }, /* @__PURE__ */ React22.createElement("div", { className: "bg-white dark:bg-gray-800 rounded-lg p-6 shadow-xl" }, /* @__PURE__ */ React22.createElement("div", { className: "flex items-center space-x-3" }, /* @__PURE__ */ React22.createElement("div", { className: "animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600" }), /* @__PURE__ */ React22.createElement("span", { className: "text-gray-700 dark:text-gray-300" }, "Loading..."))));
+  return /* @__PURE__ */ jsx("div", { className: "fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm", children: /* @__PURE__ */ jsx("div", { className: "bg-white dark:bg-gray-800 rounded-lg p-6 shadow-xl", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center space-x-3", children: [
+    /* @__PURE__ */ jsx("div", { className: "animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600" }),
+    /* @__PURE__ */ jsx("span", { className: "text-gray-700 dark:text-gray-300", children: "Loading..." })
+  ] }) }) });
 }
 function useLoading() {
   const context = useContext(LoadingContext);
@@ -13483,12 +13705,15 @@ function ModalProvider({ children, maxModals = 5 }) {
     closeAllModals,
     isModalOpen
   };
-  return /* @__PURE__ */ React22.createElement(ModalContext.Provider, { value }, children, /* @__PURE__ */ React22.createElement(ModalContainer, null));
+  return /* @__PURE__ */ jsxs(ModalContext.Provider, { value, children: [
+    children,
+    /* @__PURE__ */ jsx(ModalContainer, {})
+  ] });
 }
 function ModalContainer() {
   const { modals } = useModal();
   if (modals.length === 0) return null;
-  return /* @__PURE__ */ React22.createElement("div", { className: "fixed inset-0 z-50" }, modals.map((modal, index) => /* @__PURE__ */ React22.createElement(ModalWrapper, { key: modal.id, modal, zIndex: 50 + index })));
+  return /* @__PURE__ */ jsx("div", { className: "fixed inset-0 z-50", children: modals.map((modal, index) => /* @__PURE__ */ jsx(ModalWrapper, { modal, zIndex: 50 + index }, modal.id)) });
 }
 function ModalWrapper({ modal, zIndex }) {
   const { closeModal } = useModal();
@@ -13513,35 +13738,40 @@ function ModalWrapper({ modal, zIndex }) {
       closeModal(modal.id);
     }
   };
-  return /* @__PURE__ */ React22.createElement(
+  return /* @__PURE__ */ jsx(
     "div",
     {
       className: `fixed inset-0 flex items-center justify-center ${modal.overlay ? "bg-black/50 backdrop-blur-sm" : ""}`,
       style: { zIndex },
-      onClick: handleOverlayClick
-    },
-    /* @__PURE__ */ React22.createElement(
-      "div",
-      {
-        className: `
+      onClick: handleOverlayClick,
+      children: /* @__PURE__ */ jsxs(
+        "div",
+        {
+          className: `
           bg-white dark:bg-gray-800 rounded-lg shadow-xl 
           w-full ${getSizeClasses(modal.size)}
           max-h-[90vh] overflow-hidden
           ${modal.className || ""}
         `,
-        onClick: (e) => e.stopPropagation()
-      },
-      modal.title && /* @__PURE__ */ React22.createElement("div", { className: "flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700" }, /* @__PURE__ */ React22.createElement("h2", { className: "text-xl font-semibold text-gray-900 dark:text-white" }, modal.title), modal.closable && /* @__PURE__ */ React22.createElement(
-        "button",
-        {
-          onClick: () => closeModal(modal.id),
-          className: "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300",
-          "aria-label": "Close modal"
-        },
-        /* @__PURE__ */ React22.createElement("svg", { className: "w-6 h-6", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ React22.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M6 18L18 6M6 6l12 12" }))
-      )),
-      /* @__PURE__ */ React22.createElement("div", { className: "p-6 overflow-y-auto" }, modal.content)
-    )
+          onClick: (e) => e.stopPropagation(),
+          children: [
+            modal.title && /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsx("h2", { className: "text-xl font-semibold text-gray-900 dark:text-white", children: modal.title }),
+              modal.closable && /* @__PURE__ */ jsx(
+                "button",
+                {
+                  onClick: () => closeModal(modal.id),
+                  className: "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300",
+                  "aria-label": "Close modal",
+                  children: /* @__PURE__ */ jsx("svg", { className: "w-6 h-6", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: /* @__PURE__ */ jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M6 18L18 6M6 6l12 12" }) })
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsx("div", { className: "p-6 overflow-y-auto", children: modal.content })
+          ]
+        }
+      )
+    }
   );
 }
 function useModal() {
@@ -13630,7 +13860,7 @@ function SettingsProvider({
     exportSettings,
     importSettings
   };
-  return /* @__PURE__ */ React22.createElement(SettingsContext.Provider, { value }, children);
+  return /* @__PURE__ */ jsx(SettingsContext.Provider, { value, children });
 }
 function useSettings() {
   const context = useContext(SettingsContext);
@@ -13663,7 +13893,7 @@ function useAppearanceSettings() {
 
 // src/app/environment/mourn.types.ts
 var DEFAULT_MOURN_CONFIG = {
-  version: "1.0",
+  version: "1.2.1",
   name: "Templar Project",
   providers: {
     auth: {
@@ -13840,7 +14070,7 @@ function EnvironmentProvider({
     }),
     [config, isLoading, error]
   );
-  return /* @__PURE__ */ React22.createElement(EnvironmentContext.Provider, { value: contextValue }, children);
+  return /* @__PURE__ */ jsx(EnvironmentContext.Provider, { value: contextValue, children });
 }
 function useEnvironment() {
   const context = useContext(EnvironmentContext);
@@ -13862,8 +14092,6 @@ function useProviderConfig(providerName) {
   const { config } = useEnvironment();
   return config.providers[providerName];
 }
-
-// src/app/providers/RoundTable.tsx
 function RoundTableInner({ children }) {
   const config = useMournConfig();
   const authEnabled = useProviderEnabled("auth");
@@ -13874,61 +14102,61 @@ function RoundTableInner({ children }) {
   const settingsEnabled = useProviderEnabled("settings");
   let content = children;
   if (modalEnabled && config.providers.modal) {
-    content = /* @__PURE__ */ React22.createElement(
+    content = /* @__PURE__ */ jsx(
       ModalProvider,
       {
-        maxModals: config.providers.modal.maxModals
-      },
-      content
+        maxModals: config.providers.modal.maxModals,
+        children: content
+      }
     );
   }
   if (toastEnabled && config.providers.toast) {
-    content = /* @__PURE__ */ React22.createElement(
+    content = /* @__PURE__ */ jsx(
       ToastProvider,
       {
         maxToasts: config.providers.toast.maxToasts,
-        defaultDuration: config.providers.toast.defaultDuration
-      },
-      content
+        defaultDuration: config.providers.toast.defaultDuration,
+        children: content
+      }
     );
   }
   if (loadingEnabled && config.providers.loading) {
-    content = /* @__PURE__ */ React22.createElement(
+    content = /* @__PURE__ */ jsx(
       LoadingProvider,
       {
-        showGlobalSpinner: config.providers.loading.showGlobalSpinner
-      },
-      content
+        showGlobalSpinner: config.providers.loading.showGlobalSpinner,
+        children: content
+      }
     );
   }
   if (authEnabled && config.providers.auth) {
-    content = /* @__PURE__ */ React22.createElement(AuthProvider, { storageKey: config.providers.auth.storageKey }, content);
+    content = /* @__PURE__ */ jsx(AuthProvider, { storageKey: config.providers.auth.storageKey, children: content });
   }
   if (themeEnabled && config.providers.theme) {
-    content = /* @__PURE__ */ React22.createElement(
+    content = /* @__PURE__ */ jsx(
       ThemeProvider,
       {
         defaultTheme: config.providers.theme.defaultTheme,
         attribute: config.providers.theme.attribute,
-        storageKey: config.providers.theme.storageKey
-      },
-      content
+        storageKey: config.providers.theme.storageKey,
+        children: content
+      }
     );
   }
   if (settingsEnabled && config.providers.settings) {
-    content = /* @__PURE__ */ React22.createElement(
+    content = /* @__PURE__ */ jsx(
       SettingsProvider,
       {
         storageKey: config.providers.settings.storageKey,
-        defaultSettings: config.providers.settings.defaultSettings
-      },
-      content
+        defaultSettings: config.providers.settings.defaultSettings,
+        children: content
+      }
     );
   }
-  return /* @__PURE__ */ React22.createElement(React22.Fragment, null, content);
+  return /* @__PURE__ */ jsx(Fragment, { children: content });
 }
 function RoundTable({ children, config, debug = false }) {
-  return /* @__PURE__ */ React22.createElement(EnvironmentProvider, { config, debug }, /* @__PURE__ */ React22.createElement(RoundTableInner, null, children));
+  return /* @__PURE__ */ jsx(EnvironmentProvider, { config, debug, children: /* @__PURE__ */ jsx(RoundTableInner, { children }) });
 }
 
 // src/app/providers/useCSSVariables.ts

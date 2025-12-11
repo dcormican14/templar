@@ -1,10 +1,7 @@
 'use strict';
 
-var React = require('react');
-
-function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
-
-var React__default = /*#__PURE__*/_interopDefault(React);
+var react = require('react');
+var jsxRuntime = require('react/jsx-runtime');
 
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
@@ -28,7 +25,7 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 
 // src/app/environment/mourn.types.ts
 var DEFAULT_MOURN_CONFIG = {
-  version: "1.0",
+  version: "1.2.1",
   name: "Templar Project",
   providers: {
     auth: {
@@ -180,7 +177,7 @@ function validateMournConfig(config) {
       const validThemes = [
         "light",
         "dark",
-        "high-contrast",
+        "contrast",
         "sepia-light",
         "sepia-dark",
         "solarized-dark",
@@ -231,17 +228,17 @@ function debugMournConfig(config) {
   }
   console.groupEnd();
 }
-var EnvironmentContext = React.createContext(void 0);
+var EnvironmentContext = react.createContext(void 0);
 function EnvironmentProvider({
   children,
   config: overrideConfig,
   debug = false
 }) {
-  const [config, setConfig] = React.useState(
+  const [config, setConfig] = react.useState(
     overrideConfig ? mergeMournConfig(overrideConfig) : DEFAULT_MOURN_CONFIG
   );
-  const [isLoading, setIsLoading] = React.useState(!overrideConfig);
-  const [error, setError] = React.useState(null);
+  const [isLoading, setIsLoading] = react.useState(!overrideConfig);
+  const [error, setError] = react.useState(null);
   const loadConfig = async () => {
     if (overrideConfig) {
       const merged = mergeMournConfig(overrideConfig);
@@ -268,10 +265,10 @@ function EnvironmentProvider({
       setIsLoading(false);
     }
   };
-  React.useEffect(() => {
+  react.useEffect(() => {
     loadConfig();
   }, []);
-  const contextValue = React.useMemo(
+  const contextValue = react.useMemo(
     () => ({
       config,
       isLoading,
@@ -280,10 +277,10 @@ function EnvironmentProvider({
     }),
     [config, isLoading, error]
   );
-  return /* @__PURE__ */ React__default.default.createElement(EnvironmentContext.Provider, { value: contextValue }, children);
+  return /* @__PURE__ */ jsxRuntime.jsx(EnvironmentContext.Provider, { value: contextValue, children });
 }
 function useEnvironment() {
-  const context = React.useContext(EnvironmentContext);
+  const context = react.useContext(EnvironmentContext);
   if (context === void 0) {
     throw new Error("useEnvironment must be used within an EnvironmentProvider");
   }

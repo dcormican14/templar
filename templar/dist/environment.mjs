@@ -1,4 +1,5 @@
-import React, { createContext, useState, useEffect, useMemo, useContext } from 'react';
+import { createContext, useState, useEffect, useMemo, useContext } from 'react';
+import { jsx } from 'react/jsx-runtime';
 
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
@@ -22,7 +23,7 @@ var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 
 // src/app/environment/mourn.types.ts
 var DEFAULT_MOURN_CONFIG = {
-  version: "1.0",
+  version: "1.2.1",
   name: "Templar Project",
   providers: {
     auth: {
@@ -174,7 +175,7 @@ function validateMournConfig(config) {
       const validThemes = [
         "light",
         "dark",
-        "high-contrast",
+        "contrast",
         "sepia-light",
         "sepia-dark",
         "solarized-dark",
@@ -274,7 +275,7 @@ function EnvironmentProvider({
     }),
     [config, isLoading, error]
   );
-  return /* @__PURE__ */ React.createElement(EnvironmentContext.Provider, { value: contextValue }, children);
+  return /* @__PURE__ */ jsx(EnvironmentContext.Provider, { value: contextValue, children });
 }
 function useEnvironment() {
   const context = useContext(EnvironmentContext);
