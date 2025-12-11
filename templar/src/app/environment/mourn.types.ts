@@ -303,7 +303,7 @@ export interface MournConfig {
  * Default configuration used when no .mourn file is present
  */
 export const DEFAULT_MOURN_CONFIG: Required<MournConfig> = {
-  version: '1.0',
+  version: '1.2.1',
   name: 'Templar Project',
   providers: {
     auth: {

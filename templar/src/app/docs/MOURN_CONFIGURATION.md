@@ -100,7 +100,7 @@ module.exports = {
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `version` | `string` | `'1.0'` | Configuration version (for future compatibility) |
+| `version` | `string` | `'1.2.1'` | Configuration version (for future compatibility) |
 | `name` | `string` | `'Templar Project'` | Project name |
 | `providers` | `object` | See below | Provider configurations |
 | `components` | `object` | See below | Component configurations |
