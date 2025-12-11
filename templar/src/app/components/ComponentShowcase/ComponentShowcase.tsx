@@ -20,8 +20,20 @@ export function ComponentShowcase({ componentName }: ComponentShowcaseProps) {
   const [readmeContent, setReadmeContent] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [componentProps, setComponentProps] = useState<Record<string, any>>({});
+  const [isMobile, setIsMobile] = useState(false);
 
   const componentType = getComponentType(componentName);
+
+  // Detect mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Load README content (simulated for now)
   useEffect(() => {
@@ -288,16 +300,19 @@ For more detailed documentation, examples, and API reference, visit the [Templar
             </div>
           </div>
           
-          <SegmentedControl
-            items={['Overview', 'Interactive']}
-            selectedIndex={activeTab === 'overview' ? 0 : 1}
-            onChange={(index) => handleModeChange(index === 0 ? 'overview' : 'interactive')}
-            color="primary"
-            shape="pill"
-            variant="solid"
-            animationMode="isometric"
-            size="sm"
-          />
+          {/* Only show SegmentedControl on desktop */}
+          {!isMobile && (
+            <SegmentedControl
+              items={['Overview', 'Interactive']}
+              selectedIndex={activeTab === 'overview' ? 0 : 1}
+              onChange={(index) => handleModeChange(index === 0 ? 'overview' : 'interactive')}
+              color="primary"
+              shape="pill"
+              variant="solid"
+              animationMode="isometric"
+              size="sm"
+            />
+          )}
         </div>
       </div>
 

@@ -12,9 +12,15 @@ export function ComponentsPage() {
   const cssVars = useCSSVariables();
   const router = useRouter();
   const searchParams = useSearchParams();
-  
-  const [menuCollapsed, setMenuCollapsed] = useState(false);
-  
+
+  // Detect mobile and collapse menu by default on mobile
+  const [menuCollapsed, setMenuCollapsed] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 768; // Collapse on mobile by default
+    }
+    return false;
+  });
+
   const components = getAvailableComponents();
 
   // Get selected component directly from URL - no local state

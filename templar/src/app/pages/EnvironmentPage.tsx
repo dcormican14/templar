@@ -26,7 +26,13 @@ export function EnvironmentPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [menuCollapsed, setMenuCollapsed] = useState(false);
+  // Detect mobile and collapse menu by default on mobile
+  const [menuCollapsed, setMenuCollapsed] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 768; // Collapse on mobile by default
+    }
+    return false;
+  });
 
   // Get selected item directly from URL
   const getSelectedItemFromURL = () => {

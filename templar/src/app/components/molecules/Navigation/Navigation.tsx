@@ -209,17 +209,49 @@ export const Navigation = forwardRef<HTMLElement, NavigationProps>(
     const cssVars = useCSSVariables();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
+    const [hasOverflow, setHasOverflow] = useState(false);
+    const tabsContainerRef = React.useRef<HTMLDivElement>(null);
 
-    // Check if screen is mobile
+    // Check if screen is mobile or if tabs overflow
     React.useEffect(() => {
-      const checkMobile = () => {
-        setIsMobile(window.innerWidth < 768);
+      const checkLayout = () => {
+        const windowWidth = window.innerWidth;
+        const tabCount = tabs.length;
+
+        // Determine if mobile based on tab count and window width
+        let shouldUseMobileMenu = false;
+
+        if (tabCount >= 4) {
+          // 4+ tabs: use mobile menu below 1024px
+          shouldUseMobileMenu = windowWidth < 1024;
+        } else {
+          // 3 or fewer tabs: use mobile menu below 768px
+          shouldUseMobileMenu = windowWidth < 768;
+        }
+
+        // Also check for actual overflow on larger screens
+        let tabsOverflow = false;
+        if (tabsContainerRef.current && !shouldUseMobileMenu) {
+          const container = tabsContainerRef.current;
+          // Check if content is wider than available space
+          tabsOverflow = container.scrollWidth > container.clientWidth;
+        }
+
+        setIsMobile(shouldUseMobileMenu);
+        setHasOverflow(tabsOverflow);
       };
 
-      checkMobile();
-      window.addEventListener('resize', checkMobile);
-      return () => window.removeEventListener('resize', checkMobile);
-    }, []);
+      checkLayout();
+      window.addEventListener('resize', checkLayout);
+
+      // Also check on mount and when tabs change
+      const timeoutId = setTimeout(checkLayout, 100);
+
+      return () => {
+        window.removeEventListener('resize', checkLayout);
+        clearTimeout(timeoutId);
+      };
+    }, [tabs]);
 
     const navigationStyles = createNavigationStyles(variant, color, customColor, size, sticky, cssVars);
     const containerStyles = createContainerStyles(fullWidth, maxWidth);
@@ -257,8 +289,8 @@ export const Navigation = forwardRef<HTMLElement, NavigationProps>(
             />
           </div>
 
-          {/* Middle third: Tabs and Leading Content - Desktop only */}
-          {!isMobile && (
+          {/* Middle third: Tabs and Leading Content - Desktop only (when no overflow) */}
+          {!isMobile && !hasOverflow && (
             <div style={{
               flex: 1,
               display: 'flex',
@@ -276,6 +308,7 @@ export const Navigation = forwardRef<HTMLElement, NavigationProps>(
               {/* Tabs */}
               {tabs.length > 0 && (
                 <div
+                  ref={tabsContainerRef}
                   style={{
                     ...createTabsContainerStyles(),
                   }}
@@ -312,8 +345,8 @@ export const Navigation = forwardRef<HTMLElement, NavigationProps>(
             </div>
           )}
 
-          {/* Mobile: Hamburger menu button */}
-          {isMobile && tabs.length > 0 && (
+          {/* Mobile or Overflow: Hamburger menu button */}
+          {(isMobile || hasOverflow) && tabs.length > 0 && (
             <div style={{
               flex: 1,
               display: 'flex',
@@ -395,8 +428,8 @@ export const Navigation = forwardRef<HTMLElement, NavigationProps>(
           </div>
         </div>
 
-        {/* Mobile Menu Dropdown */}
-        {isMobile && isMobileMenuOpen && tabs.length > 0 && (
+        {/* Mobile or Overflow Menu Dropdown */}
+        {(isMobile || hasOverflow) && isMobileMenuOpen && tabs.length > 0 && (
           <div
             onClick={() => console.log('Dropdown container clicked')}
             style={{

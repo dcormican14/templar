@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCSSVariables } from '../../providers';
 import { ReadmeDisplay } from '../molecules/ReadmeDisplay/ReadmeDisplay';
 import { Scrollbar, Icon, SegmentedControl, CodeBlock } from '../atoms';
@@ -13,9 +13,21 @@ interface EnvironmentShowcaseProps {
 export function EnvironmentShowcase({ providerName }: EnvironmentShowcaseProps) {
   const cssVars = useCSSVariables();
   const [activeTab, setActiveTab] = useState<'overview' | 'config'>('overview');
+  const [isMobile, setIsMobile] = useState(false);
 
   const documentation = getProviderDocumentation(providerName);
   const configExample = getProviderConfig(providerName);
+
+  // Detect mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const handleModeChange = (mode: 'overview' | 'config') => {
     setActiveTab(mode);
@@ -125,16 +137,19 @@ export function EnvironmentShowcase({ providerName }: EnvironmentShowcaseProps) 
             </div>
           </div>
 
-          <SegmentedControl
-            items={['Overview', 'Config']}
-            selectedIndex={activeTab === 'overview' ? 0 : 1}
-            onChange={(index) => handleModeChange(index === 0 ? 'overview' : 'config')}
-            color="primary"
-            shape="pill"
-            variant="solid"
-            animationMode="isometric"
-            size="sm"
-          />
+          {/* Only show SegmentedControl on desktop */}
+          {!isMobile && (
+            <SegmentedControl
+              items={['Overview', 'Config']}
+              selectedIndex={activeTab === 'overview' ? 0 : 1}
+              onChange={(index) => handleModeChange(index === 0 ? 'overview' : 'config')}
+              color="primary"
+              shape="pill"
+              variant="solid"
+              animationMode="isometric"
+              size="sm"
+            />
+          )}
         </div>
       </div>
 
