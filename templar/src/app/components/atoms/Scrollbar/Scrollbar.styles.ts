@@ -289,17 +289,6 @@ export const getWebKitScrollbarStyles = (
           backdropFilter: 'blur(10px)',
           webkitBackdropFilter: 'blur(10px)',
         };
-      case 'invisible':
-        // Invisible variant - completely invisible scrollbar
-        return {
-          thumb: 'transparent',
-          thumbHover: 'transparent',
-          track: 'transparent',
-          trackBorder: 'none',
-          border: 'none',
-          showButtons: false,
-          buttonColor: 'transparent',
-        };
       case 'outline':
       default:
         // Outline variant - bar with wider background (no border)
