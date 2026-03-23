@@ -92,7 +92,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
           }
         } else {
           // Navigate to overview page
-          router.push('/overview');
+          router.push('/');
         }
         break;
       case 'docs':
@@ -104,7 +104,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
           }
         } else {
           // Navigate to overview and scroll after navigation
-          router.push('/overview#docs-section');
+          router.push('/');
         }
         break;
       case 'components':
@@ -122,11 +122,11 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
           }
         } else {
           // Navigate to overview and scroll after navigation
-          router.push('/overview#contact-section');
+          router.push('/');
         }
         break;
       default:
-        router.push('/overview');
+        router.push('/');
     }
   };
 
@@ -195,8 +195,22 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
       {/* Navigation Bar */}
       <div className="fixed top-0 left-0 right-0" style={{ zIndex: 9999 }}>
         <Navigation
-          icon={<Icon name="HomeShield" size="lg" />}
-          appName="Mournshire Design"
+          icon={
+            <div style={{
+              width: '28px',
+              height: '28px',
+              background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
+              WebkitMaskImage: 'url(/assets/AppHeaderImg.svg)',
+              WebkitMaskSize: 'contain',
+              WebkitMaskRepeat: 'no-repeat',
+              WebkitMaskPosition: 'center',
+              maskImage: 'url(/assets/AppHeaderImg.svg)',
+              maskSize: 'contain',
+              maskRepeat: 'no-repeat',
+              maskPosition: 'center',
+            }} />
+          }
+          appName="Mourn Design"
           onBrandClick={() => router.push('/')}
           tabs={tabs}
           activeTab={displayTab}

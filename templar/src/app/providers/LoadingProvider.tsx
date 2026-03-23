@@ -147,6 +147,7 @@ function GlobalLoadingSpinner({
   const [typingStarted, setTypingStarted] = useState(false);
   const [readyToDismiss, setReadyToDismiss] = useState(false);
   const appFinishedLoading = useRef(false);
+  const [appDoneLoading, setAppDoneLoading] = useState(false);
 
   // Mobile detection + mobile-specific phased intro
   const [isMobile, setIsMobile] = useState(false);
@@ -192,6 +193,7 @@ function GlobalLoadingSpinner({
   useEffect(() => {
     if (!isAnyLoading) {
       appFinishedLoading.current = true;
+      setAppDoneLoading(true);
     }
   }, [isAnyLoading]);
 
@@ -320,7 +322,7 @@ function GlobalLoadingSpinner({
                     whiteSpace: 'nowrap',
                   }}>
                     {title.displayed}
-                    {!title.done && (
+                    {(!title.done || (!loadingSubtitle && !appDoneLoading)) && (
                       <span style={{
                         borderRight: '3px solid var(--foreground)',
                         marginLeft: '2px',
@@ -342,7 +344,7 @@ function GlobalLoadingSpinner({
                   textAlign: 'right',
                 }}>
                   {subtitle.displayed}
-                  {!subtitle.done && (
+                  {(!subtitle.done || !appDoneLoading) && (
                     <span style={{
                       borderRight: '2px solid var(--foreground-accent)',
                       marginLeft: '2px',
@@ -420,7 +422,7 @@ function GlobalLoadingSpinner({
                 whiteSpace: 'nowrap',
               }}>
                 {title.displayed}
-                {!title.done && (
+                {(!title.done || (!loadingSubtitle && !appDoneLoading)) && (
                   <span style={{
                     borderRight: '3px solid var(--foreground)',
                     marginLeft: '2px',
@@ -442,7 +444,7 @@ function GlobalLoadingSpinner({
               textAlign: 'right',
             }}>
               {subtitle.displayed}
-              {!subtitle.done && (
+              {(!subtitle.done || !appDoneLoading) && (
                 <span style={{
                   borderRight: '2px solid var(--foreground-accent)',
                   marginLeft: '2px',

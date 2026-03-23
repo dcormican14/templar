@@ -102,26 +102,6 @@ export function OverviewPage() {
     };
   }, []);
 
-  // Handle hash navigation on mount
-  useEffect(() => {
-    const hash = window.location.hash;
-    if (hash === '#docs-section') {
-      setTimeout(() => {
-        const docsSection = document.getElementById('docs-section');
-        if (docsSection) {
-          docsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
-    } else if (hash === '#contact-section') {
-      setTimeout(() => {
-        const contactSection = document.getElementById('contact-section');
-        if (contactSection) {
-          contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 100);
-    }
-  }, []);
-
   // Expose scroll container to parent for scroll detection
   useEffect(() => {
     // Find the outer wrapper first
