@@ -1,12 +1,15 @@
 'use client';
 
+import { Suspense } from 'react';
 import { PageWrapper } from '../components/PageWrapper';
 import { ComponentsPage } from '../pages';
 
 export default function Components() {
   return (
-    <PageWrapper activeTab="components">
-      <ComponentsPage />
-    </PageWrapper>
+    <Suspense>
+      <PageWrapper activeTab="components">
+        <ComponentsPage />
+      </PageWrapper>
+    </Suspense>
   );
 }

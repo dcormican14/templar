@@ -239,9 +239,12 @@ export const getWebKitScrollbarStyles = (
   const shapeStyles = getShapeStyles(shape);
 
   const isHoverOnly = visibility === 'hover';
+  const isAlwaysVisible = visibility === 'always';
   const isHidden = visibility === 'hidden';
 
-  if (isHidden) {
+  // 'hidden' visibility makes scrollbar invisible
+  // 'invisible' variant also hides scrollbar completely
+  if (isHidden || variant === 'invisible') {
     return {
       '&::-webkit-scrollbar': {
         display: 'none',
@@ -285,17 +288,6 @@ export const getWebKitScrollbarStyles = (
           buttonColor: colors.main,
           backdropFilter: 'blur(10px)',
           webkitBackdropFilter: 'blur(10px)',
-        };
-      case 'invisible':
-        // Invisible variant - completely invisible scrollbar
-        return {
-          thumb: 'transparent',
-          thumbHover: 'transparent',
-          track: 'transparent',
-          trackBorder: 'none',
-          border: 'none',
-          showButtons: false,
-          buttonColor: 'transparent',
         };
       case 'outline':
       default:
@@ -346,11 +338,12 @@ export const getWebKitScrollbarStyles = (
       // Center the thumb in the wider track for all variants
       border: `${Math.max(2, Math.floor((scrollbarThickness - sizeConfig.thumbThickness) / 2))}px solid transparent`,
       backgroundClip: 'padding-box',
-      transition: animationsEnabled 
-        ? 'background-color var(--duration-fast) var(--animation-smooth), opacity var(--duration-fast) var(--animation-smooth)' 
+      transition: animationsEnabled
+        ? 'background-color var(--duration-fast) var(--animation-smooth), opacity var(--duration-fast) var(--animation-smooth)'
         : 'none',
-      opacity: variant === 'invisible' ? 0 : (isHoverOnly ? 0 : 1),
-      cursor: disabled ? 'not-allowed' : (variant === 'invisible' ? 'default' : 'pointer'),
+      // visibility logic: 'always' = opacity 1, 'hover' = opacity 0 until hover
+      opacity: isHoverOnly ? 0 : 1,
+      cursor: disabled ? 'not-allowed' : 'grab',
       backdropFilter: variantColors.backdropFilter || 'none',
       WebkitBackdropFilter: variantColors.webkitBackdropFilter || 'none',
       boxShadow: variant === 'glassmorphic' ? `0 2px 4px ${cssVars?.shadow}20` : 'none',
@@ -358,9 +351,18 @@ export const getWebKitScrollbarStyles = (
 
     // Thumb hover state
     '&::-webkit-scrollbar-thumb:hover': {
-      backgroundColor: disabled ? variantColors.thumb : (variant === 'invisible' ? 'transparent' : variantColors.thumbHover),
-      opacity: variant === 'invisible' ? 0 : 1,
+      backgroundColor: disabled ? variantColors.thumb : variantColors.thumbHover,
+      opacity: 1,
+      cursor: disabled ? 'not-allowed' : 'grab',
       boxShadow: variant === 'glassmorphic' ? `0 4px 8px ${cssVars?.shadow}30` : 'none',
+    },
+
+    // Thumb active state (while dragging)
+    '&::-webkit-scrollbar-thumb:active': {
+      backgroundColor: disabled ? variantColors.thumb : variantColors.thumbHover,
+      cursor: disabled ? 'not-allowed' : 'grabbing',
+      opacity: 1,
+      boxShadow: variant === 'glassmorphic' ? `0 6px 12px ${cssVars?.shadow}40` : 'none',
     },
 
     // Corner where scrollbars meet

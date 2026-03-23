@@ -10,7 +10,7 @@ interface ClientProviderWrapperProps {
 
 export function ClientProviderWrapper({ children }: ClientProviderWrapperProps) {
   return (
-    <RoundTable>
+    <RoundTable initialLoading>
       {children}
     </RoundTable>
   );

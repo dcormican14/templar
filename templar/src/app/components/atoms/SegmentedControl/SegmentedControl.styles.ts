@@ -192,8 +192,8 @@ export const getVariantStyles = (
   switch (variant) {
     case 'solid':
       return {
-        borderColor: colors.main, // --{{color}}
-        backgroundColor: colors.main, // --{{color}}
+        borderColor: colors.accent || colors.main, // --{{color}}-accent or --{{color}}
+        backgroundColor: colors.accent || colors.main, // --{{color}}-accent or --{{color}}
         borderWidth: '2px',
         borderStyle: 'solid' as const,
       };
@@ -298,12 +298,15 @@ export const getSegmentStyles = (
       return getCSSVar(cssVars, 'mutedForeground', '#9ca3af');
     }
 
-    // Solid variant: all text is white, selected text uses --color
+    // Solid variant handling
     if (variant === 'solid') {
-      if (isSelected) {
-        return colors.main; // --{{color}}
+      if (hasIsometricAnimation) {
+        // Isometric: all text is white
+        return colors.foreground;
+      } else {
+        // Default animation: selected text is orange, unselected is white
+        return isSelected ? colors.main : colors.foreground;
       }
-      return getCSSVar(cssVars, 'foreground', '#ffffff'); // white
     }
 
     if (isSelected) {
@@ -368,7 +371,10 @@ export const getIndicatorStyles = (
   const getIndicatorBackground = () => {
     switch (variant) {
       case 'solid':
-        return colors.foreground; // white --{{color}}-foreground
+        // Isometric uses orange indicator, default uses white indicator
+        return hasIsometricAnimation
+          ? (colors.accent || colors.main) // orange for isometric
+          : colors.foreground; // white for default
       case 'outline':
         return getCSSVar(cssVars, 'background', '#ffffff');
       case 'ghost':
@@ -522,13 +528,13 @@ export const getIsometricIndicatorStyles = (
     pointerEvents: 'none', // Indicator doesn't capture events - hover is handled by segment button
   };
 
-  // For solid variant with isometric, add border matching the shadow color
+  // For solid variant with isometric, add white border
   if (variant === 'solid') {
     return {
       ...baseStyles,
       borderWidth: '2px',
       borderStyle: 'solid' as const,
-      borderColor: color.hover || color.main, // Match shadow color for consistency
+      borderColor: color.foreground, // White border for isometric solid variant
     };
   }
 
@@ -581,17 +587,15 @@ export const getIsometricShadowStyles = (
 
   // Different shadow styling based on variant
   if (variant === 'solid') {
-    // Solid variant: shadow uses hover color (darker shade) to match border
     return {
       ...baseStyles,
-      backgroundColor: color.hover || color.main, // Use darker hover color for better contrast
-      opacity: 0.85, // Slightly transparent for depth effect
+      backgroundColor: color.foreground, // White background for solid variant
     };
   } else {
-    // Outline variant: shadow uses standard --color
+    // For outline variant, use the main color
     return {
       ...baseStyles,
-      backgroundColor: color.main, // --{{color}} for outline variant
+      backgroundColor: color.main,
     };
   }
 };

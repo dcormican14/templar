@@ -19,7 +19,7 @@ const config: Partial<MournConfig> = {
     },
     theme: {
       enabled: true,
-      defaultTheme: 'system',
+      defaultTheme: 'valor-dark',
       attribute: 'data-theme',
       storageKey: 'templar-theme',
       includeCustomThemes: true,
@@ -34,6 +34,11 @@ const config: Partial<MournConfig> = {
       enabled: true,
       showGlobalSpinner: true,
       minLoadingTime: 300,
+      loadingImage: '/assets/knight_1.gif',
+      loadingTitle: 'Mournshire',
+      loadingSubtitle: 'A themable React component library',
+      typingSpeed: 60,
+      transitionDuration: 600,
     },
     modal: {
       enabled: true,

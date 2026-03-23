@@ -1,6 +1,6 @@
 {
   "name": "mournshire",
-  "version": "0.1.1",
+  "version": "1.2.2",
   "description": "A React component library with atomic design, advanced theming, and .mourn configuration",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -66,10 +66,11 @@
   "bugs": {
     "url": "https://github.com/dcorm/templar/issues"
   },
-  "homepage": "https://github.com/dcorm/templar#readme",
+  "homepage": "https://mournshire.vercel.app/overview",
   "peerDependencies": {
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0",
+    "tailwindcss": "^4",
     "iconoir-react": "^7.11.0"
   },
   "peerDependenciesMeta": {
@@ -78,21 +79,21 @@
     }
   },
   "dependencies": {
-    "react-parallax-tilt": "^1.7.307"
+    "react-parallax-tilt": "^1.7.315"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19.2.2",
-    "@types/react-dom": "^19.2.1",
-    "esbuild": "^0.25.10",
+    "@types/node": "^24",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "esbuild": "^0.27.1",
     "iconoir": "^7.11.0",
     "iconoir-react": "^7.11.0",
-    "next": "^15.5.2",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "next": "^16.0.8",
+    "react": "19.2.1",
+    "react-dom": "19.2.1",
     "tailwindcss": "^4",
-    "tsup": "^8.5.0",
+    "tsup": "^8.5.1",
     "typescript": "^5"
   }
 }

@@ -540,7 +540,7 @@ import { setGlobalMournConfig } from '@templar/environment';
 import type { MournConfig } from '@templar/environment';
 
 const config: Partial<MournConfig> = {
-  version: '1.0',
+  version: '1.2.1',
   name: 'My Templar Project',
 
   providers: {

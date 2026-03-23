@@ -66,11 +66,16 @@ export const SegmentedControl = forwardRef<SegmentedControlRef, SegmentedControl
   
   // Internal state for uncontrolled mode
   const [internalSelectedIndex, setInternalSelectedIndex] = useState(defaultSelectedIndex);
-  
+
   // Determine if controlled or uncontrolled
   const isControlled = selectedIndex !== undefined;
   const currentSelectedIndex = isControlled ? selectedIndex : internalSelectedIndex;
-  
+
+  // Drag state
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartXRef = useRef<number>(0);
+  const dragStartIndexRef = useRef<number>(0);
+
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
   const segmentRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -112,7 +117,8 @@ export const SegmentedControl = forwardRef<SegmentedControlRef, SegmentedControl
 
   // Handle segment click
   const handleSegmentClick = (index: number) => {
-    if (disabled || index === currentSelectedIndex) return;
+    // Don't trigger click if we were dragging
+    if (disabled || index === currentSelectedIndex || isDragging) return;
     handleIndexChange(index);
   };
   
@@ -155,7 +161,59 @@ export const SegmentedControl = forwardRef<SegmentedControlRef, SegmentedControl
       }
     }
   };
-  
+
+  // Drag handlers for click-and-drag functionality
+  const handleMouseDown = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (disabled) return;
+
+    // Prevent text selection during drag
+    event.preventDefault();
+
+    setIsDragging(true);
+    dragStartXRef.current = event.clientX;
+    dragStartIndexRef.current = currentSelectedIndex;
+  };
+
+  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging || disabled || !containerRef.current) return;
+
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const segmentWidth = containerRect.width / items.length;
+
+    // Calculate which segment the mouse is over
+    const relativeX = event.clientX - containerRect.left;
+    const hoveredIndex = Math.floor(relativeX / segmentWidth);
+
+    // Clamp to valid range
+    const newIndex = Math.max(0, Math.min(items.length - 1, hoveredIndex));
+
+    // Update selection if changed
+    if (newIndex !== currentSelectedIndex) {
+      handleIndexChange(newIndex);
+    }
+  };
+
+  const handleMouseUp = () => {
+    if (isDragging) {
+      setIsDragging(false);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (isDragging) {
+      setIsDragging(false);
+    }
+  };
+
+  // Add global mouse up listener to handle drag end outside component
+  React.useEffect(() => {
+    if (isDragging) {
+      const handleGlobalMouseUp = () => setIsDragging(false);
+      window.addEventListener('mouseup', handleGlobalMouseUp);
+      return () => window.removeEventListener('mouseup', handleGlobalMouseUp);
+    }
+  }, [isDragging]);
+
   // Get ARIA attributes
   const containerAriaAttributes = getAriaAttributes({
     selectedIndex: currentSelectedIndex,
@@ -230,8 +288,16 @@ export const SegmentedControl = forwardRef<SegmentedControlRef, SegmentedControl
     <div
       ref={containerRef}
       className={className}
-      style={containerStyles}
+      style={{
+        ...containerStyles,
+        cursor: isDragging ? 'grabbing' : 'grab',
+        userSelect: isDragging ? 'none' : 'auto',
+      }}
       onKeyDown={handleKeyDown}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseLeave}
       {...containerAriaAttributes}
       {...props}
     >

@@ -6,7 +6,7 @@
 /* Import all theme CSS files */
 @import './themes/light.css';
 @import './themes/dark.css';
-@import './themes/high-contrast.css';
+@import './themes/contrast.css';
 @import './themes/sepia-light.css';
 @import './themes/sepia-dark.css';
 @import './themes/solarized-dark.css';

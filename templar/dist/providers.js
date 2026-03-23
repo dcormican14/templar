@@ -1,6 +1,7 @@
 'use strict';
 
-var React22 = require('react');
+var React21 = require('react');
+var jsxRuntime = require('react/jsx-runtime');
 var Tilt = require('react-parallax-tilt');
 var IconoirIcons = require('iconoir-react');
 var reactDom = require('react-dom');
@@ -25,7 +26,7 @@ function _interopNamespace(e) {
   return Object.freeze(n);
 }
 
-var React22__default = /*#__PURE__*/_interopDefault(React22);
+var React21__default = /*#__PURE__*/_interopDefault(React21);
 var Tilt__default = /*#__PURE__*/_interopDefault(Tilt);
 var IconoirIcons__namespace = /*#__PURE__*/_interopNamespace(IconoirIcons);
 
@@ -60,15 +61,15 @@ var __objRest = (source, exclude) => {
     }
   return target;
 };
-var AuthContext = React22.createContext(void 0);
+var AuthContext = React21.createContext(void 0);
 function AuthProvider({
   children,
   storageKey = "templar-auth"
 }) {
-  const [user, setUser] = React22.useState(null);
-  const [isLoading, setIsLoading] = React22.useState(true);
+  const [user, setUser] = React21.useState(null);
+  const [isLoading, setIsLoading] = React21.useState(true);
   const isAuthenticated = !!user;
-  React22.useEffect(() => {
+  React21.useEffect(() => {
     const initAuth = async () => {
       try {
         const stored = localStorage.getItem(storageKey);
@@ -85,7 +86,7 @@ function AuthProvider({
     };
     initAuth();
   }, [storageKey]);
-  const login = React22.useCallback(async (email, password) => {
+  const login = React21.useCallback(async (email, password) => {
     setIsLoading(true);
     try {
       const mockUser = {
@@ -105,7 +106,7 @@ function AuthProvider({
       setIsLoading(false);
     }
   }, [storageKey]);
-  const logout = React22.useCallback(async () => {
+  const logout = React21.useCallback(async () => {
     setIsLoading(true);
     try {
       setUser(null);
@@ -116,7 +117,7 @@ function AuthProvider({
       setIsLoading(false);
     }
   }, [storageKey]);
-  const register = React22.useCallback(async (email, password, name) => {
+  const register = React21.useCallback(async (email, password, name) => {
     setIsLoading(true);
     try {
       const mockUser = {
@@ -136,13 +137,13 @@ function AuthProvider({
       setIsLoading(false);
     }
   }, [storageKey]);
-  const updateUser = React22.useCallback((userData) => {
+  const updateUser = React21.useCallback((userData) => {
     if (!user) return;
     const updatedUser = __spreadValues(__spreadValues({}, user), userData);
     setUser(updatedUser);
     localStorage.setItem(storageKey, JSON.stringify(updatedUser));
   }, [user, storageKey]);
-  const refreshAuth = React22.useCallback(async () => {
+  const refreshAuth = React21.useCallback(async () => {
     if (!user) return;
     setIsLoading(true);
     try {
@@ -171,26 +172,26 @@ function AuthProvider({
     updateUser,
     refreshAuth
   };
-  return /* @__PURE__ */ React22__default.default.createElement(AuthContext.Provider, { value }, children);
+  return /* @__PURE__ */ jsxRuntime.jsx(AuthContext.Provider, { value, children });
 }
 function useAuth() {
-  const context = React22.useContext(AuthContext);
+  const context = React21.useContext(AuthContext);
   if (context === void 0) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }
-var ThemeContext = React22.createContext(void 0);
-var availableThemes = ["light", "dark", "high-contrast", "sepia-light", "sepia-dark", "solarized-dark", "valor", "valor-dark", "system", "auto"];
+var ThemeContext = React21.createContext(void 0);
+var availableThemes = ["light", "dark", "contrast", "sepia-light", "sepia-dark", "solarized-dark", "valor", "valor-dark", "system", "auto"];
 function ThemeProvider({
   children,
   defaultTheme = "system",
   attribute = "data-theme",
   storageKey = "templar-theme"
 }) {
-  const [theme, setThemeState] = React22.useState(defaultTheme);
-  const [mounted, setMounted] = React22.useState(false);
-  const [themeVariables, setThemeVariables] = React22.useState({});
+  const [theme, setThemeState] = React21.useState(defaultTheme);
+  const [mounted, setMounted] = React21.useState(false);
+  const [themeVariables, setThemeVariables] = React21.useState({});
   const getCSSVariable = (variableName) => {
     if (typeof window === "undefined") return "";
     const style = getComputedStyle(document.documentElement);
@@ -319,7 +320,7 @@ function ThemeProvider({
         return getAutoTheme();
       case "light":
       case "dark":
-      case "high-contrast":
+      case "contrast":
       case "sepia-light":
       case "sepia-dark":
       case "solarized-dark":
@@ -330,18 +331,18 @@ function ThemeProvider({
         return "light";
     }
   })();
-  React22.useEffect(() => {
+  React21.useEffect(() => {
     const stored = localStorage.getItem(storageKey);
     if (stored && availableThemes.includes(stored)) {
       setThemeState(stored);
     }
     setMounted(true);
   }, [storageKey]);
-  React22.useEffect(() => {
+  React21.useEffect(() => {
     if (!mounted) return;
     const root = document.documentElement;
     root.setAttribute(attribute, resolvedTheme);
-    root.classList.remove("light", "dark", "high-contrast", "sepia-light", "sepia-dark", "solarized-dark", "valor", "valor-dark");
+    root.classList.remove("light", "dark", "contrast", "sepia-light", "sepia-dark", "solarized-dark", "valor", "valor-dark");
     root.classList.add(resolvedTheme);
     if (resolvedTheme === "dark" || resolvedTheme === "sepia-dark" || resolvedTheme === "solarized-dark" || resolvedTheme === "valor-dark") {
       root.classList.add("dark");
@@ -350,14 +351,14 @@ function ThemeProvider({
     }
     setTimeout(updateThemeVariables, 0);
   }, [resolvedTheme, mounted, attribute]);
-  React22.useEffect(() => {
+  React21.useEffect(() => {
     if (theme !== "system") return;
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const handleChange = () => {
       const root = document.documentElement;
       const newResolvedTheme = mediaQuery.matches ? "dark" : "light";
       root.setAttribute(attribute, newResolvedTheme);
-      root.classList.remove("light", "dark", "high-contrast", "sepia-light", "sepia-dark", "solarized-dark", "valor", "valor-dark");
+      root.classList.remove("light", "dark", "contrast", "sepia-light", "sepia-dark", "solarized-dark", "valor", "valor-dark");
       root.classList.add(newResolvedTheme);
       root.classList.toggle("dark", newResolvedTheme === "dark");
       setTimeout(updateThemeVariables, 0);
@@ -365,13 +366,13 @@ function ThemeProvider({
     mediaQuery.addEventListener("change", handleChange);
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, [theme, attribute]);
-  React22.useEffect(() => {
+  React21.useEffect(() => {
     if (theme !== "auto") return;
     const checkTime = () => {
       const root = document.documentElement;
       const newResolvedTheme = getAutoTheme();
       root.setAttribute(attribute, newResolvedTheme);
-      root.classList.remove("light", "dark", "high-contrast", "sepia-light", "sepia-dark", "solarized-dark", "valor", "valor-dark");
+      root.classList.remove("light", "dark", "contrast", "sepia-light", "sepia-dark", "solarized-dark", "valor", "valor-dark");
       root.classList.add(newResolvedTheme);
       root.classList.toggle("dark", newResolvedTheme === "dark");
       setTimeout(updateThemeVariables, 0);
@@ -398,7 +399,7 @@ function ThemeProvider({
     setTheme(availableThemes[nextIndex]);
   };
   if (!mounted) {
-    return /* @__PURE__ */ React22__default.default.createElement("div", { style: { visibility: "hidden" } }, children);
+    return /* @__PURE__ */ jsxRuntime.jsx("div", { style: { visibility: "hidden" }, children });
   }
   const value = {
     theme,
@@ -410,10 +411,10 @@ function ThemeProvider({
     getCSSVariable,
     themeVariables
   };
-  return /* @__PURE__ */ React22__default.default.createElement(ThemeContext.Provider, { value }, children);
+  return /* @__PURE__ */ jsxRuntime.jsx(ThemeContext.Provider, { value, children });
 }
 function useTheme() {
-  const context = React22.useContext(ThemeContext);
+  const context = React21.useContext(ThemeContext);
   if (context === void 0) {
     throw new Error("useTheme must be used within a ThemeProvider");
   }
@@ -1253,27 +1254,27 @@ var getIsometricShadowStyles = (color, variant, shape, size, animationsEnabled) 
 };
 var renderIcon = (iconElement, buttonSize) => {
   if (!iconElement) return null;
-  if (React22__default.default.isValidElement(iconElement)) {
-    return React22__default.default.cloneElement(iconElement, {
+  if (React21__default.default.isValidElement(iconElement)) {
+    return React21__default.default.cloneElement(iconElement, {
       size: getIconSize(buttonSize)
     });
   }
   return iconElement;
 };
-var createTextContainer = (children) => /* @__PURE__ */ React22__default.default.createElement("span", { style: {
+var createTextContainer = (children) => /* @__PURE__ */ jsxRuntime.jsx("span", { style: {
   flex: 1,
   display: "flex",
   justifyContent: "center",
   alignItems: "center"
-} }, children);
+}, children });
 var createCenteredContent = (icon, iconPosition, buttonSize, children) => {
   const hasChildren = Boolean(children && (typeof children === "string" ? children.trim() : children));
   if (!hasChildren) {
-    return /* @__PURE__ */ React22__default.default.createElement("span", { style: {
+    return /* @__PURE__ */ jsxRuntime.jsx("span", { style: {
       display: "flex",
       alignItems: "center",
       justifyContent: "center"
-    } }, renderIcon(icon, buttonSize));
+    }, children: renderIcon(icon, buttonSize) });
   }
   const getSpacing = (size) => {
     const spacingMap = {
@@ -1286,12 +1287,16 @@ var createCenteredContent = (icon, iconPosition, buttonSize, children) => {
     return spacingMap[size];
   };
   const spacing = getSpacing(buttonSize);
-  return /* @__PURE__ */ React22__default.default.createElement("span", { style: {
+  return /* @__PURE__ */ jsxRuntime.jsxs("span", { style: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     gap: spacing
-  } }, iconPosition === "leading" && renderIcon(icon, buttonSize), /* @__PURE__ */ React22__default.default.createElement("span", null, children), iconPosition === "trailing" && renderIcon(icon, buttonSize));
+  }, children: [
+    iconPosition === "leading" && renderIcon(icon, buttonSize),
+    /* @__PURE__ */ jsxRuntime.jsx("span", { children }),
+    iconPosition === "trailing" && renderIcon(icon, buttonSize)
+  ] });
 };
 
 // src/app/components/atoms/ProgressIndicator/ProgressIndicator.styles.ts
@@ -1768,9 +1773,7 @@ var getCircularTextStyles = (size, color, customColor, cssVars) => {
     pointerEvents: "none"
   };
 };
-
-// src/app/components/atoms/ProgressIndicator/ProgressIndicator.tsx
-var ProgressIndicator = React22.forwardRef((allProps, ref) => {
+var ProgressIndicator = React21.forwardRef((allProps, ref) => {
   var _b;
   const [containerProps, componentProps] = extractContainerProps(allProps);
   const {
@@ -1825,8 +1828,8 @@ var ProgressIndicator = React22.forwardRef((allProps, ref) => {
   const cssVars = useCSSVariables();
   const { settings } = useSettings();
   const animationsEnabled = ((_b = settings.appearance.animations) != null ? _b : true) && animate;
-  const [currentValue, setCurrentValue] = React22.useState(value);
-  React22.useEffect(() => {
+  const [currentValue, setCurrentValue] = React21.useState(value);
+  React21.useEffect(() => {
     if (!autoProgress || indeterminate) {
       setCurrentValue(value);
       return;
@@ -1853,10 +1856,10 @@ var ProgressIndicator = React22.forwardRef((allProps, ref) => {
     return () => clearInterval(interval);
   }, [autoProgress, autoProgressDuration, max, indeterminate, value]);
   const actualValue = autoProgress && !indeterminate ? currentValue : value;
-  const percentage = React22.useMemo(() => {
+  const percentage = React21.useMemo(() => {
     return Math.min(Math.max(actualValue / max * 100, 0), 100);
   }, [actualValue, max]);
-  const containerStyles = React22.useMemo(
+  const containerStyles = React21.useMemo(
     () => createProgressIndicatorContainerStyles(shape, width, height, animationsEnabled),
     [shape, width, height, animationsEnabled]
   );
@@ -1868,7 +1871,8 @@ var ProgressIndicator = React22.forwardRef((allProps, ref) => {
       const barStyles = getBarProgressStyles(color, customColor, variant, size, shape, width, disabled, animationsEnabled, cssVars);
       const fillStyles = getProgressFillStyles(color, customColor, variant, size, shape, percentage, striped, stripedAnimation, indeterminate, animationsEnabled, cssVars);
       const textStyles = getProgressTextStyles(size, color, customColor, cssVars);
-      return /* @__PURE__ */ React22__default.default.createElement(React22__default.default.Fragment, null, animationsEnabled && /* @__PURE__ */ React22__default.default.createElement("style", { jsx: true, global: true }, `
+      return /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+        animationsEnabled && /* @__PURE__ */ jsxRuntime.jsx("style", { jsx: true, global: true, children: `
               @keyframes progress-indeterminate {
                 0% { left: 0%; }
                 100% { left: 70%; }
@@ -1877,29 +1881,36 @@ var ProgressIndicator = React22.forwardRef((allProps, ref) => {
                 from { background-position: 1rem 0; }
                 to { background-position: 0 0; }
               }
-            `), /* @__PURE__ */ React22__default.default.createElement(
-        "div",
-        __spreadValues({
-          ref,
-          className,
-          style: combinedStyles,
-          role: "progressbar",
-          "aria-label": accessibilityLabel,
-          "aria-valuenow": value,
-          "aria-valuemin": 0,
-          "aria-valuemax": max,
-          id,
-          "data-testid": dataTestId
-        }, restProps),
-        /* @__PURE__ */ React22__default.default.createElement("div", { style: barStyles }, /* @__PURE__ */ React22__default.default.createElement("div", { style: fillStyles }), (showPercentage || showValue) && /* @__PURE__ */ React22__default.default.createElement("div", { style: textStyles }, showValue ? `${value}/${max}` : `${Math.round(percentage)}%`))
-      ));
+            ` }),
+        /* @__PURE__ */ jsxRuntime.jsx(
+          "div",
+          __spreadProps(__spreadValues({
+            ref,
+            className,
+            style: combinedStyles,
+            role: "progressbar",
+            "aria-label": accessibilityLabel,
+            "aria-valuenow": value,
+            "aria-valuemin": 0,
+            "aria-valuemax": max,
+            id,
+            "data-testid": dataTestId
+          }, restProps), {
+            children: /* @__PURE__ */ jsxRuntime.jsxs("div", { style: barStyles, children: [
+              /* @__PURE__ */ jsxRuntime.jsx("div", { style: fillStyles }),
+              (showPercentage || showValue) && /* @__PURE__ */ jsxRuntime.jsx("div", { style: textStyles, children: showValue ? `${value}/${max}` : `${Math.round(percentage)}%` })
+            ] })
+          })
+        )
+      ] });
     }
     case "circular": {
       if (indeterminate) {
         const circularStyles2 = getCircularProgressStyles(color, customColor, variant, size, percentage, disabled, animationsEnabled, cssVars);
         const svgStyles2 = getCircularIndeterminateProgressSVGStyles(color, customColor, variant, size, animationsEnabled, cssVars);
         const textStyles2 = getCircularTextStyles(size, color, customColor, cssVars);
-        return /* @__PURE__ */ React22__default.default.createElement(React22__default.default.Fragment, null, animationsEnabled && /* @__PURE__ */ React22__default.default.createElement("style", { jsx: true, global: true }, `
+        return /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+          animationsEnabled && /* @__PURE__ */ jsxRuntime.jsx("style", { jsx: true, global: true, children: `
                 @keyframes progress-circular-indeterminate {
                   0% {
                     transform: rotate(-90deg);
@@ -1908,59 +1919,68 @@ var ProgressIndicator = React22.forwardRef((allProps, ref) => {
                     transform: rotate(270deg);
                   }
                 }
-              `), /* @__PURE__ */ React22__default.default.createElement(
-          "div",
-          __spreadValues({
-            ref,
-            className,
-            style: __spreadValues(__spreadValues({}, combinedStyles), circularStyles2),
-            role: "status",
-            "aria-label": accessibilityLabel,
-            id,
-            "data-testid": dataTestId
-          }, restProps),
-          /* @__PURE__ */ React22__default.default.createElement("svg", { style: svgStyles2.svg, viewBox: "0 0 36 36" }, svgStyles2.gradientDefs && /* @__PURE__ */ React22__default.default.createElement("defs", null, /* @__PURE__ */ React22__default.default.createElement(
-            "linearGradient",
-            {
-              id: svgStyles2.gradientDefs.gradientId,
-              x1: "0%",
-              y1: "0%",
-              x2: "100%",
-              y2: "0%"
-            },
-            svgStyles2.gradientDefs.stops.map((stop, index) => /* @__PURE__ */ React22__default.default.createElement(
-              "stop",
-              {
-                key: index,
-                offset: stop.offset,
-                stopColor: stop.stopColor,
-                stopOpacity: stop.stopOpacity
-              }
-            ))
-          )), /* @__PURE__ */ React22__default.default.createElement(
-            "path",
-            {
-              style: svgStyles2.track,
-              d: "M18,2.0845 a 16,16 0 0,1 0,32 a 16,16 0 0,1 0,-32"
-            }
-          ), /* @__PURE__ */ React22__default.default.createElement(
-            "path",
-            {
-              style: svgStyles2.progress,
-              d: "M18,2.0845 a 16,16 0 0,1 0,32 a 16,16 0 0,1 0,-32"
-            }
-          )),
-          (showPercentage || showValue) && /* @__PURE__ */ React22__default.default.createElement("div", { style: textStyles2 }, showValue ? `${actualValue}/${max}` : `${Math.round(percentage)}%`)
-        ));
+              ` }),
+          /* @__PURE__ */ jsxRuntime.jsxs(
+            "div",
+            __spreadProps(__spreadValues({
+              ref,
+              className,
+              style: __spreadValues(__spreadValues({}, combinedStyles), circularStyles2),
+              role: "status",
+              "aria-label": accessibilityLabel,
+              id,
+              "data-testid": dataTestId
+            }, restProps), {
+              children: [
+                /* @__PURE__ */ jsxRuntime.jsxs("svg", { style: svgStyles2.svg, viewBox: "0 0 36 36", children: [
+                  svgStyles2.gradientDefs && /* @__PURE__ */ jsxRuntime.jsx("defs", { children: /* @__PURE__ */ jsxRuntime.jsx(
+                    "linearGradient",
+                    {
+                      id: svgStyles2.gradientDefs.gradientId,
+                      x1: "0%",
+                      y1: "0%",
+                      x2: "100%",
+                      y2: "0%",
+                      children: svgStyles2.gradientDefs.stops.map((stop, index) => /* @__PURE__ */ jsxRuntime.jsx(
+                        "stop",
+                        {
+                          offset: stop.offset,
+                          stopColor: stop.stopColor,
+                          stopOpacity: stop.stopOpacity
+                        },
+                        index
+                      ))
+                    }
+                  ) }),
+                  /* @__PURE__ */ jsxRuntime.jsx(
+                    "path",
+                    {
+                      style: svgStyles2.track,
+                      d: "M18,2.0845 a 16,16 0 0,1 0,32 a 16,16 0 0,1 0,-32"
+                    }
+                  ),
+                  /* @__PURE__ */ jsxRuntime.jsx(
+                    "path",
+                    {
+                      style: svgStyles2.progress,
+                      d: "M18,2.0845 a 16,16 0 0,1 0,32 a 16,16 0 0,1 0,-32"
+                    }
+                  )
+                ] }),
+                (showPercentage || showValue) && /* @__PURE__ */ jsxRuntime.jsx("div", { style: textStyles2, children: showValue ? `${actualValue}/${max}` : `${Math.round(percentage)}%` })
+              ]
+            })
+          )
+        ] });
       }
       const circularStyles = getCircularProgressStyles(color, customColor, variant, size, percentage, disabled, animationsEnabled, cssVars);
       const svgStyles = getCircularProgressSVGStyles(color, customColor, variant, size, cssVars);
       const textStyles = getCircularTextStyles(size, color, customColor, cssVars);
       const strokeDasharray = svgStyles.circumference;
       const strokeDashoffset = svgStyles.circumference - percentage / 100 * svgStyles.circumference;
-      return /* @__PURE__ */ React22__default.default.createElement(
+      return /* @__PURE__ */ jsxRuntime.jsxs(
         "div",
-        __spreadValues({
+        __spreadProps(__spreadValues({
           ref,
           className,
           style: __spreadValues(__spreadValues({}, combinedStyles), circularStyles),
@@ -1971,49 +1991,57 @@ var ProgressIndicator = React22.forwardRef((allProps, ref) => {
           "aria-valuemax": max,
           id,
           "data-testid": dataTestId
-        }, restProps),
-        /* @__PURE__ */ React22__default.default.createElement("svg", { style: svgStyles.svg, viewBox: "0 0 36 36" }, svgStyles.gradientDefs && /* @__PURE__ */ React22__default.default.createElement("defs", null, /* @__PURE__ */ React22__default.default.createElement(
-          "linearGradient",
-          {
-            id: svgStyles.gradientDefs.gradientId,
-            x1: "0%",
-            y1: "0%",
-            x2: "100%",
-            y2: "0%"
-          },
-          svgStyles.gradientDefs.stops.map((stop, index) => /* @__PURE__ */ React22__default.default.createElement(
-            "stop",
-            {
-              key: index,
-              offset: stop.offset,
-              stopColor: stop.stopColor,
-              stopOpacity: stop.stopOpacity
-            }
-          ))
-        )), /* @__PURE__ */ React22__default.default.createElement(
-          "path",
-          {
-            style: svgStyles.track,
-            d: "M18,2.0845 a 16,16 0 0,1 0,32 a 16,16 0 0,1 0,-32"
-          }
-        ), /* @__PURE__ */ React22__default.default.createElement(
-          "path",
-          {
-            style: __spreadProps(__spreadValues({}, svgStyles.progress), {
-              strokeDasharray,
-              strokeDashoffset
-            }),
-            d: "M18,2.0845 a 16,16 0 0,1 0,32 a 16,16 0 0,1 0,-32"
-          }
-        )),
-        (showPercentage || showValue) && /* @__PURE__ */ React22__default.default.createElement("div", { style: textStyles }, showValue ? `${value}/${max}` : `${Math.round(percentage)}%`)
+        }, restProps), {
+          children: [
+            /* @__PURE__ */ jsxRuntime.jsxs("svg", { style: svgStyles.svg, viewBox: "0 0 36 36", children: [
+              svgStyles.gradientDefs && /* @__PURE__ */ jsxRuntime.jsx("defs", { children: /* @__PURE__ */ jsxRuntime.jsx(
+                "linearGradient",
+                {
+                  id: svgStyles.gradientDefs.gradientId,
+                  x1: "0%",
+                  y1: "0%",
+                  x2: "100%",
+                  y2: "0%",
+                  children: svgStyles.gradientDefs.stops.map((stop, index) => /* @__PURE__ */ jsxRuntime.jsx(
+                    "stop",
+                    {
+                      offset: stop.offset,
+                      stopColor: stop.stopColor,
+                      stopOpacity: stop.stopOpacity
+                    },
+                    index
+                  ))
+                }
+              ) }),
+              /* @__PURE__ */ jsxRuntime.jsx(
+                "path",
+                {
+                  style: svgStyles.track,
+                  d: "M18,2.0845 a 16,16 0 0,1 0,32 a 16,16 0 0,1 0,-32"
+                }
+              ),
+              /* @__PURE__ */ jsxRuntime.jsx(
+                "path",
+                {
+                  style: __spreadProps(__spreadValues({}, svgStyles.progress), {
+                    strokeDasharray,
+                    strokeDashoffset
+                  }),
+                  d: "M18,2.0845 a 16,16 0 0,1 0,32 a 16,16 0 0,1 0,-32"
+                }
+              )
+            ] }),
+            (showPercentage || showValue) && /* @__PURE__ */ jsxRuntime.jsx("div", { style: textStyles, children: showValue ? `${value}/${max}` : `${Math.round(percentage)}%` })
+          ]
+        })
       );
     }
     default: {
       const barStyles = getBarProgressStyles(color, customColor, variant, size, shape, width, disabled, animationsEnabled, cssVars);
       const fillStyles = getProgressFillStyles(color, customColor, variant, size, shape, percentage, striped, stripedAnimation, indeterminate, animationsEnabled, cssVars);
       const textStyles = getProgressTextStyles(size, color, customColor, cssVars);
-      return /* @__PURE__ */ React22__default.default.createElement(React22__default.default.Fragment, null, animationsEnabled && /* @__PURE__ */ React22__default.default.createElement("style", { jsx: true, global: true }, `
+      return /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+        animationsEnabled && /* @__PURE__ */ jsxRuntime.jsx("style", { jsx: true, global: true, children: `
               @keyframes progress-indeterminate {
                 0% { left: 0%; }
                 100% { left: 70%; }
@@ -2022,22 +2050,28 @@ var ProgressIndicator = React22.forwardRef((allProps, ref) => {
                 from { background-position: 1rem 0; }
                 to { background-position: 0 0; }
               }
-            `), /* @__PURE__ */ React22__default.default.createElement(
-        "div",
-        __spreadValues({
-          ref,
-          className,
-          style: combinedStyles,
-          role: "progressbar",
-          "aria-label": accessibilityLabel,
-          "aria-valuenow": actualValue,
-          "aria-valuemin": 0,
-          "aria-valuemax": max,
-          id,
-          "data-testid": dataTestId
-        }, restProps),
-        /* @__PURE__ */ React22__default.default.createElement("div", { style: barStyles }, /* @__PURE__ */ React22__default.default.createElement("div", { style: fillStyles }), (showPercentage || showValue) && /* @__PURE__ */ React22__default.default.createElement("div", { style: textStyles }, showValue ? `${actualValue}/${max}` : `${Math.round(percentage)}%`))
-      ));
+            ` }),
+        /* @__PURE__ */ jsxRuntime.jsx(
+          "div",
+          __spreadProps(__spreadValues({
+            ref,
+            className,
+            style: combinedStyles,
+            role: "progressbar",
+            "aria-label": accessibilityLabel,
+            "aria-valuenow": actualValue,
+            "aria-valuemin": 0,
+            "aria-valuemax": max,
+            id,
+            "data-testid": dataTestId
+          }, restProps), {
+            children: /* @__PURE__ */ jsxRuntime.jsxs("div", { style: barStyles, children: [
+              /* @__PURE__ */ jsxRuntime.jsx("div", { style: fillStyles }),
+              (showPercentage || showValue) && /* @__PURE__ */ jsxRuntime.jsx("div", { style: textStyles, children: showValue ? `${actualValue}/${max}` : `${Math.round(percentage)}%` })
+            ] })
+          })
+        )
+      ] });
     }
   }
 });
@@ -2045,7 +2079,7 @@ ProgressIndicator.displayName = "ProgressIndicator";
 var useAsyncClick = ({ loadingKey, onAsyncClick, onClick }) => {
   const { startLoading, stopLoading } = useLoading();
   const { success, error } = useToast();
-  const handleAsyncClick = React22.useCallback(async (e) => {
+  const handleAsyncClick = React21.useCallback(async (e) => {
     if (onAsyncClick) {
       const key = loadingKey || "button-action";
       try {
@@ -2064,7 +2098,7 @@ var useAsyncClick = ({ loadingKey, onAsyncClick, onClick }) => {
   return handleAsyncClick;
 };
 var useButtonHover = ({ variant, isDisabled, animationsEnabled, cssVars, hasIsometricAnimation, colors }) => {
-  const handleMouseEnter = React22.useCallback((e) => {
+  const handleMouseEnter = React21.useCallback((e) => {
     if (!isDisabled && animationsEnabled) {
       if (hasIsometricAnimation && variant !== "ghost" && variant !== "glassmorphic") {
         e.currentTarget.style.transform = "translate(3px, 3px)";
@@ -2083,7 +2117,7 @@ var useButtonHover = ({ variant, isDisabled, animationsEnabled, cssVars, hasIsom
       }
     }
   }, [variant, isDisabled, animationsEnabled, cssVars, hasIsometricAnimation, colors]);
-  const handleMouseLeave = React22.useCallback((e) => {
+  const handleMouseLeave = React21.useCallback((e) => {
     if (!isDisabled) {
       if (hasIsometricAnimation && variant !== "ghost" && variant !== "glassmorphic") {
         e.currentTarget.style.transform = "translate(0, 0)";
@@ -2110,12 +2144,12 @@ var ParallaxTiltWrapper = ({
   style
 }) => {
   if (disabled) {
-    return /* @__PURE__ */ React22__default.default.createElement("div", { className, style }, children);
+    return /* @__PURE__ */ jsxRuntime.jsx("div", { className, style, children });
   }
   let childBorderRadius = "0px";
   let childBoxShadow = "none";
   let shouldPreserveShadow = false;
-  if (React22.isValidElement(children) && children.props && typeof children.props === "object") {
+  if (React21.isValidElement(children) && children.props && typeof children.props === "object") {
     const childProps = children.props;
     const childStyle = childProps.style;
     if (childStyle == null ? void 0 : childStyle.borderRadius) {
@@ -2126,7 +2160,7 @@ var ParallaxTiltWrapper = ({
       shouldPreserveShadow = childBoxShadow.includes("32px") || childBoxShadow.includes("40px");
     }
   }
-  return /* @__PURE__ */ React22__default.default.createElement(
+  return /* @__PURE__ */ jsxRuntime.jsx(
     Tilt__default.default,
     {
       className,
@@ -2149,13 +2183,13 @@ var ParallaxTiltWrapper = ({
       glareColor: "#ffffff",
       glarePosition: "all",
       glareReverse: false,
-      glareBorderRadius: childBorderRadius
-    },
-    shouldPreserveShadow && React22.isValidElement(children) && children.props && typeof children.props === "object" ? React22.cloneElement(children, {
-      style: __spreadProps(__spreadValues({}, children.props.style), {
-        boxShadow: "none"
-      })
-    }) : children
+      glareBorderRadius: childBorderRadius,
+      children: shouldPreserveShadow && React21.isValidElement(children) && children.props && typeof children.props === "object" ? React21.cloneElement(children, {
+        style: __spreadProps(__spreadValues({}, children.props.style), {
+          boxShadow: "none"
+        })
+      }) : children
+    }
   );
 };
 var TypewriterText = ({
@@ -2171,12 +2205,12 @@ var TypewriterText = ({
   loop = "infinite"
   // Default to infinite loop for backward compatibility
 }) => {
-  const [displayText, setDisplayText] = React22.useState("");
-  const [currentIndex, setCurrentIndex] = React22.useState(0);
-  const [showCursorBlink, setShowCursorBlink] = React22.useState(true);
-  const [phase, setPhase] = React22.useState("typing");
-  const [cycleCount, setCycleCount] = React22.useState(0);
-  React22.useEffect(() => {
+  const [displayText, setDisplayText] = React21.useState("");
+  const [currentIndex, setCurrentIndex] = React21.useState(0);
+  const [showCursorBlink, setShowCursorBlink] = React21.useState(true);
+  const [phase, setPhase] = React21.useState("typing");
+  const [cycleCount, setCycleCount] = React21.useState(0);
+  React21.useEffect(() => {
     if (disabled) {
       setDisplayText(text);
       return;
@@ -2217,14 +2251,14 @@ var TypewriterText = ({
     }
     return () => clearTimeout(timeout);
   }, [currentIndex, text, speed, deleteSpeed, disabled, phase, waitTime]);
-  React22.useEffect(() => {
+  React21.useEffect(() => {
     if (disabled) return;
     const cursorInterval = setInterval(() => {
       setShowCursorBlink((prev) => !prev);
     }, 500);
     return () => clearInterval(cursorInterval);
   }, [disabled]);
-  React22.useEffect(() => {
+  React21.useEffect(() => {
     if (!disabled) {
       setCurrentIndex(0);
       setDisplayText("");
@@ -2233,22 +2267,23 @@ var TypewriterText = ({
     }
   }, [text, disabled]);
   if (disabled) {
-    return /* @__PURE__ */ React22__default.default.createElement(React22__default.default.Fragment, null, children || text);
+    return /* @__PURE__ */ jsxRuntime.jsx(jsxRuntime.Fragment, { children: children || text });
   }
-  return /* @__PURE__ */ React22__default.default.createElement(React22__default.default.Fragment, null, displayText, showCursor && /* @__PURE__ */ React22__default.default.createElement(
-    "span",
-    {
-      style: {
-        opacity: showCursorBlink ? 1 : 0,
-        transition: "opacity 0.1s ease-in-out"
+  return /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+    displayText,
+    showCursor && /* @__PURE__ */ jsxRuntime.jsx(
+      "span",
+      {
+        style: {
+          opacity: showCursorBlink ? 1 : 0,
+          transition: "opacity 0.1s ease-in-out"
+        },
+        children: cursorChar
       }
-    },
-    cursorChar
-  ));
+    )
+  ] });
 };
-
-// src/app/components/atoms/Button/Button.tsx
-var Button = React22.forwardRef((allProps, ref) => {
+var Button = React21.forwardRef((allProps, ref) => {
   var _b;
   const [interactiveProps, componentProps] = extractInteractiveProps(allProps);
   const {
@@ -2315,27 +2350,27 @@ var Button = React22.forwardRef((allProps, ref) => {
     universalOnMouseLeave == null ? void 0 : universalOnMouseLeave(e);
     handleMouseLeave(e);
   };
-  const baseStyles = React22.useMemo(() => createBaseStyles(
+  const baseStyles = React21.useMemo(() => createBaseStyles(
     Boolean(fullWidth),
     Boolean(isDisabled),
     hasIcon,
     shape,
     shouldUseDefaultAnimations
   ), [fullWidth, isDisabled, hasIcon, shape, shouldUseDefaultAnimations]);
-  const variantStyles = React22.useMemo(() => getVariantStyles(color, variant, customColor, cssVars), [color, variant, customColor, cssVars]);
-  const sizeStyles = React22.useMemo(() => getSizeStyles(size), [size]);
-  const iconOnlyStyles = React22.useMemo(() => isIconOnly ? getIconOnlyStyles(size) : {}, [isIconOnly, size, shape]);
-  const isometricContainerStyles = React22.useMemo(() => hasIsometricAnimation ? getIsometricContainerStyles() : {}, [hasIsometricAnimation]);
-  const isometricButtonStyles = React22.useMemo(() => hasIsometricAnimation ? getIsometricButtonStyles(getColorVariables(color, customColor, cssVars), variant, animationsEnabled) : {}, [hasIsometricAnimation, color, customColor, cssVars, variant, animationsEnabled]);
-  const isometricShadowStyles = React22.useMemo(() => hasIsometricAnimation ? getIsometricShadowStyles(getColorVariables(color, customColor, cssVars), variant, shape, sizeStyles, animationsEnabled) : {}, [hasIsometricAnimation, color, customColor, cssVars, variant, shape, sizeStyles, animationsEnabled]);
+  const variantStyles = React21.useMemo(() => getVariantStyles(color, variant, customColor, cssVars), [color, variant, customColor, cssVars]);
+  const sizeStyles = React21.useMemo(() => getSizeStyles(size), [size]);
+  const iconOnlyStyles = React21.useMemo(() => isIconOnly ? getIconOnlyStyles(size) : {}, [isIconOnly, size, shape]);
+  const isometricContainerStyles = React21.useMemo(() => hasIsometricAnimation ? getIsometricContainerStyles() : {}, [hasIsometricAnimation]);
+  const isometricButtonStyles = React21.useMemo(() => hasIsometricAnimation ? getIsometricButtonStyles(getColorVariables(color, customColor, cssVars), variant, animationsEnabled) : {}, [hasIsometricAnimation, color, customColor, cssVars, variant, animationsEnabled]);
+  const isometricShadowStyles = React21.useMemo(() => hasIsometricAnimation ? getIsometricShadowStyles(getColorVariables(color, customColor, cssVars), variant, shape, sizeStyles, animationsEnabled) : {}, [hasIsometricAnimation, color, customColor, cssVars, variant, shape, sizeStyles, animationsEnabled]);
   const combinedStyles = __spreadValues(__spreadProps(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues({}, baseStyles), sizeStyles), variantStyles), iconOnlyStyles), isometricButtonStyles), {
     // Apply isometric button styles
     width,
     height
   }), style);
-  const renderTextContent = React22.useMemo(() => {
+  const renderTextContent = React21.useMemo(() => {
     if (useAnimationMode && animationMode === "typewriter" && typeof children === "string") {
-      return /* @__PURE__ */ React22__default.default.createElement(
+      return /* @__PURE__ */ jsxRuntime.jsx(
         TypewriterText,
         {
           text: children,
@@ -2350,7 +2385,7 @@ var Button = React22.forwardRef((allProps, ref) => {
     if (isButtonLoading) {
       const spinnerSize = size === "xs" ? "xs" : size === "sm" ? "xs" : "sm";
       const spinnerColor = color;
-      return /* @__PURE__ */ React22__default.default.createElement(
+      return /* @__PURE__ */ jsxRuntime.jsx(
         ProgressIndicator,
         {
           type: "circular",
@@ -2359,11 +2394,11 @@ var Button = React22.forwardRef((allProps, ref) => {
         }
       );
     }
-    return /* @__PURE__ */ React22__default.default.createElement(React22__default.default.Fragment, null, hasIcon ? createCenteredContent(icon, iconPosition, size, renderTextContent) : createTextContainer(renderTextContent));
+    return /* @__PURE__ */ jsxRuntime.jsx(jsxRuntime.Fragment, { children: hasIcon ? createCenteredContent(icon, iconPosition, size, renderTextContent) : createTextContainer(renderTextContent) });
   };
-  const buttonElement = /* @__PURE__ */ React22__default.default.createElement(
+  const buttonElement = /* @__PURE__ */ jsxRuntime.jsx(
     "button",
-    __spreadValues({
+    __spreadProps(__spreadValues({
       ref,
       id,
       disabled: Boolean(isDisabled),
@@ -2373,17 +2408,21 @@ var Button = React22.forwardRef((allProps, ref) => {
       style: combinedStyles,
       className: className || "",
       "data-testid": dataTestId
-    }, restProps),
-    renderContent()
+    }, restProps), {
+      children: renderContent()
+    })
   );
-  const isometricWrappedButton = hasIsometricAnimation ? /* @__PURE__ */ React22__default.default.createElement("div", { style: isometricContainerStyles }, /* @__PURE__ */ React22__default.default.createElement("div", { style: isometricShadowStyles }), buttonElement) : buttonElement;
+  const isometricWrappedButton = hasIsometricAnimation ? /* @__PURE__ */ jsxRuntime.jsxs("div", { style: isometricContainerStyles, children: [
+    /* @__PURE__ */ jsxRuntime.jsx("div", { style: isometricShadowStyles }),
+    buttonElement
+  ] }) : buttonElement;
   if (useAnimationMode && animationMode === "parallax") {
-    return /* @__PURE__ */ React22__default.default.createElement(
+    return /* @__PURE__ */ jsxRuntime.jsx(
       ParallaxTiltWrapper,
       {
-        disabled: isDisabled || !useAnimationMode
-      },
-      isometricWrappedButton
+        disabled: isDisabled || !useAnimationMode,
+        children: isometricWrappedButton
+      }
     );
   }
   return isometricWrappedButton;
@@ -2757,7 +2796,7 @@ var IconAnimations = ({
   if (!hasAnimations || !spin && !pulse) {
     return null;
   }
-  return /* @__PURE__ */ React22__default.default.createElement("style", { jsx: true, global: true }, `
+  return /* @__PURE__ */ jsxRuntime.jsx("style", { jsx: true, global: true, children: `
       @keyframes icon-spin {
         from {
           transform: rotate(0deg);
@@ -2775,11 +2814,9 @@ var IconAnimations = ({
           opacity: 0.5;
         }
       }
-    `);
+    ` });
 };
-
-// src/app/components/atoms/Icon/Icon.tsx
-var Icon = React22.forwardRef(
+var Icon = React21.forwardRef(
   (_a, ref) => {
     var _b = _a, {
       name,
@@ -2801,17 +2838,17 @@ var Icon = React22.forwardRef(
     const cssVars = useCSSVariables();
     const { settings } = useSettings();
     const animationsEnabled = settings.appearance.animations;
-    const IconComponent = React22.useMemo(() => resolveIconComponent(name), [name]);
+    const IconComponent = React21.useMemo(() => resolveIconComponent(name), [name]);
     if (!IconComponent) {
       return null;
     }
-    const sizeValue = React22.useMemo(() => getSizeValue(size), [size]);
-    const colorValue = React22.useMemo(() => getColorValue(color, cssVars), [color, cssVars]);
-    const animationStyles = React22.useMemo(
+    const sizeValue = React21.useMemo(() => getSizeValue(size), [size]);
+    const colorValue = React21.useMemo(() => getColorValue(color, cssVars), [color, cssVars]);
+    const animationStyles = React21.useMemo(
       () => getAnimationStyles(spin, pulse, animationsEnabled),
       [spin, pulse, animationsEnabled]
     );
-    const iconStyles = React22.useMemo(
+    const iconStyles = React21.useMemo(
       () => createIconStyles(sizeValue, colorValue, animationStyles, style),
       [sizeValue, colorValue, animationStyles, style]
     );
@@ -2823,23 +2860,24 @@ var Icon = React22.forwardRef(
       ref,
       props
     );
-    return /* @__PURE__ */ React22__default.default.createElement(React22__default.default.Fragment, null, /* @__PURE__ */ React22__default.default.createElement(
-      IconAnimations,
-      {
-        hasAnimations: animationsEnabled,
-        spin,
-        pulse
-      }
-    ), /* @__PURE__ */ React22__default.default.createElement(IconComponent, __spreadValues({}, iconProps)));
+    return /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+      /* @__PURE__ */ jsxRuntime.jsx(
+        IconAnimations,
+        {
+          hasAnimations: animationsEnabled,
+          spin,
+          pulse
+        }
+      ),
+      /* @__PURE__ */ jsxRuntime.jsx(IconComponent, __spreadValues({}, iconProps))
+    ] });
   }
 );
 Icon.displayName = "Icon";
-
-// src/app/components/atoms/Badge/Badge.utils.tsx
 var renderIcon2 = (iconElement, badgeSize) => {
   if (!iconElement) return null;
-  if (React22__default.default.isValidElement(iconElement)) {
-    return React22__default.default.cloneElement(iconElement, {
+  if (React21__default.default.isValidElement(iconElement)) {
+    return React21__default.default.cloneElement(iconElement, {
       size: getIconSize2(badgeSize)
     });
   }
@@ -2848,7 +2886,7 @@ var renderIcon2 = (iconElement, badgeSize) => {
 var createRemoveButton = (onRemove, badgeSize, cssVars, animationsEnabled) => {
   const buttonSize = badgeSize === "xs" ? "16px" : badgeSize === "sm" ? "18px" : "20px";
   const iconSize = badgeSize === "xs" ? "xs" : "sm";
-  return /* @__PURE__ */ React22__default.default.createElement(
+  return /* @__PURE__ */ jsxRuntime.jsx(
     "button",
     {
       onClick: (e) => {
@@ -2883,9 +2921,9 @@ var createRemoveButton = (onRemove, badgeSize, cssVars, animationsEnabled) => {
         e.currentTarget.style.backgroundColor = "transparent";
       },
       title: "Remove",
-      "aria-label": "Remove badge"
-    },
-    /* @__PURE__ */ React22__default.default.createElement(Icon, { name: "Xmark", size: iconSize })
+      "aria-label": "Remove badge",
+      children: /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "Xmark", size: iconSize })
+    }
   );
 };
 var createBadgeContent = (icon, iconPosition, badgeSize, children, removable, onRemove, cssVars, animationsEnabled, useAnimationMode, animationMode, disabled) => {
@@ -2906,7 +2944,7 @@ var createBadgeContent = (icon, iconPosition, badgeSize, children, removable, on
   const renderContent = () => {
     if (!hasChildren) return null;
     if (shouldUseTypewriter && typeof children === "string") {
-      return /* @__PURE__ */ React22__default.default.createElement(
+      return /* @__PURE__ */ jsxRuntime.jsx(
         TypewriterText,
         {
           text: children,
@@ -2915,26 +2953,32 @@ var createBadgeContent = (icon, iconPosition, badgeSize, children, removable, on
         }
       );
     }
-    return /* @__PURE__ */ React22__default.default.createElement("span", null, children);
+    return /* @__PURE__ */ jsxRuntime.jsx("span", { children });
   };
   const spacing = getSpacing(badgeSize);
   if (!hasChildren) {
-    return /* @__PURE__ */ React22__default.default.createElement(React22__default.default.Fragment, null, hasIcon && /* @__PURE__ */ React22__default.default.createElement("span", { style: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center"
-    } }, renderIcon2(icon, badgeSize)), hasRemove && createRemoveButton(onRemove, badgeSize, cssVars, animationsEnabled || false));
+    return /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+      hasIcon && /* @__PURE__ */ jsxRuntime.jsx("span", { style: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center"
+      }, children: renderIcon2(icon, badgeSize) }),
+      hasRemove && createRemoveButton(onRemove, badgeSize, cssVars, animationsEnabled || false)
+    ] });
   }
-  return /* @__PURE__ */ React22__default.default.createElement("span", { style: {
+  return /* @__PURE__ */ jsxRuntime.jsxs("span", { style: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     gap: spacing
-  } }, hasIcon && iconPosition === "leading" && renderIcon2(icon, badgeSize), renderContent(), hasIcon && iconPosition === "trailing" && renderIcon2(icon, badgeSize), hasRemove && createRemoveButton(onRemove, badgeSize, cssVars, animationsEnabled || false));
+  }, children: [
+    hasIcon && iconPosition === "leading" && renderIcon2(icon, badgeSize),
+    renderContent(),
+    hasIcon && iconPosition === "trailing" && renderIcon2(icon, badgeSize),
+    hasRemove && createRemoveButton(onRemove, badgeSize, cssVars, animationsEnabled || false)
+  ] });
 };
-
-// src/app/components/atoms/Badge/Badge.tsx
-var Badge = React22.forwardRef(
+var Badge = React21.forwardRef(
   (allProps, ref) => {
     var _b;
     const [containerProps, componentProps] = extractContainerProps(allProps);
@@ -2980,48 +3024,49 @@ var Badge = React22.forwardRef(
     const useAnimationMode = animationsEnabled && animationMode !== "none";
     const hasIsometricAnimation = useAnimationMode && animationMode === "isometric" && variant !== "ghost" && variant !== "glassmorphic";
     const badgeAnimationMode = animationMode === "default" ? "none" : animationMode === "none" || animationMode === "typewriter" || animationMode === "isometric" ? animationMode : void 0;
-    const baseStyles = React22.useMemo(() => createBaseStyles2(
+    const baseStyles = React21.useMemo(() => createBaseStyles2(
       shape === "pill" || Boolean(rounded),
       isRemovable,
       animationsEnabled
     ), [shape, rounded, isRemovable, animationsEnabled]);
-    const variantStyles = React22.useMemo(() => getVariantStyles2(
+    const variantStyles = React21.useMemo(() => getVariantStyles2(
       color,
       customColor,
       variant,
       disabled,
       cssVars
     ), [color, customColor, variant, disabled, cssVars]);
-    const sizeStyles = React22.useMemo(() => getSizeStyles2(size), [size]);
-    const iconOnlyStyles = React22.useMemo(() => isIconOnly ? getIconOnlyStyles2(size) : {}, [isIconOnly, size, shape]);
-    const isometricStyles = React22.useMemo(() => hasIsometricAnimation ? getIsometricStyles(getColorVariables4(color, customColor, cssVars), variant) : {}, [hasIsometricAnimation, color, customColor, cssVars, variant, shape]);
+    const sizeStyles = React21.useMemo(() => getSizeStyles2(size), [size]);
+    const iconOnlyStyles = React21.useMemo(() => isIconOnly ? getIconOnlyStyles2(size) : {}, [isIconOnly, size, shape]);
+    const isometricStyles = React21.useMemo(() => hasIsometricAnimation ? getIsometricStyles(getColorVariables4(color, customColor, cssVars), variant) : {}, [hasIsometricAnimation, color, customColor, cssVars, variant, shape]);
     const combinedStyles = __spreadValues(__spreadProps(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues({}, baseStyles), sizeStyles), variantStyles), iconOnlyStyles), isometricStyles), {
       // Apply isometric styles last to override other styles
       width,
       height
     }), style);
-    return /* @__PURE__ */ React22__default.default.createElement(
+    return /* @__PURE__ */ jsxRuntime.jsx(
       "span",
-      __spreadValues({
+      __spreadProps(__spreadValues({
         ref,
         id,
         style: combinedStyles,
         className,
         "data-testid": dataTestId
-      }, restProps),
-      createBadgeContent(
-        icon,
-        iconPosition,
-        size,
-        children,
-        removable,
-        onRemove,
-        cssVars,
-        animationsEnabled,
-        useAnimationMode,
-        badgeAnimationMode,
-        disabled
-      )
+      }, restProps), {
+        children: createBadgeContent(
+          icon,
+          iconPosition,
+          size,
+          children,
+          removable,
+          onRemove,
+          cssVars,
+          animationsEnabled,
+          useAnimationMode,
+          badgeAnimationMode,
+          disabled
+        )
+      })
     );
   }
 );
@@ -3131,27 +3176,32 @@ var getVariantStyles3 = (color, variant, customColor, cssVars) => {
         borderLeftColor: "transparent"
       }, baseStyles);
     case "glassmorphic":
-      const reflectionColor = colors.hover || colors.main || "#ffffff";
-      const topReflectionGradient = `linear-gradient(135deg, transparent 0%, ${reflectionColor}20 20%, ${reflectionColor}15 25%, transparent 35%)`;
-      const bottomReflectionGradient = `linear-gradient(135deg, transparent 45%, ${reflectionColor}25 55%, ${reflectionColor}20 65%, transparent 80%)`;
+      const hexToRgba = (hex, alpha) => {
+        if (!hex || !hex.startsWith("#")) return `rgba(0, 0, 0, ${alpha})`;
+        const cleanHex = hex.slice(1);
+        const r = parseInt(cleanHex.substr(0, 2), 16);
+        const g = parseInt(cleanHex.substr(2, 2), 16);
+        const b = parseInt(cleanHex.substr(4, 2), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      };
+      const backgroundWithOpacity = hexToRgba(cssVars.background, 0.85);
+      const borderWithOpacity = hexToRgba(cssVars.border, 0.5);
       return __spreadValues({
-        background: `
-          ${topReflectionGradient},
-          ${bottomReflectionGradient},
-          rgba(255, 255, 255, 0.1)
-        `,
-        backdropFilter: "blur(10px)",
-        WebkitBackdropFilter: "blur(10px)",
+        backgroundColor: backgroundWithOpacity,
+        backdropFilter: "blur(20px)",
+        WebkitBackdropFilter: "blur(20px)",
         // Safari support
         color: colors.main,
-        borderTopColor: "rgba(255, 255, 255, 0.2)",
-        borderRightColor: "rgba(255, 255, 255, 0.2)",
-        borderBottomColor: "rgba(255, 255, 255, 0.2)",
-        borderLeftColor: "rgba(255, 255, 255, 0.2)",
-        boxShadow: `0 8px 32px 0 ${colors.main}40`,
-        // Use card color with transparency for shadow
+        borderTopColor: borderWithOpacity,
+        borderRightColor: borderWithOpacity,
+        borderBottomColor: borderWithOpacity,
+        borderLeftColor: borderWithOpacity,
+        boxShadow: `0 8px 32px 0 rgba(0, 0, 0, 0.3)`,
         position: "relative",
-        overflow: "hidden"
+        overflow: "hidden",
+        transform: "translateZ(0)",
+        // Force GPU acceleration
+        willChange: "auto"
       }, baseStyles);
     default:
       return __spreadValues({
@@ -3332,9 +3382,7 @@ var createHoverHandlers = (clickable, disabled, cssVars, elementRef) => {
     onMouseLeave: handleMouseLeave
   };
 };
-
-// src/app/components/atoms/Card/Card.tsx
-var Card = React22.forwardRef(
+var Card = React21.forwardRef(
   (allProps, ref) => {
     var _b;
     const [containerProps, componentProps] = extractContainerProps(allProps);
@@ -3376,9 +3424,9 @@ var Card = React22.forwardRef(
     ]);
     const cssVars = useCSSVariables();
     const { settings } = useSettings();
-    const internalRef = React22.useRef(null);
+    const internalRef = React21.useRef(null);
     const cardRef = ref || internalRef;
-    const [cardWidth, setCardWidth] = React22.useState(void 0);
+    const [cardWidth, setCardWidth] = React21.useState(void 0);
     const isDisabled = Boolean(disabled) || loading;
     const isClickable = clickable && !isDisabled;
     const animationsEnabled = ((_b = settings.appearance.animations) != null ? _b : true) && animate;
@@ -3396,44 +3444,44 @@ var Card = React22.forwardRef(
       cssVars,
       cardRef
     );
-    const baseStyles = React22.useMemo(
+    const baseStyles = React21.useMemo(
       () => createBaseStyles3(false, isDisabled, shape, animationsEnabled, rounded),
       [isDisabled, shape, rounded, animationsEnabled]
     );
-    const variantStyles = React22.useMemo(
+    const variantStyles = React21.useMemo(
       () => getVariantStyles3(color, variant, customColor, cssVars),
       [color, customColor, variant, cssVars]
     );
-    const sizeStyles = React22.useMemo(
+    const sizeStyles = React21.useMemo(
       () => getSizeStyles3(size),
       [size]
     );
-    const paddingStyles = React22.useMemo(
+    const paddingStyles = React21.useMemo(
       () => getPaddingStyles(padding),
       [padding]
     );
-    const clickableStyles = React22.useMemo(
+    const clickableStyles = React21.useMemo(
       () => createClickableStyles(Boolean(isClickable), Boolean(isDisabled)),
       [isClickable, isDisabled]
     );
-    const loadingOverlayStyles = React22.useMemo(
+    const loadingOverlayStyles = React21.useMemo(
       () => createLoadingOverlayStyles(cssVars),
       [cssVars]
     );
-    const isometricStyles = React22.useMemo(() => hasIsometricAnimation ? getIsometricStyles2(getColorVariables5(color, customColor, cssVars), variant) : {}, [hasIsometricAnimation, color, customColor, cssVars, variant, shape]);
+    const isometricStyles = React21.useMemo(() => hasIsometricAnimation ? getIsometricStyles2(getColorVariables5(color, customColor, cssVars), variant) : {}, [hasIsometricAnimation, color, customColor, cssVars, variant, shape]);
     const combinedStyles = __spreadValues(__spreadProps(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues(__spreadValues({}, baseStyles), variantStyles), sizeStyles), paddingStyles), clickableStyles), isometricStyles), {
       // Apply isometric styles last to override other styles
       width,
       height
     }), style);
-    React22.useLayoutEffect(() => {
+    React21.useLayoutEffect(() => {
       if (cardRef.current && (header || footer)) {
         const rect = cardRef.current.getBoundingClientRect();
         setCardWidth(rect.width);
       }
-    }, [children, combinedStyles, header, footer]);
-    const [sharedCursorVisible, setSharedCursorVisible] = React22.useState(true);
-    React22.useLayoutEffect(() => {
+    }, [header, footer]);
+    const [sharedCursorVisible, setSharedCursorVisible] = React21.useState(true);
+    React21.useLayoutEffect(() => {
       if (!useAnimationMode || animationMode !== "typewriter" || isDisabled) {
         return;
       }
@@ -3446,29 +3494,32 @@ var Card = React22.forwardRef(
       if (!isTypewriter || typeof text !== "string") {
         return text;
       }
-      return /* @__PURE__ */ React22__default.default.createElement(React22__default.default.Fragment, null, /* @__PURE__ */ React22__default.default.createElement(
-        TypewriterText,
-        {
-          text,
-          speed: 100,
-          deleteSpeed: 50,
-          showCursor: false,
-          disabled: isDisabled
-        }
-      ), /* @__PURE__ */ React22__default.default.createElement(
-        "span",
-        {
-          style: {
-            opacity: sharedCursorVisible ? 1 : 0,
-            transition: "opacity 0.1s ease-in-out"
+      return /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+        /* @__PURE__ */ jsxRuntime.jsx(
+          TypewriterText,
+          {
+            text,
+            speed: 100,
+            deleteSpeed: 50,
+            showCursor: false,
+            disabled: isDisabled
           }
-        },
-        "|"
-      ));
+        ),
+        /* @__PURE__ */ jsxRuntime.jsx(
+          "span",
+          {
+            style: {
+              opacity: sharedCursorVisible ? 1 : 0,
+              transition: "opacity 0.1s ease-in-out"
+            },
+            children: "|"
+          }
+        )
+      ] });
     };
-    const cardElement = /* @__PURE__ */ React22__default.default.createElement(
+    const cardElement = /* @__PURE__ */ jsxRuntime.jsxs(
       "div",
-      __spreadValues({
+      __spreadProps(__spreadValues({
         ref: cardRef,
         id,
         className,
@@ -3480,64 +3531,71 @@ var Card = React22.forwardRef(
         tabIndex: isClickable ? 0 : void 0,
         "aria-disabled": isDisabled,
         "data-testid": dataTestId
-      }, restProps),
-      loading && /* @__PURE__ */ React22__default.default.createElement("div", { style: loadingOverlayStyles }, /* @__PURE__ */ React22__default.default.createElement(
-        ProgressIndicator,
-        {
-          type: "circular",
-          size: "md",
-          color
-        }
-      )),
-      /* @__PURE__ */ React22__default.default.createElement("div", { style: { flex: "1", display: "flex", flexDirection: "column" } }, children)
+      }, restProps), {
+        children: [
+          loading && /* @__PURE__ */ jsxRuntime.jsx("div", { style: loadingOverlayStyles, children: /* @__PURE__ */ jsxRuntime.jsx(
+            ProgressIndicator,
+            {
+              type: "circular",
+              size: "md",
+              color
+            }
+          ) }),
+          /* @__PURE__ */ jsxRuntime.jsx("div", { style: { flex: "1", display: "flex", flexDirection: "column" }, children })
+        ]
+      })
     );
-    const wrappedCardElement = useAnimationMode && animationMode === "parallax" ? /* @__PURE__ */ React22__default.default.createElement(ParallaxTiltWrapper, { disabled: isDisabled || !useAnimationMode }, cardElement) : cardElement;
-    return /* @__PURE__ */ React22__default.default.createElement("div", { style: {
+    const wrappedCardElement = useAnimationMode && animationMode === "parallax" ? /* @__PURE__ */ jsxRuntime.jsx(ParallaxTiltWrapper, { disabled: isDisabled || !useAnimationMode, children: cardElement }) : cardElement;
+    return /* @__PURE__ */ jsxRuntime.jsxs("div", { style: {
       display: "flex",
       flexDirection: "column",
       alignItems: "flex-start",
       // Prevent stretching
       width: "fit-content"
       // Let card determine width
-    } }, /* @__PURE__ */ React22__default.default.createElement("div", { style: {
-      width: cardWidth ? `${cardWidth}px` : "100%",
-      marginBottom: "4px"
-    } }, header && /* @__PURE__ */ React22__default.default.createElement(
-      "div",
-      {
-        style: {
-          textAlign: headerAlignment,
-          color: headerFooterColor,
-          // Use selected color to match borders
-          fontWeight: "500",
-          fontSize: "14px",
-          fontFamily: "inherit",
-          wordWrap: "break-word",
-          overflowWrap: "break-word",
-          hyphens: "auto"
+    }, children: [
+      /* @__PURE__ */ jsxRuntime.jsx("div", { style: {
+        width: cardWidth ? `${cardWidth}px` : "100%",
+        marginBottom: "4px"
+      }, children: header && /* @__PURE__ */ jsxRuntime.jsx(
+        "div",
+        {
+          style: {
+            textAlign: headerAlignment,
+            color: headerFooterColor,
+            // Use selected color to match borders
+            fontWeight: "500",
+            fontSize: "14px",
+            fontFamily: "inherit",
+            wordWrap: "break-word",
+            overflowWrap: "break-word",
+            hyphens: "auto"
+          },
+          children: renderAnimatedText(header, useAnimationMode && animationMode === "typewriter")
         }
-      },
-      renderAnimatedText(header, useAnimationMode && animationMode === "typewriter")
-    )), wrappedCardElement, /* @__PURE__ */ React22__default.default.createElement("div", { style: {
-      width: cardWidth ? `${cardWidth}px` : "100%",
-      marginTop: "4px"
-    } }, footer && /* @__PURE__ */ React22__default.default.createElement(
-      "div",
-      {
-        style: {
-          textAlign: footerAlignment,
-          color: headerFooterColor,
-          // Use selected color to match borders
-          fontWeight: "500",
-          fontSize: "14px",
-          fontFamily: "inherit",
-          wordWrap: "break-word",
-          overflowWrap: "break-word",
-          hyphens: "auto"
+      ) }),
+      wrappedCardElement,
+      /* @__PURE__ */ jsxRuntime.jsx("div", { style: {
+        width: cardWidth ? `${cardWidth}px` : "100%",
+        marginTop: "4px"
+      }, children: footer && /* @__PURE__ */ jsxRuntime.jsx(
+        "div",
+        {
+          style: {
+            textAlign: footerAlignment,
+            color: headerFooterColor,
+            // Use selected color to match borders
+            fontWeight: "500",
+            fontSize: "14px",
+            fontFamily: "inherit",
+            wordWrap: "break-word",
+            overflowWrap: "break-word",
+            hyphens: "auto"
+          },
+          children: renderAnimatedText(footer, useAnimationMode && animationMode === "typewriter")
         }
-      },
-      renderAnimatedText(footer, useAnimationMode && animationMode === "typewriter")
-    )));
+      ) })
+    ] });
   }
 );
 Card.displayName = "Card";
@@ -3811,13 +3869,13 @@ var getIconColor = (color, customColor, error, checked, cssVars) => {
 };
 var createCheckIcon = (checked, indeterminate, error, size, color) => {
   if (indeterminate) {
-    return /* @__PURE__ */ React22__default.default.createElement(Icon, { name: "Minus", size, style: { color } });
+    return /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "Minus", size, style: { color } });
   }
   if (checked) {
-    return /* @__PURE__ */ React22__default.default.createElement(Icon, { name: "Check", size, style: { color } });
+    return /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "Check", size, style: { color } });
   }
   if (error && !checked) {
-    return /* @__PURE__ */ React22__default.default.createElement(Icon, { name: "Asterisk", size, style: { color } });
+    return /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "Asterisk", size, style: { color } });
   }
   return null;
 };
@@ -3851,9 +3909,7 @@ var handleKeyDown = (event, onChange, checked) => {
     }
   }
 };
-
-// src/app/components/atoms/CheckBox/CheckBox.tsx
-var CheckBox = React22.forwardRef(
+var CheckBox = React21.forwardRef(
   (allProps, ref) => {
     var _c;
     const _a = allProps, {
@@ -3895,11 +3951,11 @@ var CheckBox = React22.forwardRef(
       "contentToggleable"
     ]);
     const isControlled = checked !== void 0;
-    const [internalChecked, setInternalChecked] = React22.useState(defaultChecked);
+    const [internalChecked, setInternalChecked] = React21.useState(defaultChecked);
     const checkedValue = isControlled ? checked : internalChecked;
     const cssVars = useCSSVariables();
     const { settings } = useSettings();
-    const internalRef = React22.useRef(null);
+    const internalRef = React21.useRef(null);
     const inputRef = ref || internalRef;
     const animationsEnabled = ((_c = settings.appearance.animations) != null ? _c : true) && animate;
     const iconSize = getIconSize3(size);
@@ -3920,12 +3976,12 @@ var CheckBox = React22.forwardRef(
           return cssVars.mutedForeground;
       }
     };
-    React22.useEffect(() => {
+    React21.useEffect(() => {
       if (inputRef.current) {
         inputRef.current.indeterminate = indeterminate;
       }
     }, [indeterminate, inputRef]);
-    const handleChange = React22.useCallback((event) => {
+    const handleChange = React21.useCallback((event) => {
       if (disabled) return;
       const newChecked = event.target.checked;
       if (!isControlled) {
@@ -3933,20 +3989,20 @@ var CheckBox = React22.forwardRef(
       }
       onChange == null ? void 0 : onChange(newChecked, event);
     }, [disabled, onChange, isControlled]);
-    const handleKeyDownInternal = React22.useCallback((event) => {
+    const handleKeyDownInternal = React21.useCallback((event) => {
       if (!disabled) {
         handleKeyDown(event, onChange, checkedValue);
       }
       onKeyDown == null ? void 0 : onKeyDown(event);
     }, [disabled, onChange, checkedValue, onKeyDown]);
-    const baseStyles = React22.useMemo(() => createBaseStyles4(
+    const baseStyles = React21.useMemo(() => createBaseStyles4(
       disabled,
       shape,
       animationsEnabled,
       rounded
       // Legacy support
     ), [disabled, shape, animationsEnabled, rounded]);
-    const variantStyles = React22.useMemo(() => getVariantStyles4(
+    const variantStyles = React21.useMemo(() => getVariantStyles4(
       variant,
       color,
       customColor,
@@ -3954,88 +4010,97 @@ var CheckBox = React22.forwardRef(
       checkedValue || indeterminate,
       Boolean(error)
     ), [variant, color, customColor, cssVars, checkedValue, indeterminate, error]);
-    const sizeStyles = React22.useMemo(() => getSizeStyles4(size), [size]);
-    const inputStyles = React22.useMemo(() => getInputStyles(), []);
-    const labelStyles = React22.useMemo(() => label ? getLabelStyles(cssVars, size, Boolean(disabled), Boolean(contentToggleable)) : {}, [cssVars, size, disabled, contentToggleable, label]);
-    const descriptionStyles = React22.useMemo(() => description ? getDescriptionStyles(cssVars, size, Boolean(disabled), Boolean(contentToggleable)) : {}, [cssVars, size, disabled, contentToggleable, description]);
-    const wrapperStyles = React22.useMemo(() => getWrapperStyles(), []);
-    const checkboxWrapperStyles = React22.useMemo(() => getCheckboxWrapperStyles(), []);
+    const sizeStyles = React21.useMemo(() => getSizeStyles4(size), [size]);
+    const inputStyles = React21.useMemo(() => getInputStyles(), []);
+    const labelStyles = React21.useMemo(() => label ? getLabelStyles(cssVars, size, Boolean(disabled), Boolean(contentToggleable)) : {}, [cssVars, size, disabled, contentToggleable, label]);
+    const descriptionStyles = React21.useMemo(() => description ? getDescriptionStyles(cssVars, size, Boolean(disabled), Boolean(contentToggleable)) : {}, [cssVars, size, disabled, contentToggleable, description]);
+    const wrapperStyles = React21.useMemo(() => getWrapperStyles(), []);
+    const checkboxWrapperStyles = React21.useMemo(() => getCheckboxWrapperStyles(), []);
     const combinedCheckboxStyles = __spreadValues(__spreadValues(__spreadValues(__spreadValues({}, baseStyles), sizeStyles), variantStyles), style);
-    const [focused, setFocused] = React22__default.default.useState(false);
+    const [focused, setFocused] = React21__default.default.useState(false);
     const focusStyles = focused ? getFocusStyles(color, customColor, cssVars, Boolean(error)) : {};
     const finalCheckboxStyles = __spreadValues(__spreadValues({}, combinedCheckboxStyles), focusStyles);
-    return /* @__PURE__ */ React22__default.default.createElement("div", { style: wrapperStyles, className }, /* @__PURE__ */ React22__default.default.createElement("div", { style: checkboxWrapperStyles }, /* @__PURE__ */ React22__default.default.createElement("div", { style: finalCheckboxStyles }, /* @__PURE__ */ React22__default.default.createElement(
-      "input",
-      __spreadValues({
-        ref: inputRef,
-        type: "checkbox",
-        id,
-        checked: checkedValue,
-        disabled,
-        required,
-        onChange: handleChange,
-        onKeyDown: handleKeyDownInternal,
-        onFocus: () => setFocused(true),
-        onBlur: () => setFocused(false),
-        style: inputStyles,
-        "data-testid": dataTestId,
-        "aria-checked": indeterminate ? "mixed" : checkedValue,
-        "aria-describedby": description ? `${id}-description` : void 0
-      }, restProps)
-    ), required && !checkedValue && !indeterminate ? (
-      // Show asterisk for required unchecked state
-      /* @__PURE__ */ React22__default.default.createElement(
-        "div",
-        {
-          style: {
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            pointerEvents: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-          }
-        },
-        /* @__PURE__ */ React22__default.default.createElement(
-          Icon,
+    return /* @__PURE__ */ jsxRuntime.jsxs("div", { style: wrapperStyles, className, children: [
+      /* @__PURE__ */ jsxRuntime.jsxs("div", { style: checkboxWrapperStyles, children: [
+        /* @__PURE__ */ jsxRuntime.jsxs("div", { style: finalCheckboxStyles, children: [
+          /* @__PURE__ */ jsxRuntime.jsx(
+            "input",
+            __spreadValues({
+              ref: inputRef,
+              type: "checkbox",
+              id,
+              checked: checkedValue,
+              disabled,
+              required,
+              onChange: handleChange,
+              onKeyDown: handleKeyDownInternal,
+              onFocus: () => setFocused(true),
+              onBlur: () => setFocused(false),
+              style: inputStyles,
+              "data-testid": dataTestId,
+              "aria-checked": indeterminate ? "mixed" : checkedValue,
+              "aria-describedby": description ? `${id}-description` : void 0
+            }, restProps)
+          ),
+          required && !checkedValue && !indeterminate ? (
+            // Show asterisk for required unchecked state
+            /* @__PURE__ */ jsxRuntime.jsx(
+              "div",
+              {
+                style: {
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  pointerEvents: "none",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                },
+                children: /* @__PURE__ */ jsxRuntime.jsx(
+                  Icon,
+                  {
+                    name: "Asterisk",
+                    size: asteriskSize,
+                    color: getAsteriskColor()
+                  }
+                )
+              }
+            )
+          ) : (
+            // Show normal check icon
+            createCheckIcon(
+              checkedValue,
+              indeterminate,
+              Boolean(error),
+              iconSize,
+              getIconColor(color, customColor, Boolean(error), checkedValue, cssVars)
+            )
+          )
+        ] }),
+        label && /* @__PURE__ */ jsxRuntime.jsx(
+          "label",
           {
-            name: "Asterisk",
-            size: asteriskSize,
-            color: getAsteriskColor()
+            htmlFor: contentToggleable ? id : void 0,
+            style: labelStyles,
+            children: label
           }
         )
+      ] }),
+      description && /* @__PURE__ */ jsxRuntime.jsx(
+        "div",
+        {
+          id: `${id}-description`,
+          style: descriptionStyles,
+          onClick: contentToggleable ? () => {
+            if (!disabled && inputRef.current) {
+              inputRef.current.click();
+            }
+          } : void 0,
+          children: description
+        }
       )
-    ) : (
-      // Show normal check icon
-      createCheckIcon(
-        checkedValue,
-        indeterminate,
-        Boolean(error),
-        iconSize,
-        getIconColor(color, customColor, Boolean(error), checkedValue, cssVars)
-      )
-    )), label && /* @__PURE__ */ React22__default.default.createElement(
-      "label",
-      {
-        htmlFor: contentToggleable ? id : void 0,
-        style: labelStyles
-      },
-      label
-    )), description && /* @__PURE__ */ React22__default.default.createElement(
-      "div",
-      {
-        id: `${id}-description`,
-        style: descriptionStyles,
-        onClick: contentToggleable ? () => {
-          if (!disabled && inputRef.current) {
-            inputRef.current.click();
-          }
-        } : void 0
-      },
-      description
-    ));
+    ] });
   }
 );
 CheckBox.displayName = "CheckBox";
@@ -4358,7 +4423,7 @@ var extractTextContent = (children) => {
   if (typeof children === "string") {
     return children;
   }
-  if (React22__default.default.isValidElement(children)) {
+  if (React21__default.default.isValidElement(children)) {
     const element = children;
     return extractTextContent(element.props.children);
   }
@@ -4369,28 +4434,28 @@ var extractTextContent = (children) => {
 };
 var createLineNumbers = (content, styles) => {
   const lines = content.split("\n");
-  return /* @__PURE__ */ React22__default.default.createElement("div", { style: styles }, lines.map((_, index) => /* @__PURE__ */ React22__default.default.createElement("div", { key: index + 1 }, index + 1)));
+  return /* @__PURE__ */ jsxRuntime.jsx("div", { style: styles, children: lines.map((_, index) => /* @__PURE__ */ jsxRuntime.jsx("div", { children: index + 1 }, index + 1)) });
 };
 var highlightLines = (content, highlight, cssVars) => {
   const lines = content.split("\n");
   const highlightArray = Array.isArray(highlight) ? highlight : [highlight];
-  return /* @__PURE__ */ React22__default.default.createElement(React22__default.default.Fragment, null, lines.map((line, index) => {
+  return /* @__PURE__ */ jsxRuntime.jsx(jsxRuntime.Fragment, { children: lines.map((line, index) => {
     var _a;
     const lineNumber = index + 1;
     const isHighlighted = highlightArray.includes(lineNumber);
-    return /* @__PURE__ */ React22__default.default.createElement(
+    return /* @__PURE__ */ jsxRuntime.jsx(
       "div",
       {
-        key: lineNumber,
         style: {
           backgroundColor: isHighlighted ? ((_a = cssVars.getColorWithOpacity) == null ? void 0 : _a.call(cssVars, "primary", 0.1)) || "rgba(59, 130, 246, 0.1)" : "transparent",
           padding: "0 4px",
           margin: "0 -4px"
-        }
+        },
+        children: line
       },
-      line
+      lineNumber
     );
-  }));
+  }) });
 };
 var getLanguageLabel = (language) => {
   const languageMap = {
@@ -4558,7 +4623,7 @@ var getLanguagePatterns = (language) => {
 };
 var highlightSyntax = (code, language, theme) => {
   if (!language || language === "text" || language === "plain") {
-    return [/* @__PURE__ */ React22__default.default.createElement("span", { key: 0 }, code)];
+    return [/* @__PURE__ */ jsxRuntime.jsx("span", { children: code }, 0)];
   }
   const patterns = getLanguagePatterns(language);
   const tokens = [];
@@ -4591,23 +4656,21 @@ var highlightSyntax = (code, language, theme) => {
   mergedTokens.forEach((token, index) => {
     if (token.start > currentIndex) {
       const text = code.slice(currentIndex, token.start);
-      elements.push(/* @__PURE__ */ React22__default.default.createElement("span", { key: `text-${index}` }, text));
+      elements.push(/* @__PURE__ */ jsxRuntime.jsx("span", { children: text }, `text-${index}`));
     }
     const color = theme[token.type] || theme.punctuation;
     elements.push(
-      /* @__PURE__ */ React22__default.default.createElement("span", { key: `token-${index}`, style: { color } }, token.content)
+      /* @__PURE__ */ jsxRuntime.jsx("span", { style: { color }, children: token.content }, `token-${index}`)
     );
     currentIndex = token.end;
   });
   if (currentIndex < code.length) {
     const text = code.slice(currentIndex);
-    elements.push(/* @__PURE__ */ React22__default.default.createElement("span", { key: "text-end" }, text));
+    elements.push(/* @__PURE__ */ jsxRuntime.jsx("span", { children: text }, "text-end"));
   }
-  return elements.length > 0 ? elements : [/* @__PURE__ */ React22__default.default.createElement("span", { key: 0 }, code)];
+  return elements.length > 0 ? elements : [/* @__PURE__ */ jsxRuntime.jsx("span", { children: code }, 0)];
 };
-
-// src/app/components/atoms/CodeBlock/CodeBlock.tsx
-var CodeBlock = React22.forwardRef(
+var CodeBlock = React21.forwardRef(
   (allProps, ref) => {
     var _b;
     const [containerProps, componentProps] = extractContainerProps(allProps);
@@ -4655,12 +4718,12 @@ var CodeBlock = React22.forwardRef(
     const cssVars = useCSSVariables();
     const { settings } = useSettings();
     const { success, error } = useToast();
-    const [copied, setCopied] = React22.useState(false);
+    const [copied, setCopied] = React21.useState(false);
     const isInline = inline;
     const animationsEnabled = ((_b = settings.appearance.animations) != null ? _b : true) && animate;
     const textContent = extractTextContent(children);
-    const syntaxTheme = React22.useMemo(() => createSyntaxTheme(), [cssVars]);
-    const handleCopy = React22.useCallback(async () => {
+    const syntaxTheme = React21.useMemo(() => createSyntaxTheme(), [cssVars]);
+    const handleCopy = React21.useCallback(async () => {
       const copySuccess = await copyToClipboard(textContent);
       if (copySuccess) {
         setCopied(true);
@@ -4671,7 +4734,7 @@ var CodeBlock = React22.forwardRef(
         error("Failed to copy code to clipboard");
       }
     }, [textContent, onCopy, success, error]);
-    const baseStyles = React22.useMemo(() => createBaseStyles5(
+    const baseStyles = React21.useMemo(() => createBaseStyles5(
       shape,
       typeof maxHeight === "string" ? maxHeight : maxHeight == null ? void 0 : maxHeight.toString(),
       animationsEnabled,
@@ -4680,17 +4743,17 @@ var CodeBlock = React22.forwardRef(
       rounded
       // Legacy support
     ), [shape, maxHeight, animationsEnabled, lineNumbers, rounded]);
-    const variantStyles = React22.useMemo(() => getVariantStyles5(color, customColor, variant, cssVars, lineNumbers), [color, customColor, variant, cssVars, lineNumbers]);
-    const sizeStyles = React22.useMemo(() => getSizeStyles5(size), [size]);
+    const variantStyles = React21.useMemo(() => getVariantStyles5(color, customColor, variant, cssVars, lineNumbers), [color, customColor, variant, cssVars, lineNumbers]);
+    const sizeStyles = React21.useMemo(() => getSizeStyles5(size), [size]);
     const combinedStyles = __spreadValues(__spreadProps(__spreadValues(__spreadValues(__spreadValues({}, baseStyles), sizeStyles), variantStyles), {
       paddingTop: language ? "32px" : sizeStyles.padding,
       paddingLeft: lineNumbers ? "52px" : "16px",
       width,
       height
     }), style);
-    React22.useMemo(() => getCopyButtonStyles(size, cssVars, animationsEnabled), [size, cssVars, animationsEnabled]);
-    const lineNumberStyles = React22.useMemo(() => getLineNumberStyles(size, cssVars, color, customColor, shape), [size, cssVars, color, customColor, shape]);
-    const inlineStyles = React22.useMemo(() => getInlineCodeStyles(color, customColor, variant, size, shape, cssVars), [color, customColor, variant, size, shape, cssVars]);
+    React21.useMemo(() => getCopyButtonStyles(size, cssVars, animationsEnabled), [size, cssVars, animationsEnabled]);
+    const lineNumberStyles = React21.useMemo(() => getLineNumberStyles(size, cssVars, color, customColor, shape), [size, cssVars, color, customColor, shape]);
+    const inlineStyles = React21.useMemo(() => getInlineCodeStyles(color, customColor, variant, size, shape, cssVars), [color, customColor, variant, size, shape, cssVars]);
     const renderContent = () => {
       if (typeof children === "string") {
         if (language && syntaxHighlighting) {
@@ -4703,18 +4766,20 @@ var CodeBlock = React22.forwardRef(
               const lineNumber = index + 1;
               const isHighlighted = highlightArray.includes(lineNumber);
               const lineHighlighted = highlightSyntax(line, language, syntaxTheme);
-              return /* @__PURE__ */ React22__default.default.createElement(
+              return /* @__PURE__ */ jsxRuntime.jsxs(
                 "div",
                 {
-                  key: lineNumber,
                   style: {
                     backgroundColor: isHighlighted ? ((_a2 = cssVars.getColorWithOpacity) == null ? void 0 : _a2.call(cssVars, "primary", 0.1)) || "rgba(59, 130, 246, 0.1)" : "transparent",
                     padding: "0 4px",
                     margin: "0 -4px"
-                  }
+                  },
+                  children: [
+                    lineHighlighted,
+                    index < lines.length - 1 && "\n"
+                  ]
                 },
-                lineHighlighted,
-                index < lines.length - 1 && "\n"
+                lineNumber
               );
             });
           }
@@ -4727,74 +4792,81 @@ var CodeBlock = React22.forwardRef(
       return children;
     };
     if (isInline) {
-      return /* @__PURE__ */ React22__default.default.createElement(
+      return /* @__PURE__ */ jsxRuntime.jsx(
         "code",
-        __spreadValues({
+        __spreadProps(__spreadValues({
           ref,
           id,
           style: __spreadValues(__spreadValues({}, inlineStyles), style),
           className,
           "data-testid": dataTestId
-        }, restProps),
-        children
+        }, restProps), {
+          children
+        })
       );
     }
-    return /* @__PURE__ */ React22__default.default.createElement("div", { style: { position: "relative" } }, language && /* @__PURE__ */ React22__default.default.createElement(
-      "div",
-      {
-        style: {
-          position: "absolute",
-          top: "12px",
-          left: lineNumbers ? "52px" : "16px",
-          // Move right when line numbers are present
-          fontSize: "12px",
-          color: variant === "solid" ? getColorVariables7(color, customColor, cssVars).foreground : getColorVariables7(color, customColor, cssVars).main,
-          fontFamily: "inherit",
-          zIndex: 2,
-          // Higher z-index to appear above line numbers
-          opacity: 0.8,
-          userSelect: "none",
-          fontWeight: "500"
-        }
-      },
-      getLanguageLabel(language)
-    ), copyable && /* @__PURE__ */ React22__default.default.createElement("div", { style: {
-      position: "absolute",
-      top: "4px",
-      right: "8px",
-      zIndex: 2
-    } }, /* @__PURE__ */ React22__default.default.createElement(
-      Button,
-      {
-        size: "sm",
-        variant: "ghost",
-        color,
-        onClick: handleCopy,
-        animate: animationsEnabled,
-        style: {
-          minWidth: "auto",
-          padding: "6px 8px",
-          color: variant === "solid" ? getColorVariables7(color, customColor, cssVars).foreground : variant === "outline" || variant === "glassmorphic" || variant === "ghost" ? getColorVariables7(color, customColor, cssVars).main : void 0
-        }
-      },
-      /* @__PURE__ */ React22__default.default.createElement(
-        Icon,
+    return /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { position: "relative" }, children: [
+      language && /* @__PURE__ */ jsxRuntime.jsx(
+        "div",
         {
-          name: copied ? "CheckCircle" : "Copy",
-          size: "sm"
+          style: {
+            position: "absolute",
+            top: "12px",
+            left: lineNumbers ? "52px" : "16px",
+            // Move right when line numbers are present
+            fontSize: "12px",
+            color: variant === "solid" ? getColorVariables7(color, customColor, cssVars).foreground : getColorVariables7(color, customColor, cssVars).main,
+            fontFamily: "inherit",
+            zIndex: 2,
+            // Higher z-index to appear above line numbers
+            opacity: 0.8,
+            userSelect: "none",
+            fontWeight: "500"
+          },
+          children: getLanguageLabel(language)
         }
+      ),
+      copyable && /* @__PURE__ */ jsxRuntime.jsx("div", { style: {
+        position: "absolute",
+        top: "4px",
+        right: "8px",
+        zIndex: 2
+      }, children: /* @__PURE__ */ jsxRuntime.jsx(
+        Button,
+        {
+          size: "sm",
+          variant: "ghost",
+          color,
+          onClick: handleCopy,
+          animate: animationsEnabled,
+          style: {
+            minWidth: "auto",
+            padding: "6px 8px",
+            color: variant === "solid" ? getColorVariables7(color, customColor, cssVars).foreground : variant === "outline" || variant === "glassmorphic" || variant === "ghost" ? getColorVariables7(color, customColor, cssVars).main : void 0
+          },
+          children: /* @__PURE__ */ jsxRuntime.jsx(
+            Icon,
+            {
+              name: copied ? "CheckCircle" : "Copy",
+              size: "sm"
+            }
+          )
+        }
+      ) }),
+      lineNumbers && createLineNumbers(textContent, lineNumberStyles),
+      /* @__PURE__ */ jsxRuntime.jsx(
+        "pre",
+        __spreadProps(__spreadValues({
+          ref,
+          id,
+          style: combinedStyles,
+          className,
+          "data-testid": dataTestId
+        }, restProps), {
+          children: /* @__PURE__ */ jsxRuntime.jsx("code", { children: renderContent() })
+        })
       )
-    )), lineNumbers && createLineNumbers(textContent, lineNumberStyles), /* @__PURE__ */ React22__default.default.createElement(
-      "pre",
-      __spreadValues({
-        ref,
-        id,
-        style: combinedStyles,
-        className,
-        "data-testid": dataTestId
-      }, restProps),
-      /* @__PURE__ */ React22__default.default.createElement("code", null, renderContent())
-    ));
+    ] });
   }
 );
 CodeBlock.displayName = "CodeBlock";
@@ -5110,8 +5182,6 @@ var createGappedDividerStyles = (orientation, labelPosition, variantStyles, size
     return { beforeStyles, afterStyles, containerStyles };
   }
 };
-
-// src/app/components/atoms/Divider/Divider.utils.tsx
 var createAccessibilityProps = (label) => ({
   role: "separator",
   "aria-orientation": "horizontal",
@@ -5131,13 +5201,11 @@ var validateDividerProps = (dashed, dotted, orientation, fullSize) => {
 };
 var createLabelContent = (label, cssVars) => {
   if (typeof label === "string") {
-    return /* @__PURE__ */ React.createElement("span", null, label);
+    return /* @__PURE__ */ jsxRuntime.jsx("span", { children: label });
   }
   return label;
 };
-
-// src/app/components/atoms/Divider/Divider.tsx
-var Divider = React22.forwardRef(
+var Divider = React21.forwardRef(
   (allProps, ref) => {
     const [containerProps, componentProps] = extractContainerProps(allProps);
     const {
@@ -5187,31 +5255,31 @@ var Divider = React22.forwardRef(
     const isVertical = orientation === "vertical";
     const useBorder = dashed || dotted;
     const useCustomPattern = dashed || dotted;
-    const accessibilityProps = React22.useMemo(
+    const accessibilityProps = React21.useMemo(
       () => isVertical ? createVerticalAccessibilityProps(label) : createAccessibilityProps(label),
       [isVertical, label]
     );
-    const baseStyles = React22.useMemo(
+    const baseStyles = React21.useMemo(
       () => createBaseStyles6(orientation, fullSize, rounded, subtle, dashed, dotted),
       [orientation, fullSize, rounded, subtle, dashed, dotted]
     );
-    const variantStyles = React22.useMemo(
+    const variantStyles = React21.useMemo(
       () => getVariantStyles6(color, customColor, cssVars, useBorder, orientation, dashed, dotted, size),
       [color, customColor, cssVars, useBorder, orientation, dashed, dotted, size]
     );
-    const sizeStyles = React22.useMemo(
+    const sizeStyles = React21.useMemo(
       () => getSizeStyles6(size, orientation, useBorder, useCustomPattern),
       [size, orientation, useBorder, useCustomPattern]
     );
-    const spacingStyles = React22.useMemo(
+    const spacingStyles = React21.useMemo(
       () => getSpacingStyles(spacing, orientation),
       [spacing, orientation]
     );
-    const labelStyles = React22.useMemo(
+    const labelStyles = React21.useMemo(
       () => hasLabel ? createLabelStyles(orientation, labelPosition, cssVars, variantStyles) : {},
       [hasLabel, orientation, labelPosition, cssVars, variantStyles]
     );
-    const gappedStyles = React22.useMemo(() => {
+    const gappedStyles = React21.useMemo(() => {
       if (!hasLabel) return null;
       return createGappedDividerStyles(
         orientation,
@@ -5229,21 +5297,24 @@ var Divider = React22.forwardRef(
       height
     }), style);
     if (hasLabel && gappedStyles) {
-      return /* @__PURE__ */ React22__default.default.createElement(
+      return /* @__PURE__ */ jsxRuntime.jsxs(
         "div",
-        __spreadValues(__spreadValues({
+        __spreadProps(__spreadValues(__spreadValues({
           ref,
           id,
           className,
           style: __spreadProps(__spreadValues(__spreadValues({}, gappedStyles.containerStyles), spacingStyles), { width, height }),
           "data-testid": dataTestId
-        }, accessibilityProps), restProps),
-        /* @__PURE__ */ React22__default.default.createElement("div", { style: gappedStyles.beforeStyles }),
-        /* @__PURE__ */ React22__default.default.createElement("div", { style: labelStyles }, createLabelContent(label)),
-        /* @__PURE__ */ React22__default.default.createElement("div", { style: gappedStyles.afterStyles })
+        }, accessibilityProps), restProps), {
+          children: [
+            /* @__PURE__ */ jsxRuntime.jsx("div", { style: gappedStyles.beforeStyles }),
+            /* @__PURE__ */ jsxRuntime.jsx("div", { style: labelStyles, children: createLabelContent(label) }),
+            /* @__PURE__ */ jsxRuntime.jsx("div", { style: gappedStyles.afterStyles })
+          ]
+        })
       );
     }
-    return /* @__PURE__ */ React22__default.default.createElement(
+    return /* @__PURE__ */ jsxRuntime.jsx(
       "div",
       __spreadValues(__spreadValues({
         ref,
@@ -5983,7 +6054,7 @@ var createOptionAccessibilityProps = (id, index, selected, disabled) => ({
   "aria-disabled": disabled
 });
 var useClickOutside = (ref, handler, enabled = true) => {
-  React22__default.default.useEffect(() => {
+  React21__default.default.useEffect(() => {
     if (!enabled) return;
     const handleClickOutside = (event) => {
       if (ref.current && !ref.current.contains(event.target)) {
@@ -5997,8 +6068,8 @@ var useClickOutside = (ref, handler, enabled = true) => {
   }, [ref, handler, enabled]);
 };
 var useFocusManagement = (isOpen, triggerRef, menuRef) => {
-  const previousOpenRef = React22__default.default.useRef(isOpen);
-  React22__default.default.useEffect(() => {
+  const previousOpenRef = React21__default.default.useRef(isOpen);
+  React21__default.default.useEffect(() => {
     if (previousOpenRef.current !== isOpen) {
       if (isOpen && triggerRef.current) {
         triggerRef.current.focus();
@@ -6012,9 +6083,7 @@ var createDropdownPortal = (children, container) => {
   const portalContainer = document.body;
   return reactDom.createPortal(children, portalContainer);
 };
-
-// src/app/components/atoms/Dropdown/Dropdown.tsx
-var Dropdown = React22.forwardRef(
+var Dropdown = React21.forwardRef(
   (allProps, ref) => {
     var _b;
     const [containerProps, componentProps] = extractContainerProps(allProps);
@@ -6101,29 +6170,29 @@ var Dropdown = React22.forwardRef(
     const animationsEnabled = ((_b = settings.appearance.animations) != null ? _b : true) && animate;
     const useAnimationMode = animationsEnabled && animationMode !== "none";
     const hasIsometricAnimation = useAnimationMode && animationMode === "isometric" && variant !== "ghost" && variant !== "glassmorphic";
-    const [internalOpen, setInternalOpen] = React22.useState(false);
-    const [searchQuery, setSearchQuery] = React22.useState("");
-    const [highlightedIndex, setHighlightedIndex] = React22.useState(-1);
-    const [isFocused, setIsFocused] = React22.useState(false);
+    const [internalOpen, setInternalOpen] = React21.useState(false);
+    const [searchQuery, setSearchQuery] = React21.useState("");
+    const [highlightedIndex, setHighlightedIndex] = React21.useState(-1);
+    const [isFocused, setIsFocused] = React21.useState(false);
     const isOpen = controlledOpen !== void 0 ? controlledOpen : internalOpen;
-    const setIsOpen = React22.useCallback((open) => {
+    const setIsOpen = React21.useCallback((open) => {
       if (controlledOpen === void 0) {
         setInternalOpen(open);
       }
       onOpenChange == null ? void 0 : onOpenChange(open);
     }, [controlledOpen, onOpenChange]);
-    const containerRef = React22.useRef(null);
-    const triggerRef = React22.useRef(null);
-    const menuRef = React22.useRef(null);
-    const searchRef = React22.useRef(null);
-    const dropdownId = React22.useMemo(() => generateDropdownId(), []);
-    const filteredOptions = React22.useMemo(() => {
+    const containerRef = React21.useRef(null);
+    const triggerRef = React21.useRef(null);
+    const menuRef = React21.useRef(null);
+    const searchRef = React21.useRef(null);
+    const dropdownId = React21.useMemo(() => generateDropdownId(), []);
+    const filteredOptions = React21.useMemo(() => {
       if (!searchable || !searchQuery) return options;
       return filterOptions(options, searchQuery, filterFunction);
     }, [options, searchQuery, searchable, filterFunction]);
-    const flatOptions = React22.useMemo(() => flattenOptions(filteredOptions), [filteredOptions]);
-    const selectableOptions = React22.useMemo(() => getSelectableOptions(filteredOptions), [filteredOptions]);
-    const displayText = React22.useMemo(
+    const flatOptions = React21.useMemo(() => flattenOptions(filteredOptions), [filteredOptions]);
+    const selectableOptions = React21.useMemo(() => getSelectableOptions(filteredOptions), [filteredOptions]);
+    const displayText = React21.useMemo(
       () => getDisplayText(value, options, multiple, placeholder),
       [value, options, multiple, placeholder]
     );
@@ -6131,7 +6200,7 @@ var Dropdown = React22.forwardRef(
       if (!isTypewriter || typeof text !== "string") {
         return text;
       }
-      return /* @__PURE__ */ React22__default.default.createElement(
+      return /* @__PURE__ */ jsxRuntime.jsx(
         TypewriterText,
         {
           text,
@@ -6142,7 +6211,7 @@ var Dropdown = React22.forwardRef(
         }
       );
     };
-    const handleToggle = React22.useCallback(() => {
+    const handleToggle = React21.useCallback(() => {
       if (disabled) return;
       const newOpen = !isOpen;
       if (newOpen) {
@@ -6159,13 +6228,13 @@ var Dropdown = React22.forwardRef(
         setHighlightedIndex(-1);
       }
     }, [disabled, isOpen, setIsOpen, onOpen, onClose, filteredOptions]);
-    const handleClose = React22.useCallback(() => {
+    const handleClose = React21.useCallback(() => {
       setIsOpen(false);
       setSearchQuery("");
       setHighlightedIndex(-1);
       onClose == null ? void 0 : onClose();
     }, [setIsOpen, onClose]);
-    const handleOptionSelect = React22.useCallback((option) => {
+    const handleOptionSelect = React21.useCallback((option) => {
       if (option.disabled) return;
       const newValue = handleSelectionChange(option.value, value, multiple, onChange);
       if (!multiple && closeOnSelect) {
@@ -6173,14 +6242,14 @@ var Dropdown = React22.forwardRef(
       }
       return newValue;
     }, [value, multiple, onChange, closeOnSelect, handleClose]);
-    const handleOptionClick = React22.useCallback((option) => {
+    const handleOptionClick = React21.useCallback((option) => {
       handleOptionSelect(option);
     }, [handleOptionSelect]);
-    const handleSearchChange = React22.useCallback((e) => {
+    const handleSearchChange = React21.useCallback((e) => {
       setSearchQuery(e.target.value);
       setHighlightedIndex(-1);
     }, []);
-    const handleKeyDownInternal = React22.useCallback((e) => {
+    const handleKeyDownInternal = React21.useCallback((e) => {
       handleKeyDown2(
         e,
         isOpen,
@@ -6197,33 +6266,33 @@ var Dropdown = React22.forwardRef(
     }, [isOpen, highlightedIndex, selectableOptions, handleToggle, handleOptionSelect, handleClose]);
     useClickOutside(containerRef, handleClose, isOpen);
     useFocusManagement(isOpen, triggerRef, menuRef);
-    React22.useEffect(() => {
+    React21.useEffect(() => {
       setHighlightedIndex(-1);
     }, [filteredOptions]);
-    const baseStyles = React22.useMemo(
+    const baseStyles = React21.useMemo(
       () => createBaseStyles7(size, shape, animationsEnabled, width, rounded),
       [size, shape, animationsEnabled, width, rounded]
     );
-    const colorVariables = React22.useMemo(
+    const colorVariables = React21.useMemo(
       () => getColorVariables9(color, customColor, cssVars),
       [color, customColor, cssVars]
     );
-    const triggerStyles = React22.useMemo(() => {
+    const triggerStyles = React21.useMemo(() => {
       const baseStyles2 = getTriggerStyles(color, variant, size, shape, Boolean(disabled), Boolean(error), isOpen, customColor, cssVars, animationsEnabled, rounded);
       const shouldShowFocus = (isFocused || isOpen) && !disabled;
       const focusStyles = shouldShowFocus ? getFocusStyles2(cssVars, variant, Boolean(error), colorVariables) : {};
       const isometricStyles = hasIsometricAnimation ? getIsometricStyles3(colorVariables, variant) : {};
       return __spreadValues(__spreadValues(__spreadValues({}, baseStyles2), focusStyles), isometricStyles);
     }, [color, customColor, variant, size, disabled, error, isOpen, shape, rounded, cssVars, animationsEnabled, isFocused, hasIsometricAnimation, colorVariables]);
-    const arrowStyles = React22.useMemo(
+    const arrowStyles = React21.useMemo(
       () => getArrowStyles(size, isOpen, animationsEnabled, cssVars, variant, colorVariables),
       [size, isOpen, animationsEnabled, cssVars, variant, colorVariables]
     );
-    const menuStyles = React22.useMemo(
+    const menuStyles = React21.useMemo(
       () => getMenuStyles(position, maxHeight, Boolean(rounded) || shape === "round", cssVars, animationsEnabled),
       [position, maxHeight, shape, rounded, cssVars, animationsEnabled]
     );
-    const searchStyles = React22.useMemo(
+    const searchStyles = React21.useMemo(
       () => getSearchStyles(size, Boolean(rounded) || shape === "round", cssVars, variant),
       [size, shape, rounded, cssVars, variant]
     );
@@ -6231,7 +6300,7 @@ var Dropdown = React22.forwardRef(
     const combinedMenuStyles = __spreadValues(__spreadValues({}, menuStyles), menuStyle);
     const accessibilityProps = createAccessibilityProps2(dropdownId, isOpen, highlightedIndex, Boolean(error));
     const menuAccessibilityProps = createMenuAccessibilityProps(dropdownId);
-    const handleMouseEnter = React22.useCallback((e) => {
+    const handleMouseEnter = React21.useCallback((e) => {
       if (!disabled && animationsEnabled && hasIsometricAnimation && variant !== "ghost" && variant !== "glassmorphic") {
         e.currentTarget.style.transform = "translateY(3px)";
         e.currentTarget.style.borderBottomWidth = "3px";
@@ -6246,7 +6315,7 @@ var Dropdown = React22.forwardRef(
         }
       }
     }, [disabled, animationsEnabled, hasIsometricAnimation, variant, colorVariables]);
-    const handleMouseLeave = React22.useCallback((e) => {
+    const handleMouseLeave = React21.useCallback((e) => {
       if (!disabled && hasIsometricAnimation && variant !== "ghost" && variant !== "glassmorphic") {
         e.currentTarget.style.transform = "translateY(0)";
         e.currentTarget.style.borderBottomWidth = "6px";
@@ -6263,20 +6332,20 @@ var Dropdown = React22.forwardRef(
     }, [disabled, hasIsometricAnimation, variant, colorVariables]);
     const renderTrigger = () => {
       if (trigger) {
-        const customTrigger = React22__default.default.cloneElement(trigger, __spreadValues({
+        const customTrigger = React21__default.default.cloneElement(trigger, __spreadValues({
           onClick: handleToggle,
           onKeyDown: handleKeyDownInternal,
           onFocus: () => setIsFocused(true),
           onBlur: () => setIsFocused(false)
         }, accessibilityProps));
         if (useAnimationMode && animationMode === "parallax") {
-          return /* @__PURE__ */ React22__default.default.createElement(ParallaxTiltWrapper, { disabled: disabled || !useAnimationMode }, customTrigger);
+          return /* @__PURE__ */ jsxRuntime.jsx(ParallaxTiltWrapper, { disabled: disabled || !useAnimationMode, children: customTrigger });
         }
         return customTrigger;
       }
-      const triggerButton = /* @__PURE__ */ React22__default.default.createElement(
+      const triggerButton = /* @__PURE__ */ jsxRuntime.jsxs(
         "button",
-        __spreadValues({
+        __spreadProps(__spreadValues({
           ref: triggerRef,
           type: "button",
           style: triggerStyles,
@@ -6287,16 +6356,28 @@ var Dropdown = React22.forwardRef(
           onMouseEnter: handleMouseEnter,
           onMouseLeave: handleMouseLeave,
           disabled
-        }, accessibilityProps),
-        /* @__PURE__ */ React22__default.default.createElement("div", { style: getValueDisplayStyles() }, icon && /* @__PURE__ */ React22__default.default.createElement("span", { style: { marginRight: "8px" } }, icon), multiple && Array.isArray(value) && value.length > 0 ? /* @__PURE__ */ React22__default.default.createElement("div", { style: { display: "flex", flexWrap: "wrap", gap: "2px" } }, value.slice(0, 3).map((val) => {
-          const option = flatOptions.find((opt) => opt.value === val);
-          const label = typeof (option == null ? void 0 : option.label) === "string" ? option.label : val.toString();
-          return /* @__PURE__ */ React22__default.default.createElement("span", { key: val, style: getMultiValueStyles(size, Boolean(rounded) || shape === "round", cssVars, variant, colorVariables) }, label);
-        }), value.length > 3 && /* @__PURE__ */ React22__default.default.createElement("span", { style: getMultiValueStyles(size, Boolean(rounded) || shape === "round", cssVars, variant, colorVariables) }, "+", value.length - 3)) : /* @__PURE__ */ React22__default.default.createElement("span", { style: value ? {} : getPlaceholderStyles(cssVars, variant, colorVariables) }, renderAnimatedText(displayText, useAnimationMode && animationMode === "typewriter"))),
-        showArrow && /* @__PURE__ */ React22__default.default.createElement("div", { style: arrowStyles }, /* @__PURE__ */ React22__default.default.createElement(Icon, { name: "NavArrowDown", size: size === "lg" ? "md" : "sm" }))
+        }, accessibilityProps), {
+          children: [
+            /* @__PURE__ */ jsxRuntime.jsxs("div", { style: getValueDisplayStyles(), children: [
+              icon && /* @__PURE__ */ jsxRuntime.jsx("span", { style: { marginRight: "8px" }, children: icon }),
+              multiple && Array.isArray(value) && value.length > 0 ? /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { display: "flex", flexWrap: "wrap", gap: "2px" }, children: [
+                value.slice(0, 3).map((val) => {
+                  const option = flatOptions.find((opt) => opt.value === val);
+                  const label = typeof (option == null ? void 0 : option.label) === "string" ? option.label : val.toString();
+                  return /* @__PURE__ */ jsxRuntime.jsx("span", { style: getMultiValueStyles(size, Boolean(rounded) || shape === "round", cssVars, variant, colorVariables), children: label }, val);
+                }),
+                value.length > 3 && /* @__PURE__ */ jsxRuntime.jsxs("span", { style: getMultiValueStyles(size, Boolean(rounded) || shape === "round", cssVars, variant, colorVariables), children: [
+                  "+",
+                  value.length - 3
+                ] })
+              ] }) : /* @__PURE__ */ jsxRuntime.jsx("span", { style: value ? {} : getPlaceholderStyles(cssVars, variant, colorVariables), children: renderAnimatedText(displayText, useAnimationMode && animationMode === "typewriter") })
+            ] }),
+            showArrow && /* @__PURE__ */ jsxRuntime.jsx("div", { style: arrowStyles, children: /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "NavArrowDown", size: size === "lg" ? "md" : "sm" }) })
+          ]
+        })
       );
       if (useAnimationMode && animationMode === "parallax") {
-        return /* @__PURE__ */ React22__default.default.createElement(ParallaxTiltWrapper, { disabled: disabled || !useAnimationMode }, triggerButton);
+        return /* @__PURE__ */ jsxRuntime.jsx(ParallaxTiltWrapper, { disabled: disabled || !useAnimationMode, children: triggerButton });
       }
       return triggerButton;
     };
@@ -6305,38 +6386,50 @@ var Dropdown = React22.forwardRef(
       const highlighted = globalIndex === highlightedIndex;
       const optionStyles = getOptionStyles(size, selected, !!option.disabled, highlighted, cssVars, animationsEnabled, variant, colorVariables);
       const optionAccessibilityProps = createOptionAccessibilityProps(dropdownId, globalIndex, selected, !!option.disabled);
-      return /* @__PURE__ */ React22__default.default.createElement(React22__default.default.Fragment, { key: option.value }, option.divider && /* @__PURE__ */ React22__default.default.createElement("div", { style: getDividerStyles(cssVars) }), /* @__PURE__ */ React22__default.default.createElement(
-        "button",
-        __spreadValues({
-          type: "button",
-          style: optionStyles,
-          onClick: () => !option.disabled && handleOptionClick(option),
-          onMouseEnter: () => setHighlightedIndex(globalIndex),
-          disabled: option.disabled
-        }, optionAccessibilityProps),
-        option.icon && /* @__PURE__ */ React22__default.default.createElement("span", { style: { marginRight: "8px" } }, option.icon),
-        /* @__PURE__ */ React22__default.default.createElement("div", { style: { flex: 1, textAlign: "left" } }, /* @__PURE__ */ React22__default.default.createElement("div", null, option.label), option.description && /* @__PURE__ */ React22__default.default.createElement("div", { style: {
-          fontSize: "0.875em",
-          opacity: 0.7,
-          marginTop: "2px"
-        } }, option.description)),
-        selected && multiple && /* @__PURE__ */ React22__default.default.createElement("span", { style: { marginLeft: "8px" } }, /* @__PURE__ */ React22__default.default.createElement(Icon, { name: "Check", size: "sm" }))
-      ));
+      return /* @__PURE__ */ jsxRuntime.jsxs(React21__default.default.Fragment, { children: [
+        option.divider && /* @__PURE__ */ jsxRuntime.jsx("div", { style: getDividerStyles(cssVars) }),
+        /* @__PURE__ */ jsxRuntime.jsxs(
+          "button",
+          __spreadProps(__spreadValues({
+            type: "button",
+            style: optionStyles,
+            onClick: () => !option.disabled && handleOptionClick(option),
+            onMouseEnter: () => setHighlightedIndex(globalIndex),
+            disabled: option.disabled
+          }, optionAccessibilityProps), {
+            children: [
+              option.icon && /* @__PURE__ */ jsxRuntime.jsx("span", { style: { marginRight: "8px" }, children: option.icon }),
+              /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { flex: 1, textAlign: "left" }, children: [
+                /* @__PURE__ */ jsxRuntime.jsx("div", { children: option.label }),
+                option.description && /* @__PURE__ */ jsxRuntime.jsx("div", { style: {
+                  fontSize: "0.875em",
+                  opacity: 0.7,
+                  marginTop: "2px"
+                }, children: option.description })
+              ] }),
+              selected && multiple && /* @__PURE__ */ jsxRuntime.jsx("span", { style: { marginLeft: "8px" }, children: /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "Check", size: "sm" }) })
+            ]
+          })
+        )
+      ] }, option.value);
     };
     const renderMenuContent = () => {
       if (loading) {
-        return /* @__PURE__ */ React22__default.default.createElement("div", { style: getLoadingStyles(size, cssVars) }, "Loading...");
+        return /* @__PURE__ */ jsxRuntime.jsx("div", { style: getLoadingStyles(size, cssVars), children: "Loading..." });
       }
       if (filteredOptions.length === 0) {
-        return /* @__PURE__ */ React22__default.default.createElement("div", { style: getEmptyStyles(size, cssVars) }, searchQuery ? noResultsMessage : emptyMessage);
+        return /* @__PURE__ */ jsxRuntime.jsx("div", { style: getEmptyStyles(size, cssVars), children: searchQuery ? noResultsMessage : emptyMessage });
       }
       let globalIndex = 0;
       return filteredOptions.map((item, groupIndex) => {
         if (isGroup(item)) {
-          return /* @__PURE__ */ React22__default.default.createElement("div", { key: `group-${groupIndex}` }, item.label && /* @__PURE__ */ React22__default.default.createElement("div", { style: getGroupLabelStyles(size, cssVars) }, item.label), item.options.map((option, optionIndex) => {
-            const currentGlobalIndex = globalIndex++;
-            return renderOption(option, optionIndex, currentGlobalIndex);
-          }));
+          return /* @__PURE__ */ jsxRuntime.jsxs("div", { children: [
+            item.label && /* @__PURE__ */ jsxRuntime.jsx("div", { style: getGroupLabelStyles(size, cssVars), children: item.label }),
+            item.options.map((option, optionIndex) => {
+              const currentGlobalIndex = globalIndex++;
+              return renderOption(option, optionIndex, currentGlobalIndex);
+            })
+          ] }, `group-${groupIndex}`);
         } else {
           const currentGlobalIndex = globalIndex++;
           return renderOption(item, groupIndex, currentGlobalIndex);
@@ -6345,62 +6438,68 @@ var Dropdown = React22.forwardRef(
     };
     const renderMenu = () => {
       if (!isOpen) return null;
-      const menuContent = /* @__PURE__ */ React22__default.default.createElement(
+      const menuContent = /* @__PURE__ */ jsxRuntime.jsxs(
         "div",
-        __spreadValues({
+        __spreadProps(__spreadValues({
           ref: menuRef,
           style: combinedMenuStyles,
           className: menuClassName
-        }, menuAccessibilityProps),
-        searchable && /* @__PURE__ */ React22__default.default.createElement("div", { style: {
-          padding: "8px",
-          borderBottom: `1px solid ${cssVars.border}`,
-          position: "relative",
-          display: "flex",
-          alignItems: "center"
-        } }, /* @__PURE__ */ React22__default.default.createElement(
-          Icon,
-          {
-            name: "Search",
-            size: "sm",
-            style: {
-              position: "absolute",
-              left: "16px",
-              zIndex: 1,
-              color: cssVars.foregroundAccent || cssVars.foreground,
-              pointerEvents: "none"
-            }
-          }
-        ), /* @__PURE__ */ React22__default.default.createElement(
-          "input",
-          {
-            ref: searchRef,
-            type: "text",
-            placeholder: searchPlaceholder,
-            value: searchQuery,
-            onChange: handleSearchChange,
-            style: __spreadProps(__spreadValues({}, searchStyles), {
-              paddingLeft: "36px"
-              // Add space for the icon
-            }),
-            autoComplete: "off"
-          }
-        )),
-        /* @__PURE__ */ React22__default.default.createElement(
-          "div",
-          {
-            className: "dropdown-scrollable-content",
-            style: {
-              maxHeight,
-              overflowY: "auto",
-              // Hide scrollbar for IE and Edge
-              msOverflowStyle: "none",
-              // Hide scrollbar for Firefox
-              scrollbarWidth: "none"
-            }
-          },
-          renderMenuContent()
-        )
+        }, menuAccessibilityProps), {
+          children: [
+            searchable && /* @__PURE__ */ jsxRuntime.jsxs("div", { style: {
+              padding: "8px",
+              borderBottom: `1px solid ${cssVars.border}`,
+              position: "relative",
+              display: "flex",
+              alignItems: "center"
+            }, children: [
+              /* @__PURE__ */ jsxRuntime.jsx(
+                Icon,
+                {
+                  name: "Search",
+                  size: "sm",
+                  style: {
+                    position: "absolute",
+                    left: "16px",
+                    zIndex: 1,
+                    color: cssVars.foregroundAccent || cssVars.foreground,
+                    pointerEvents: "none"
+                  }
+                }
+              ),
+              /* @__PURE__ */ jsxRuntime.jsx(
+                "input",
+                {
+                  ref: searchRef,
+                  type: "text",
+                  placeholder: searchPlaceholder,
+                  value: searchQuery,
+                  onChange: handleSearchChange,
+                  style: __spreadProps(__spreadValues({}, searchStyles), {
+                    paddingLeft: "36px"
+                    // Add space for the icon
+                  }),
+                  autoComplete: "off"
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxRuntime.jsx(
+              "div",
+              {
+                className: "dropdown-scrollable-content",
+                style: {
+                  maxHeight,
+                  overflowY: "auto",
+                  // Hide scrollbar for IE and Edge
+                  msOverflowStyle: "none",
+                  // Hide scrollbar for Firefox
+                  scrollbarWidth: "none"
+                },
+                children: renderMenuContent()
+              }
+            )
+          ]
+        })
       );
       return portal ? createDropdownPortal(menuContent) : menuContent;
     };
@@ -6416,7 +6515,7 @@ var Dropdown = React22.forwardRef(
       }
       if (!headerText || headerText.toString().trim() === "") return null;
       const headerColor = isErrorText ? cssVars.destructive : colorVariables.main || cssVars.primary;
-      return /* @__PURE__ */ React22__default.default.createElement(
+      return /* @__PURE__ */ jsxRuntime.jsx(
         "div",
         {
           style: {
@@ -6434,36 +6533,42 @@ var Dropdown = React22.forwardRef(
             overflow: "hidden",
             // Hide any overflow
             boxSizing: "border-box"
-          }
-        },
-        renderAnimatedText(headerText, useAnimationMode && animationMode === "typewriter")
+          },
+          children: renderAnimatedText(headerText, useAnimationMode && animationMode === "typewriter")
+        }
       );
     };
-    const dropdownElement = /* @__PURE__ */ React22__default.default.createElement(
+    const dropdownElement = /* @__PURE__ */ jsxRuntime.jsxs(
       "div",
-      __spreadValues({
+      __spreadProps(__spreadValues({
         ref: ref || containerRef,
         style: combinedStyles,
         id,
         className,
         "data-testid": dataTestId
-      }, restProps),
-      renderTrigger(),
-      renderMenu()
+      }, restProps), {
+        children: [
+          renderTrigger(),
+          renderMenu()
+        ]
+      })
     );
     const shouldIncludeHeader = header || error && errorText;
-    const completeElement = shouldIncludeHeader ? /* @__PURE__ */ React22__default.default.createElement("div", { style: {
+    const completeElement = shouldIncludeHeader ? /* @__PURE__ */ jsxRuntime.jsxs("div", { style: {
       position: "relative",
       display: "inline-block"
-    } }, /* @__PURE__ */ React22__default.default.createElement("div", { style: {
-      // Position header absolutely to avoid affecting container size
-      position: "absolute",
-      top: 0,
-      left: 0,
-      right: 0,
-      transform: "translateY(calc(-100% - 8px))"
-      // Move up by full height + spacing
-    } }, renderHeader()), dropdownElement) : dropdownElement;
+    }, children: [
+      /* @__PURE__ */ jsxRuntime.jsx("div", { style: {
+        // Position header absolutely to avoid affecting container size
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        transform: "translateY(calc(-100% - 8px))"
+        // Move up by full height + spacing
+      }, children: renderHeader() }),
+      dropdownElement
+    ] }) : dropdownElement;
     return completeElement;
   }
 );
@@ -6954,12 +7059,12 @@ var getTypeColor = (color, cssVars, variant) => {
 };
 var createTypeIcon = (color, size, cssVars, customIcon, variant) => {
   if (customIcon) {
-    return /* @__PURE__ */ React22__default.default.createElement("span", null, customIcon);
+    return /* @__PURE__ */ jsxRuntime.jsx("span", { children: customIcon });
   }
   const iconName = getTypeIcon(color);
   const iconSize = getIconSize4(size);
   const iconColor = getTypeColor(color, cssVars, variant);
-  return /* @__PURE__ */ React22__default.default.createElement(
+  return /* @__PURE__ */ jsxRuntime.jsx(
     Icon,
     {
       name: iconName,
@@ -6994,9 +7099,7 @@ var getAriaLabel = (color, title, description) => {
   }
   return baseLabel;
 };
-
-// src/app/components/atoms/Notification/Notification.tsx
-var Notification = React22.forwardRef(
+var Notification = React21.forwardRef(
   (allProps, ref) => {
     var _b;
     const [containerProps, componentProps] = extractContainerProps(allProps);
@@ -7051,46 +7154,46 @@ var Notification = React22.forwardRef(
     const cssVars = useCSSVariables();
     const { settings } = useSettings();
     const animationsEnabled = ((_b = settings.appearance.animations) != null ? _b : true) && animate;
-    const notificationId = React22.useMemo(() => id || generateNotificationId(), [id]);
-    React22.useEffect(() => {
+    const notificationId = React21.useMemo(() => id || generateNotificationId(), [id]);
+    React21.useEffect(() => {
       const cleanup = setupAutoDismiss(duration != null ? duration : null, onDismiss);
       return cleanup || void 0;
     }, [duration, onDismiss]);
-    const handleDismiss = React22.useCallback(() => {
+    const handleDismiss = React21.useCallback(() => {
       onDismiss == null ? void 0 : onDismiss();
     }, [onDismiss]);
-    const handleKeyDownInternal = React22.useCallback((event) => {
+    const handleKeyDownInternal = React21.useCallback((event) => {
       handleKeyDown3(event, dismissible ? handleDismiss : void 0);
     }, [dismissible, handleDismiss]);
-    const baseStyles = React22.useMemo(
+    const baseStyles = React21.useMemo(
       () => createNotificationContainerStyles(size, shape === "pill" || Boolean(rounded), animationsEnabled),
       [size, shape, rounded, animationsEnabled]
     );
-    const notificationStyles = React22.useMemo(
+    const notificationStyles = React21.useMemo(
       () => getNotificationStyles(effectiveColor, customColor, variant, size, disabled, cssVars),
       [effectiveColor, customColor, variant, size, disabled, cssVars]
     );
-    const iconContainerStyles = React22.useMemo(
+    const iconContainerStyles = React21.useMemo(
       () => getIconStyles(size),
       [size, effectiveColor, cssVars]
     );
-    React22.useMemo(
+    React21.useMemo(
       () => getContentStyles(),
       []
     );
-    const titleStyles = React22.useMemo(
+    const titleStyles = React21.useMemo(
       () => getTitleStyles(size),
       [size, cssVars]
     );
-    const descriptionStyles = React22.useMemo(
+    const descriptionStyles = React21.useMemo(
       () => getDescriptionStyles2(size),
       [size, cssVars]
     );
-    React22.useMemo(
+    React21.useMemo(
       () => getActionsStyles(),
       [size]
     );
-    React22.useMemo(
+    React21.useMemo(
       () => getDismissButtonStyles(size, cssVars, animationsEnabled),
       [size, cssVars, animationsEnabled]
     );
@@ -7102,9 +7205,9 @@ var Notification = React22.forwardRef(
       cursor: disabled ? "not-allowed" : loading ? "wait" : void 0
     }), style);
     const ariaLabel = getAriaLabel(effectiveColor, title, description);
-    return /* @__PURE__ */ React22__default.default.createElement(
+    return /* @__PURE__ */ jsxRuntime.jsxs(
       "div",
-      __spreadValues({
+      __spreadProps(__spreadValues({
         ref,
         id: id || notificationId,
         role: "alert",
@@ -7115,146 +7218,161 @@ var Notification = React22.forwardRef(
         tabIndex: dismissible ? 0 : void 0,
         "data-testid": dataTestId,
         onClick
-      }, restProps),
-      /* @__PURE__ */ React22__default.default.createElement("div", { style: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "flex-start",
-        width: "100%"
-      } }, /* @__PURE__ */ React22__default.default.createElement("div", { style: { display: "flex", alignItems: "center", gap: "12px", flex: 1 } }, showIcon && /* @__PURE__ */ React22__default.default.createElement("div", { style: iconContainerStyles }, loading ? /* @__PURE__ */ React22__default.default.createElement(
-        ProgressIndicator,
-        {
-          type: "circular",
-          size: size === "xs" ? "xs" : size === "sm" ? "sm" : size === "lg" ? "md" : "sm",
-          color: variant === "outline" ? "primary" : effectiveColor,
-          variant: variant === "solid" ? "solid" : "outline",
-          disabled
-        }
-      ) : createTypeIcon(effectiveColor, size, cssVars, customIcon, variant)), /* @__PURE__ */ React22__default.default.createElement("h4", { style: titleStyles }, title)), dismissible && onDismiss && !loading && !disabled && /* @__PURE__ */ React22__default.default.createElement(
-        "button",
-        {
-          onClick: handleDismiss,
-          style: {
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            opacity: 0.6,
-            color: "inherit",
+      }, restProps), {
+        children: [
+          /* @__PURE__ */ jsxRuntime.jsxs("div", { style: {
             display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: "4px",
-            transition: animationsEnabled ? "opacity 0.2s ease-in-out" : "none",
-            width: size === "sm" ? "20px" : size === "lg" ? "28px" : "24px",
-            height: size === "sm" ? "20px" : size === "lg" ? "28px" : "24px",
-            fontSize: size === "sm" ? "16px" : size === "lg" ? "20px" : "18px",
-            marginLeft: "12px",
-            flexShrink: 0
-          },
-          "aria-label": "Dismiss notification",
-          onMouseEnter: (e) => {
-            if (animationsEnabled) {
-              e.currentTarget.style.opacity = "1";
-            }
-          },
-          onMouseLeave: (e) => {
-            if (animationsEnabled) {
-              e.currentTarget.style.opacity = "0.6";
-            }
-          }
-        },
-        /* @__PURE__ */ React22__default.default.createElement(Icon, { name: "Xmark", size: size === "lg" ? "md" : "sm" })
-      )),
-      (description || children || actions && actions.length > 0) && /* @__PURE__ */ React22__default.default.createElement("div", { style: { margin: "4px 0" } }, /* @__PURE__ */ React22__default.default.createElement(
-        Divider,
-        {
-          color: effectiveColor === "primary" ? "primary" : effectiveColor === "secondary" ? "secondary" : effectiveColor === "warning" ? "warning" : effectiveColor === "destructive" ? "destructive" : effectiveColor === "success" ? "success" : effectiveColor === "info" ? "info" : "primary",
-          rounded: shape === "pill" || Boolean(rounded),
-          size: "sm"
-        }
-      )),
-      (description || children || actions && actions.length > 0) && /* @__PURE__ */ React22__default.default.createElement("div", { style: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "flex-start",
-        width: "100%",
-        gap: "12px"
-      } }, /* @__PURE__ */ React22__default.default.createElement("div", { style: { flex: 1 } }, description && /* @__PURE__ */ React22__default.default.createElement("p", { style: __spreadProps(__spreadValues({}, descriptionStyles), {
-        margin: "0"
-      }) }, description), children && /* @__PURE__ */ React22__default.default.createElement("div", { style: { marginTop: description ? "4px" : "0" } }, children)), actions && actions.length > 0 && !loading && !disabled && /* @__PURE__ */ React22__default.default.createElement("div", { style: {
-        display: "flex",
-        gap: "8px",
-        alignItems: "flex-start",
-        flexWrap: "wrap",
-        flexShrink: 0
-      } }, actions.map((action, index) => {
-        const actionVariant = action.variant || "outline";
-        const baseStyles2 = getActionButtonStyles(actionVariant, size, cssVars, animationsEnabled, variant, effectiveColor);
-        const getHoverColors = (color2) => {
-          var _a2;
-          const colorMap = {
-            primary: { hover: cssVars.primaryHover },
-            secondary: { hover: cssVars.secondaryHover },
-            success: { hover: cssVars.successHover },
-            warning: { hover: cssVars.warningHover },
-            destructive: { hover: cssVars.destructiveHover },
-            info: { hover: cssVars.infoHover }
-          };
-          return ((_a2 = colorMap[color2]) == null ? void 0 : _a2.hover) || cssVars.primaryHover;
-        };
-        const hoverColor = getHoverColors(effectiveColor);
-        return /* @__PURE__ */ React22__default.default.createElement(
-          "button",
-          {
-            key: index,
-            onClick: action.onClick,
-            style: baseStyles2,
-            onMouseEnter: (e) => {
-              if (animationsEnabled) {
-                const isInSolidNotification = variant === "solid";
-                if (actionVariant === "solid") {
-                  if (isInSolidNotification) {
-                    e.currentTarget.style.backgroundColor = cssVars.foregroundAccent;
-                    e.currentTarget.style.borderTopColor = cssVars.foregroundAccent;
-                    e.currentTarget.style.borderRightColor = cssVars.foregroundAccent;
-                    e.currentTarget.style.borderBottomColor = cssVars.foregroundAccent;
-                    e.currentTarget.style.borderLeftColor = cssVars.foregroundAccent;
-                    e.currentTarget.style.color = hoverColor;
-                  } else {
-                    e.currentTarget.style.backgroundColor = hoverColor;
-                    e.currentTarget.style.borderTopColor = hoverColor;
-                    e.currentTarget.style.borderRightColor = hoverColor;
-                    e.currentTarget.style.borderBottomColor = hoverColor;
-                    e.currentTarget.style.borderLeftColor = hoverColor;
-                  }
-                } else if (actionVariant === "outline") {
-                  if (isInSolidNotification) {
-                    e.currentTarget.style.backgroundColor = cssVars.foregroundAccent;
-                  } else {
-                    const notificationBg = cssVars[`${effectiveColor}Background`] || cssVars.primaryBackground;
-                    e.currentTarget.style.backgroundColor = notificationBg;
-                    e.currentTarget.style.borderTopColor = hoverColor;
-                    e.currentTarget.style.borderRightColor = hoverColor;
-                    e.currentTarget.style.borderBottomColor = hoverColor;
-                    e.currentTarget.style.borderLeftColor = hoverColor;
-                    e.currentTarget.style.color = hoverColor;
-                  }
-                } else if (actionVariant === "ghost") {
-                  const ghostBg = cssVars[`${effectiveColor}Background`] || cssVars.primaryBackground;
-                  e.currentTarget.style.backgroundColor = ghostBg;
-                  e.currentTarget.style.color = hoverColor;
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            width: "100%"
+          }, children: [
+            /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { display: "flex", alignItems: "center", gap: "12px", flex: 1 }, children: [
+              showIcon && /* @__PURE__ */ jsxRuntime.jsx("div", { style: iconContainerStyles, children: loading ? /* @__PURE__ */ jsxRuntime.jsx(
+                ProgressIndicator,
+                {
+                  type: "circular",
+                  size: size === "xs" ? "xs" : size === "sm" ? "sm" : size === "lg" ? "md" : "sm",
+                  color: variant === "outline" ? "primary" : effectiveColor,
+                  variant: variant === "solid" ? "solid" : "outline",
+                  disabled
                 }
+              ) : createTypeIcon(effectiveColor, size, cssVars, customIcon, variant) }),
+              /* @__PURE__ */ jsxRuntime.jsx("h4", { style: titleStyles, children: title })
+            ] }),
+            dismissible && onDismiss && !loading && !disabled && /* @__PURE__ */ jsxRuntime.jsx(
+              "button",
+              {
+                onClick: handleDismiss,
+                style: {
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  opacity: 0.6,
+                  color: "inherit",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  borderRadius: "4px",
+                  transition: animationsEnabled ? "opacity 0.2s ease-in-out" : "none",
+                  width: size === "sm" ? "20px" : size === "lg" ? "28px" : "24px",
+                  height: size === "sm" ? "20px" : size === "lg" ? "28px" : "24px",
+                  fontSize: size === "sm" ? "16px" : size === "lg" ? "20px" : "18px",
+                  marginLeft: "12px",
+                  flexShrink: 0
+                },
+                "aria-label": "Dismiss notification",
+                onMouseEnter: (e) => {
+                  if (animationsEnabled) {
+                    e.currentTarget.style.opacity = "1";
+                  }
+                },
+                onMouseLeave: (e) => {
+                  if (animationsEnabled) {
+                    e.currentTarget.style.opacity = "0.6";
+                  }
+                },
+                children: /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "Xmark", size: size === "lg" ? "md" : "sm" })
               }
-            },
-            onMouseLeave: (e) => {
-              if (animationsEnabled) {
-                Object.assign(e.currentTarget.style, baseStyles2);
-              }
+            )
+          ] }),
+          (description || children || actions && actions.length > 0) && /* @__PURE__ */ jsxRuntime.jsx("div", { style: { margin: "4px 0" }, children: /* @__PURE__ */ jsxRuntime.jsx(
+            Divider,
+            {
+              color: effectiveColor === "primary" ? "primary" : effectiveColor === "secondary" ? "secondary" : effectiveColor === "warning" ? "warning" : effectiveColor === "destructive" ? "destructive" : effectiveColor === "success" ? "success" : effectiveColor === "info" ? "info" : "primary",
+              rounded: shape === "pill" || Boolean(rounded),
+              size: "sm"
             }
-          },
-          action.label
-        );
-      })))
+          ) }),
+          (description || children || actions && actions.length > 0) && /* @__PURE__ */ jsxRuntime.jsxs("div", { style: {
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            width: "100%",
+            gap: "12px"
+          }, children: [
+            /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { flex: 1 }, children: [
+              description && /* @__PURE__ */ jsxRuntime.jsx("p", { style: __spreadProps(__spreadValues({}, descriptionStyles), {
+                margin: "0"
+              }), children: description }),
+              children && /* @__PURE__ */ jsxRuntime.jsx("div", { style: { marginTop: description ? "4px" : "0" }, children })
+            ] }),
+            actions && actions.length > 0 && !loading && !disabled && /* @__PURE__ */ jsxRuntime.jsx("div", { style: {
+              display: "flex",
+              gap: "8px",
+              alignItems: "flex-start",
+              flexWrap: "wrap",
+              flexShrink: 0
+            }, children: actions.map((action, index) => {
+              const actionVariant = action.variant || "outline";
+              const baseStyles2 = getActionButtonStyles(actionVariant, size, cssVars, animationsEnabled, variant, effectiveColor);
+              const getHoverColors = (color2) => {
+                var _a2;
+                const colorMap = {
+                  primary: { hover: cssVars.primaryHover },
+                  secondary: { hover: cssVars.secondaryHover },
+                  success: { hover: cssVars.successHover },
+                  warning: { hover: cssVars.warningHover },
+                  destructive: { hover: cssVars.destructiveHover },
+                  info: { hover: cssVars.infoHover }
+                };
+                return ((_a2 = colorMap[color2]) == null ? void 0 : _a2.hover) || cssVars.primaryHover;
+              };
+              const hoverColor = getHoverColors(effectiveColor);
+              return /* @__PURE__ */ jsxRuntime.jsx(
+                "button",
+                {
+                  onClick: action.onClick,
+                  style: baseStyles2,
+                  onMouseEnter: (e) => {
+                    if (animationsEnabled) {
+                      const isInSolidNotification = variant === "solid";
+                      if (actionVariant === "solid") {
+                        if (isInSolidNotification) {
+                          e.currentTarget.style.backgroundColor = cssVars.foregroundAccent;
+                          e.currentTarget.style.borderTopColor = cssVars.foregroundAccent;
+                          e.currentTarget.style.borderRightColor = cssVars.foregroundAccent;
+                          e.currentTarget.style.borderBottomColor = cssVars.foregroundAccent;
+                          e.currentTarget.style.borderLeftColor = cssVars.foregroundAccent;
+                          e.currentTarget.style.color = hoverColor;
+                        } else {
+                          e.currentTarget.style.backgroundColor = hoverColor;
+                          e.currentTarget.style.borderTopColor = hoverColor;
+                          e.currentTarget.style.borderRightColor = hoverColor;
+                          e.currentTarget.style.borderBottomColor = hoverColor;
+                          e.currentTarget.style.borderLeftColor = hoverColor;
+                        }
+                      } else if (actionVariant === "outline") {
+                        if (isInSolidNotification) {
+                          e.currentTarget.style.backgroundColor = cssVars.foregroundAccent;
+                        } else {
+                          const notificationBg = cssVars[`${effectiveColor}Background`] || cssVars.primaryBackground;
+                          e.currentTarget.style.backgroundColor = notificationBg;
+                          e.currentTarget.style.borderTopColor = hoverColor;
+                          e.currentTarget.style.borderRightColor = hoverColor;
+                          e.currentTarget.style.borderBottomColor = hoverColor;
+                          e.currentTarget.style.borderLeftColor = hoverColor;
+                          e.currentTarget.style.color = hoverColor;
+                        }
+                      } else if (actionVariant === "ghost") {
+                        const ghostBg = cssVars[`${effectiveColor}Background`] || cssVars.primaryBackground;
+                        e.currentTarget.style.backgroundColor = ghostBg;
+                        e.currentTarget.style.color = hoverColor;
+                      }
+                    }
+                  },
+                  onMouseLeave: (e) => {
+                    if (animationsEnabled) {
+                      Object.assign(e.currentTarget.style, baseStyles2);
+                    }
+                  },
+                  children: action.label
+                },
+                index
+              );
+            }) })
+          ] })
+        ]
+      })
     );
   }
 );
@@ -7585,28 +7703,26 @@ var generateSearchId = /* @__PURE__ */ (() => {
   return (prefix = "search") => `${prefix}-${++counter}`;
 })();
 var useFocusManagement2 = (inputRef, autoFocus = false) => {
-  React22.useEffect(() => {
+  React21.useEffect(() => {
     if (autoFocus && inputRef.current) {
       inputRef.current.focus();
     }
   }, [autoFocus, inputRef]);
-  const focus = React22.useCallback(() => {
+  const focus = React21.useCallback(() => {
     var _a;
     (_a = inputRef.current) == null ? void 0 : _a.focus();
   }, [inputRef]);
-  const blur = React22.useCallback(() => {
+  const blur = React21.useCallback(() => {
     var _a;
     (_a = inputRef.current) == null ? void 0 : _a.blur();
   }, [inputRef]);
-  const select = React22.useCallback(() => {
+  const select = React21.useCallback(() => {
     var _a;
     (_a = inputRef.current) == null ? void 0 : _a.select();
   }, [inputRef]);
   return { focus, blur, select };
 };
-
-// src/app/components/atoms/Search/Search.tsx
-var Search = React22.forwardRef((allProps, ref) => {
+var Search = React21.forwardRef((allProps, ref) => {
   var _b;
   const [formProps, componentProps] = extractFormProps(allProps);
   const {
@@ -7664,12 +7780,12 @@ var Search = React22.forwardRef((allProps, ref) => {
   const cssVars = useCSSVariables();
   const { settings } = useSettings();
   const animationsEnabled = ((_b = settings.appearance.animations) != null ? _b : true) && animate;
-  const [internalValue, setInternalValue] = React22.useState("");
+  const [internalValue, setInternalValue] = React21.useState("");
   const isControlled = controlledValue !== void 0;
   const value = isControlled ? controlledValue : internalValue;
-  const inputRef = React22.useRef(null);
+  const inputRef = React21.useRef(null);
   const combinedRef = ref || inputRef;
-  const searchId = React22.useMemo(() => providedId || generateSearchId(), [providedId]);
+  const searchId = React21.useMemo(() => providedId || generateSearchId(), [providedId]);
   const { focus} = useFocusManagement2(
     combinedRef,
     autoFocus
@@ -7685,11 +7801,11 @@ var Search = React22.forwardRef((allProps, ref) => {
     return iconSizeMap[searchSize];
   };
   const iconSize = getIconSize5(size);
-  const [isFocused, setIsFocused] = React22.useState(false);
-  React22.useCallback((searchValue) => {
+  const [isFocused, setIsFocused] = React21.useState(false);
+  React21.useCallback((searchValue) => {
     onChange == null ? void 0 : onChange(searchValue);
   }, [onChange]);
-  const handleValueChange = React22.useCallback(
+  const handleValueChange = React21.useCallback(
     (newValue) => {
       if (!isControlled) {
         setInternalValue(newValue);
@@ -7700,7 +7816,7 @@ var Search = React22.forwardRef((allProps, ref) => {
     },
     [isControlled, onChange]
   );
-  const handleInputChange = React22.useCallback(
+  const handleInputChange = React21.useCallback(
     (event) => {
       const newValue = event.target.value;
       handleValueChange(newValue);
@@ -7708,7 +7824,7 @@ var Search = React22.forwardRef((allProps, ref) => {
     [handleValueChange]
   );
   const { onKeyDown: originalOnKeyDown, onFocus: originalOnFocus, onBlur: originalOnBlur } = formProps;
-  const handleKeyDown6 = React22.useCallback(
+  const handleKeyDown6 = React21.useCallback(
     (event) => {
       if (event.key === "Enter" && onSearch) {
         onSearch(value);
@@ -7720,33 +7836,33 @@ var Search = React22.forwardRef((allProps, ref) => {
     },
     [value, onSearch, clearOnEscape, handleValueChange, onClear, originalOnKeyDown]
   );
-  const handleFocus = React22.useCallback(
+  const handleFocus = React21.useCallback(
     (event) => {
       setIsFocused(true);
       originalOnFocus == null ? void 0 : originalOnFocus(event);
     },
     [originalOnFocus]
   );
-  const handleBlur = React22.useCallback(
+  const handleBlur = React21.useCallback(
     (event) => {
       setIsFocused(false);
       originalOnBlur == null ? void 0 : originalOnBlur(event);
     },
     [originalOnBlur]
   );
-  const handleSearchClick = React22.useCallback(() => {
+  const handleSearchClick = React21.useCallback(() => {
     if (onSearch) {
       onSearch(value);
     }
     focus();
   }, [value, onSearch, focus]);
-  const handleClearIconClick = React22.useCallback(() => {
+  const handleClearIconClick = React21.useCallback(() => {
     handleValueChange("");
     onClear == null ? void 0 : onClear();
     focus();
   }, [handleValueChange, onClear, focus]);
   const finalShape = rounded !== void 0 ? rounded ? "pill" : "round" : shape;
-  const containerStyles = React22.useMemo(() => getSearchContainerStyles(
+  const containerStyles = React21.useMemo(() => getSearchContainerStyles(
     size,
     variant,
     color,
@@ -7759,7 +7875,7 @@ var Search = React22.forwardRef((allProps, ref) => {
     cssVars,
     width
   ), [size, variant, color, customColor, finalShape, disabled, isFocused, error, animationsEnabled, cssVars, width]);
-  const inputStyles = React22.useMemo(() => getSearchInputStyles(
+  const inputStyles = React21.useMemo(() => getSearchInputStyles(
     size,
     variant,
     color,
@@ -7769,7 +7885,7 @@ var Search = React22.forwardRef((allProps, ref) => {
     showClearButton && Boolean(value),
     cssVars
   ), [size, variant, color, customColor, disabled, showSearchIcon, searchIconPosition, showClearButton, value, cssVars]);
-  const searchIconStyles = React22.useMemo(() => getSearchIconStyles(
+  const searchIconStyles = React21.useMemo(() => getSearchIconStyles(
     size,
     searchIconPosition,
     variant,
@@ -7781,7 +7897,7 @@ var Search = React22.forwardRef((allProps, ref) => {
     animationsEnabled,
     cssVars
   ), [size, searchIconPosition, variant, color, customColor, disabled, animationsEnabled, cssVars]);
-  const clearIconStyles = React22.useMemo(() => getSearchIconStyles(
+  const clearIconStyles = React21.useMemo(() => getSearchIconStyles(
     size,
     "right",
     variant,
@@ -7793,7 +7909,7 @@ var Search = React22.forwardRef((allProps, ref) => {
     animationsEnabled,
     cssVars
   ), [size, variant, color, customColor, disabled, animationsEnabled, cssVars]);
-  const loadingStyles = React22.useMemo(() => getLoadingStyles2(
+  const loadingStyles = React21.useMemo(() => getLoadingStyles2(
     size,
     animationsEnabled
   ), [size, animationsEnabled]);
@@ -7804,70 +7920,72 @@ var Search = React22.forwardRef((allProps, ref) => {
     "aria-required": Boolean(required),
     "aria-disabled": Boolean(disabled)
   };
-  return /* @__PURE__ */ React22__default.default.createElement(
+  return /* @__PURE__ */ jsxRuntime.jsxs(
     "div",
     {
       className,
       style: combinedStyles,
-      "data-testid": dataTestId
-    },
-    showSearchIcon && searchIconPosition === "left" && /* @__PURE__ */ React22__default.default.createElement(
-      "button",
-      {
-        type: "button",
-        onClick: handleSearchClick,
-        disabled,
-        style: searchIconStyles,
-        tabIndex: -1,
-        "aria-label": "Search"
-      },
-      loading ? /* @__PURE__ */ React22__default.default.createElement("div", { style: loadingStyles }, /* @__PURE__ */ React22__default.default.createElement(Icon, { name: "Refresh", size: iconSize })) : searchIcon ? searchIcon : /* @__PURE__ */ React22__default.default.createElement(Icon, { name: "Search", size: iconSize })
-    ),
-    /* @__PURE__ */ React22__default.default.createElement(
-      "input",
-      __spreadValues(__spreadValues({
-        ref: combinedRef,
-        type: "text",
-        id: searchId,
-        name,
-        value,
-        onChange: handleInputChange,
-        onKeyDown: handleKeyDown6,
-        onFocus: handleFocus,
-        onBlur: handleBlur,
-        placeholder,
-        disabled,
-        required,
-        readOnly,
-        autoComplete,
-        autoFocus,
-        style: inputStyles
-      }, accessibilityProps), rest)
-    ),
-    showClearButton && value && !loading && /* @__PURE__ */ React22__default.default.createElement(
-      "button",
-      {
-        type: "button",
-        onClick: handleClearIconClick,
-        disabled,
-        style: clearIconStyles,
-        tabIndex: -1,
-        "aria-label": "Clear search"
-      },
-      clearIcon ? clearIcon : /* @__PURE__ */ React22__default.default.createElement(Icon, { name: "Cancel", size: iconSize })
-    ),
-    showSearchIcon && searchIconPosition === "right" && (!showClearButton || !value) && /* @__PURE__ */ React22__default.default.createElement(
-      "button",
-      {
-        type: "button",
-        onClick: handleSearchClick,
-        disabled,
-        style: searchIconStyles,
-        tabIndex: -1,
-        "aria-label": "Search"
-      },
-      loading ? /* @__PURE__ */ React22__default.default.createElement("div", { style: loadingStyles }, /* @__PURE__ */ React22__default.default.createElement(Icon, { name: "Refresh", size: iconSize })) : searchIcon ? searchIcon : /* @__PURE__ */ React22__default.default.createElement(Icon, { name: "Search", size: iconSize })
-    )
+      "data-testid": dataTestId,
+      children: [
+        showSearchIcon && searchIconPosition === "left" && /* @__PURE__ */ jsxRuntime.jsx(
+          "button",
+          {
+            type: "button",
+            onClick: handleSearchClick,
+            disabled,
+            style: searchIconStyles,
+            tabIndex: -1,
+            "aria-label": "Search",
+            children: loading ? /* @__PURE__ */ jsxRuntime.jsx("div", { style: loadingStyles, children: /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "Refresh", size: iconSize }) }) : searchIcon ? searchIcon : /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "Search", size: iconSize })
+          }
+        ),
+        /* @__PURE__ */ jsxRuntime.jsx(
+          "input",
+          __spreadValues(__spreadValues({
+            ref: combinedRef,
+            type: "text",
+            id: searchId,
+            name,
+            value,
+            onChange: handleInputChange,
+            onKeyDown: handleKeyDown6,
+            onFocus: handleFocus,
+            onBlur: handleBlur,
+            placeholder,
+            disabled,
+            required,
+            readOnly,
+            autoComplete,
+            autoFocus,
+            style: inputStyles
+          }, accessibilityProps), rest)
+        ),
+        showClearButton && value && !loading && /* @__PURE__ */ jsxRuntime.jsx(
+          "button",
+          {
+            type: "button",
+            onClick: handleClearIconClick,
+            disabled,
+            style: clearIconStyles,
+            tabIndex: -1,
+            "aria-label": "Clear search",
+            children: clearIcon ? clearIcon : /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "Cancel", size: iconSize })
+          }
+        ),
+        showSearchIcon && searchIconPosition === "right" && (!showClearButton || !value) && /* @__PURE__ */ jsxRuntime.jsx(
+          "button",
+          {
+            type: "button",
+            onClick: handleSearchClick,
+            disabled,
+            style: searchIconStyles,
+            tabIndex: -1,
+            "aria-label": "Search",
+            children: loading ? /* @__PURE__ */ jsxRuntime.jsx("div", { style: loadingStyles, children: /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "Refresh", size: iconSize }) }) : searchIcon ? searchIcon : /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "Search", size: iconSize })
+          }
+        )
+      ]
+    }
   );
 });
 Search.displayName = "Search";
@@ -8301,9 +8419,9 @@ var handleFileInputChange = (event, accept, maxSize, maxFiles, multiple = false)
   return { validFiles, errors };
 };
 var useDragAndDrop = (onFilesChange, onError, accept, maxSize, maxFiles, multiple = false, disabled = false) => {
-  const [isDragActive, setIsDragActive] = React22__default.default.useState(false);
-  const dragCounter = React22__default.default.useRef(0);
-  const handleDragEnter = React22__default.default.useCallback((e) => {
+  const [isDragActive, setIsDragActive] = React21__default.default.useState(false);
+  const dragCounter = React21__default.default.useRef(0);
+  const handleDragEnter = React21__default.default.useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     if (disabled) return;
@@ -8312,7 +8430,7 @@ var useDragAndDrop = (onFilesChange, onError, accept, maxSize, maxFiles, multipl
       setIsDragActive(true);
     }
   }, [disabled]);
-  const handleDragLeave = React22__default.default.useCallback((e) => {
+  const handleDragLeave = React21__default.default.useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     if (disabled) return;
@@ -8321,13 +8439,13 @@ var useDragAndDrop = (onFilesChange, onError, accept, maxSize, maxFiles, multipl
       setIsDragActive(false);
     }
   }, [disabled]);
-  const handleDragOver = React22__default.default.useCallback((e) => {
+  const handleDragOver = React21__default.default.useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     if (disabled) return;
     e.dataTransfer.dropEffect = "copy";
   }, [disabled]);
-  const handleDrop = React22__default.default.useCallback((e) => {
+  const handleDrop = React21__default.default.useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     if (disabled) return;
@@ -8374,9 +8492,7 @@ var createFilePickerAccessibilityProps = (id, disabled, error, accept, multiple)
     "aria-label": `File upload area.${acceptDescription}${multipleDescription} Click to browse or drag and drop files here.`
   };
 };
-
-// src/app/components/atoms/FilePicker/FilePicker.tsx
-var FilePicker = React22.forwardRef((allProps, ref) => {
+var FilePicker = React21.forwardRef((allProps, ref) => {
   const [formProps, componentProps] = extractFormProps(allProps);
   const {
     color = UNIVERSAL_DEFAULTS.color,
@@ -8429,15 +8545,15 @@ var FilePicker = React22.forwardRef((allProps, ref) => {
   if (!cssVars) {
     return null;
   }
-  const [internalFiles, setInternalFiles] = React22__default.default.useState([]);
-  const [internalError, setInternalError] = React22__default.default.useState("");
-  const fileInputRef = React22.useRef(null);
-  const filePickerId = React22__default.default.useMemo(() => id || generateFilePickerId(), [id]);
+  const [internalFiles, setInternalFiles] = React21__default.default.useState([]);
+  const [internalError, setInternalError] = React21__default.default.useState("");
+  const fileInputRef = React21.useRef(null);
+  const filePickerId = React21__default.default.useMemo(() => id || generateFilePickerId(), [id]);
   const currentFiles = files !== void 0 ? files : internalFiles;
   const setCurrentFiles = files !== void 0 ? (newFiles) => onFilesChange == null ? void 0 : onFilesChange(newFiles) : setInternalFiles;
   const currentError = errorText || internalError;
   const isError = error || Boolean(currentError);
-  React22.useImperativeHandle(ref, () => ({
+  React21.useImperativeHandle(ref, () => ({
     clear: () => {
       setCurrentFiles([]);
       setInternalError("");
@@ -8532,137 +8648,152 @@ var FilePicker = React22.forwardRef((allProps, ref) => {
     accept,
     multiple
   );
-  return /* @__PURE__ */ React22__default.default.createElement(
+  return /* @__PURE__ */ jsxRuntime.jsxs(
     "div",
     {
       className,
       style: __spreadValues(__spreadValues({}, createFilePickerContainerStyles(shape, width, height, animationsEnabled, rounded)), style),
-      "data-testid": dataTestId
-    },
-    /* @__PURE__ */ React22__default.default.createElement(
-      "div",
-      __spreadValues(__spreadProps(__spreadValues(__spreadValues({}, dragProps), accessibilityProps), {
-        onClick: handleDropZoneClick,
-        onKeyDown: handleKeyDown6,
-        style: getFilePickerDropZoneStyles(
-          color,
-          customColor,
-          variant,
-          size,
-          shape,
-          disabled,
-          isError,
-          isDragActive,
-          animationsEnabled,
-          cssVars,
-          rounded
-        )
-      }), restProps),
-      /* @__PURE__ */ React22__default.default.createElement("div", { style: getIconStyles2(size) }, icon || /* @__PURE__ */ React22__default.default.createElement(
-        Icon,
-        {
-          name: "CloudUpload",
-          size: "lg"
-        }
-      )),
-      /* @__PURE__ */ React22__default.default.createElement("div", { style: getUploadTextStyles(size) }, isDragActive ? "Drop files here" : uploadText || "Drop files here or click to browse"),
-      subText && /* @__PURE__ */ React22__default.default.createElement("div", { style: getSubTextStyles(size, cssVars) }, subText)
-    ),
-    helperText && !isError && /* @__PURE__ */ React22__default.default.createElement(
-      "div",
-      {
-        id: `${filePickerId}-description`,
-        style: getHelperTextStyles(size, disabled, false, cssVars)
-      },
-      helperText
-    ),
-    /* @__PURE__ */ React22__default.default.createElement(
-      "input",
-      {
-        ref: fileInputRef,
-        type: "file",
-        id: filePickerId,
-        multiple,
-        accept,
-        onChange: handleInputChange,
-        style: getHiddenInputStyles(),
-        tabIndex: -1,
-        "aria-hidden": "true"
-      }
-    ),
-    isError && /* @__PURE__ */ React22__default.default.createElement(
-      "div",
-      {
-        id: `${filePickerId}-error`,
-        style: getHelperTextStyles(size, disabled, true, cssVars),
-        role: "alert",
-        "aria-live": "polite"
-      },
-      /* @__PURE__ */ React22__default.default.createElement(Icon, { name: "WarningCircle", size: "sm", style: { marginRight: "6px" } }),
-      currentError
-    ),
-    showFileList && currentFiles.length > 0 && /* @__PURE__ */ React22__default.default.createElement("div", { style: getFileListStyles() }, currentFiles.map((file, index) => /* @__PURE__ */ React22__default.default.createElement(
-      "div",
-      {
-        key: `${file.name}-${file.size}-${index}`,
-        style: getFileItemStyles(
-          color,
-          customColor,
-          variant,
-          size,
-          shape,
-          disabled,
-          animationsEnabled,
-          cssVars,
-          rounded
-        )
-      },
-      /* @__PURE__ */ React22__default.default.createElement("div", { style: getFileInfoStyles() }, /* @__PURE__ */ React22__default.default.createElement(
-        Icon,
-        {
-          name: "Attachment",
-          size: "sm",
-          style: {
-            marginRight: "8px",
-            flexShrink: 0
-          }
-        }
-      ), /* @__PURE__ */ React22__default.default.createElement("div", { style: {
-        flex: 1,
-        minWidth: 0,
-        display: "flex",
-        flexDirection: "column"
-      } }, /* @__PURE__ */ React22__default.default.createElement("span", { style: getFileNameStyles() }, file.name), /* @__PURE__ */ React22__default.default.createElement("span", { style: getFileSizeStyles(cssVars) }, formatFileSize(file.size)))),
-      /* @__PURE__ */ React22__default.default.createElement(
-        Button,
-        {
-          variant: "ghost",
-          size: "sm",
-          color: variant === "outline" || variant === "solid" ? "custom" : color,
-          customColor: variant === "outline" || variant === "solid" ? cssVars.foreground : void 0,
-          onClick: (e) => {
-            e.stopPropagation();
-            handleRemoveFile(index);
-          },
-          "aria-label": `Remove ${file.name}`,
-          disabled,
-          animate: animationsEnabled,
-          style: {
-            minWidth: "auto",
-            padding: "4px",
-            borderRadius: "50%",
-            aspectRatio: "1"
-          }
-        },
-        /* @__PURE__ */ React22__default.default.createElement(
-          Icon,
+      "data-testid": dataTestId,
+      children: [
+        /* @__PURE__ */ jsxRuntime.jsxs(
+          "div",
+          __spreadProps(__spreadValues(__spreadProps(__spreadValues(__spreadValues({}, dragProps), accessibilityProps), {
+            onClick: handleDropZoneClick,
+            onKeyDown: handleKeyDown6,
+            style: getFilePickerDropZoneStyles(
+              color,
+              customColor,
+              variant,
+              size,
+              shape,
+              disabled,
+              isError,
+              isDragActive,
+              animationsEnabled,
+              cssVars,
+              rounded
+            )
+          }), restProps), {
+            children: [
+              /* @__PURE__ */ jsxRuntime.jsx("div", { style: getIconStyles2(size), children: icon || /* @__PURE__ */ jsxRuntime.jsx(
+                Icon,
+                {
+                  name: "CloudUpload",
+                  size: "lg"
+                }
+              ) }),
+              /* @__PURE__ */ jsxRuntime.jsx("div", { style: getUploadTextStyles(size), children: isDragActive ? "Drop files here" : uploadText || "Drop files here or click to browse" }),
+              subText && /* @__PURE__ */ jsxRuntime.jsx("div", { style: getSubTextStyles(size, cssVars), children: subText })
+            ]
+          })
+        ),
+        helperText && !isError && /* @__PURE__ */ jsxRuntime.jsx(
+          "div",
           {
-            name: "Xmark",
-            size: "sm"
+            id: `${filePickerId}-description`,
+            style: getHelperTextStyles(size, disabled, false, cssVars),
+            children: helperText
           }
-        )
-      )
-    )))
+        ),
+        /* @__PURE__ */ jsxRuntime.jsx(
+          "input",
+          {
+            ref: fileInputRef,
+            type: "file",
+            id: filePickerId,
+            multiple,
+            accept,
+            onChange: handleInputChange,
+            style: getHiddenInputStyles(),
+            tabIndex: -1,
+            "aria-hidden": "true"
+          }
+        ),
+        isError && /* @__PURE__ */ jsxRuntime.jsxs(
+          "div",
+          {
+            id: `${filePickerId}-error`,
+            style: getHelperTextStyles(size, disabled, true, cssVars),
+            role: "alert",
+            "aria-live": "polite",
+            children: [
+              /* @__PURE__ */ jsxRuntime.jsx(Icon, { name: "WarningCircle", size: "sm", style: { marginRight: "6px" } }),
+              currentError
+            ]
+          }
+        ),
+        showFileList && currentFiles.length > 0 && /* @__PURE__ */ jsxRuntime.jsx("div", { style: getFileListStyles(), children: currentFiles.map((file, index) => /* @__PURE__ */ jsxRuntime.jsxs(
+          "div",
+          {
+            style: getFileItemStyles(
+              color,
+              customColor,
+              variant,
+              size,
+              shape,
+              disabled,
+              animationsEnabled,
+              cssVars,
+              rounded
+            ),
+            children: [
+              /* @__PURE__ */ jsxRuntime.jsxs("div", { style: getFileInfoStyles(), children: [
+                /* @__PURE__ */ jsxRuntime.jsx(
+                  Icon,
+                  {
+                    name: "Attachment",
+                    size: "sm",
+                    style: {
+                      marginRight: "8px",
+                      flexShrink: 0
+                    }
+                  }
+                ),
+                /* @__PURE__ */ jsxRuntime.jsxs("div", { style: {
+                  flex: 1,
+                  minWidth: 0,
+                  display: "flex",
+                  flexDirection: "column"
+                }, children: [
+                  /* @__PURE__ */ jsxRuntime.jsx("span", { style: getFileNameStyles(), children: file.name }),
+                  /* @__PURE__ */ jsxRuntime.jsx("span", { style: getFileSizeStyles(cssVars), children: formatFileSize(file.size) })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxRuntime.jsx(
+                Button,
+                {
+                  variant: "ghost",
+                  size: "sm",
+                  color: variant === "outline" || variant === "solid" ? "custom" : color,
+                  customColor: variant === "outline" || variant === "solid" ? cssVars.foreground : void 0,
+                  onClick: (e) => {
+                    e.stopPropagation();
+                    handleRemoveFile(index);
+                  },
+                  "aria-label": `Remove ${file.name}`,
+                  disabled,
+                  animate: animationsEnabled,
+                  style: {
+                    minWidth: "auto",
+                    padding: "4px",
+                    borderRadius: "50%",
+                    aspectRatio: "1"
+                  },
+                  children: /* @__PURE__ */ jsxRuntime.jsx(
+                    Icon,
+                    {
+                      name: "Xmark",
+                      size: "sm"
+                    }
+                  )
+                }
+              )
+            ]
+          },
+          `${file.name}-${file.size}-${index}`
+        )) })
+      ]
+    }
   );
 });
 FilePicker.displayName = "FilePicker";
@@ -9012,9 +9143,7 @@ var getAriaAttributes = (props) => {
     "aria-labelledby": labelledBy || void 0
   };
 };
-
-// src/app/components/atoms/RadioButton/RadioButton.tsx
-var RadioButton = React22.forwardRef((allProps, ref) => {
+var RadioButton = React21.forwardRef((allProps, ref) => {
   var _b;
   const [formProps, componentProps] = extractFormProps(allProps);
   const {
@@ -9058,17 +9187,17 @@ var RadioButton = React22.forwardRef((allProps, ref) => {
   const cssVars = useCSSVariables();
   const { settings } = useSettings();
   const animationsEnabled = ((_b = settings.appearance.animations) != null ? _b : true) && animate;
-  const generatedId = React22.useId();
+  const generatedId = React21.useId();
   const id = providedId || generatedId;
   validateRadioButtonProps({ name, value, checked, defaultChecked });
-  const [internalChecked, setInternalChecked] = React22.useState(defaultChecked);
-  const [focused, setFocused] = React22.useState(false);
+  const [internalChecked, setInternalChecked] = React21.useState(defaultChecked);
+  const [focused, setFocused] = React21.useState(false);
   const isControlled = checked !== void 0;
   const isChecked = isControlled ? checked : internalChecked;
   const isError = getValidationState(Boolean(error), required, isChecked);
   const finalShape = rounded !== void 0 ? rounded ? "pill" : "round" : shape;
-  const inputRef = React22.useRef(null);
-  React22.useImperativeHandle(ref, () => ({
+  const inputRef = React21.useRef(null);
+  React21.useImperativeHandle(ref, () => ({
     focus: () => {
       var _a2;
       return (_a2 = inputRef.current) == null ? void 0 : _a2.focus();
@@ -9169,55 +9298,63 @@ var RadioButton = React22.forwardRef((allProps, ref) => {
     labelledBy: label ? `${id}-label` : void 0
   });
   const combinedStyles = __spreadValues(__spreadValues({}, containerStyles), style);
-  return /* @__PURE__ */ React22__default.default.createElement(
+  return /* @__PURE__ */ jsxRuntime.jsxs(
     "div",
     {
       className,
       style: combinedStyles,
-      "data-testid": dataTestId
-    },
-    header && /* @__PURE__ */ React22__default.default.createElement(
-      "div",
-      {
-        id: `${id}-header`,
-        style: headerStyles,
-        onClick: handleContentClick
-      },
-      header
-    ),
-    /* @__PURE__ */ React22__default.default.createElement("div", { style: {
-      position: "relative",
-      display: "flex",
-      alignItems: "center",
-      gap: "4px"
-      // 4px spacing between radio button and label
-    } }, /* @__PURE__ */ React22__default.default.createElement("div", { style: { position: "relative" } }, /* @__PURE__ */ React22__default.default.createElement(
-      "input",
-      __spreadValues(__spreadValues({
-        ref: inputRef,
-        type: "radio",
-        id,
-        name,
-        value,
-        checked: isChecked,
-        onChange: handleChange,
-        onFocus: handleFocus,
-        onBlur: handleBlur,
-        disabled,
-        required,
-        "aria-label": ariaLabel,
-        style: hiddenInputStyles
-      }, ariaAttributes), rest)
-    ), /* @__PURE__ */ React22__default.default.createElement("div", { style: circleStyles, onClick: handleCircleClick }, isChecked && /* @__PURE__ */ React22__default.default.createElement("div", { style: dotStyles }))), label && /* @__PURE__ */ React22__default.default.createElement(
-      "label",
-      {
-        id: `${id}-label`,
-        htmlFor: id,
-        style: labelStyles,
-        onClick: handleContentClick
-      },
-      label
-    ))
+      "data-testid": dataTestId,
+      children: [
+        header && /* @__PURE__ */ jsxRuntime.jsx(
+          "div",
+          {
+            id: `${id}-header`,
+            style: headerStyles,
+            onClick: handleContentClick,
+            children: header
+          }
+        ),
+        /* @__PURE__ */ jsxRuntime.jsxs("div", { style: {
+          position: "relative",
+          display: "flex",
+          alignItems: "center",
+          gap: "4px"
+          // 4px spacing between radio button and label
+        }, children: [
+          /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { position: "relative" }, children: [
+            /* @__PURE__ */ jsxRuntime.jsx(
+              "input",
+              __spreadValues(__spreadValues({
+                ref: inputRef,
+                type: "radio",
+                id,
+                name,
+                value,
+                checked: isChecked,
+                onChange: handleChange,
+                onFocus: handleFocus,
+                onBlur: handleBlur,
+                disabled,
+                required,
+                "aria-label": ariaLabel,
+                style: hiddenInputStyles
+              }, ariaAttributes), rest)
+            ),
+            /* @__PURE__ */ jsxRuntime.jsx("div", { style: circleStyles, onClick: handleCircleClick, children: isChecked && /* @__PURE__ */ jsxRuntime.jsx("div", { style: dotStyles }) })
+          ] }),
+          label && /* @__PURE__ */ jsxRuntime.jsx(
+            "label",
+            {
+              id: `${id}-label`,
+              htmlFor: id,
+              style: labelStyles,
+              onClick: handleContentClick,
+              children: label
+            }
+          )
+        ] })
+      ]
+    }
   );
 });
 RadioButton.displayName = "RadioButton";
@@ -9404,7 +9541,7 @@ var getWebKitScrollbarStyles = (color, customColor, variant, size, shape, orient
   const shapeStyles = getShapeStyles13(shape);
   const isHoverOnly = visibility === "hover";
   const isHidden = visibility === "hidden";
-  if (isHidden) {
+  if (isHidden || variant === "invisible") {
     return {
       "&::-webkit-scrollbar": {
         display: "none"
@@ -9445,16 +9582,6 @@ var getWebKitScrollbarStyles = (color, customColor, variant, size, shape, orient
           buttonColor: colors.main,
           backdropFilter: "blur(10px)",
           webkitBackdropFilter: "blur(10px)"
-        };
-      case "invisible":
-        return {
-          thumb: "transparent",
-          thumbHover: "transparent",
-          track: "transparent",
-          trackBorder: "none",
-          border: "none",
-          showButtons: false,
-          buttonColor: "transparent"
         };
       case "outline":
       default:
@@ -9501,17 +9628,26 @@ var getWebKitScrollbarStyles = (color, customColor, variant, size, shape, orient
       border: `${Math.max(2, Math.floor((scrollbarThickness - sizeConfig.thumbThickness) / 2))}px solid transparent`,
       backgroundClip: "padding-box",
       transition: animationsEnabled ? "background-color var(--duration-fast) var(--animation-smooth), opacity var(--duration-fast) var(--animation-smooth)" : "none",
-      opacity: variant === "invisible" ? 0 : isHoverOnly ? 0 : 1,
-      cursor: disabled ? "not-allowed" : variant === "invisible" ? "default" : "pointer",
+      // visibility logic: 'always' = opacity 1, 'hover' = opacity 0 until hover
+      opacity: isHoverOnly ? 0 : 1,
+      cursor: disabled ? "not-allowed" : "grab",
       backdropFilter: variantColors.backdropFilter || "none",
       WebkitBackdropFilter: variantColors.webkitBackdropFilter || "none",
       boxShadow: variant === "glassmorphic" ? `0 2px 4px ${cssVars == null ? void 0 : cssVars.shadow}20` : "none"
     },
     // Thumb hover state
     "&::-webkit-scrollbar-thumb:hover": {
-      backgroundColor: disabled ? variantColors.thumb : variant === "invisible" ? "transparent" : variantColors.thumbHover,
-      opacity: variant === "invisible" ? 0 : 1,
+      backgroundColor: disabled ? variantColors.thumb : variantColors.thumbHover,
+      opacity: 1,
+      cursor: disabled ? "not-allowed" : "grab",
       boxShadow: variant === "glassmorphic" ? `0 4px 8px ${cssVars == null ? void 0 : cssVars.shadow}30` : "none"
+    },
+    // Thumb active state (while dragging)
+    "&::-webkit-scrollbar-thumb:active": {
+      backgroundColor: disabled ? variantColors.thumb : variantColors.thumbHover,
+      cursor: disabled ? "not-allowed" : "grabbing",
+      opacity: 1,
+      boxShadow: variant === "glassmorphic" ? `0 6px 12px ${cssVars == null ? void 0 : cssVars.shadow}40` : "none"
     },
     // Corner where scrollbars meet
     "&::-webkit-scrollbar-corner": {
@@ -9833,8 +9969,6 @@ var throttleScrollEvent = (func, delay = 16) => {
     }
   });
 };
-
-// src/app/components/atoms/Scrollbar/Scrollbar.tsx
 var createWebkitScrollbarCSS = (uniqueId, webkitStyles) => {
   let css = "";
   let hoverStyles = null;
@@ -9874,7 +10008,7 @@ var cleanupCSS = (uniqueId) => {
     style.remove();
   }
 };
-var Scrollbar = React22.forwardRef((allProps, ref) => {
+var Scrollbar = React21.forwardRef((allProps, ref) => {
   var _b;
   const [containerProps, componentProps] = extractContainerProps(allProps);
   const {
@@ -9928,20 +10062,19 @@ var Scrollbar = React22.forwardRef((allProps, ref) => {
   ]);
   const cssVars = useCSSVariables();
   const { settings } = useSettings();
-  const uniqueId = React22.useMemo(
+  const uniqueId = React21.useMemo(
     () => id || `scrollbar-${Math.random().toString(36).substr(2, 9)}`,
     [id]
   );
   const animationsEnabled = ((_b = settings.appearance.animations) != null ? _b : true) && animate;
   validateScrollbarProps({ height, width, orientation });
-  const isStartBothCase = alignment === "start" && orientation === "both";
-  const containerRef = React22.useRef(null);
-  const contentRef = React22.useRef(null);
-  const verticalTrackRef = React22.useRef(null);
-  const verticalThumbRef = React22.useRef(null);
-  const horizontalTrackRef = React22.useRef(null);
-  const horizontalThumbRef = React22.useRef(null);
-  const [scrollState, setScrollState] = React22.useState({
+  const containerRef = React21.useRef(null);
+  const contentRef = React21.useRef(null);
+  const verticalTrackRef = React21.useRef(null);
+  const verticalThumbRef = React21.useRef(null);
+  const horizontalTrackRef = React21.useRef(null);
+  const horizontalThumbRef = React21.useRef(null);
+  const [scrollState, setScrollState] = React21.useState({
     scrollTop: 0,
     scrollLeft: 0,
     scrollHeight: 0,
@@ -9949,11 +10082,11 @@ var Scrollbar = React22.forwardRef((allProps, ref) => {
     clientHeight: 0,
     clientWidth: 0
   });
-  const [isDragging, setIsDragging] = React22.useState(false);
-  const [dragStart, setDragStart] = React22.useState({ x: 0, y: 0, scrollTop: 0, scrollLeft: 0 });
-  const [isScrolling, setIsScrolling] = React22.useState(false);
-  const [scrollTimeout, setScrollTimeout] = React22.useState(null);
-  const handleThumbMouseDown = React22.useCallback((e, orientation2) => {
+  const [isDragging, setIsDragging] = React21.useState(false);
+  const [dragStart, setDragStart] = React21.useState({ x: 0, y: 0, scrollTop: 0, scrollLeft: 0 });
+  const [isScrolling, setIsScrolling] = React21.useState(false);
+  const [scrollTimeout, setScrollTimeout] = React21.useState(null);
+  const handleThumbMouseDown = React21.useCallback((e, orientation2) => {
     e.preventDefault();
     e.stopPropagation();
     if (!containerRef.current) return;
@@ -9965,7 +10098,7 @@ var Scrollbar = React22.forwardRef((allProps, ref) => {
       scrollLeft: containerRef.current.scrollLeft
     });
   }, []);
-  React22.useEffect(() => {
+  React21.useEffect(() => {
     if (!isDragging) return;
     let animationFrameId;
     const handleMouseMove = (e) => {
@@ -10013,7 +10146,7 @@ var Scrollbar = React22.forwardRef((allProps, ref) => {
       cancelAnimationFrame(animationFrameId);
     };
   }, [isDragging, dragStart, orientation, scrollState]);
-  const updateScrollState = React22.useCallback(() => {
+  const updateScrollState = React21.useCallback(() => {
     if (!containerRef.current) return;
     const element = containerRef.current;
     setScrollState({
@@ -10025,7 +10158,7 @@ var Scrollbar = React22.forwardRef((allProps, ref) => {
       clientWidth: element.clientWidth
     });
   }, []);
-  const throttledScrollHandler = React22.useCallback(
+  const throttledScrollHandler = React21.useCallback(
     throttleScrollEvent((event) => {
       updateScrollState();
       onScroll == null ? void 0 : onScroll(event);
@@ -10039,7 +10172,7 @@ var Scrollbar = React22.forwardRef((allProps, ref) => {
     }, 16),
     [updateScrollState, onScroll, onReachTop, onReachBottom, onReachLeft, onReachRight]
   );
-  const handleScrollStart = React22.useCallback(() => {
+  const handleScrollStart = React21.useCallback(() => {
     if (!isScrolling) {
       setIsScrolling(true);
       onScrollStart == null ? void 0 : onScrollStart();
@@ -10053,14 +10186,14 @@ var Scrollbar = React22.forwardRef((allProps, ref) => {
     }, 150);
     setScrollTimeout(timeout);
   }, [isScrolling, scrollTimeout, onScrollStart, onScrollEnd]);
-  const handleScroll = React22.useCallback(
+  const handleScroll = React21.useCallback(
     (event) => {
       handleScrollStart();
       throttledScrollHandler(event);
     },
     [handleScrollStart, throttledScrollHandler]
   );
-  React22.useImperativeHandle(ref, () => ({
+  React21.useImperativeHandle(ref, () => ({
     scrollTo: ({ top, left, behavior = "smooth" }) => {
       if (containerRef.current) {
         containerRef.current.scrollTo({ top, left, behavior });
@@ -10074,10 +10207,10 @@ var Scrollbar = React22.forwardRef((allProps, ref) => {
       left: scrollState.scrollLeft
     })
   }));
-  React22.useEffect(() => {
+  React21.useEffect(() => {
     updateScrollState();
   }, [updateScrollState, children]);
-  React22.useEffect(() => {
+  React21.useEffect(() => {
     if (customScrollPosition && containerRef.current) {
       const { x, y } = customScrollPosition;
       if (typeof y === "number") {
@@ -10231,230 +10364,241 @@ var Scrollbar = React22.forwardRef((allProps, ref) => {
     animationsEnabled,
     cssVars
   );
-  React22.useEffect(() => {
-    if (supportsWebKitScrollbar()) {
-      let css = createWebkitScrollbarCSS(uniqueId, webkitStyles);
-      if (css) {
-        injectCSS(uniqueId, css);
-      }
+  const webkitCSS = React21.useMemo(() => {
+    if (!supportsWebKitScrollbar()) return "";
+    return createWebkitScrollbarCSS(uniqueId, webkitStyles);
+  }, [uniqueId, color, customColor, variant, size, shape, orientation, visibility, alignment, disabled, animationsEnabled, cssVars]);
+  React21.useEffect(() => {
+    const isWebKitSupported = supportsWebKitScrollbar();
+    if (isWebKitSupported && webkitCSS) {
+      injectCSS(uniqueId, webkitCSS);
     }
     return () => {
       cleanupCSS(uniqueId);
     };
-  }, [uniqueId, color, customColor, variant, size, shape, orientation, visibility, alignment, disabled, animationsEnabled, cssVars, isStartBothCase]);
+  }, [uniqueId, webkitCSS]);
   const ariaAttributes = getScrollbarAriaAttributes(
     orientation,
     orientation === "vertical" ? scrollState.scrollTop : scrollState.scrollLeft,
     orientation === "vertical" ? scrollState.scrollHeight - scrollState.clientHeight : scrollState.scrollWidth - scrollState.clientWidth,
     Boolean(disabled)
   );
-  return /* @__PURE__ */ React22__default.default.createElement(
+  return /* @__PURE__ */ jsxRuntime.jsxs(
     "div",
-    __spreadValues(__spreadValues({
+    __spreadProps(__spreadValues(__spreadValues({
       className,
       style: combinedStyles,
       id: uniqueId
-    }, ariaAttributes), rest),
-    /* @__PURE__ */ React22__default.default.createElement(
-      "div",
-      {
-        ref: containerRef,
-        style: contentStyles,
-        onScroll: handleScroll,
-        tabIndex: disabled ? -1 : 0
-      },
-      /* @__PURE__ */ React22__default.default.createElement("div", { ref: contentRef, style: contentDirectionStyles }, children)
-    ),
-    !supportsWebKitScrollbar() && needsVerticalScrollbar && (orientation === "vertical" || orientation === "both") && variant !== "invisible" && /* @__PURE__ */ React22__default.default.createElement(
-      "div",
-      {
-        ref: verticalTrackRef,
-        style: verticalTrackStyles,
-        onClick: (e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          const clickY = e.clientY - rect.top;
-          const trackHeight = rect.height;
-          const scrollPercentage = clickY / trackHeight;
-          const newScrollTop = scrollPercentage * (scrollState.scrollHeight - scrollState.clientHeight);
-          if (containerRef.current) {
-            containerRef.current.scrollTop = newScrollTop;
+    }, ariaAttributes), rest), {
+      children: [
+        /* @__PURE__ */ jsxRuntime.jsx(
+          "div",
+          {
+            ref: containerRef,
+            style: contentStyles,
+            onScroll: handleScroll,
+            tabIndex: disabled ? -1 : 0,
+            children: /* @__PURE__ */ jsxRuntime.jsx("div", { ref: contentRef, style: contentDirectionStyles, children })
           }
-        }
-      },
-      /* @__PURE__ */ React22__default.default.createElement(
-        "div",
-        {
-          ref: verticalThumbRef,
-          style: verticalThumbStyles,
-          onMouseDown: (e) => handleThumbMouseDown(e, "vertical")
-        }
-      )
-    ),
-    !supportsWebKitScrollbar() && needsHorizontalScrollbar && (orientation === "horizontal" || orientation === "both") && variant !== "invisible" && /* @__PURE__ */ React22__default.default.createElement(
-      "div",
-      {
-        ref: horizontalTrackRef,
-        style: horizontalTrackStyles,
-        onClick: (e) => {
-          const rect = e.currentTarget.getBoundingClientRect();
-          const clickX = e.clientX - rect.left;
-          const trackWidth = rect.width;
-          const scrollPercentage = clickX / trackWidth;
-          const newScrollLeft = scrollPercentage * (scrollState.scrollWidth - scrollState.clientWidth);
-          if (containerRef.current) {
-            containerRef.current.scrollLeft = newScrollLeft;
-          }
-        }
-      },
-      /* @__PURE__ */ React22__default.default.createElement(
-        "div",
-        {
-          ref: horizontalThumbRef,
-          style: horizontalThumbStyles,
-          onMouseDown: (e) => handleThumbMouseDown(e, "horizontal")
-        }
-      )
-    ),
-    showIndicators && needsVerticalScrollbar && (orientation === "vertical" || orientation === "both") && variant !== "invisible" && /* @__PURE__ */ React22__default.default.createElement(React22__default.default.Fragment, null, /* @__PURE__ */ React22__default.default.createElement(
-      "div",
-      {
-        style: getScrollIndicatorStyles(
-          "vertical",
-          color,
-          customColor,
-          size,
-          "top",
-          scrollState.scrollTop > 0,
-          Boolean(disabled),
-          animationsEnabled,
-          cssVars,
-          alignment,
-          variant
         ),
-        onClick: () => {
-          if (containerRef.current && !disabled) {
-            containerRef.current.scrollTop = Math.max(0, scrollState.scrollTop - 100);
+        !supportsWebKitScrollbar() && needsVerticalScrollbar && (orientation === "vertical" || orientation === "both") && variant !== "invisible" && /* @__PURE__ */ jsxRuntime.jsx(
+          "div",
+          {
+            ref: verticalTrackRef,
+            style: verticalTrackStyles,
+            onClick: (e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const clickY = e.clientY - rect.top;
+              const trackHeight = rect.height;
+              const scrollPercentage = clickY / trackHeight;
+              const newScrollTop = scrollPercentage * (scrollState.scrollHeight - scrollState.clientHeight);
+              if (containerRef.current) {
+                containerRef.current.scrollTop = newScrollTop;
+              }
+            },
+            children: /* @__PURE__ */ jsxRuntime.jsx(
+              "div",
+              {
+                ref: verticalThumbRef,
+                style: verticalThumbStyles,
+                onMouseDown: (e) => handleThumbMouseDown(e, "vertical")
+              }
+            )
           }
-        }
-      },
-      /* @__PURE__ */ React22__default.default.createElement(
-        Icon,
-        {
-          name: "NavArrowUpSolid",
-          size: size === "xs" ? 12 : size === "sm" ? 14 : size === "md" ? 16 : size === "lg" ? 18 : 20,
-          style: {
-            transform: "rotate(0deg)",
-            opacity: scrollState.scrollTop > 0 ? 1 : 0.3
-          }
-        }
-      )
-    ), /* @__PURE__ */ React22__default.default.createElement(
-      "div",
-      {
-        style: getScrollIndicatorStyles(
-          "vertical",
-          color,
-          customColor,
-          size,
-          "bottom",
-          scrollState.scrollTop < scrollState.scrollHeight - scrollState.clientHeight,
-          Boolean(disabled),
-          animationsEnabled,
-          cssVars,
-          alignment,
-          variant
         ),
-        onClick: () => {
-          if (containerRef.current && !disabled) {
-            containerRef.current.scrollTop = Math.min(
-              scrollState.scrollHeight - scrollState.clientHeight,
-              scrollState.scrollTop + 100
-            );
+        !supportsWebKitScrollbar() && needsHorizontalScrollbar && (orientation === "horizontal" || orientation === "both") && variant !== "invisible" && /* @__PURE__ */ jsxRuntime.jsx(
+          "div",
+          {
+            ref: horizontalTrackRef,
+            style: horizontalTrackStyles,
+            onClick: (e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const clickX = e.clientX - rect.left;
+              const trackWidth = rect.width;
+              const scrollPercentage = clickX / trackWidth;
+              const newScrollLeft = scrollPercentage * (scrollState.scrollWidth - scrollState.clientWidth);
+              if (containerRef.current) {
+                containerRef.current.scrollLeft = newScrollLeft;
+              }
+            },
+            children: /* @__PURE__ */ jsxRuntime.jsx(
+              "div",
+              {
+                ref: horizontalThumbRef,
+                style: horizontalThumbStyles,
+                onMouseDown: (e) => handleThumbMouseDown(e, "horizontal")
+              }
+            )
           }
-        }
-      },
-      /* @__PURE__ */ React22__default.default.createElement(
-        Icon,
-        {
-          name: "NavArrowUpSolid",
-          size: size === "xs" ? 12 : size === "sm" ? 14 : size === "md" ? 16 : size === "lg" ? 18 : 20,
-          style: {
-            transform: "rotate(180deg)",
-            opacity: scrollState.scrollTop < scrollState.scrollHeight - scrollState.clientHeight ? 1 : 0.3
-          }
-        }
-      )
-    )),
-    showIndicators && needsHorizontalScrollbar && (orientation === "horizontal" || orientation === "both") && variant !== "invisible" && /* @__PURE__ */ React22__default.default.createElement(React22__default.default.Fragment, null, /* @__PURE__ */ React22__default.default.createElement(
-      "div",
-      {
-        style: getScrollIndicatorStyles(
-          "horizontal",
-          color,
-          customColor,
-          size,
-          "left",
-          scrollState.scrollLeft > 0,
-          Boolean(disabled),
-          animationsEnabled,
-          cssVars,
-          alignment,
-          variant
         ),
-        onClick: () => {
-          if (containerRef.current && !disabled) {
-            containerRef.current.scrollLeft = Math.max(0, scrollState.scrollLeft - 100);
-          }
-        }
-      },
-      /* @__PURE__ */ React22__default.default.createElement(
-        Icon,
-        {
-          name: "NavArrowUpSolid",
-          size: size === "xs" ? 12 : size === "sm" ? 14 : size === "md" ? 16 : size === "lg" ? 18 : 20,
-          style: {
-            transform: "rotate(-90deg)",
-            opacity: scrollState.scrollLeft > 0 ? 1 : 0.3
-          }
-        }
-      )
-    ), /* @__PURE__ */ React22__default.default.createElement(
-      "div",
-      {
-        style: getScrollIndicatorStyles(
-          "horizontal",
-          color,
-          customColor,
-          size,
-          "right",
-          scrollState.scrollLeft < scrollState.scrollWidth - scrollState.clientWidth,
-          Boolean(disabled),
-          animationsEnabled,
-          cssVars,
-          alignment,
-          variant
-        ),
-        onClick: () => {
-          if (containerRef.current && !disabled) {
-            containerRef.current.scrollLeft = Math.min(
-              scrollState.scrollWidth - scrollState.clientWidth,
-              scrollState.scrollLeft + 100
-            );
-          }
-        }
-      },
-      /* @__PURE__ */ React22__default.default.createElement(
-        Icon,
-        {
-          name: "NavArrowUpSolid",
-          size: size === "xs" ? 12 : size === "sm" ? 14 : size === "md" ? 16 : size === "lg" ? 18 : 20,
-          style: {
-            transform: "rotate(90deg)",
-            opacity: scrollState.scrollLeft < scrollState.scrollWidth - scrollState.clientWidth ? 1 : 0.3
-          }
-        }
-      )
-    ))
+        showIndicators && needsVerticalScrollbar && (orientation === "vertical" || orientation === "both") && variant !== "invisible" && /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+          /* @__PURE__ */ jsxRuntime.jsx(
+            "div",
+            {
+              style: getScrollIndicatorStyles(
+                "vertical",
+                color,
+                customColor,
+                size,
+                "top",
+                scrollState.scrollTop > 0,
+                Boolean(disabled),
+                animationsEnabled,
+                cssVars,
+                alignment,
+                variant
+              ),
+              onClick: () => {
+                if (containerRef.current && !disabled) {
+                  containerRef.current.scrollTop = Math.max(0, scrollState.scrollTop - 100);
+                }
+              },
+              children: /* @__PURE__ */ jsxRuntime.jsx(
+                Icon,
+                {
+                  name: "NavArrowUpSolid",
+                  size: size === "xs" ? 12 : size === "sm" ? 14 : size === "md" ? 16 : size === "lg" ? 18 : 20,
+                  style: {
+                    transform: "rotate(0deg)",
+                    opacity: scrollState.scrollTop > 0 ? 1 : 0.3
+                  }
+                }
+              )
+            }
+          ),
+          /* @__PURE__ */ jsxRuntime.jsx(
+            "div",
+            {
+              style: getScrollIndicatorStyles(
+                "vertical",
+                color,
+                customColor,
+                size,
+                "bottom",
+                scrollState.scrollTop < scrollState.scrollHeight - scrollState.clientHeight,
+                Boolean(disabled),
+                animationsEnabled,
+                cssVars,
+                alignment,
+                variant
+              ),
+              onClick: () => {
+                if (containerRef.current && !disabled) {
+                  containerRef.current.scrollTop = Math.min(
+                    scrollState.scrollHeight - scrollState.clientHeight,
+                    scrollState.scrollTop + 100
+                  );
+                }
+              },
+              children: /* @__PURE__ */ jsxRuntime.jsx(
+                Icon,
+                {
+                  name: "NavArrowUpSolid",
+                  size: size === "xs" ? 12 : size === "sm" ? 14 : size === "md" ? 16 : size === "lg" ? 18 : 20,
+                  style: {
+                    transform: "rotate(180deg)",
+                    opacity: scrollState.scrollTop < scrollState.scrollHeight - scrollState.clientHeight ? 1 : 0.3
+                  }
+                }
+              )
+            }
+          )
+        ] }),
+        showIndicators && needsHorizontalScrollbar && (orientation === "horizontal" || orientation === "both") && variant !== "invisible" && /* @__PURE__ */ jsxRuntime.jsxs(jsxRuntime.Fragment, { children: [
+          /* @__PURE__ */ jsxRuntime.jsx(
+            "div",
+            {
+              style: getScrollIndicatorStyles(
+                "horizontal",
+                color,
+                customColor,
+                size,
+                "left",
+                scrollState.scrollLeft > 0,
+                Boolean(disabled),
+                animationsEnabled,
+                cssVars,
+                alignment,
+                variant
+              ),
+              onClick: () => {
+                if (containerRef.current && !disabled) {
+                  containerRef.current.scrollLeft = Math.max(0, scrollState.scrollLeft - 100);
+                }
+              },
+              children: /* @__PURE__ */ jsxRuntime.jsx(
+                Icon,
+                {
+                  name: "NavArrowUpSolid",
+                  size: size === "xs" ? 12 : size === "sm" ? 14 : size === "md" ? 16 : size === "lg" ? 18 : 20,
+                  style: {
+                    transform: "rotate(-90deg)",
+                    opacity: scrollState.scrollLeft > 0 ? 1 : 0.3
+                  }
+                }
+              )
+            }
+          ),
+          /* @__PURE__ */ jsxRuntime.jsx(
+            "div",
+            {
+              style: getScrollIndicatorStyles(
+                "horizontal",
+                color,
+                customColor,
+                size,
+                "right",
+                scrollState.scrollLeft < scrollState.scrollWidth - scrollState.clientWidth,
+                Boolean(disabled),
+                animationsEnabled,
+                cssVars,
+                alignment,
+                variant
+              ),
+              onClick: () => {
+                if (containerRef.current && !disabled) {
+                  containerRef.current.scrollLeft = Math.min(
+                    scrollState.scrollWidth - scrollState.clientWidth,
+                    scrollState.scrollLeft + 100
+                  );
+                }
+              },
+              children: /* @__PURE__ */ jsxRuntime.jsx(
+                Icon,
+                {
+                  name: "NavArrowUpSolid",
+                  size: size === "xs" ? 12 : size === "sm" ? 14 : size === "md" ? 16 : size === "lg" ? 18 : 20,
+                  style: {
+                    transform: "rotate(90deg)",
+                    opacity: scrollState.scrollLeft < scrollState.scrollWidth - scrollState.clientWidth ? 1 : 0.3
+                  }
+                }
+              )
+            }
+          )
+        ] })
+      ]
+    })
   );
 });
 Scrollbar.displayName = "Scrollbar";
@@ -10710,9 +10854,7 @@ var getLabelContainerStyles2 = (position) => ({
   flexDirection: "column",
   order: position === "left" ? -1 : 1
 });
-
-// src/app/components/atoms/Toggle/Toggle.tsx
-var Toggle = React22.forwardRef((allProps, ref) => {
+var Toggle = React21.forwardRef((allProps, ref) => {
   const _a = allProps, { onChange } = _a, propsForExtraction = __objRest(_a, ["onChange"]);
   const [formProps, componentProps] = extractFormProps(propsForExtraction);
   const {
@@ -10738,14 +10880,14 @@ var Toggle = React22.forwardRef((allProps, ref) => {
     labelPosition = "right"
   } = componentProps;
   const cssVars = useCSSVariables();
-  const generatedId = React22.useId();
+  const generatedId = React21.useId();
   const id = providedId || generatedId;
-  const [internalChecked, setInternalChecked] = React22.useState(defaultChecked);
-  const [focused, setFocused] = React22.useState(false);
+  const [internalChecked, setInternalChecked] = React21.useState(defaultChecked);
+  const [focused, setFocused] = React21.useState(false);
   const isControlled = checked !== void 0;
   const isChecked = isControlled ? checked : internalChecked;
-  const inputRef = React22.useRef(null);
-  React22.useImperativeHandle(ref, () => ({
+  const inputRef = React21.useRef(null);
+  React21.useImperativeHandle(ref, () => ({
     focus: () => {
       var _a2;
       return (_a2 = inputRef.current) == null ? void 0 : _a2.focus();
@@ -10792,75 +10934,80 @@ var Toggle = React22.forwardRef((allProps, ref) => {
   const renderLabelContent = () => {
     if (!label && !description) return null;
     if (description) {
-      return /* @__PURE__ */ React22__default.default.createElement("div", { style: getLabelContainerStyles2(labelPosition) }, label && /* @__PURE__ */ React22__default.default.createElement(
-        "label",
-        {
-          id: labelId,
-          htmlFor: id,
-          style: getLabelStyles3(size, disabled || false, labelPosition, cssVars)
-        },
-        label
-      ), /* @__PURE__ */ React22__default.default.createElement(
-        "span",
-        {
-          id: descriptionId,
-          style: getDescriptionStyles3(size, disabled || false, cssVars)
-        },
-        description
-      ));
+      return /* @__PURE__ */ jsxRuntime.jsxs("div", { style: getLabelContainerStyles2(labelPosition), children: [
+        label && /* @__PURE__ */ jsxRuntime.jsx(
+          "label",
+          {
+            id: labelId,
+            htmlFor: id,
+            style: getLabelStyles3(size, disabled || false, labelPosition, cssVars),
+            children: label
+          }
+        ),
+        /* @__PURE__ */ jsxRuntime.jsx(
+          "span",
+          {
+            id: descriptionId,
+            style: getDescriptionStyles3(size, disabled || false, cssVars),
+            children: description
+          }
+        )
+      ] });
     }
-    return /* @__PURE__ */ React22__default.default.createElement(
+    return /* @__PURE__ */ jsxRuntime.jsx(
       "label",
       {
         id: labelId,
         htmlFor: id,
-        style: getLabelStyles3(size, disabled || false, labelPosition, cssVars)
-      },
-      label
+        style: getLabelStyles3(size, disabled || false, labelPosition, cssVars),
+        children: label
+      }
     );
   };
-  return /* @__PURE__ */ React22__default.default.createElement(
+  return /* @__PURE__ */ jsxRuntime.jsxs(
     "div",
     {
       className,
       style: __spreadValues(__spreadValues({}, getToggleContainerStyles(size, disabled || false)), style),
-      onClick: handleContainerClick
-    },
-    /* @__PURE__ */ React22__default.default.createElement(
-      "input",
-      {
-        ref: inputRef,
-        type: "checkbox",
-        id,
-        name,
-        value,
-        checked: isChecked,
-        onChange: handleChange,
-        onFocus: handleFocus,
-        onBlur: handleBlur,
-        disabled,
-        required,
-        "aria-label": ariaLabel,
-        "aria-describedby": ariaDescribedByValue,
-        "aria-labelledby": labelId,
-        style: getHiddenInputStyles3()
-      }
-    ),
-    /* @__PURE__ */ React22__default.default.createElement(
-      "div",
-      {
-        role: "presentation",
-        style: getToggleTrackStyles(size, color, variant, isChecked, disabled || false, focused, cssVars)
-      },
-      /* @__PURE__ */ React22__default.default.createElement(
-        "div",
-        {
-          role: "presentation",
-          style: getBubbleStyles(size, color, isChecked, disabled || false, cssVars, variant)
-        }
-      )
-    ),
-    renderLabelContent()
+      onClick: handleContainerClick,
+      children: [
+        /* @__PURE__ */ jsxRuntime.jsx(
+          "input",
+          {
+            ref: inputRef,
+            type: "checkbox",
+            id,
+            name,
+            value,
+            checked: isChecked,
+            onChange: handleChange,
+            onFocus: handleFocus,
+            onBlur: handleBlur,
+            disabled,
+            required,
+            "aria-label": ariaLabel,
+            "aria-describedby": ariaDescribedByValue,
+            "aria-labelledby": labelId,
+            style: getHiddenInputStyles3()
+          }
+        ),
+        /* @__PURE__ */ jsxRuntime.jsx(
+          "div",
+          {
+            role: "presentation",
+            style: getToggleTrackStyles(size, color, variant, isChecked, disabled || false, focused, cssVars),
+            children: /* @__PURE__ */ jsxRuntime.jsx(
+              "div",
+              {
+                role: "presentation",
+                style: getBubbleStyles(size, color, isChecked, disabled || false, cssVars, variant)
+              }
+            )
+          }
+        ),
+        renderLabelContent()
+      ]
+    }
   );
 });
 Toggle.displayName = "Toggle";
@@ -11031,10 +11178,10 @@ var getVariantStyles10 = (variant, color, customColor, cssVars, error) => {
   switch (variant) {
     case "solid":
       return {
-        borderColor: colors.main,
-        // --{{color}}
-        backgroundColor: colors.main,
-        // --{{color}}
+        borderColor: colors.accent || colors.main,
+        // --{{color}}-accent or --{{color}}
+        backgroundColor: colors.accent || colors.main,
+        // --{{color}}-accent or --{{color}}
         borderWidth: "2px",
         borderStyle: "solid"
       };
@@ -11103,10 +11250,11 @@ var getSegmentStyles = (size, variant, color, customColor, shape, isSelected2, d
       return getCSSVar(cssVars, "mutedForeground", "#9ca3af");
     }
     if (variant === "solid") {
-      if (isSelected2) {
-        return colors.main;
+      if (hasIsometricAnimation) {
+        return colors.foreground;
+      } else {
+        return isSelected2 ? colors.main : colors.foreground;
       }
-      return getCSSVar(cssVars, "foreground", "#ffffff");
     }
     if (isSelected2) {
       return colors.main;
@@ -11147,8 +11295,8 @@ var getIndicatorStyles = (selectedIndex, itemCount, variant, color, customColor,
   const getIndicatorBackground = () => {
     switch (variant) {
       case "solid":
-        return colors.foreground;
-      // white --{{color}}-foreground
+        return hasIsometricAnimation ? colors.accent || colors.main : colors.foreground;
+      // white for default
       case "outline":
         return getCSSVar(cssVars, "background", "#ffffff");
       case "ghost":
@@ -11276,8 +11424,8 @@ var getIsometricIndicatorStyles = (color, variant, animationsEnabled) => {
     return __spreadProps(__spreadValues({}, baseStyles), {
       borderWidth: "2px",
       borderStyle: "solid",
-      borderColor: color.hover || color.main
-      // Match shadow color for consistency
+      borderColor: color.foreground
+      // White border for isometric solid variant
     });
   }
   return baseStyles;
@@ -11312,15 +11460,12 @@ var getIsometricShadowStyles2 = (color, variant, shape, size, animationsEnabled)
   };
   if (variant === "solid") {
     return __spreadProps(__spreadValues({}, baseStyles), {
-      backgroundColor: color.hover || color.main,
-      // Use darker hover color for better contrast
-      opacity: 0.85
-      // Slightly transparent for depth effect
+      backgroundColor: color.foreground
+      // White background for solid variant
     });
   } else {
     return __spreadProps(__spreadValues({}, baseStyles), {
       backgroundColor: color.main
-      // --{{color}} for outline variant
     });
   }
 };
@@ -11384,9 +11529,7 @@ var handleKeyboardNavigation = (event, currentIndex, itemsLength, onIndexChange,
     onIndexChange(newIndex);
   }
 };
-
-// src/app/components/atoms/SegmentedControl/SegmentedControl.tsx
-var SegmentedControl = React22.forwardRef((_a, ref) => {
+var SegmentedControl = React21.forwardRef((_a, ref) => {
   var _b = _a, {
     items,
     selectedIndex,
@@ -11445,16 +11588,19 @@ var SegmentedControl = React22.forwardRef((_a, ref) => {
   const animationsEnabled = animate;
   const useAnimationMode = animationsEnabled && animationMode !== "none";
   const hasIsometricAnimation = useAnimationMode && animationMode === "isometric" && variant !== "ghost" && variant !== "glassmorphic";
-  const id = React22.useId();
+  const id = React21.useId();
   validateSegmentedControlProps({ items, selectedIndex, defaultSelectedIndex });
-  const [internalSelectedIndex, setInternalSelectedIndex] = React22.useState(defaultSelectedIndex);
+  const [internalSelectedIndex, setInternalSelectedIndex] = React21.useState(defaultSelectedIndex);
   const isControlled = selectedIndex !== void 0;
   const currentSelectedIndex = isControlled ? selectedIndex : internalSelectedIndex;
-  const containerRef = React22.useRef(null);
-  const segmentRefs = React22.useRef([]);
-  const indicatorRef = React22.useRef(null);
-  const shadowRef = React22.useRef(null);
-  React22.useImperativeHandle(ref, () => ({
+  const [isDragging, setIsDragging] = React21.useState(false);
+  const dragStartXRef = React21.useRef(0);
+  const dragStartIndexRef = React21.useRef(0);
+  const containerRef = React21.useRef(null);
+  const segmentRefs = React21.useRef([]);
+  const indicatorRef = React21.useRef(null);
+  const shadowRef = React21.useRef(null);
+  React21.useImperativeHandle(ref, () => ({
     focus: () => {
       const selectedButton = segmentRefs.current[currentSelectedIndex];
       selectedButton == null ? void 0 : selectedButton.focus();
@@ -11482,7 +11628,7 @@ var SegmentedControl = React22.forwardRef((_a, ref) => {
     }, 0);
   };
   const handleSegmentClick = (index) => {
-    if (disabled || index === currentSelectedIndex) return;
+    if (disabled || index === currentSelectedIndex || isDragging) return;
     handleIndexChange(index);
   };
   const handleKeyDown6 = (event) => {
@@ -11516,6 +11662,41 @@ var SegmentedControl = React22.forwardRef((_a, ref) => {
       }
     }
   };
+  const handleMouseDown = (event) => {
+    if (disabled) return;
+    event.preventDefault();
+    setIsDragging(true);
+    dragStartXRef.current = event.clientX;
+    dragStartIndexRef.current = currentSelectedIndex;
+  };
+  const handleMouseMove = (event) => {
+    if (!isDragging || disabled || !containerRef.current) return;
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const segmentWidth = containerRect.width / items.length;
+    const relativeX = event.clientX - containerRect.left;
+    const hoveredIndex = Math.floor(relativeX / segmentWidth);
+    const newIndex = Math.max(0, Math.min(items.length - 1, hoveredIndex));
+    if (newIndex !== currentSelectedIndex) {
+      handleIndexChange(newIndex);
+    }
+  };
+  const handleMouseUp = () => {
+    if (isDragging) {
+      setIsDragging(false);
+    }
+  };
+  const handleMouseLeave = () => {
+    if (isDragging) {
+      setIsDragging(false);
+    }
+  };
+  React21__default.default.useEffect(() => {
+    if (isDragging) {
+      const handleGlobalMouseUp = () => setIsDragging(false);
+      window.addEventListener("mouseup", handleGlobalMouseUp);
+      return () => window.removeEventListener("mouseup", handleGlobalMouseUp);
+    }
+  }, [isDragging]);
   const containerAriaAttributes = getAriaAttributes2({
     disabled,
     name
@@ -11546,7 +11727,7 @@ var SegmentedControl = React22.forwardRef((_a, ref) => {
       cssVars,
       hasIsometricAnimation
     );
-    const indicatorElement = /* @__PURE__ */ React22__default.default.createElement(
+    const indicatorElement = /* @__PURE__ */ jsxRuntime.jsx(
       "div",
       {
         ref: indicatorRef,
@@ -11561,64 +11742,78 @@ var SegmentedControl = React22.forwardRef((_a, ref) => {
         variant,
         rounded ? "pill" : shape,
         size);
-      return /* @__PURE__ */ React22__default.default.createElement("div", { style: getIsometricContainerStyles2(currentSelectedIndex, items.length) }, /* @__PURE__ */ React22__default.default.createElement("div", { ref: shadowRef, style: shadowStyles }), indicatorElement);
+      return /* @__PURE__ */ jsxRuntime.jsxs("div", { style: getIsometricContainerStyles2(currentSelectedIndex, items.length), children: [
+        /* @__PURE__ */ jsxRuntime.jsx("div", { ref: shadowRef, style: shadowStyles }),
+        indicatorElement
+      ] });
     }
     return indicatorElement;
   };
-  return /* @__PURE__ */ React22__default.default.createElement(
+  return /* @__PURE__ */ jsxRuntime.jsxs(
     "div",
-    __spreadValues(__spreadValues({
+    __spreadProps(__spreadValues(__spreadValues({
       ref: containerRef,
       className,
-      style: containerStyles,
-      onKeyDown: handleKeyDown6
-    }, containerAriaAttributes), props),
-    renderIndicator(),
-    items.map((item, index) => {
-      const isSelected2 = index === currentSelectedIndex;
-      const segmentId = `${id}-segment-${index}`;
-      const segmentAriaAttributes = getSegmentAriaAttributes({
-        isSelected: isSelected2,
-        disabled,
-        item,
-        segmentId
-      });
-      const renderSegmentText = () => item;
-      return /* @__PURE__ */ React22__default.default.createElement(
-        "button",
-        __spreadValues({
-          key: `${item}-${index}`,
-          ref: (el) => {
-            segmentRefs.current[index] = el;
-          },
-          type: "button",
-          disabled,
-          onClick: () => handleSegmentClick(index),
-          onMouseEnter: isSelected2 && hasIsometricAnimation ? handleSelectedSegmentMouseEnter : void 0,
-          onMouseLeave: isSelected2 && hasIsometricAnimation ? handleSelectedSegmentMouseLeave : void 0,
-          style: getSegmentStyles(
-            size,
-            variant,
-            color,
-            customColor,
-            rounded ? "pill" : shape,
-            isSelected2,
+      style: __spreadProps(__spreadValues({}, containerStyles), {
+        cursor: isDragging ? "grabbing" : "grab",
+        userSelect: isDragging ? "none" : "auto"
+      }),
+      onKeyDown: handleKeyDown6,
+      onMouseDown: handleMouseDown,
+      onMouseMove: handleMouseMove,
+      onMouseUp: handleMouseUp,
+      onMouseLeave: handleMouseLeave
+    }, containerAriaAttributes), props), {
+      children: [
+        renderIndicator(),
+        items.map((item, index) => {
+          const isSelected2 = index === currentSelectedIndex;
+          const segmentId = `${id}-segment-${index}`;
+          const segmentAriaAttributes = getSegmentAriaAttributes({
+            isSelected: isSelected2,
             disabled,
-            animate,
-            cssVars,
-            hasIsometricAnimation
-          )
-        }, segmentAriaAttributes),
-        /* @__PURE__ */ React22__default.default.createElement("span", { style: {
-          width: "100%",
-          display: "block",
-          textAlign: "center",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          minWidth: 0
-        } }, renderSegmentText())
-      );
+            item,
+            segmentId
+          });
+          const renderSegmentText = () => item;
+          return /* @__PURE__ */ jsxRuntime.jsx(
+            "button",
+            __spreadProps(__spreadValues({
+              ref: (el) => {
+                segmentRefs.current[index] = el;
+              },
+              type: "button",
+              disabled,
+              onClick: () => handleSegmentClick(index),
+              onMouseEnter: isSelected2 && hasIsometricAnimation ? handleSelectedSegmentMouseEnter : void 0,
+              onMouseLeave: isSelected2 && hasIsometricAnimation ? handleSelectedSegmentMouseLeave : void 0,
+              style: getSegmentStyles(
+                size,
+                variant,
+                color,
+                customColor,
+                rounded ? "pill" : shape,
+                isSelected2,
+                disabled,
+                animate,
+                cssVars,
+                hasIsometricAnimation
+              )
+            }, segmentAriaAttributes), {
+              children: /* @__PURE__ */ jsxRuntime.jsx("span", { style: {
+                width: "100%",
+                display: "block",
+                textAlign: "center",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                minWidth: 0
+              }, children: renderSegmentText() })
+            }),
+            `${item}-${index}`
+          );
+        })
+      ]
     })
   );
 });
@@ -12135,9 +12330,7 @@ var getAriaAttributes3 = (props) => {
     tabIndex: disabled ? -1 : 0
   };
 };
-
-// src/app/components/atoms/Slider/Slider.tsx
-var Slider = React22.forwardRef((allProps, ref) => {
+var Slider = React21.forwardRef((allProps, ref) => {
   var _c;
   const _a = allProps, { onChange, onInput } = _a, propsForExtraction = __objRest(_a, ["onChange", "onInput"]);
   const [formProps, componentProps] = extractFormProps(propsForExtraction);
@@ -12198,21 +12391,21 @@ var Slider = React22.forwardRef((allProps, ref) => {
   const cssVars = useCSSVariables();
   const { settings } = useSettings();
   const animationsEnabled = ((_c = settings.appearance.animations) != null ? _c : true) && animate;
-  const generatedId = React22.useId();
+  const generatedId = React21.useId();
   const id = providedId || generatedId;
   validateSliderProps({ min, max, step, value, defaultValue });
   const isControlled = value !== void 0;
-  const [internalValue, setInternalValue] = React22.useState(
+  const [internalValue, setInternalValue] = React21.useState(
     clampValue(roundToStep(defaultValue || 0, step), min, max)
   );
   const currentValue = isControlled ? clampValue(roundToStep(value || 0, step), min, max) : internalValue;
-  const [focused, setFocused] = React22.useState(false);
-  const [dragging, setDragging] = React22.useState(false);
-  const [hovering, setHovering] = React22.useState(false);
-  const [showTooltipState, setShowTooltipState] = React22.useState(false);
-  const inputRef = React22.useRef(null);
-  const trackRef = React22.useRef(null);
-  React22.useImperativeHandle(ref, () => ({
+  const [focused, setFocused] = React21.useState(false);
+  const [dragging, setDragging] = React21.useState(false);
+  const [hovering, setHovering] = React21.useState(false);
+  const [showTooltipState, setShowTooltipState] = React21.useState(false);
+  const inputRef = React21.useRef(null);
+  const trackRef = React21.useRef(null);
+  React21.useImperativeHandle(ref, () => ({
     focus: () => {
       var _a2;
       return (_a2 = inputRef.current) == null ? void 0 : _a2.focus();
@@ -12222,7 +12415,7 @@ var Slider = React22.forwardRef((allProps, ref) => {
       return (_a2 = inputRef.current) == null ? void 0 : _a2.blur();
     }
   }));
-  const updateValue = React22.useCallback((newValue, event) => {
+  const updateValue = React21.useCallback((newValue, event) => {
     const clampedValue = clampValue(roundToStep(newValue, step), min, max);
     if (!isControlled) {
       setInternalValue(clampedValue);
@@ -12234,17 +12427,17 @@ var Slider = React22.forwardRef((allProps, ref) => {
       onInput(clampedValue, event);
     }
   }, [isControlled, min, max, step, onChange, onInput]);
-  const handleChange = React22.useCallback((event) => {
+  const handleChange = React21.useCallback((event) => {
     if (disabled) return;
     const newValue = parseFloat(event.target.value);
     updateValue(newValue, event);
   }, [disabled, updateValue]);
-  const handleInput = React22.useCallback((event) => {
+  const handleInput = React21.useCallback((event) => {
     if (disabled) return;
     const newValue = parseFloat(event.target.value);
     updateValue(newValue, event);
   }, [disabled, updateValue]);
-  const handlePointerDown = React22.useCallback((event) => {
+  const handlePointerDown = React21.useCallback((event) => {
     var _a2, _b2;
     if (disabled) return;
     event.preventDefault();
@@ -12269,7 +12462,7 @@ var Slider = React22.forwardRef((allProps, ref) => {
     updateValue(newValue, syntheticEvent);
     (_b2 = inputRef.current) == null ? void 0 : _b2.focus();
   }, [disabled, orientation, min, max, step, updateValue]);
-  const handlePointerMove = React22.useCallback((event) => {
+  const handlePointerMove = React21.useCallback((event) => {
     var _a2;
     if (!dragging || disabled) return;
     const rect = (_a2 = trackRef.current) == null ? void 0 : _a2.getBoundingClientRect();
@@ -12290,11 +12483,11 @@ var Slider = React22.forwardRef((allProps, ref) => {
     };
     updateValue(newValue, syntheticEvent);
   }, [dragging, disabled, orientation, min, max, step, updateValue]);
-  const handlePointerUp = React22.useCallback(() => {
+  const handlePointerUp = React21.useCallback(() => {
     setDragging(false);
     setShowTooltipState(false);
   }, []);
-  React22__default.default.useEffect(() => {
+  React21__default.default.useEffect(() => {
     if (dragging) {
       const handleMouseMove = (e) => handlePointerMove(e);
       const handleMouseUp = () => handlePointerUp();
@@ -12312,23 +12505,23 @@ var Slider = React22.forwardRef((allProps, ref) => {
       };
     }
   }, [dragging, handlePointerMove, handlePointerUp]);
-  const handleKeyDown6 = React22.useCallback((event) => {
+  const handleKeyDown6 = React21.useCallback((event) => {
     if (disabled) return;
     handleKeyDown4(event, currentValue, min, max, step, orientation, onChange);
   }, [disabled, currentValue, min, max, step, orientation, onChange]);
-  const handleFocus = React22.useCallback(() => {
+  const handleFocus = React21.useCallback(() => {
     setFocused(true);
     if (showTooltip) {
       setShowTooltipState(true);
     }
   }, [showTooltip]);
-  const handleBlur = React22.useCallback(() => {
+  const handleBlur = React21.useCallback(() => {
     setFocused(false);
     if (!dragging) {
       setShowTooltipState(false);
     }
   }, [dragging]);
-  const handleMouseEnter = React22.useCallback(() => {
+  const handleMouseEnter = React21.useCallback(() => {
     if (!disabled) {
       setHovering(true);
       if (showTooltip) {
@@ -12336,7 +12529,7 @@ var Slider = React22.forwardRef((allProps, ref) => {
       }
     }
   }, [disabled, showTooltip]);
-  const handleMouseLeave = React22.useCallback(() => {
+  const handleMouseLeave = React21.useCallback(() => {
     if (!dragging) {
       setHovering(false);
       if (!focused) {
@@ -12354,102 +12547,116 @@ var Slider = React22.forwardRef((allProps, ref) => {
     label,
     describedBy: description ? `${id}-description` : void 0
   });
-  return /* @__PURE__ */ React22__default.default.createElement(
+  return /* @__PURE__ */ jsxRuntime.jsxs(
     "div",
     {
       className,
-      style: __spreadValues(__spreadValues({}, getSliderContainerStyles(orientation, length, disabled)), style)
-    },
-    label && /* @__PURE__ */ React22__default.default.createElement(
-      "label",
-      {
-        htmlFor: id,
-        style: getLabelStyles4(size, disabled || false, error || false, cssVars)
-      },
-      label
-    ),
-    /* @__PURE__ */ React22__default.default.createElement("div", { style: { display: "flex", alignItems: "center", gap: "12px", width: "100%" } }, orientation === "horizontal" && header && /* @__PURE__ */ React22__default.default.createElement("span", { style: getMinMaxLabelStyles(size, orientation, disabled || false, color, customColor, cssVars) }, header), /* @__PURE__ */ React22__default.default.createElement(
-      "div",
-      {
-        ref: trackRef,
-        style: __spreadProps(__spreadValues({}, getTrackContainerStyles(orientation, size, animationsEnabled, length)), {
-          cursor: disabled ? "not-allowed" : dragging ? "grabbing" : hovering ? "grab" : "pointer"
-        }),
-        onMouseDown: handlePointerDown,
-        onTouchStart: handlePointerDown,
-        onMouseEnter: handleMouseEnter,
-        onMouseLeave: handleMouseLeave
-      },
-      /* @__PURE__ */ React22__default.default.createElement("div", { style: getTrackBackgroundStyles(orientation, size, variant, color, customColor, cssVars) }),
-      /* @__PURE__ */ React22__default.default.createElement(
-        "div",
-        {
-          style: getTrackFillStyles(
-            orientation,
-            size,
-            color,
-            customColor,
-            currentValue,
-            min,
-            max,
-            error || false,
-            animationsEnabled && !dragging,
-            variant,
-            cssVars
-          )
-        }
-      ),
-      tickMarks.map((tick) => /* @__PURE__ */ React22__default.default.createElement("div", { key: tick.value }, /* @__PURE__ */ React22__default.default.createElement("div", { style: getTickStyles(orientation, size, tick.value, min, max, cssVars) }), tick.label && /* @__PURE__ */ React22__default.default.createElement("div", { style: getTickLabelStyles(orientation, size, tick.value, min, max, cssVars) }, tick.label))),
-      /* @__PURE__ */ React22__default.default.createElement(
-        "div",
-        {
-          style: __spreadProps(__spreadValues({}, getThumbStyles(
-            orientation,
-            size,
-            color,
-            customColor,
-            currentValue,
-            min,
-            max,
-            error || false,
-            focused || hovering,
-            animationsEnabled && !dragging,
-            variant,
-            cssVars
-          )), {
-            cursor: disabled ? "not-allowed" : dragging ? "grabbing" : "grab"
-          })
-        }
-      ),
-      showTooltip && showTooltipState && /* @__PURE__ */ React22__default.default.createElement("div", { style: getTooltipStyles(orientation, size, currentValue, min, max, cssVars) }, formatValue(currentValue, customFormatter)),
-      /* @__PURE__ */ React22__default.default.createElement(
-        "input",
-        __spreadValues(__spreadProps(__spreadValues({
-          ref: inputRef,
-          type: "range",
-          id,
-          min,
-          max,
-          step,
-          value: currentValue,
-          disabled,
-          onChange: handleChange,
-          onInput: handleInput,
-          onKeyDown: handleKeyDown6,
-          onFocus: handleFocus,
-          onBlur: handleBlur,
-          style: getHiddenInputStyles4()
-        }, ariaAttributes), {
-          name,
-          required,
-          readOnly,
-          autoComplete,
-          autoFocus,
-          "data-testid": dataTestId
-        }), rest)
-      )
-    ), orientation === "horizontal" && footer && /* @__PURE__ */ React22__default.default.createElement("span", { style: getMinMaxLabelStyles(size, orientation, disabled || false, color, customColor, cssVars) }, footer)),
-    orientation === "vertical" && (header || footer) && /* @__PURE__ */ React22__default.default.createElement("div", { style: getLabelsContainerStyles(orientation) }, header && /* @__PURE__ */ React22__default.default.createElement("span", { style: getMinMaxLabelStyles(size, orientation, disabled || false, color, customColor, cssVars) }, header), footer && /* @__PURE__ */ React22__default.default.createElement("span", { style: getMinMaxLabelStyles(size, orientation, disabled || false, color, customColor, cssVars) }, footer))
+      style: __spreadValues(__spreadValues({}, getSliderContainerStyles(orientation, length, disabled)), style),
+      children: [
+        label && /* @__PURE__ */ jsxRuntime.jsx(
+          "label",
+          {
+            htmlFor: id,
+            style: getLabelStyles4(size, disabled || false, error || false, cssVars),
+            children: label
+          }
+        ),
+        /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { display: "flex", alignItems: "center", gap: "12px", width: "100%" }, children: [
+          orientation === "horizontal" && header && /* @__PURE__ */ jsxRuntime.jsx("span", { style: getMinMaxLabelStyles(size, orientation, disabled || false, color, customColor, cssVars), children: header }),
+          /* @__PURE__ */ jsxRuntime.jsxs(
+            "div",
+            {
+              ref: trackRef,
+              style: __spreadProps(__spreadValues({}, getTrackContainerStyles(orientation, size, animationsEnabled, length)), {
+                cursor: disabled ? "not-allowed" : dragging ? "grabbing" : hovering ? "grab" : "pointer"
+              }),
+              onMouseDown: handlePointerDown,
+              onTouchStart: handlePointerDown,
+              onMouseEnter: handleMouseEnter,
+              onMouseLeave: handleMouseLeave,
+              children: [
+                /* @__PURE__ */ jsxRuntime.jsx("div", { style: getTrackBackgroundStyles(orientation, size, variant, color, customColor, cssVars) }),
+                /* @__PURE__ */ jsxRuntime.jsx(
+                  "div",
+                  {
+                    style: getTrackFillStyles(
+                      orientation,
+                      size,
+                      color,
+                      customColor,
+                      currentValue,
+                      min,
+                      max,
+                      error || false,
+                      animationsEnabled && !dragging,
+                      variant,
+                      cssVars
+                    )
+                  }
+                ),
+                tickMarks.map((tick) => /* @__PURE__ */ jsxRuntime.jsxs("div", { children: [
+                  /* @__PURE__ */ jsxRuntime.jsx("div", { style: getTickStyles(orientation, size, tick.value, min, max, cssVars) }),
+                  tick.label && /* @__PURE__ */ jsxRuntime.jsx("div", { style: getTickLabelStyles(orientation, size, tick.value, min, max, cssVars), children: tick.label })
+                ] }, tick.value)),
+                /* @__PURE__ */ jsxRuntime.jsx(
+                  "div",
+                  {
+                    style: __spreadProps(__spreadValues({}, getThumbStyles(
+                      orientation,
+                      size,
+                      color,
+                      customColor,
+                      currentValue,
+                      min,
+                      max,
+                      error || false,
+                      focused || hovering,
+                      animationsEnabled && !dragging,
+                      variant,
+                      cssVars
+                    )), {
+                      cursor: disabled ? "not-allowed" : dragging ? "grabbing" : "grab"
+                    })
+                  }
+                ),
+                showTooltip && showTooltipState && /* @__PURE__ */ jsxRuntime.jsx("div", { style: getTooltipStyles(orientation, size, currentValue, min, max, cssVars), children: formatValue(currentValue, customFormatter) }),
+                /* @__PURE__ */ jsxRuntime.jsx(
+                  "input",
+                  __spreadValues(__spreadProps(__spreadValues({
+                    ref: inputRef,
+                    type: "range",
+                    id,
+                    min,
+                    max,
+                    step,
+                    value: currentValue,
+                    disabled,
+                    onChange: handleChange,
+                    onInput: handleInput,
+                    onKeyDown: handleKeyDown6,
+                    onFocus: handleFocus,
+                    onBlur: handleBlur,
+                    style: getHiddenInputStyles4()
+                  }, ariaAttributes), {
+                    name,
+                    required,
+                    readOnly,
+                    autoComplete,
+                    autoFocus,
+                    "data-testid": dataTestId
+                  }), rest)
+                )
+              ]
+            }
+          ),
+          orientation === "horizontal" && footer && /* @__PURE__ */ jsxRuntime.jsx("span", { style: getMinMaxLabelStyles(size, orientation, disabled || false, color, customColor, cssVars), children: footer })
+        ] }),
+        orientation === "vertical" && (header || footer) && /* @__PURE__ */ jsxRuntime.jsxs("div", { style: getLabelsContainerStyles(orientation), children: [
+          header && /* @__PURE__ */ jsxRuntime.jsx("span", { style: getMinMaxLabelStyles(size, orientation, disabled || false, color, customColor, cssVars), children: header }),
+          footer && /* @__PURE__ */ jsxRuntime.jsx("span", { style: getMinMaxLabelStyles(size, orientation, disabled || false, color, customColor, cssVars), children: footer })
+        ] })
+      ]
+    }
   );
 });
 Slider.displayName = "Slider";
@@ -12947,9 +13154,7 @@ var debounce = (func, wait) => {
     timeout = setTimeout(() => func(...args), wait);
   };
 };
-
-// src/app/components/atoms/TextArea/TextArea.tsx
-var TextArea = React22.forwardRef(
+var TextArea = React21.forwardRef(
   (allProps, ref) => {
     var _c;
     const _a = allProps, { onPaste } = _a, propsForExtraction = __objRest(_a, ["onPaste"]);
@@ -13021,16 +13226,16 @@ var TextArea = React22.forwardRef(
     const cssVars = useCSSVariables();
     const { settings } = useSettings();
     const animationsEnabled = ((_c = settings.appearance.animations) != null ? _c : true) && animate;
-    const generatedId = React22.useId();
+    const generatedId = React21.useId();
     const id = providedId || generatedId;
     validateTextAreaProps({ minRows, maxRows, maxLength, autoResize });
     const isControlled = value !== void 0;
-    const [internalValue, setInternalValue] = React22.useState(defaultValue || "");
+    const [internalValue, setInternalValue] = React21.useState(defaultValue || "");
     const currentValue = isControlled ? value : internalValue;
-    const [focused, setFocused] = React22.useState(false);
-    const [lineNumbers, setLineNumbers] = React22.useState("1");
-    const textareaRef = React22.useRef(null);
-    React22.useImperativeHandle(ref, () => ({
+    const [focused, setFocused] = React21.useState(false);
+    const [lineNumbers, setLineNumbers] = React21.useState("1");
+    const textareaRef = React21.useRef(null);
+    React21.useImperativeHandle(ref, () => ({
       focus: () => {
         var _a2;
         return (_a2 = textareaRef.current) == null ? void 0 : _a2.focus();
@@ -13057,24 +13262,24 @@ var TextArea = React22.forwardRef(
         }
       }
     }));
-    const handleAutoResize = React22.useCallback(() => {
+    const handleAutoResize = React21.useCallback(() => {
       if (!autoResize || !textareaRef.current) return;
       const textarea = textareaRef.current;
       const lineHeight = parseInt(getComputedStyle(textarea).lineHeight || "20");
       const newHeight = calculateAutoHeight(textarea, minRows, maxRows, lineHeight);
       textarea.style.height = `${newHeight}px`;
     }, [autoResize, minRows, maxRows]);
-    const debouncedAutoResize = React22.useCallback(
+    const debouncedAutoResize = React21.useCallback(
       debounce(handleAutoResize, 10),
       [handleAutoResize]
     );
-    const updateLineNumbers = React22.useCallback((text) => {
+    const updateLineNumbers = React21.useCallback((text) => {
       if (showLineNumbers) {
         const lineCount = getLineCount(text);
         setLineNumbers(generateLineNumbers(lineCount));
       }
     }, [showLineNumbers]);
-    const handleChange = React22.useCallback((event) => {
+    const handleChange = React21.useCallback((event) => {
       const newValue = event.target.value;
       if (maxLength && newValue.length > maxLength) {
         return;
@@ -13086,15 +13291,15 @@ var TextArea = React22.forwardRef(
       updateLineNumbers(newValue);
       debouncedAutoResize();
     }, [isControlled, maxLength, onChange, updateLineNumbers, debouncedAutoResize]);
-    const handleFocus = React22.useCallback((event) => {
+    const handleFocus = React21.useCallback((event) => {
       setFocused(true);
       onFocus == null ? void 0 : onFocus(event);
     }, [onFocus]);
-    const handleBlur = React22.useCallback((event) => {
+    const handleBlur = React21.useCallback((event) => {
       setFocused(false);
       onBlur == null ? void 0 : onBlur(event);
     }, [onBlur]);
-    const handleKeyDown6 = React22.useCallback((event) => {
+    const handleKeyDown6 = React21.useCallback((event) => {
       handleKeyDown5(event, clearOnEscape, () => {
         if (!isControlled) {
           setInternalValue("");
@@ -13112,7 +13317,7 @@ var TextArea = React22.forwardRef(
       });
       onKeyDown == null ? void 0 : onKeyDown(event);
     }, [clearOnEscape, isControlled, onChange, updateLineNumbers, debouncedAutoResize, onKeyDown]);
-    const handlePasteEvent = React22.useCallback((event) => {
+    const handlePasteEvent = React21.useCallback((event) => {
       if (maxLength && textareaRef.current) {
         const { selectionStart, selectionEnd } = textareaRef.current;
         const pasteResult = handlePaste(
@@ -13143,12 +13348,12 @@ var TextArea = React22.forwardRef(
       }
       onPaste == null ? void 0 : onPaste(event);
     }, [maxLength, currentValue, isControlled, onChange, updateLineNumbers, debouncedAutoResize, onPaste]);
-    const handleIconClick = React22.useCallback(() => {
+    const handleIconClick = React21.useCallback(() => {
       if (iconClickable && !disabled && onIconClick) {
         onIconClick();
       }
     }, [iconClickable, disabled, onIconClick]);
-    React22.useEffect(() => {
+    React21.useEffect(() => {
       updateLineNumbers(currentValue);
       if (autoResize) {
         setTimeout(() => handleAutoResize(), 0);
@@ -13165,111 +13370,119 @@ var TextArea = React22.forwardRef(
       errorMessage,
       maxLength
     });
-    return /* @__PURE__ */ React22__default.default.createElement(
+    return /* @__PURE__ */ jsxRuntime.jsxs(
       "div",
       {
         className,
-        style: __spreadValues(__spreadValues({}, getTextAreaContainerStyles(width, height, disabled)), style)
-      },
-      label && /* @__PURE__ */ React22__default.default.createElement(
-        "label",
-        {
-          htmlFor: id,
-          style: getLabelStyles5(size, disabled || false, error || false, cssVars)
-        },
-        label
-      ),
-      description && /* @__PURE__ */ React22__default.default.createElement(
-        "div",
-        {
-          id: "textarea-description",
-          style: getDescriptionStyles5(size, disabled || false, cssVars)
-        },
-        description
-      ),
-      /* @__PURE__ */ React22__default.default.createElement("div", { style: getInputWrapperStyles() }, showLineNumbers && /* @__PURE__ */ React22__default.default.createElement("div", { style: getLineNumbersStyles(size, disabled || false, cssVars) }, lineNumbers), /* @__PURE__ */ React22__default.default.createElement(
-        "textarea",
-        __spreadValues(__spreadProps(__spreadValues({
-          ref: textareaRef,
-          id,
-          value: currentValue,
-          disabled,
-          onChange: handleChange,
-          onFocus: handleFocus,
-          onBlur: handleBlur,
-          onKeyDown: handleKeyDown6,
-          onPaste: handlePasteEvent,
-          style: getTextAreaInputStyles(
-            color,
-            customColor,
-            variant,
-            shape,
-            size,
-            resize,
-            disabled || false,
-            error || false,
-            focused,
-            minRows,
-            maxRows,
-            autoResize,
-            showLineNumbers,
-            animationsEnabled,
-            cssVars
-          )
-        }, ariaAttributes), {
-          name,
-          required,
-          readOnly,
-          autoComplete,
-          autoFocus,
-          "data-testid": dataTestId
-        }), rest)
-      ), icon && /* @__PURE__ */ React22__default.default.createElement(
-        "div",
-        {
-          style: getIconStyles3(size, iconPosition, iconClickable, disabled || false, cssVars),
-          onClick: handleIconClick
-        },
-        icon
-      ), loading && /* @__PURE__ */ React22__default.default.createElement("div", { style: getLoadingOverlayStyles(cssVars) }, /* @__PURE__ */ React22__default.default.createElement("div", { style: {
-        width: "20px",
-        height: "20px",
-        border: `2px solid ${cssVars.border}`,
-        borderTop: `2px solid ${cssVars.primary}`,
-        borderRadius: "50%",
-        animation: "spin 1s linear infinite"
-      } }))),
-      (helperText || errorMessage || showCharacterCount) && /* @__PURE__ */ React22__default.default.createElement("div", { style: getBottomSectionStyles() }, /* @__PURE__ */ React22__default.default.createElement("div", { style: { flex: 1 } }, (helperText || error && errorMessage) && /* @__PURE__ */ React22__default.default.createElement(
-        "div",
-        {
-          id: error && errorMessage ? "textarea-error" : "textarea-helper",
-          style: getHelperTextStyles2(size, disabled || false, error || false, cssVars)
-        },
-        error && errorMessage ? errorMessage : helperText
-      )), showCharacterCount && /* @__PURE__ */ React22__default.default.createElement("div", { style: getCharacterCountStyles(size, disabled || false, isOverLimit, cssVars) }, formatCharacterCount(characterCount, maxLength))),
-      /* @__PURE__ */ React22__default.default.createElement("style", { dangerouslySetInnerHTML: { __html: `
+        style: __spreadValues(__spreadValues({}, getTextAreaContainerStyles(width, height, disabled)), style),
+        children: [
+          label && /* @__PURE__ */ jsxRuntime.jsx(
+            "label",
+            {
+              htmlFor: id,
+              style: getLabelStyles5(size, disabled || false, error || false, cssVars),
+              children: label
+            }
+          ),
+          description && /* @__PURE__ */ jsxRuntime.jsx(
+            "div",
+            {
+              id: "textarea-description",
+              style: getDescriptionStyles5(size, disabled || false, cssVars),
+              children: description
+            }
+          ),
+          /* @__PURE__ */ jsxRuntime.jsxs("div", { style: getInputWrapperStyles(), children: [
+            showLineNumbers && /* @__PURE__ */ jsxRuntime.jsx("div", { style: getLineNumbersStyles(size, disabled || false, cssVars), children: lineNumbers }),
+            /* @__PURE__ */ jsxRuntime.jsx(
+              "textarea",
+              __spreadValues(__spreadProps(__spreadValues({
+                ref: textareaRef,
+                id,
+                value: currentValue,
+                disabled,
+                onChange: handleChange,
+                onFocus: handleFocus,
+                onBlur: handleBlur,
+                onKeyDown: handleKeyDown6,
+                onPaste: handlePasteEvent,
+                style: getTextAreaInputStyles(
+                  color,
+                  customColor,
+                  variant,
+                  shape,
+                  size,
+                  resize,
+                  disabled || false,
+                  error || false,
+                  focused,
+                  minRows,
+                  maxRows,
+                  autoResize,
+                  showLineNumbers,
+                  animationsEnabled,
+                  cssVars
+                )
+              }, ariaAttributes), {
+                name,
+                required,
+                readOnly,
+                autoComplete,
+                autoFocus,
+                "data-testid": dataTestId
+              }), rest)
+            ),
+            icon && /* @__PURE__ */ jsxRuntime.jsx(
+              "div",
+              {
+                style: getIconStyles3(size, iconPosition, iconClickable, disabled || false, cssVars),
+                onClick: handleIconClick,
+                children: icon
+              }
+            ),
+            loading && /* @__PURE__ */ jsxRuntime.jsx("div", { style: getLoadingOverlayStyles(cssVars), children: /* @__PURE__ */ jsxRuntime.jsx("div", { style: {
+              width: "20px",
+              height: "20px",
+              border: `2px solid ${cssVars.border}`,
+              borderTop: `2px solid ${cssVars.primary}`,
+              borderRadius: "50%",
+              animation: "spin 1s linear infinite"
+            } }) })
+          ] }),
+          (helperText || errorMessage || showCharacterCount) && /* @__PURE__ */ jsxRuntime.jsxs("div", { style: getBottomSectionStyles(), children: [
+            /* @__PURE__ */ jsxRuntime.jsx("div", { style: { flex: 1 }, children: (helperText || error && errorMessage) && /* @__PURE__ */ jsxRuntime.jsx(
+              "div",
+              {
+                id: error && errorMessage ? "textarea-error" : "textarea-helper",
+                style: getHelperTextStyles2(size, disabled || false, error || false, cssVars),
+                children: error && errorMessage ? errorMessage : helperText
+              }
+            ) }),
+            showCharacterCount && /* @__PURE__ */ jsxRuntime.jsx("div", { style: getCharacterCountStyles(size, disabled || false, isOverLimit, cssVars), children: formatCharacterCount(characterCount, maxLength) })
+          ] }),
+          /* @__PURE__ */ jsxRuntime.jsx("style", { dangerouslySetInnerHTML: { __html: `
           @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
           }
         ` } })
+        ]
+      }
     );
   }
 );
 TextArea.displayName = "TextArea";
-
-// src/app/providers/ToastProvider.tsx
-var ToastContext = React22.createContext(void 0);
+var ToastContext = React21.createContext(void 0);
 function ToastProvider({
   children,
   maxToasts = 5,
   defaultDuration = 7e3
 }) {
-  const [toasts, setToasts] = React22.useState([]);
-  const removeToast = React22.useCallback((id) => {
+  const [toasts, setToasts] = React21.useState([]);
+  const removeToast = React21.useCallback((id) => {
     setToasts((current) => current.filter((toast) => toast.id !== id));
   }, []);
-  const addToast = React22.useCallback((toast) => {
+  const addToast = React21.useCallback((toast) => {
     var _a;
     const id = Math.random().toString(36).substr(2, 9);
     const newToast = __spreadProps(__spreadValues({
@@ -13289,31 +13502,31 @@ function ToastProvider({
     });
     return id;
   }, [defaultDuration, maxToasts, removeToast]);
-  const clearToasts = React22.useCallback(() => {
+  const clearToasts = React21.useCallback(() => {
     setToasts([]);
   }, []);
-  const success = React22.useCallback((title, description) => {
+  const success = React21.useCallback((title, description) => {
     return addToast({ type: "success", title, description });
   }, [addToast]);
-  const error = React22.useCallback((title, description) => {
+  const error = React21.useCallback((title, description) => {
     return addToast({ type: "destructive", title, description });
   }, [addToast]);
-  const warning = React22.useCallback((title, description) => {
+  const warning = React21.useCallback((title, description) => {
     return addToast({ type: "warning", title, description });
   }, [addToast]);
-  const info = React22.useCallback((title, description) => {
+  const info = React21.useCallback((title, description) => {
     return addToast({ type: "primary", title, description });
   }, [addToast]);
-  const primary = React22.useCallback((title, description) => {
+  const primary = React21.useCallback((title, description) => {
     return addToast({ type: "primary", title, description });
   }, [addToast]);
-  const secondary = React22.useCallback((title, description) => {
+  const secondary = React21.useCallback((title, description) => {
     return addToast({ type: "secondary", title, description });
   }, [addToast]);
-  const destructive = React22.useCallback((title, description) => {
+  const destructive = React21.useCallback((title, description) => {
     return addToast({ type: "destructive", title, description });
   }, [addToast]);
-  const inverted = React22.useCallback((title, description) => {
+  const inverted = React21.useCallback((title, description) => {
     return addToast({ type: "inverted", title, description });
   }, [addToast]);
   const value = {
@@ -13330,7 +13543,10 @@ function ToastProvider({
     destructive,
     inverted
   };
-  return /* @__PURE__ */ React22__default.default.createElement(ToastContext.Provider, { value }, children, /* @__PURE__ */ React22__default.default.createElement(ToastContainer, null));
+  return /* @__PURE__ */ jsxRuntime.jsxs(ToastContext.Provider, { value, children: [
+    children,
+    /* @__PURE__ */ jsxRuntime.jsx(ToastContainer, {})
+  ] });
 }
 function ToastContainer() {
   const { toasts, removeToast } = useToast();
@@ -13350,12 +13566,11 @@ function ToastContainer() {
         return "outline";
     }
   };
-  return /* @__PURE__ */ React22__default.default.createElement("div", { className: "fixed top-4 right-4 z-50 flex flex-col gap-3 max-w-md" }, toasts.map((toast) => {
+  return /* @__PURE__ */ jsxRuntime.jsx("div", { className: "fixed top-4 right-4 z-50 flex flex-col gap-3 max-w-md", children: toasts.map((toast) => {
     var _a;
-    return /* @__PURE__ */ React22__default.default.createElement(
+    return /* @__PURE__ */ jsxRuntime.jsx(
       Notification,
       {
-        key: toast.id,
         id: toast.id,
         color: toast.type === "default" ? "primary" : toast.type === "inverted" ? "secondary" : toast.type === "info" ? "info" : toast.type,
         title: toast.title,
@@ -13375,35 +13590,36 @@ function ToastContainer() {
           minWidth: "320px",
           maxWidth: "400px"
         }
-      }
+      },
+      toast.id
     );
-  }));
+  }) });
 }
 function useToast() {
-  const context = React22.useContext(ToastContext);
+  const context = React21.useContext(ToastContext);
   if (context === void 0) {
     throw new Error("useToast must be used within a ToastProvider");
   }
   return context;
 }
-var LoadingContext = React22.createContext(void 0);
+var LoadingContext = React21.createContext(void 0);
 function LoadingProvider({
   children,
   showGlobalSpinner = true
 }) {
-  const [loadingStates, setLoadingStates] = React22.useState({});
-  const setLoading = React22.useCallback((key, loading) => {
+  const [loadingStates, setLoadingStates] = React21.useState({});
+  const setLoading = React21.useCallback((key, loading) => {
     setLoadingStates((current) => __spreadProps(__spreadValues({}, current), {
       [key]: loading
     }));
   }, []);
-  const startLoading = React22.useCallback((key) => {
+  const startLoading = React21.useCallback((key) => {
     setLoading(key, true);
   }, [setLoading]);
-  const stopLoading = React22.useCallback((key) => {
+  const stopLoading = React21.useCallback((key) => {
     setLoading(key, false);
   }, [setLoading]);
-  const isLoading = React22.useCallback((key) => {
+  const isLoading = React21.useCallback((key) => {
     if (key) {
       return loadingStates[key] || false;
     }
@@ -13418,15 +13634,21 @@ function LoadingProvider({
     stopLoading,
     isAnyLoading
   };
-  return /* @__PURE__ */ React22__default.default.createElement(LoadingContext.Provider, { value }, children, showGlobalSpinner && /* @__PURE__ */ React22__default.default.createElement(GlobalLoadingSpinner, null));
+  return /* @__PURE__ */ jsxRuntime.jsxs(LoadingContext.Provider, { value, children: [
+    children,
+    showGlobalSpinner && /* @__PURE__ */ jsxRuntime.jsx(GlobalLoadingSpinner, {})
+  ] });
 }
 function GlobalLoadingSpinner() {
   const { isAnyLoading } = useLoading();
   if (!isAnyLoading) return null;
-  return /* @__PURE__ */ React22__default.default.createElement("div", { className: "fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm" }, /* @__PURE__ */ React22__default.default.createElement("div", { className: "bg-white dark:bg-gray-800 rounded-lg p-6 shadow-xl" }, /* @__PURE__ */ React22__default.default.createElement("div", { className: "flex items-center space-x-3" }, /* @__PURE__ */ React22__default.default.createElement("div", { className: "animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600" }), /* @__PURE__ */ React22__default.default.createElement("span", { className: "text-gray-700 dark:text-gray-300" }, "Loading..."))));
+  return /* @__PURE__ */ jsxRuntime.jsx("div", { className: "fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm", children: /* @__PURE__ */ jsxRuntime.jsx("div", { className: "bg-white dark:bg-gray-800 rounded-lg p-6 shadow-xl", children: /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center space-x-3", children: [
+    /* @__PURE__ */ jsxRuntime.jsx("div", { className: "animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600" }),
+    /* @__PURE__ */ jsxRuntime.jsx("span", { className: "text-gray-700 dark:text-gray-300", children: "Loading..." })
+  ] }) }) });
 }
 function useLoading() {
-  const context = React22.useContext(LoadingContext);
+  const context = React21.useContext(LoadingContext);
   if (context === void 0) {
     throw new Error("useLoading must be used within a LoadingProvider");
   }
@@ -13434,7 +13656,7 @@ function useLoading() {
 }
 function useAsyncOperation() {
   const { startLoading, stopLoading } = useLoading();
-  const execute = React22.useCallback(
+  const execute = React21.useCallback(
     async (key, operation) => {
       try {
         startLoading(key);
@@ -13448,10 +13670,10 @@ function useAsyncOperation() {
   );
   return { execute };
 }
-var ModalContext = React22.createContext(void 0);
+var ModalContext = React21.createContext(void 0);
 function ModalProvider({ children, maxModals = 5 }) {
-  const [modals, setModals] = React22.useState([]);
-  const openModal = React22.useCallback((config) => {
+  const [modals, setModals] = React21.useState([]);
+  const openModal = React21.useCallback((config) => {
     const id = Math.random().toString(36).substr(2, 9);
     const newModal = __spreadProps(__spreadValues({}, config), {
       id,
@@ -13468,7 +13690,7 @@ function ModalProvider({ children, maxModals = 5 }) {
     });
     return id;
   }, [maxModals]);
-  const closeModal = React22.useCallback((id) => {
+  const closeModal = React21.useCallback((id) => {
     setModals((current) => {
       const modal = current.find((m) => m.id === id);
       if (modal == null ? void 0 : modal.onClose) {
@@ -13477,7 +13699,7 @@ function ModalProvider({ children, maxModals = 5 }) {
       return current.filter((m) => m.id !== id);
     });
   }, []);
-  const closeAllModals = React22.useCallback(() => {
+  const closeAllModals = React21.useCallback(() => {
     setModals((current) => {
       current.forEach((modal) => {
         if (modal.onClose) {
@@ -13487,10 +13709,10 @@ function ModalProvider({ children, maxModals = 5 }) {
       return [];
     });
   }, []);
-  const isModalOpen = React22.useCallback((id) => {
+  const isModalOpen = React21.useCallback((id) => {
     return modals.some((modal) => modal.id === id);
   }, [modals]);
-  React22.useEffect(() => {
+  React21.useEffect(() => {
     const handleEsc = (event) => {
       if (event.key === "Escape" && modals.length > 0) {
         const topModal = modals[modals.length - 1];
@@ -13509,12 +13731,15 @@ function ModalProvider({ children, maxModals = 5 }) {
     closeAllModals,
     isModalOpen
   };
-  return /* @__PURE__ */ React22__default.default.createElement(ModalContext.Provider, { value }, children, /* @__PURE__ */ React22__default.default.createElement(ModalContainer, null));
+  return /* @__PURE__ */ jsxRuntime.jsxs(ModalContext.Provider, { value, children: [
+    children,
+    /* @__PURE__ */ jsxRuntime.jsx(ModalContainer, {})
+  ] });
 }
 function ModalContainer() {
   const { modals } = useModal();
   if (modals.length === 0) return null;
-  return /* @__PURE__ */ React22__default.default.createElement("div", { className: "fixed inset-0 z-50" }, modals.map((modal, index) => /* @__PURE__ */ React22__default.default.createElement(ModalWrapper, { key: modal.id, modal, zIndex: 50 + index })));
+  return /* @__PURE__ */ jsxRuntime.jsx("div", { className: "fixed inset-0 z-50", children: modals.map((modal, index) => /* @__PURE__ */ jsxRuntime.jsx(ModalWrapper, { modal, zIndex: 50 + index }, modal.id)) });
 }
 function ModalWrapper({ modal, zIndex }) {
   const { closeModal } = useModal();
@@ -13539,39 +13764,44 @@ function ModalWrapper({ modal, zIndex }) {
       closeModal(modal.id);
     }
   };
-  return /* @__PURE__ */ React22__default.default.createElement(
+  return /* @__PURE__ */ jsxRuntime.jsx(
     "div",
     {
       className: `fixed inset-0 flex items-center justify-center ${modal.overlay ? "bg-black/50 backdrop-blur-sm" : ""}`,
       style: { zIndex },
-      onClick: handleOverlayClick
-    },
-    /* @__PURE__ */ React22__default.default.createElement(
-      "div",
-      {
-        className: `
+      onClick: handleOverlayClick,
+      children: /* @__PURE__ */ jsxRuntime.jsxs(
+        "div",
+        {
+          className: `
           bg-white dark:bg-gray-800 rounded-lg shadow-xl 
           w-full ${getSizeClasses(modal.size)}
           max-h-[90vh] overflow-hidden
           ${modal.className || ""}
         `,
-        onClick: (e) => e.stopPropagation()
-      },
-      modal.title && /* @__PURE__ */ React22__default.default.createElement("div", { className: "flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700" }, /* @__PURE__ */ React22__default.default.createElement("h2", { className: "text-xl font-semibold text-gray-900 dark:text-white" }, modal.title), modal.closable && /* @__PURE__ */ React22__default.default.createElement(
-        "button",
-        {
-          onClick: () => closeModal(modal.id),
-          className: "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300",
-          "aria-label": "Close modal"
-        },
-        /* @__PURE__ */ React22__default.default.createElement("svg", { className: "w-6 h-6", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor" }, /* @__PURE__ */ React22__default.default.createElement("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M6 18L18 6M6 6l12 12" }))
-      )),
-      /* @__PURE__ */ React22__default.default.createElement("div", { className: "p-6 overflow-y-auto" }, modal.content)
-    )
+          onClick: (e) => e.stopPropagation(),
+          children: [
+            modal.title && /* @__PURE__ */ jsxRuntime.jsxs("div", { className: "flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700", children: [
+              /* @__PURE__ */ jsxRuntime.jsx("h2", { className: "text-xl font-semibold text-gray-900 dark:text-white", children: modal.title }),
+              modal.closable && /* @__PURE__ */ jsxRuntime.jsx(
+                "button",
+                {
+                  onClick: () => closeModal(modal.id),
+                  className: "text-gray-400 hover:text-gray-600 dark:hover:text-gray-300",
+                  "aria-label": "Close modal",
+                  children: /* @__PURE__ */ jsxRuntime.jsx("svg", { className: "w-6 h-6", fill: "none", viewBox: "0 0 24 24", stroke: "currentColor", children: /* @__PURE__ */ jsxRuntime.jsx("path", { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M6 18L18 6M6 6l12 12" }) })
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxRuntime.jsx("div", { className: "p-6 overflow-y-auto", children: modal.content })
+          ]
+        }
+      )
+    }
   );
 }
 function useModal() {
-  const context = React22.useContext(ModalContext);
+  const context = React21.useContext(ModalContext);
   if (context === void 0) {
     throw new Error("useModal must be used within a ModalProvider");
   }
@@ -13599,14 +13829,14 @@ var defaultSettings = {
     crashReporting: false
   }
 };
-var SettingsContext = React22.createContext(void 0);
+var SettingsContext = React21.createContext(void 0);
 function SettingsProvider({
   children,
   storageKey = "templar-settings",
   defaultSettings: customDefaults
 }) {
-  const [settings, setSettings] = React22.useState(() => __spreadValues(__spreadValues({}, defaultSettings), customDefaults));
-  React22.useEffect(() => {
+  const [settings, setSettings] = React21.useState(() => __spreadValues(__spreadValues({}, defaultSettings), customDefaults));
+  React21.useEffect(() => {
     try {
       const stored = localStorage.getItem(storageKey);
       if (stored) {
@@ -13617,28 +13847,28 @@ function SettingsProvider({
       console.error("Failed to load settings:", error);
     }
   }, [storageKey]);
-  React22.useEffect(() => {
+  React21.useEffect(() => {
     try {
       localStorage.setItem(storageKey, JSON.stringify(settings));
     } catch (error) {
       console.error("Failed to save settings:", error);
     }
   }, [settings, storageKey]);
-  const updateSettings = React22.useCallback((updates) => {
+  const updateSettings = React21.useCallback((updates) => {
     setSettings((current) => __spreadValues(__spreadValues({}, current), updates));
   }, []);
-  const updateNestedSetting = React22.useCallback((category, updates) => {
+  const updateNestedSetting = React21.useCallback((category, updates) => {
     setSettings((current) => __spreadProps(__spreadValues({}, current), {
       [category]: __spreadValues(__spreadValues({}, current[category]), updates)
     }));
   }, []);
-  const resetSettings = React22.useCallback(() => {
+  const resetSettings = React21.useCallback(() => {
     setSettings(__spreadValues(__spreadValues({}, defaultSettings), customDefaults));
   }, [customDefaults]);
-  const exportSettings = React22.useCallback(() => {
+  const exportSettings = React21.useCallback(() => {
     return JSON.stringify(settings, null, 2);
   }, [settings]);
-  const importSettings = React22.useCallback((settingsJson) => {
+  const importSettings = React21.useCallback((settingsJson) => {
     try {
       const parsedSettings = JSON.parse(settingsJson);
       setSettings((current) => __spreadValues(__spreadValues({}, current), parsedSettings));
@@ -13656,10 +13886,10 @@ function SettingsProvider({
     exportSettings,
     importSettings
   };
-  return /* @__PURE__ */ React22__default.default.createElement(SettingsContext.Provider, { value }, children);
+  return /* @__PURE__ */ jsxRuntime.jsx(SettingsContext.Provider, { value, children });
 }
 function useSettings() {
-  const context = React22.useContext(SettingsContext);
+  const context = React21.useContext(SettingsContext);
   if (context === void 0) {
     throw new Error("useSettings must be used within a SettingsProvider");
   }
@@ -13689,7 +13919,7 @@ function useAppearanceSettings() {
 
 // src/app/environment/mourn.types.ts
 var DEFAULT_MOURN_CONFIG = {
-  version: "1.0",
+  version: "1.2.1",
   name: "Templar Project",
   providers: {
     auth: {
@@ -13817,17 +14047,17 @@ function debugMournConfig(config) {
   }
   console.groupEnd();
 }
-var EnvironmentContext = React22.createContext(void 0);
+var EnvironmentContext = React21.createContext(void 0);
 function EnvironmentProvider({
   children,
   config: overrideConfig,
   debug = false
 }) {
-  const [config, setConfig] = React22.useState(
+  const [config, setConfig] = React21.useState(
     overrideConfig ? mergeMournConfig(overrideConfig) : DEFAULT_MOURN_CONFIG
   );
-  const [isLoading, setIsLoading] = React22.useState(!overrideConfig);
-  const [error, setError] = React22.useState(null);
+  const [isLoading, setIsLoading] = React21.useState(!overrideConfig);
+  const [error, setError] = React21.useState(null);
   const loadConfig = async () => {
     if (overrideConfig) {
       const merged = mergeMournConfig(overrideConfig);
@@ -13854,10 +14084,10 @@ function EnvironmentProvider({
       setIsLoading(false);
     }
   };
-  React22.useEffect(() => {
+  React21.useEffect(() => {
     loadConfig();
   }, []);
-  const contextValue = React22.useMemo(
+  const contextValue = React21.useMemo(
     () => ({
       config,
       isLoading,
@@ -13866,10 +14096,10 @@ function EnvironmentProvider({
     }),
     [config, isLoading, error]
   );
-  return /* @__PURE__ */ React22__default.default.createElement(EnvironmentContext.Provider, { value: contextValue }, children);
+  return /* @__PURE__ */ jsxRuntime.jsx(EnvironmentContext.Provider, { value: contextValue, children });
 }
 function useEnvironment() {
-  const context = React22.useContext(EnvironmentContext);
+  const context = React21.useContext(EnvironmentContext);
   if (context === void 0) {
     throw new Error("useEnvironment must be used within an EnvironmentProvider");
   }
@@ -13888,8 +14118,6 @@ function useProviderConfig(providerName) {
   const { config } = useEnvironment();
   return config.providers[providerName];
 }
-
-// src/app/providers/RoundTable.tsx
 function RoundTableInner({ children }) {
   const config = useMournConfig();
   const authEnabled = useProviderEnabled("auth");
@@ -13900,61 +14128,61 @@ function RoundTableInner({ children }) {
   const settingsEnabled = useProviderEnabled("settings");
   let content = children;
   if (modalEnabled && config.providers.modal) {
-    content = /* @__PURE__ */ React22__default.default.createElement(
+    content = /* @__PURE__ */ jsxRuntime.jsx(
       ModalProvider,
       {
-        maxModals: config.providers.modal.maxModals
-      },
-      content
+        maxModals: config.providers.modal.maxModals,
+        children: content
+      }
     );
   }
   if (toastEnabled && config.providers.toast) {
-    content = /* @__PURE__ */ React22__default.default.createElement(
+    content = /* @__PURE__ */ jsxRuntime.jsx(
       ToastProvider,
       {
         maxToasts: config.providers.toast.maxToasts,
-        defaultDuration: config.providers.toast.defaultDuration
-      },
-      content
+        defaultDuration: config.providers.toast.defaultDuration,
+        children: content
+      }
     );
   }
   if (loadingEnabled && config.providers.loading) {
-    content = /* @__PURE__ */ React22__default.default.createElement(
+    content = /* @__PURE__ */ jsxRuntime.jsx(
       LoadingProvider,
       {
-        showGlobalSpinner: config.providers.loading.showGlobalSpinner
-      },
-      content
+        showGlobalSpinner: config.providers.loading.showGlobalSpinner,
+        children: content
+      }
     );
   }
   if (authEnabled && config.providers.auth) {
-    content = /* @__PURE__ */ React22__default.default.createElement(AuthProvider, { storageKey: config.providers.auth.storageKey }, content);
+    content = /* @__PURE__ */ jsxRuntime.jsx(AuthProvider, { storageKey: config.providers.auth.storageKey, children: content });
   }
   if (themeEnabled && config.providers.theme) {
-    content = /* @__PURE__ */ React22__default.default.createElement(
+    content = /* @__PURE__ */ jsxRuntime.jsx(
       ThemeProvider,
       {
         defaultTheme: config.providers.theme.defaultTheme,
         attribute: config.providers.theme.attribute,
-        storageKey: config.providers.theme.storageKey
-      },
-      content
+        storageKey: config.providers.theme.storageKey,
+        children: content
+      }
     );
   }
   if (settingsEnabled && config.providers.settings) {
-    content = /* @__PURE__ */ React22__default.default.createElement(
+    content = /* @__PURE__ */ jsxRuntime.jsx(
       SettingsProvider,
       {
         storageKey: config.providers.settings.storageKey,
-        defaultSettings: config.providers.settings.defaultSettings
-      },
-      content
+        defaultSettings: config.providers.settings.defaultSettings,
+        children: content
+      }
     );
   }
-  return /* @__PURE__ */ React22__default.default.createElement(React22__default.default.Fragment, null, content);
+  return /* @__PURE__ */ jsxRuntime.jsx(jsxRuntime.Fragment, { children: content });
 }
 function RoundTable({ children, config, debug = false }) {
-  return /* @__PURE__ */ React22__default.default.createElement(EnvironmentProvider, { config, debug }, /* @__PURE__ */ React22__default.default.createElement(RoundTableInner, null, children));
+  return /* @__PURE__ */ jsxRuntime.jsx(EnvironmentProvider, { config, debug, children: /* @__PURE__ */ jsxRuntime.jsx(RoundTableInner, { children }) });
 }
 
 // src/app/providers/useCSSVariables.ts

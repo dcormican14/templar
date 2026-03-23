@@ -21,12 +21,17 @@ interface RoundTableProps {
    * @default false
    */
   debug?: boolean;
+  /**
+   * Start with a blocking loading screen until stopLoading('app-init') is called.
+   * @default false
+   */
+  initialLoading?: boolean;
 }
 
 /**
  * Inner component that uses the environment context to render providers
  */
-function RoundTableInner({ children }: { children: React.ReactNode }) {
+function RoundTableInner({ children, initialLoading = false }: { children: React.ReactNode; initialLoading?: boolean }) {
   const config = useMournConfig();
 
   // Check which providers are enabled
@@ -68,6 +73,12 @@ function RoundTableInner({ children }: { children: React.ReactNode }) {
     content = (
       <LoadingProvider
         showGlobalSpinner={config.providers.loading.showGlobalSpinner}
+        initialLoading={initialLoading}
+        loadingImage={config.providers.loading.loadingImage}
+        loadingTitle={config.providers.loading.loadingTitle}
+        loadingSubtitle={config.providers.loading.loadingSubtitle}
+        typingSpeed={config.providers.loading.typingSpeed}
+        transitionDuration={config.providers.loading.transitionDuration}
       >
         {content}
       </LoadingProvider>
@@ -131,10 +142,10 @@ function RoundTableInner({ children }: { children: React.ReactNode }) {
  * </RoundTable>
  * ```
  */
-export function RoundTable({ children, config, debug = false }: RoundTableProps) {
+export function RoundTable({ children, config, debug = false, initialLoading = false }: RoundTableProps) {
   return (
     <EnvironmentProvider config={config} debug={debug}>
-      <RoundTableInner>{children}</RoundTableInner>
+      <RoundTableInner initialLoading={initialLoading}>{children}</RoundTableInner>
     </EnvironmentProvider>
   );
 }

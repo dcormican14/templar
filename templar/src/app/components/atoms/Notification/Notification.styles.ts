@@ -266,7 +266,6 @@ export const getIconStyles = (
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: '2px',
     color: 'currentColor',
   };
 };

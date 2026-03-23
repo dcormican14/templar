@@ -2,8 +2,8 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-type Theme = 'light' | 'dark' | 'high-contrast' | 'sepia-light' | 'sepia-dark' | 'solarized-dark' | 'valor' | 'valor-dark' | 'system' | 'auto';
-type ResolvedTheme = 'light' | 'dark' | 'high-contrast' | 'sepia-light' | 'sepia-dark' | 'solarized-dark' | 'valor' | 'valor-dark';
+type Theme = 'light' | 'dark' | 'contrast' | 'sepia-light' | 'sepia-dark' | 'solarized-dark' | 'valor' | 'valor-dark' | 'system' | 'auto';
+type ResolvedTheme = 'light' | 'dark' | 'contrast' | 'sepia-light' | 'sepia-dark' | 'solarized-dark' | 'valor' | 'valor-dark';
 
 interface ThemeContextType {
   theme: Theme;
@@ -133,7 +133,7 @@ interface ThemeProviderProps {
   storageKey?: string;
 }
 
-const availableThemes: Theme[] = ['light', 'dark', 'high-contrast', 'sepia-light', 'sepia-dark', 'solarized-dark', 'valor', 'valor-dark', 'system', 'auto'];
+const availableThemes: Theme[] = ['light', 'dark', 'contrast', 'sepia-light', 'sepia-dark', 'solarized-dark', 'valor', 'valor-dark', 'system', 'auto'];
 
 export function ThemeProvider({
   children,
@@ -141,7 +141,15 @@ export function ThemeProvider({
   attribute = 'data-theme',
   storageKey = 'templar-theme',
 }: ThemeProviderProps) {
-  const [theme, setThemeState] = useState<Theme>(defaultTheme);
+  const [theme, setThemeState] = useState<Theme>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem(storageKey);
+      if (stored && availableThemes.includes(stored as Theme)) {
+        return stored as Theme;
+      }
+    }
+    return defaultTheme;
+  });
   const [mounted, setMounted] = useState(false);
   const [themeVariables, setThemeVariables] = useState<ThemeVariables>({} as ThemeVariables);
 
@@ -266,20 +274,20 @@ export function ThemeProvider({
     setThemeVariables(variables);
   };
 
-  // Get system preference
-  const getSystemTheme = (): 'light' | 'dark' => {
+  // Get system preference — maps OS dark mode to valor-dark, light to light
+  const getSystemTheme = (): 'light' | 'valor-dark' => {
     if (typeof window !== 'undefined') {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'valor-dark' : 'light';
     }
     return 'light';
   };
 
   // Get time-based theme for 'auto' mode
-  const getAutoTheme = (): 'light' | 'dark' => {
+  const getAutoTheme = (): 'light' | 'valor-dark' => {
     if (typeof window !== 'undefined') {
       const hour = new Date().getHours();
       // Dark theme from 6 PM to 6 AM
-      return hour >= 18 || hour < 6 ? 'dark' : 'light';
+      return hour >= 18 || hour < 6 ? 'valor-dark' : 'light';
     }
     return 'light';
   };
@@ -293,7 +301,7 @@ export function ThemeProvider({
         return getAutoTheme();
       case 'light':
       case 'dark':
-      case 'high-contrast':
+      case 'contrast':
       case 'sepia-light':
       case 'sepia-dark':
       case 'solarized-dark':
@@ -305,14 +313,10 @@ export function ThemeProvider({
     }
   })();
 
-  // Initialize theme from localStorage or default
+  // Mark as mounted on client
   useEffect(() => {
-    const stored = localStorage.getItem(storageKey);
-    if (stored && availableThemes.includes(stored as Theme)) {
-      setThemeState(stored as Theme);
-    }
     setMounted(true);
-  }, [storageKey]);
+  }, []);
 
   // Apply theme to document
   useEffect(() => {
@@ -322,7 +326,7 @@ export function ThemeProvider({
     root.setAttribute(attribute, resolvedTheme);
     
     // Remove all theme classes first
-    root.classList.remove('light', 'dark', 'high-contrast', 'sepia-light', 'sepia-dark', 'solarized-dark', 'valor', 'valor-dark');
+    root.classList.remove('light', 'dark', 'contrast', 'sepia-light', 'sepia-dark', 'solarized-dark', 'valor', 'valor-dark');
 
     // Add the resolved theme class
     root.classList.add(resolvedTheme);
@@ -345,11 +349,11 @@ export function ThemeProvider({
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = () => {
       const root = document.documentElement;
-      const newResolvedTheme = mediaQuery.matches ? 'dark' : 'light';
+      const newResolvedTheme: ResolvedTheme = mediaQuery.matches ? 'valor-dark' : 'light';
       root.setAttribute(attribute, newResolvedTheme);
-      root.classList.remove('light', 'dark', 'high-contrast', 'sepia-light', 'sepia-dark', 'solarized-dark', 'valor', 'valor-dark');
+      root.classList.remove('light', 'contrast', 'sepia-light', 'sepia-dark', 'solarized-dark', 'valor', 'valor-dark');
       root.classList.add(newResolvedTheme);
-      root.classList.toggle('dark', newResolvedTheme === 'dark');
+      root.classList.toggle('dark', newResolvedTheme === 'valor-dark');
       setTimeout(updateThemeVariables, 0);
     };
 
@@ -365,9 +369,9 @@ export function ThemeProvider({
       const root = document.documentElement;
       const newResolvedTheme = getAutoTheme();
       root.setAttribute(attribute, newResolvedTheme);
-      root.classList.remove('light', 'dark', 'high-contrast', 'sepia-light', 'sepia-dark', 'solarized-dark', 'valor', 'valor-dark');
+      root.classList.remove('light', 'dark', 'contrast', 'sepia-light', 'sepia-dark', 'solarized-dark', 'valor', 'valor-dark');
       root.classList.add(newResolvedTheme);
-      root.classList.toggle('dark', newResolvedTheme === 'dark');
+      root.classList.toggle('dark', newResolvedTheme === 'valor-dark');
       setTimeout(updateThemeVariables, 0);
     };
 
@@ -383,11 +387,11 @@ export function ThemeProvider({
 
   const toggleTheme = () => {
     if (theme === 'system') {
-      setTheme(getSystemTheme() === 'dark' ? 'light' : 'dark');
+      setTheme(getSystemTheme() === 'valor-dark' ? 'light' : 'valor-dark');
     } else if (theme === 'auto') {
-      setTheme(getAutoTheme() === 'dark' ? 'light' : 'dark');
+      setTheme(getAutoTheme() === 'valor-dark' ? 'light' : 'valor-dark');
     } else {
-      setTheme(theme === 'light' ? 'dark' : 'light');
+      setTheme(theme === 'light' ? 'valor-dark' : 'light');
     }
   };
 

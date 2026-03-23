@@ -182,6 +182,17 @@
   }
 }
 
+@keyframes toast-enter {
+  from {
+    transform: translateX(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
 /* Animation Utility Classes */
 .spin {
   animation: spin 1s linear infinite;

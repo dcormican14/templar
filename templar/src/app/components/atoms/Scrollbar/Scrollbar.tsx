@@ -518,24 +518,24 @@ export const Scrollbar = forwardRef<ScrollbarRef, ScrollbarProps>((allProps, ref
     animationsEnabled,
     cssVars
   );
-  
+
+  // Memoize the actual CSS string to prevent re-injection when styles haven't changed
+  const webkitCSS = useMemo(() => {
+    if (!supportsWebKitScrollbar()) return '';
+    return createWebkitScrollbarCSS(uniqueId, webkitStyles);
+  }, [uniqueId, color, customColor, variant, size, shape, orientation, visibility, alignment, disabled, animationsEnabled, cssVars]);
+
   useEffect(() => {
-    // Apply webkit styles when using native scrollbar (both 'end' and 'start' alignments)
-    if (supportsWebKitScrollbar()) {
-      // Apply custom webkit scrollbar styles for both alignments
-      let css = createWebkitScrollbarCSS(uniqueId, webkitStyles);
+    const isWebKitSupported = supportsWebKitScrollbar();
 
-      // For both + start case, no special horizontal scrollbar handling needed
-
-      if (css) {
-        injectCSS(uniqueId, css);
-      }
+    if (isWebKitSupported && webkitCSS) {
+      injectCSS(uniqueId, webkitCSS);
     }
 
     return () => {
       cleanupCSS(uniqueId);
     };
-  }, [uniqueId, color, customColor, variant, size, shape, orientation, visibility, alignment, disabled, animationsEnabled, cssVars, isStartBothCase]);
+  }, [uniqueId, webkitCSS]);
   
   // Accessibility attributes
   const ariaAttributes = getScrollbarAriaAttributes(

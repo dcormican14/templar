@@ -76,7 +76,7 @@ function ThemeSelector() {
 
 ```json
 {
-  "version": "1.0",
+  "version": "1.2.1",
   "providers": {
     "theme": {
       "enabled": true,
@@ -90,7 +90,7 @@ function ThemeSelector() {
 
 ```javascript
 module.exports = {
-  version: '1.0',
+  version: '1.2.1',
   providers: {
     theme: {
       enabled: true,

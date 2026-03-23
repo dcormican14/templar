@@ -17,19 +17,17 @@ const AnimatedCard: React.FC<AnimatedCardProps> = ({ children, delay = 0, scroll
   const cardRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    if (cardRef.current) {
+    if (cardRef.current && !isVisible) {
       const rect = cardRef.current.getBoundingClientRect();
       const windowHeight = window.innerHeight;
 
-      // Card is visible when its top is within viewport
-      // Card becomes invisible when it scrolls past the top
+      // Card becomes visible when its top is within viewport
+      // Once visible, stay visible (no flickering)
       if (rect.top < windowHeight * 0.8 && rect.bottom > 0) {
         setIsVisible(true);
-      } else if (rect.top > windowHeight || rect.bottom < -100) {
-        setIsVisible(false);
       }
     }
-  }, [scrollY]);
+  }, [scrollY, isVisible]);
 
   return (
     <div
@@ -54,9 +52,17 @@ export function OverviewPage() {
   const cssVars = useCSSVariables();
   const [scrollY, setScrollY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [imageHeight, setImageHeight] = useState(0);
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
   const imageRef = React.useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Measure image height when it loads
   useEffect(() => {
@@ -142,28 +148,27 @@ export function OverviewPage() {
 
       // Use window height for consistent viewport calculation
       const viewportHeight = window.innerHeight;
+      const viewportTop = 0;
       const viewportMiddle = viewportHeight / 2;
 
       let currentSection = 'overview';
 
-      // Check which section the middle of the viewport is in
-      // The section's top should be above viewport middle, and bottom should be below it
-
-      // Contact section (check this first since it's last)
-      if (contactSection) {
+      // Check which section is closest to the top of the viewport
+      if (contactSection && docsSection) {
         const contactRect = contactSection.getBoundingClientRect();
-        // If section spans across the viewport middle
-        if (contactRect.top <= viewportMiddle && contactRect.bottom >= viewportMiddle) {
+        const docsRect = docsSection.getBoundingClientRect();
+
+        // If contact section has entered the viewport (top is above middle)
+        if (contactRect.top <= viewportMiddle) {
           currentSection = 'contact';
         }
-      }
-
-      // Docs section (only if we haven't found contact)
-      if (currentSection === 'overview' && docsSection) {
-        const docsRect = docsSection.getBoundingClientRect();
-        // If section spans across the viewport middle
-        if (docsRect.top <= viewportMiddle && docsRect.bottom >= viewportMiddle) {
+        // If docs section has entered the viewport (top is above middle), but contact hasn't
+        else if (docsRect.top <= viewportMiddle) {
           currentSection = 'docs';
+        }
+        // Otherwise we're still in overview
+        else {
+          currentSection = 'overview';
         }
       }
 
@@ -191,29 +196,29 @@ export function OverviewPage() {
   const backgroundSpeed = maxImageMovement / targetScrollForFullReveal;
   const imageOffset = Math.min(scrollY * backgroundSpeed, maxImageMovement);
 
-  // Debug logging
-  React.useEffect(() => {
-    if (scrollY > 0 && scrollY % 500 < 50) {
-      console.log('Parallax Debug:', {
-        scrollY,
-        imageHeight,
-        calculatedImageHeight,
-        effectiveImageHeight,
-        viewportHeight,
-        viewportWidth,
-        maxImageMovement,
-        H,
-        targetScrollForFullReveal,
-        backgroundSpeed,
-        imageOffset,
-        imageRevealPercentage: (imageOffset / maxImageMovement * 100).toFixed(2) + '%',
-        clampingActive: scrollY * backgroundSpeed > maxImageMovement
-      });
-    }
-  }, [scrollY, maxImageMovement, imageOffset, H, targetScrollForFullReveal, backgroundSpeed]);
+  // Debug logging - disabled
+  // React.useEffect(() => {
+  //   if (scrollY > 0 && scrollY % 500 < 50) {
+  //     console.log('Parallax Debug:', {
+  //       scrollY,
+  //       imageHeight,
+  //       calculatedImageHeight,
+  //       effectiveImageHeight,
+  //       viewportHeight,
+  //       viewportWidth,
+  //       maxImageMovement,
+  //       H,
+  //       targetScrollForFullReveal,
+  //       backgroundSpeed,
+  //       imageOffset,
+  //       imageRevealPercentage: (imageOffset / maxImageMovement * 100).toFixed(2) + '%',
+  //       clampingActive: scrollY * backgroundSpeed > maxImageMovement
+  //     });
+  //   }
+  // }, [scrollY, maxImageMovement, imageOffset, H, targetScrollForFullReveal, backgroundSpeed]);
 
   return (
-    <div style={{ width: '100vw', height: '100vh', position: 'relative', margin: 0, padding: 0 }}>
+    <div style={{ width: '100%', height: '100%', position: 'relative', margin: 0, padding: 0 }}>
       {/* Falling leaves effect */}
       <FallingLeaves
         leafCount={5}
@@ -228,7 +233,7 @@ export function OverviewPage() {
           top: 0,
           left: 0,
           width: '100%',
-          height: '100vh',
+          height: '100dvh',
           overflow: 'hidden',
           zIndex: 1
         }}
@@ -239,7 +244,10 @@ export function OverviewPage() {
           alt="Knight Background"
           style={{
             width: '100%',
+            minHeight: '100dvh',
             height: 'auto',
+            objectFit: 'cover',
+            objectPosition: 'center top',
             transform: `translateY(-${imageOffset}px)`,
             transition: isDragging ? 'none' : 'transform 0.1s ease-out'
           }}
@@ -252,12 +260,12 @@ export function OverviewPage() {
         top: 0,
         left: 0,
         width: '100%',
-        height: '100vh',
+        height: '100dvh',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        zIndex: 10,
+        zIndex: 5,
         pointerEvents: 'none',
         padding: '80px 32px',
         gap: '48px'
@@ -272,14 +280,14 @@ export function OverviewPage() {
           <div style={{ position: 'relative', marginBottom: '24px', opacity: Math.max(0, 1 - scrollY / 400) }}>
             {/* Navy shadow text */}
             <h1 style={{
-              fontSize: '6rem',
+              fontSize: window.innerWidth < 768 ? '3.5rem' : '6rem',
               fontWeight: 'bold',
               color: '#1E2A3A',
               letterSpacing: '0.02em',
               lineHeight: '1.1',
               position: 'absolute',
-              top: '8px',
-              left: '8px',
+              top: window.innerWidth < 768 ? '5px' : '8px',
+              left: window.innerWidth < 768 ? '5px' : '8px',
               zIndex: 1,
               whiteSpace: 'nowrap'
             }}>
@@ -287,7 +295,7 @@ export function OverviewPage() {
             </h1>
             {/* Main text */}
             <h1 style={{
-              fontSize: '6rem',
+              fontSize: window.innerWidth < 768 ? '3.5rem' : '6rem',
               fontWeight: 'bold',
               color: cssVars.foreground,
               textShadow: `2px 2px 4px ${cssVars.backgroundShadow}`,
@@ -315,29 +323,30 @@ export function OverviewPage() {
           </p>
         </div>
 
-        {/* Knight image */}
+        {/* Knight image - hidden on mobile */}
         <img
           src="/assets/knight_1.gif"
           alt="Knight"
           style={{
             width: '250px',
             height: 'auto',
-            opacity: Math.max(0, 1 - scrollY / 400)
+            opacity: Math.max(0, 1 - scrollY / 400),
+            display: window.innerWidth < 768 ? 'none' : 'block'
           }}
         />
       </div>
 
       {/* Scrollable content overlay */}
       <Scrollbar
-        height="100vh"
-        width="100vw"
+        height="100%"
+        width="100%"
         variant="ghost"
         color="secondary"
         size="md"
-        visibility="hover"
-        smoothScrolling={!isDragging}
+        visibility={isMobile ? 'hidden' : 'hover'}
+        smoothScrolling={false}
         orientation="vertical"
-        style={{ position: 'relative', zIndex: 50 }}
+        style={{ position: 'absolute', top: 0, left: 0, zIndex: 50 }}
         onScroll={handleScroll}
         onScrollStart={handleScrollStart}
         onScrollEnd={handleScrollEnd}
@@ -373,11 +382,6 @@ export function OverviewPage() {
                   size="lg"
                   shape="round"
                   color="secondary"
-                  style={{
-                    backgroundColor: `${cssVars.background}E6`,
-                    backdropFilter: 'blur(20px)',
-                    border: `1px solid ${cssVars.border}80`
-                  }}
                 >
                   <div style={{ padding: '32px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
@@ -406,11 +410,6 @@ export function OverviewPage() {
                   size="lg"
                   shape="round"
                   color="info"
-                  style={{
-                    backgroundColor: `${cssVars.background}E6`,
-                    backdropFilter: 'blur(20px)',
-                    border: `1px solid ${cssVars.border}80`
-                  }}
                 >
                   <div style={{ padding: '32px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
@@ -444,32 +443,34 @@ export function OverviewPage() {
             }}>
               <div style={{ marginBottom: '48px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '16px' }}>
-                  <div style={{ position: 'relative' }}>
-                    {/* Icon shadow */}
-                    <Icon name="BookSolid" size="xl" style={{
-                      color: cssVars.foreground,
-                      position: 'absolute',
-                      top: '3px',
-                      left: '3px',
-                      zIndex: 1
-                    }} />
-                    {/* Main icon */}
-                    <Icon name="BookSolid" size="xl" style={{
-                      color: cssVars.info,
-                      position: 'relative',
-                      zIndex: 2
-                    }} />
-                  </div>
+                  {window.innerWidth >= 768 && (
+                    <div style={{ position: 'relative' }}>
+                      {/* Icon shadow */}
+                      <Icon name="BookSolid" size="xl" style={{
+                        color: cssVars.foreground,
+                        position: 'absolute',
+                        top: '3px',
+                        left: '3px',
+                        zIndex: 1
+                      }} />
+                      {/* Main icon */}
+                      <Icon name="BookSolid" size="xl" style={{
+                        color: cssVars.info,
+                        position: 'relative',
+                        zIndex: 2
+                      }} />
+                    </div>
+                  )}
                   <div style={{ position: 'relative' }}>
                     {/* Navy shadow text */}
                     <h1 style={{
-                      fontSize: '3.5rem',
+                      fontSize: window.innerWidth < 768 ? '2.5rem' : '3.5rem',
                       fontWeight: 'bold',
                       color: '#1E2A3A',
                       letterSpacing: '0.02em',
                       position: 'absolute',
-                      top: '4px',
-                      left: '4px',
+                      top: window.innerWidth < 768 ? '3px' : '4px',
+                      left: window.innerWidth < 768 ? '3px' : '4px',
                       margin: 0,
                       zIndex: 1
                     }}>
@@ -477,7 +478,7 @@ export function OverviewPage() {
                     </h1>
                     {/* Main text */}
                     <h1 style={{
-                      fontSize: '3.5rem',
+                      fontSize: window.innerWidth < 768 ? '2.5rem' : '3.5rem',
                       fontWeight: 'bold',
                       color: cssVars.foreground,
                       textShadow: `2px 2px 4px ${cssVars.backgroundShadow}`,
@@ -510,11 +511,6 @@ export function OverviewPage() {
                     size="lg"
                     shape="round"
                     color="secondary"
-                    style={{
-                      backgroundColor: `${cssVars.background}CC`,
-                      backdropFilter: 'blur(20px)',
-                      border: `1px solid ${cssVars.border}80`
-                    }}
                   >
                     <div style={{ padding: '32px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
@@ -543,11 +539,6 @@ export function OverviewPage() {
                     size="lg"
                     shape="round"
                     color="primary"
-                    style={{
-                      backgroundColor: `${cssVars.background}CC`,
-                      backdropFilter: 'blur(20px)',
-                      border: `1px solid ${cssVars.border}80`
-                    }}
                   >
                     <div style={{ padding: '32px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
@@ -571,11 +562,6 @@ export function OverviewPage() {
                     size="lg"
                     shape="round"
                     color="secondary"
-                    style={{
-                      backgroundColor: `${cssVars.background}CC`,
-                      backdropFilter: 'blur(20px)',
-                      border: `1px solid ${cssVars.border}80`
-                    }}
                   >
                     <div style={{ padding: '32px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
@@ -604,11 +590,6 @@ export function OverviewPage() {
                     size="lg"
                     shape="round"
                     color="primary"
-                    style={{
-                      backgroundColor: `${cssVars.background}CC`,
-                      backdropFilter: 'blur(20px)',
-                      border: `1px solid ${cssVars.border}80`
-                    }}
                   >
                     <div style={{ padding: '32px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
@@ -639,11 +620,6 @@ export function OverviewPage() {
                     size="lg"
                     shape="round"
                     color="info"
-                    style={{
-                      backgroundColor: `${cssVars.background}CC`,
-                      backdropFilter: 'blur(20px)',
-                      border: `1px solid ${cssVars.border}80`
-                    }}
                   >
                     <div style={{ padding: '32px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
@@ -672,32 +648,34 @@ export function OverviewPage() {
             }}>
               <div style={{ marginBottom: '48px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '16px' }}>
-                  <div style={{ position: 'relative' }}>
-                    {/* Icon shadow */}
-                    <Icon name="ChatLinesSolid" size="xl" style={{
-                      color: cssVars.foreground,
-                      position: 'absolute',
-                      top: '3px',
-                      left: '3px',
-                      zIndex: 1
-                    }} />
-                    {/* Main icon */}
-                    <Icon name="ChatLinesSolid" size="xl" style={{
-                      color: cssVars.secondary,
-                      position: 'relative',
-                      zIndex: 2
-                    }} />
-                  </div>
+                  {window.innerWidth >= 768 && (
+                    <div style={{ position: 'relative' }}>
+                      {/* Icon shadow */}
+                      <Icon name="ChatLinesSolid" size="xl" style={{
+                        color: cssVars.foreground,
+                        position: 'absolute',
+                        top: '3px',
+                        left: '3px',
+                        zIndex: 1
+                      }} />
+                      {/* Main icon */}
+                      <Icon name="ChatLinesSolid" size="xl" style={{
+                        color: cssVars.secondary,
+                        position: 'relative',
+                        zIndex: 2
+                      }} />
+                    </div>
+                  )}
                   <div style={{ position: 'relative' }}>
                     {/* Navy shadow text */}
                     <h1 style={{
-                      fontSize: '3.5rem',
+                      fontSize: window.innerWidth < 768 ? '2.5rem' : '3.5rem',
                       fontWeight: 'bold',
                       color: '#1E2A3A',
                       letterSpacing: '0.02em',
                       position: 'absolute',
-                      top: '4px',
-                      left: '4px',
+                      top: window.innerWidth < 768 ? '3px' : '4px',
+                      left: window.innerWidth < 768 ? '3px' : '4px',
                       margin: 0,
                       zIndex: 1,
                       whiteSpace: 'nowrap'
@@ -706,7 +684,7 @@ export function OverviewPage() {
                     </h1>
                     {/* Main text */}
                     <h1 style={{
-                      fontSize: '3.5rem',
+                      fontSize: window.innerWidth < 768 ? '2.5rem' : '3.5rem',
                       fontWeight: 'bold',
                       color: cssVars.foreground,
                       textShadow: `2px 2px 4px ${cssVars.backgroundShadow}`,
@@ -742,11 +720,6 @@ export function OverviewPage() {
                     color="primary"
                     clickable={true}
                     animationMode="parallax"
-                    style={{
-                      backgroundColor: `${cssVars.background}CC`,
-                      backdropFilter: 'blur(20px)',
-                      border: `1px solid ${cssVars.border}80`
-                    }}
                     onClick={() => window.open('https://github.com/dcormican14/templar', '_blank')}
                   >
                     <div style={{ padding: '32px' }}>
@@ -779,11 +752,6 @@ export function OverviewPage() {
                     color="destructive"
                     clickable={true}
                     animationMode="parallax"
-                    style={{
-                      backgroundColor: `${cssVars.background}CC`,
-                      backdropFilter: 'blur(20px)',
-                      border: `1px solid ${cssVars.border}80`
-                    }}
                     onClick={() => window.open('https://www.npmjs.com/package/mournshire', '_blank')}
                   >
                     <div style={{ padding: '32px' }}>
@@ -815,11 +783,6 @@ export function OverviewPage() {
                     size="lg"
                     shape="round"
                     color="info"
-                    style={{
-                      backgroundColor: `${cssVars.background}CC`,
-                      backdropFilter: 'blur(20px)',
-                      border: `1px solid ${cssVars.border}80`
-                    }}
                   >
                     <div style={{ padding: '32px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
@@ -849,11 +812,6 @@ export function OverviewPage() {
                     size="lg"
                     shape="round"
                     color="secondary"
-                    style={{
-                      backgroundColor: `${cssVars.background}CC`,
-                      backdropFilter: 'blur(20px)',
-                      border: `1px solid ${cssVars.border}80`
-                    }}
                   >
                     <div style={{ padding: '32px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
@@ -877,11 +835,6 @@ export function OverviewPage() {
                     size="lg"
                     shape="round"
                     color="primary"
-                    style={{
-                      backgroundColor: `${cssVars.background}CC`,
-                      backdropFilter: 'blur(20px)',
-                      border: `1px solid ${cssVars.border}80`
-                    }}
                   >
                     <div style={{ padding: '32px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>

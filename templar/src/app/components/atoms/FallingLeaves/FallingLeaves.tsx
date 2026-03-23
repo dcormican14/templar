@@ -124,7 +124,7 @@ export function FallingLeaves({
         top: 0,
         left: 0,
         width: '100vw',
-        height: '100vh',
+        height: '100dvh',
         pointerEvents: 'none',
         zIndex: 100, // High z-index to ensure visibility for debugging
         overflow: 'hidden'
@@ -136,7 +136,7 @@ export function FallingLeaves({
           src={leaf.image}
           alt="Falling leaf"
           onError={(e) => console.error('Failed to load leaf image:', leaf.image)}
-          onLoad={() => console.log('Loaded leaf image:', leaf.image)}
+          onLoad={() => {/* console.log('Loaded leaf image:', leaf.image) */}}
           style={{
             position: 'absolute',
             left: `${leaf.x}px`,

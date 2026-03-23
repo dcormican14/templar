@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Navigation } from './molecules/Navigation/Navigation';
 import { Icon, Button, Scrollbar } from './atoms';
 import { useSafeTheme } from '../hooks/useSafeTheme';
 import { useSafeCSSVariables } from '../hooks/useSafeCSSVariables';
+import { useSafeLoading } from '../hooks/useSafeLoading';
 
 interface PageWrapperProps {
   children: React.ReactNode;
@@ -14,15 +15,31 @@ interface PageWrapperProps {
 
 export function PageWrapper({ children, activeTab }: PageWrapperProps) {
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [displayTab, setDisplayTab] = useState(activeTab);
   const router = useRouter();
-  const { theme, cycleTheme } = useSafeTheme();
+  const { theme, setTheme } = useSafeTheme();
   const cssVars = useSafeCSSVariables();
+  const { stopLoading } = useSafeLoading();
 
-  // Ensure component is mounted on client side
+  // Custom theme cycling for demo website - only cycles through selected themes
+  const allowedThemes = ['valor-dark', 'sepia-dark', 'solarized-dark', 'contrast'] as const;
+
+  const cycleTheme = () => {
+    const currentIndex = allowedThemes.indexOf(theme as any);
+    const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % allowedThemes.length;
+    setTheme(allowedThemes[nextIndex]);
+  };
+
+  // Mount on client, then dismiss the loading screen
   useEffect(() => {
     setMounted(true);
-  }, []);
+    stopLoading('app-init');
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, [stopLoading]);
 
   // Update display tab when activeTab changes
   useEffect(() => {
@@ -50,17 +67,8 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
     return () => window.removeEventListener('overviewScroll', handleOverviewScroll);
   }, [activeTab]);
 
-  // Don't render until mounted to avoid SSR issues
-  if (!mounted) {
-    return (
-      <div className="!h-screen transition-all duration-300" style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }}>
-        <div className="h-16 animate-pulse" style={{ backgroundColor: 'var(--muted)' }}></div>
-        <main className="container mx-auto px-6 py-8">
-          <div className="h-32 animate-pulse rounded" style={{ backgroundColor: 'var(--muted)' }}></div>
-        </main>
-      </div>
-    );
-  }
+  // Don't render during SSR — the loading screen covers the page
+  if (!mounted) return null;
 
   const tabs = [
     { id: 'overview', label: 'Overview'},
@@ -127,9 +135,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
     switch (themeName) {
       case 'light':
         return 'SunLight';
-      case 'dark':
-        return 'HalfMoon';
-      case 'high-contrast':
+      case 'contrast':
         return 'Lens';
       case 'sepia-light':
         return 'Lamp';
@@ -148,16 +154,16 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
 
   const getThemeLabel = (themeName: string) => {
     switch (themeName) {
-      case 'high-contrast':
+      case 'contrast':
         return 'High Contrast';
       case 'sepia-dark':
-        return 'Sepia Dark';
+        return 'Sepia';
       case 'sepia-light':
         return 'Sepia Light';
       case 'solarized-dark':
-        return 'Solarized Dark';
+        return 'Solarized';
       case 'valor-dark':
-        return 'Valor Dark';
+        return 'Valor';
       default:
         return themeName.charAt(0).toUpperCase() + themeName.slice(1);
     }
@@ -165,7 +171,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
 
   return (
     <div
-      className="h-screen transition-all duration-300 overflow-hidden"
+      className="h-dvh transition-all duration-300 overflow-hidden"
       style={{
         backgroundColor: cssVars.background,
         color: cssVars.foreground
@@ -187,10 +193,11 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
       )}
 
       {/* Navigation Bar */}
-      <div className="fixed top-0 left-0 right-0 z-40">
+      <div className="fixed top-0 left-0 right-0" style={{ zIndex: 9999 }}>
         <Navigation
           icon={<Icon name="HomeShield" size="lg" />}
-          appName="Templar"
+          appName="Mournshire Design"
+          onBrandClick={() => router.push('/')}
           tabs={tabs}
           activeTab={displayTab}
           onTabChange={handleTabChange}
@@ -206,39 +213,45 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
               fontSize: '14px',
               fontWeight: '500'
             }}>
-              v1.0.0
+              v1.2.2
             </div>
           }
         />
       </div>
 
       {/* Main content */}
-      <Scrollbar
-        height="calc(100vh - 48px)"
-        variant="ghost"
-        color="secondary"
-        size="md"
-        visibility="hover"
-        smoothScrolling={true}
-        style={{ marginTop: '48px' }}
-      >
-        {activeTab === 'overview' ? (
-          // Full width and height for overview page
-          <div style={{ width: '100vw', height: '100vh', margin: 0, padding: 0 }}>
-            {children}
-          </div>
-        ) : activeTab === 'components' || activeTab === 'environment' ? (
-          // Full width for components and environment pages (have their own side menu layout)
-          <div style={{ width: '100vw', height: '100%', margin: 0, padding: 0 }}>
-            {children}
-          </div>
-        ) : (
-          // Container for other pages
-          <main className="container mx-auto px-6 py-8">
-            {children}
-          </main>
-        )}
-      </Scrollbar>
+      {activeTab === 'overview' ? (
+        // Overview page has its own scrolling system with parallax - don't wrap in Scrollbar
+        <div style={{ marginTop: '48px', height: 'calc(100dvh - 48px)', width: '100%' }}>
+          {children}
+        </div>
+      ) : (
+        // Other pages use PageWrapper's Scrollbar
+        <div className="flex flex-col" style={{ marginTop: '48px', height: 'calc(100dvh - 48px)' }}>
+          <Scrollbar
+            variant="ghost"
+            color="secondary"
+            size="md"
+            visibility={isMobile ? 'hidden' : 'always'}
+            disabled={false}
+            smoothScrolling={true}
+            height="100%"
+            width="100%"
+          >
+            {activeTab === 'components' || activeTab === 'environment' ? (
+              // Full width for components and environment pages (have their own side menu layout)
+              <div style={{ width: '100%', margin: 0, padding: 0 }}>
+                {children}
+              </div>
+            ) : (
+              // Container for other pages
+              <main className="container mx-auto px-6 py-8">
+                {children}
+              </main>
+            )}
+          </Scrollbar>
+        </div>
+      )}
       
       {/* Floating Theme Switcher */}
       <div className="fixed bottom-6 right-6 z-50">
@@ -252,7 +265,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
           className="shadow-lg hover:shadow-xl transition-shadow duration-200"
           title={`Current theme: ${getThemeLabel(theme)}. Click to cycle themes.`}
         >
-          <span className="hidden sm:inline ml-2">{getThemeLabel(theme)}</span>
+          {!isMobile && <span className="ml-2">{getThemeLabel(theme)}</span>}
         </Button>
       </div>
     </div>

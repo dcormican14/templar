@@ -145,7 +145,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>((allProps, ref) => {
       const rect = cardRef.current.getBoundingClientRect();
       setCardWidth(rect.width);
     }
-  }, [children, combinedStyles, header, footer]);
+  }, [header, footer]);
 
   // Shared cursor state for synchronized blinking
   const [sharedCursorVisible, setSharedCursorVisible] = useState(true);

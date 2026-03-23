@@ -7,7 +7,7 @@ import { Icon } from '../Icon';
 import { Divider } from '../Divider';
 import { ProgressIndicator } from '../ProgressIndicator';
 import { extractContainerProps, UNIVERSAL_DEFAULTS } from '../types';
-import type { NotificationProps } from './Notification.types';
+import type { NotificationProps, NotificationAction } from './Notification.types';
 import {
   createNotificationContainerStyles,
   getNotificationStyles,
@@ -69,8 +69,12 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>((allPr
     showProgress,
     toastPosition,
     type, // Legacy prop
+    hasActions: _hasActions,         // config-only props, must not reach DOM
+    actionLabel1: _actionLabel1,
+    actionLabel2: _actionLabel2,
+    _actionsComputed: _actionsComputed,
     ...restProps
-  } = componentProps;
+  } = componentProps as any;
   
   // Map legacy type prop to color if color is not explicitly set
   const effectiveColor = type && allProps.color === undefined ? 
@@ -150,6 +154,9 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>((allPr
       // Combine loading and disabled states properly
       opacity: disabled ? 0.6 : loading ? 0.7 : undefined,
       cursor: disabled ? 'not-allowed' : loading ? 'wait' : undefined,
+      ...(animationsEnabled && {
+        animation: 'toast-enter 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both',
+      }),
       ...style,
     };
 
@@ -291,7 +298,7 @@ export const Notification = forwardRef<HTMLDivElement, NotificationProps>((allPr
                 flexWrap: 'wrap',
                 flexShrink: 0
               }}>
-                {actions.map((action, index) => {
+                {(actions as NotificationAction[]).map((action, index) => {
                   const actionVariant = action.variant || 'outline';
                   const baseStyles = getActionButtonStyles(actionVariant, size, cssVars, animationsEnabled, variant, effectiveColor);
 
