@@ -1,106 +1,106 @@
-/* Solarized Dark Theme */
+/* Solarized Dark Theme - Iconic teal base, teal primary complementing valor's orange */
 [data-theme="solarized-dark"] {
-  /* Base colors */
-  --background: #002b36;
+  /* Base colors — keeping the iconic solarized teal */
+  --background: #002B36;
   --background-hover: #073642;
-  --background-accent: #03262f;
+  --background-accent: #0A3040;
   --background-shadow: rgba(0, 0, 0, 0.8);
   --background-disabled: #001922;
-  --background-border: #586e75;
-  --background-font: #eee8d5;
-  
-  --foreground: #eee8d5;
-  --foreground-hover: #fdf6e3;
-  --foreground-accent: #93a1a1;
+  --background-border: #073642;
+  --background-font: #EEE8D5;
+
+  --foreground: #EEE8D5;
+  --foreground-hover: #FDF6E3;
+  --foreground-accent: #93A1A1;
   --foreground-shadow: rgba(238, 232, 213, 0.1);
-  --foreground-disabled: #586e75;
-  --foreground-border: #657b83;
-  --foreground-font: #002b36;
-  
-  /* Primary colors */
-  --primary: #ff90e8;
-  --primary-background: #4a1844;
-  --primary-foreground: #eee8d5;
-  --primary-hover: #ffb3ed;
-  --primary-accent: #e066cc;
-  --primary-shadow: rgba(255, 144, 232, 0.3);
-  --primary-disabled: #664d63;
-  --primary-border: #b366a4;
-  --primary-font: #073642;
-  
-  /* Secondary colors */
-  --secondary: #90caf9;
-  --secondary-background: #073642;
-  --secondary-foreground: #eee8d5;
-  --secondary-hover: #add8ff;
-  --secondary-accent: #6bb6ff;
-  --secondary-shadow: rgba(144, 202, 249, 0.3);
-  --secondary-disabled: #4a5f73;
-  --secondary-border: #6bb6ff;
-  --secondary-font: #073642;
-  
-  /* Success colors */
+  --foreground-disabled: #586E75;
+  --foreground-border: #657B83;
+  --foreground-font: #002B36;
+
+  /* Primary colors - Vivid Teal/Cyan (native to the base, teal/orange are complementary) */
+  --primary: #2AA198;
+  --primary-background: #051E20;
+  --primary-foreground: #EEE8D5;
+  --primary-hover: #3DBDB4;
+  --primary-accent: #1A7D76;
+  --primary-shadow: rgba(42, 161, 152, 0.4);
+  --primary-disabled: #0E3030;
+  --primary-border: #3DBDB4;
+  --primary-font: #EEE8D5;
+
+  /* Secondary colors - Warm Amber (valor's warmth, orange complement to teal) */
+  --secondary: #D9A441;
+  --secondary-background: #1E1808;
+  --secondary-foreground: #EEE8D5;
+  --secondary-hover: #E6B95E;
+  --secondary-accent: #B8842D;
+  --secondary-shadow: rgba(217, 164, 65, 0.35);
+  --secondary-disabled: #302A10;
+  --secondary-border: #E6B95E;
+  --secondary-font: #EEE8D5;
+
+  /* Success colors (solarized green, authentic) */
   --success: #859900;
-  --success-background: #1a2e1a;
-  --success-foreground: #eee8d5;
-  --success-hover: #a6bf00;
-  --success-accent: #719900;
+  --success-background: #121800;
+  --success-foreground: #EEE8D5;
+  --success-hover: #A6BF00;
+  --success-accent: #6B7A00;
   --success-shadow: rgba(133, 153, 0, 0.3);
-  --success-disabled: #424d00;
-  --success-border: #719900;
-  --success-font: #002b36;
-  
-  /* Warning colors */
-  --warning: #cb4b16;
-  --warning-background: #332014;
-  --warning-foreground: #eee8d5;
-  --warning-hover: #d6621f;
-  --warning-accent: #b5420f;
+  --success-disabled: #202C00;
+  --success-border: #A6BF00;
+  --success-font: #EEE8D5;
+
+  /* Warning colors (solarized orange, authentic) */
+  --warning: #CB4B16;
+  --warning-background: #281410;
+  --warning-foreground: #EEE8D5;
+  --warning-hover: #E06020;
+  --warning-accent: #A83A10;
   --warning-shadow: rgba(203, 75, 22, 0.3);
-  --warning-disabled: #663812;
-  --warning-border: #b5420f;
-  --warning-font: #002b36;
-  
-  /* Destructive colors */
-  --destructive: #dc322f;
-  --destructive-background: #3d1918;
-  --destructive-foreground: #eee8d5;
-  --destructive-hover: #e55450;
-  --destructive-accent: #c52825;
+  --warning-disabled: #3A2010;
+  --warning-border: #E06020;
+  --warning-font: #EEE8D5;
+
+  /* Destructive colors (solarized red) */
+  --destructive: #DC322F;
+  --destructive-background: #2A0C0C;
+  --destructive-foreground: #EEE8D5;
+  --destructive-hover: #E85450;
+  --destructive-accent: #BE2825;
   --destructive-shadow: rgba(220, 50, 47, 0.3);
-  --destructive-disabled: #5c2622;
-  --destructive-border: #c52825;
-  --destructive-font: #eee8d5;
-  
-  /* Info colors */
-  --info: #268bd2;
-  --info-background: #1a2332;
-  --info-foreground: #eee8d5;
-  --info-hover: #4da3db;
-  --info-accent: #2176c4;
+  --destructive-disabled: #3E1818;
+  --destructive-border: #E85450;
+  --destructive-font: #EEE8D5;
+
+  /* Info colors (solarized blue, authentic) */
+  --info: #268BD2;
+  --info-background: #0C1E30;
+  --info-foreground: #EEE8D5;
+  --info-hover: #4DA3DB;
+  --info-accent: #2176C4;
   --info-shadow: rgba(38, 139, 210, 0.3);
-  --info-disabled: #1f3f59;
-  --info-border: #2176c4;
-  --info-font: #eee8d5;
-  
+  --info-disabled: #142A3E;
+  --info-border: #2176C4;
+  --info-font: #EEE8D5;
+
   /* Legacy compatibility */
-  --accent: #b58900;
-  --accent-foreground: #002b36;
-  --border: #586e75;
-  --border-hover: #93a1a1;
+  --accent: #2AA198;
+  --accent-foreground: #EEE8D5;
+  --border: #586E75;
+  --border-hover: #93A1A1;
   --muted: #073642;
-  --muted-foreground: #93a1a1;
-  --error: #dc322f;
-  --error-foreground: #eee8d5;
+  --muted-foreground: #93A1A1;
+  --error: #DC322F;
+  --error-foreground: #EEE8D5;
   --card: #073642;
-  --card-foreground: #eee8d5;
-  --input: #073642;
-  --input-border: #586e75;
-  --input-placeholder: #93a1a1;
-  --input-foreground: #eee8d5;
-  --progress-track: #586e75;
-  --progress-track-text: #93a1a1;
-  
+  --card-foreground: #EEE8D5;
+  --input: #001922;
+  --input-border: #586E75;
+  --input-placeholder: #93A1A1;
+  --input-foreground: #EEE8D5;
+  --progress-track: #586E75;
+  --progress-track-text: #93A1A1;
+
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
   --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);

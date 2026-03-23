@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Navigation } from './molecules/Navigation/Navigation';
 import { Icon, Button, Scrollbar } from './atoms';
 import { useSafeTheme } from '../hooks/useSafeTheme';
 import { useSafeCSSVariables } from '../hooks/useSafeCSSVariables';
+import { useSafeLoading } from '../hooks/useSafeLoading';
 
 interface PageWrapperProps {
   children: React.ReactNode;
@@ -14,13 +15,15 @@ interface PageWrapperProps {
 
 export function PageWrapper({ children, activeTab }: PageWrapperProps) {
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [displayTab, setDisplayTab] = useState(activeTab);
   const router = useRouter();
   const { theme, setTheme } = useSafeTheme();
   const cssVars = useSafeCSSVariables();
+  const { stopLoading } = useSafeLoading();
 
   // Custom theme cycling for demo website - only cycles through selected themes
-  const allowedThemes = ['sepia-dark', 'solarized-dark', 'valor-dark', 'dark', 'contrast'] as const;
+  const allowedThemes = ['valor-dark', 'sepia-dark', 'solarized-dark', 'contrast'] as const;
 
   const cycleTheme = () => {
     const currentIndex = allowedThemes.indexOf(theme as any);
@@ -28,10 +31,15 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
     setTheme(allowedThemes[nextIndex]);
   };
 
-  // Ensure component is mounted on client side
+  // Mount on client, then dismiss the loading screen
   useEffect(() => {
     setMounted(true);
-  }, []);
+    stopLoading('app-init');
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, [stopLoading]);
 
   // Update display tab when activeTab changes
   useEffect(() => {
@@ -59,17 +67,8 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
     return () => window.removeEventListener('overviewScroll', handleOverviewScroll);
   }, [activeTab]);
 
-  // Don't render until mounted to avoid SSR issues
-  if (!mounted) {
-    return (
-      <div className="!h-screen transition-all duration-300" style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }}>
-        <div className="h-16 animate-pulse" style={{ backgroundColor: 'var(--muted)' }}></div>
-        <main className="container mx-auto px-6 py-8">
-          <div className="h-32 animate-pulse rounded" style={{ backgroundColor: 'var(--muted)' }}></div>
-        </main>
-      </div>
-    );
-  }
+  // Don't render during SSR — the loading screen covers the page
+  if (!mounted) return null;
 
   const tabs = [
     { id: 'overview', label: 'Overview'},
@@ -136,8 +135,6 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
     switch (themeName) {
       case 'light':
         return 'SunLight';
-      case 'dark':
-        return 'HalfMoon';
       case 'contrast':
         return 'Lens';
       case 'sepia-light':
@@ -174,7 +171,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
 
   return (
     <div
-      className="h-screen transition-all duration-300 overflow-hidden"
+      className="h-dvh transition-all duration-300 overflow-hidden"
       style={{
         backgroundColor: cssVars.background,
         color: cssVars.foreground
@@ -225,17 +222,17 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
       {/* Main content */}
       {activeTab === 'overview' ? (
         // Overview page has its own scrolling system with parallax - don't wrap in Scrollbar
-        <div style={{ marginTop: '48px', height: 'calc(100vh - 48px)', width: '100%' }}>
+        <div style={{ marginTop: '48px', height: 'calc(100dvh - 48px)', width: '100%' }}>
           {children}
         </div>
       ) : (
         // Other pages use PageWrapper's Scrollbar
-        <div className="flex flex-col" style={{ marginTop: '48px', height: 'calc(100vh - 48px)' }}>
+        <div className="flex flex-col" style={{ marginTop: '48px', height: 'calc(100dvh - 48px)' }}>
           <Scrollbar
             variant="ghost"
             color="secondary"
             size="md"
-            visibility="always"
+            visibility={isMobile ? 'hidden' : 'always'}
             disabled={false}
             smoothScrolling={true}
             height="100%"
@@ -268,7 +265,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
           className="shadow-lg hover:shadow-xl transition-shadow duration-200"
           title={`Current theme: ${getThemeLabel(theme)}. Click to cycle themes.`}
         >
-          <span className="hidden sm:inline ml-2">{getThemeLabel(theme)}</span>
+          {!isMobile && <span className="ml-2">{getThemeLabel(theme)}</span>}
         </Button>
       </div>
     </div>

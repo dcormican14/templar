@@ -1,106 +1,106 @@
-/* Sepia Light Theme - Warm, vintage light mode */
+/* Sepia Light Theme - Aged parchment with burnt sienna and copper tones */
 [data-theme="sepia-light"] {
   /* Base colors */
-  --background: #f4ecd8;
-  --background-hover: #ede4d4;
-  --background-accent: #e8dcc4;
+  --background: #F4ECD8; /* Aged parchment */
+  --background-hover: #EDE4CE;
+  --background-accent: #E6D9C0;
   --background-shadow: rgba(58, 43, 32, 0.1);
-  --background-disabled: #f9f4e7;
-  --background-border: #c9b49d;
-  --background-font: #3a2b20;
-  
-  --foreground: #3a2b20;
-  --foreground-hover: #2a1f16;
+  --background-disabled: #F9F5EC;
+  --background-border: #C9B49D;
+  --background-font: #3A2B20;
+
+  --foreground: #3A2B20;
+  --foreground-hover: #2A1F16;
   --foreground-accent: #524639;
   --foreground-shadow: rgba(58, 43, 32, 0.1);
-  --foreground-disabled: #7a6a58;
-  --foreground-border: #9c8b77;
-  --foreground-font: #f4ecd8;
-  
-  /* Primary colors */
-  --primary: #c86b8f;
-  --primary-background: #f9eff3;
-  --primary-foreground: #f9f4e7;
-  --primary-hover: #d98da7;
-  --primary-accent: #b85076;
-  --primary-shadow: rgba(200, 107, 143, 0.3);
-  --primary-disabled: #e4b6c7;
-  --primary-border: #d98da7;
-  --primary-font: #f9f4e7;
-  
-  /* Secondary colors */
-  --secondary: #7ab1d6;
-  --secondary-background: #eef6fb;
-  --secondary-foreground: #3a2b20;
-  --secondary-hover: #99c9eb;
-  --secondary-accent: #5a9bc4;
-  --secondary-shadow: rgba(122, 177, 214, 0.3);
-  --secondary-disabled: #bdd8eb;
-  --secondary-border: #5a9bc4;
-  --secondary-font: #3a2b20;
-  
+  --foreground-disabled: #7A6A58;
+  --foreground-border: #9C8B77;
+  --foreground-font: #F4ECD8;
+
+  /* Primary colors - Burnt Sienna/Terracotta (echoes the background image's orange-red) */
+  --primary: #C4622A;
+  --primary-background: #F6EAE0;
+  --primary-foreground: #F4ECD8;
+  --primary-hover: #D97A3E;
+  --primary-accent: #9E4E20;
+  --primary-shadow: rgba(196, 98, 42, 0.35);
+  --primary-disabled: #DEC0A8;
+  --primary-border: #D97A3E;
+  --primary-font: #F4ECD8;
+
+  /* Secondary colors - Aged Copper/Bronze (rich complement to sienna) */
+  --secondary: #8A6E3A;
+  --secondary-background: #F0EAD8;
+  --secondary-foreground: #3A2B20;
+  --secondary-hover: #A88448;
+  --secondary-accent: #6A5228;
+  --secondary-shadow: rgba(138, 110, 58, 0.3);
+  --secondary-disabled: #C8B898;
+  --secondary-border: #A88448;
+  --secondary-font: #3A2B20;
+
   /* Success colors */
-  --success: #7dbb8c;
-  --success-background: #f0f7f1;
-  --success-foreground: #3a2b20;
-  --success-hover: #96c7a2;
-  --success-accent: #659e72;
-  --success-shadow: rgba(125, 187, 140, 0.3);
-  --success-disabled: #beddbc;
-  --success-border: #659e72;
-  --success-font: #3a2b20;
-  
-  /* Warning colors */
-  --warning: #e6a96b;
-  --warning-background: #fcf5ee;
-  --warning-foreground: #3a2b20;
-  --warning-hover: #ebba84;
-  --warning-accent: #d99551;
-  --warning-shadow: rgba(230, 169, 107, 0.3);
-  --warning-disabled: #f2d4b5;
-  --warning-border: #d99551;
-  --warning-font: #3a2b20;
-  
-  /* Destructive colors */
-  --destructive: #a8525d;
-  --destructive-background: #f4eded;
-  --destructive-foreground: #f9f4e7;
-  --destructive-hover: #b86d76;
-  --destructive-accent: #9a3b47;
-  --destructive-shadow: rgba(168, 82, 93, 0.3);
-  --destructive-disabled: #d4a8ae;
-  --destructive-border: #9a3b47;
-  --destructive-font: #f9f4e7;
-  
-  /* Info colors */
-  --info: #7ab1d6;
-  --info-background: #eef6fb;
-  --info-foreground: #3a2b20;
-  --info-hover: #99c9eb;
-  --info-accent: #5a9bc4;
-  --info-shadow: rgba(122, 177, 214, 0.3);
-  --info-disabled: #bdd8eb;
-  --info-border: #5a9bc4;
-  --info-font: #3a2b20;
-  
+  --success: #5A9E6A;
+  --success-background: #EAF3EC;
+  --success-foreground: #3A2B20;
+  --success-hover: #72B882;
+  --success-accent: #3E8050;
+  --success-shadow: rgba(90, 158, 106, 0.3);
+  --success-disabled: #B4D4BC;
+  --success-border: #3E8050;
+  --success-font: #3A2B20;
+
+  /* Warning colors (Deep amber, feels antique) */
+  --warning: #CC7A28;
+  --warning-background: #FAF0E0;
+  --warning-foreground: #3A2B20;
+  --warning-hover: #E69040;
+  --warning-accent: #A85E18;
+  --warning-shadow: rgba(204, 122, 40, 0.3);
+  --warning-disabled: #E0C4A0;
+  --warning-border: #E69040;
+  --warning-font: #3A2B20;
+
+  /* Destructive colors (Muted crimson, aged) */
+  --destructive: #A83838;
+  --destructive-background: #F4E8E8;
+  --destructive-foreground: #F4ECD8;
+  --destructive-hover: #C04848;
+  --destructive-accent: #882828;
+  --destructive-shadow: rgba(168, 56, 56, 0.3);
+  --destructive-disabled: #D4B0B0;
+  --destructive-border: #C04848;
+  --destructive-font: #F4ECD8;
+
+  /* Info colors (Dusty slate blue, aged-map feel) */
+  --info: #5A7EA8;
+  --info-background: #E8EEF6;
+  --info-foreground: #3A2B20;
+  --info-hover: #7298C0;
+  --info-accent: #3E6088;
+  --info-shadow: rgba(90, 126, 168, 0.3);
+  --info-disabled: #B0C4D8;
+  --info-border: #3E6088;
+  --info-font: #3A2B20;
+
   /* Legacy compatibility */
-  --accent: #d5b48c;
-  --accent-foreground: #3a2b20;
-  --border: #c9b49d;
-  --border-hover: #bfa27d;
-  --muted: #ede4d4;
-  --muted-foreground: #7a6a58;
-  --error: #a8525d;
-  --error-foreground: #f9f4e7;
-  --card: #f9f4e7;
-  --card-foreground: #3a2b20;
-  --input: #f9f4e7;
-  --input-border: #c9b49d;
-  --input-placeholder: #bfa27d;
-  --input-foreground: #3a2b20;
-  --progress-track: #ddc9a3;
-  --progress-track-text: #8a7057;
-  
+  --accent: #8A6E3A;
+  --accent-foreground: #3A2B20;
+  --border: #C9B49D;
+  --border-hover: #9C8B77;
+  --muted: #E6D9C0;
+  --muted-foreground: #7A6A58;
+  --error: #A83838;
+  --error-foreground: #F4ECD8;
+  --card: #EDE4CE;
+  --card-foreground: #3A2B20;
+  --input: #F9F5EC;
+  --input-border: #C9B49D;
+  --input-placeholder: #9C8B77;
+  --input-foreground: #3A2B20;
+  --progress-track: #D9C8A8;
+  --progress-track-text: #6B5B47;
+
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgb(58 43 32 / 0.05);
   --shadow: 0 1px 3px 0 rgb(58 43 32 / 0.1), 0 1px 2px -1px rgb(58 43 32 / 0.1);

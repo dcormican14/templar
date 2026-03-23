@@ -21,7 +21,7 @@ export default function Page() {
   // Don't render until mounted to avoid SSR issues
   if (!mounted) {
     return (
-      <div className="!h-screen transition-all duration-300" style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }}>
+      <div className="!h-dvh transition-all duration-300" style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }}>
         <div className="h-16 animate-pulse" style={{ backgroundColor: 'var(--muted)' }}></div>
         <main className="container mx-auto px-6 py-8">
           <div className="h-32 animate-pulse rounded" style={{ backgroundColor: 'var(--muted)' }}></div>
@@ -43,7 +43,7 @@ function PageContent() {
 
   // Show loading state while redirecting
   return (
-    <div className="!h-screen transition-all duration-300" style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }}>
+    <div className="!h-dvh transition-all duration-300" style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }}>
       <div className="h-16 animate-pulse" style={{ backgroundColor: 'var(--muted)' }}></div>
       <main className="container mx-auto px-6 py-8">
         <div className="h-32 animate-pulse rounded" style={{ backgroundColor: 'var(--muted)' }}></div>

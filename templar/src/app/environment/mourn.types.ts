@@ -134,6 +134,34 @@ export interface LoadingProviderConfig {
    * @default 300
    */
   minLoadingTime?: number;
+
+  /**
+   * URL or path to an image/gif to display instead of the default spinner.
+   * When set, the image is shown centered on the loading screen.
+   */
+  loadingImage?: string;
+
+  /**
+   * Title text to type out on the loading screen (displayed with typing animation).
+   */
+  loadingTitle?: string;
+
+  /**
+   * Subtitle text to type out below the title (displayed with typing animation after title completes).
+   */
+  loadingSubtitle?: string;
+
+  /**
+   * Typing speed in milliseconds per character.
+   * @default 60
+   */
+  typingSpeed?: number;
+
+  /**
+   * Duration in milliseconds for the fade-out transition when loading completes.
+   * @default 500
+   */
+  transitionDuration?: number;
 }
 
 /**

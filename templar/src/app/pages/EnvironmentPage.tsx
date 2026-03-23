@@ -175,7 +175,7 @@ export function EnvironmentPage() {
   return (
     <div style={{
       display: 'flex',
-      height: 'calc(100vh - 48px)',
+      height: 'calc(100dvh - 48px)',
       overflow: 'hidden',
       position: 'relative'
     }}>

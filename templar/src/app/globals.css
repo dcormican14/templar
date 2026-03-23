@@ -2,16 +2,27 @@
 @import "./styles/index.css";
 
 /* Base styles */
-body {
-  background: var(--background);
-  color: var(--foreground);
+html {
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
 }
 
 body {
-  background: inherit;
-  color: inherit;
+  background: var(--background);
+  color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100%;
+  min-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  /* iOS safe area insets */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  -webkit-text-size-adjust: 100%;
 }
 
 /* Hide scrollbar for dropdown content while maintaining scroll functionality */

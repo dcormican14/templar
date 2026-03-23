@@ -52,9 +52,17 @@ export function OverviewPage() {
   const cssVars = useCSSVariables();
   const [scrollY, setScrollY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [imageHeight, setImageHeight] = useState(0);
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
   const imageRef = React.useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Measure image height when it loads
   useEffect(() => {
@@ -225,7 +233,7 @@ export function OverviewPage() {
           top: 0,
           left: 0,
           width: '100%',
-          height: '100vh',
+          height: '100dvh',
           overflow: 'hidden',
           zIndex: 1
         }}
@@ -236,7 +244,7 @@ export function OverviewPage() {
           alt="Knight Background"
           style={{
             width: '100%',
-            minHeight: '100vh',
+            minHeight: '100dvh',
             height: 'auto',
             objectFit: 'cover',
             objectPosition: 'center top',
@@ -252,7 +260,7 @@ export function OverviewPage() {
         top: 0,
         left: 0,
         width: '100%',
-        height: '100vh',
+        height: '100dvh',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',
@@ -335,7 +343,7 @@ export function OverviewPage() {
         variant="ghost"
         color="secondary"
         size="md"
-        visibility="hover"
+        visibility={isMobile ? 'hidden' : 'hover'}
         smoothScrolling={false}
         orientation="vertical"
         style={{ position: 'absolute', top: 0, left: 0, zIndex: 50 }}

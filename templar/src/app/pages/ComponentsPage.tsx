@@ -142,7 +142,7 @@ export function ComponentsPage() {
   return (
     <div style={{
       display: 'flex',
-      height: 'calc(100vh - 48px)', // Full viewport height minus navigation
+      height: 'calc(100dvh - 48px)', // Full viewport height minus navigation
       overflow: 'hidden',
       position: 'relative'
     }}>

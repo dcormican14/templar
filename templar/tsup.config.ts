@@ -6,6 +6,31 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+/**
+ * Recursively resolves CSS @import statements, inlining their contents.
+ * Skips non-relative imports (e.g. "tailwindcss") so they remain as-is.
+ */
+function inlineCSSImports(cssContent: string, cssDir: string): string {
+  return cssContent.replace(
+    /^@import\s+['"](.+?)['"]\s*;/gm,
+    (_match, importPath) => {
+      // Skip non-relative imports (packages like "tailwindcss")
+      if (!importPath.startsWith('.') && !importPath.startsWith('/')) {
+        return _match;
+      }
+      const resolved = path.resolve(cssDir, importPath);
+      if (!fs.existsSync(resolved)) {
+        console.warn(`⚠️  CSS import not found: ${resolved}`);
+        return `/* import not found: ${importPath} */`;
+      }
+      const importedCSS = fs.readFileSync(resolved, 'utf-8');
+      const importedDir = path.dirname(resolved);
+      // Recursively inline nested imports
+      return `/* --- inlined from ${importPath} --- */\n${inlineCSSImports(importedCSS, importedDir)}\n/* --- end ${importPath} --- */`;
+    }
+  );
+}
+
 export default defineConfig({
   entry: {
     // Main entry point
@@ -34,13 +59,16 @@ export default defineConfig({
   minify: false, // Keep readable for debugging
   outDir: 'dist',
   onSuccess: async () => {
-    // Copy CSS to dist
+    // Inline all CSS imports into a single globals.css for dist
     const sourceCSS = path.join(__dirname, 'src/app/globals.css');
     const destCSS = path.join(__dirname, 'dist/globals.css');
 
     if (fs.existsSync(sourceCSS)) {
-      fs.copyFileSync(sourceCSS, destCSS);
-      console.log('✅ CSS copied to dist/');
+      const rawCSS = fs.readFileSync(sourceCSS, 'utf-8');
+      const cssDir = path.dirname(sourceCSS);
+      const inlinedCSS = inlineCSSImports(rawCSS, cssDir);
+      fs.writeFileSync(destCSS, inlinedCSS, 'utf-8');
+      console.log('✅ CSS inlined and written to dist/globals.css');
     }
   }
 });

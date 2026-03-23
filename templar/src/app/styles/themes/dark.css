@@ -1,109 +1,109 @@
-/* Dark Theme - Low-light environments, battery saving on OLED screens */
+/* Dark Theme - Deep navy with rich purple and valor gold accents */
 [data-theme="dark"] {
   /* Base colors */
-  --background: #2c2f3e;
-  --background-hover: #3a3f53;
-  --background-accent: #323345;
+  --background: #16202C;
+  --background-hover: #1E2A3A;
+  --background-accent: #1A2434;
   --background-shadow: rgba(0, 0, 0, 0.8);
-  --background-disabled: #1f2029;
-  --background-border: #3a3f53;
-  --background-font: #d7dae9;
-  
-  --foreground: #d7dae9;
-  --foreground-hover: #ffffff;
-  --foreground-accent: #b8bcc8;
-  --foreground-shadow: rgba(215, 218, 233, 0.1);
-  --foreground-disabled: #6d7a8b;
-  --foreground-border: #4a5066;
-  --foreground-font: #2c2f3e;
-  
-  /* Primary colors */
-  --primary: #ff90e8;
-  --primary-background: #4a1844;
-  --primary-foreground: #ffffff;
-  --primary-hover: #ffb3ed;
-  --primary-accent: #e066cc;
-  --primary-shadow: rgba(255, 144, 232, 0.3);
-  --primary-disabled: #664d63;
-  --primary-border: #b366a4;
-  --primary-font: #ffffff;
-  
-  /* Secondary colors */
-  --secondary: #90caf9;
-  --secondary-background: #1a2332;
-  --secondary-foreground: #ffffff;
-  --secondary-hover: #add8ff;
-  --secondary-accent: #6bb6ff;
-  --secondary-shadow: rgba(144, 202, 249, 0.3);
-  --secondary-disabled: #4a5f73;
-  --secondary-border: #6bb6ff;
-  --secondary-font: #ffffff;
-  
+  --background-disabled: #101820;
+  --background-border: #1E2A3A;
+  --background-font: #EDE8F5; /* Cream with slight purple tint */
+
+  --foreground: #EDE8F5;
+  --foreground-hover: #FFFFFF;
+  --foreground-accent: #C4B8D8;
+  --foreground-shadow: rgba(237, 232, 245, 0.1);
+  --foreground-disabled: #6A6078;
+  --foreground-border: #2C2A40;
+  --foreground-font: #16202C;
+
+  /* Primary colors - Deep Indigo (bold but softer on navy) */
+  --primary: #6366F1;
+  --primary-background: #141428;
+  --primary-foreground: #EDE8F5;
+  --primary-hover: #7C7FF5;
+  --primary-accent: #4A4DC4;
+  --primary-shadow: rgba(99, 102, 241, 0.35);
+  --primary-disabled: #242448;
+  --primary-border: #7C7FF5;
+  --primary-font: #EDE8F5;
+
+  /* Secondary colors - Golden Wheat (valor's gold, warm contrast to purple) */
+  --secondary: #D9A441;
+  --secondary-background: #2A2018;
+  --secondary-foreground: #EDE8F5;
+  --secondary-hover: #E6B95E;
+  --secondary-accent: #B8842D;
+  --secondary-shadow: rgba(217, 164, 65, 0.3);
+  --secondary-disabled: #3C3020;
+  --secondary-border: #E6B95E;
+  --secondary-font: #EDE8F5;
+
   /* Success colors */
-  --success: #6ee7b7;
-  --success-background: #1a2e23;
-  --success-foreground: #ffffff;
-  --success-hover: #8aedc7;
-  --success-accent: #4ade80;
+  --success: #6EE7B7;
+  --success-background: #1A2E23;
+  --success-foreground: #EDE8F5;
+  --success-hover: #8AEDC7;
+  --success-accent: #4ADE80;
   --success-shadow: rgba(110, 231, 183, 0.3);
-  --success-disabled: #3d5447;
-  --success-border: #4ade80;
-  --success-font: #ffffff;
-  
+  --success-disabled: #243028;
+  --success-border: #4ADE80;
+  --success-font: #EDE8F5;
+
   /* Warning colors */
-  --warning: #ff7f7f;
-  --warning-background: #332020;
-  --warning-foreground: #ffffff;
-  --warning-hover: #ff9999;
-  --warning-accent: #ff5757;
-  --warning-shadow: rgba(255, 127, 127, 0.3);
-  --warning-disabled: #664040;
-  --warning-border: #ff5757;
-  --warning-font: #ffffff;
-  
+  --warning: #E67E22;
+  --warning-background: #2A1E16;
+  --warning-foreground: #EDE8F5;
+  --warning-hover: #F39C46;
+  --warning-accent: #CC5C00;
+  --warning-shadow: rgba(230, 126, 34, 0.3);
+  --warning-disabled: #3C2C1C;
+  --warning-border: #CC5C00;
+  --warning-font: #EDE8F5;
+
   /* Destructive colors */
-  --destructive: #e84c88;
-  --destructive-background: #3d1a2b;
-  --destructive-foreground: #ffffff;
-  --destructive-hover: #ed70a0;
-  --destructive-accent: #dc2464;
-  --destructive-shadow: rgba(232, 76, 136, 0.3);
-  --destructive-disabled: #5c3444;
-  --destructive-border: #dc2464;
-  --destructive-font: #ffffff;
-  
+  --destructive: #E84C4C;
+  --destructive-background: #2E1414;
+  --destructive-foreground: #EDE8F5;
+  --destructive-hover: #F06666;
+  --destructive-accent: #C43030;
+  --destructive-shadow: rgba(232, 76, 76, 0.3);
+  --destructive-disabled: #3C2020;
+  --destructive-border: #F06666;
+  --destructive-font: #EDE8F5;
+
   /* Info colors */
-  --info: #90caf9;
-  --info-background: #1a2332;
-  --info-foreground: #ffffff;
-  --info-hover: #add8ff;
-  --info-accent: #6bb6ff;
-  --info-shadow: rgba(144, 202, 249, 0.3);
-  --info-disabled: #4a5f73;
-  --info-border: #6bb6ff;
-  --info-font: #ffffff;
-  
+  --info: #60A8D0;
+  --info-background: #182430;
+  --info-foreground: #EDE8F5;
+  --info-hover: #80C0E0;
+  --info-accent: #4090BC;
+  --info-shadow: rgba(96, 168, 208, 0.3);
+  --info-disabled: #203040;
+  --info-border: #4090BC;
+  --info-font: #EDE8F5;
+
   /* Legacy compatibility */
-  --accent: #ffb347;
-  --accent-foreground: #323345;
-  --border: #3a3f53;
-  --border-hover: #6d7a8b;
-  --muted: #323345;
-  --muted-foreground: #ffffff;
-  --error: #e84c88;
-  --error-foreground: #ffffff;
-  --card: #3a3f53;
-  --card-foreground: #ffffff;
-  --input: #1f2029;
-  --input-border: #3a3f53;
-  --input-placeholder: #6d7a8b;
-  --input-foreground: #ffffff;
-  --progress-track: #4a5066;
-  --progress-track-text: #b8bcc8;
-  
+  --accent: #D9A441;
+  --accent-foreground: #EDE8F5;
+  --border: #2C2A40;
+  --border-hover: #3C3A54;
+  --muted: #1A2434;
+  --muted-foreground: #C4B8D8;
+  --error: #E84C4C;
+  --error-foreground: #EDE8F5;
+  --card: #1E2A3A;
+  --card-foreground: #EDE8F5;
+  --input: #101820;
+  --input-border: #2C2A40;
+  --input-placeholder: #6A6078;
+  --input-foreground: #EDE8F5;
+  --progress-track: #2C2A40;
+  --progress-track-text: #C4B8D8;
+
   /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.5), 0 1px 2px -1px rgb(0 0 0 / 0.5);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
 }
