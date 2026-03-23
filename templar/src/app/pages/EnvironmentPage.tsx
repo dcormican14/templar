@@ -358,8 +358,8 @@ function AiDocumentationShowcase() {
             <p style={{ color: cssVars.foreground, margin: '0 0 8px 0', fontWeight: '500' }}>
               Templar ships with <a href="https://llmstxt.org" target="_blank" rel="noopener noreferrer" style={{ color: cssVars.primary }}>llms.txt</a> support — a standard for making documentation AI-readable.
             </p>
-            <p style={{ color: cssVars.foregroundAccent, margin: 0, fontSize: '14px' }}>
-              Point any AI tool at <code style={{ backgroundColor: cssVars.backgroundAccent, padding: '1px 6px', borderRadius: '4px', fontSize: '13px' }}>{baseUrl}/llms.txt</code> or fetch <code style={{ backgroundColor: cssVars.backgroundAccent, padding: '1px 6px', borderRadius: '4px', fontSize: '13px' }}>/llms-full.txt</code> for a single-file context dump covering every component, design standard, and configuration option.
+            <p style={{ color: cssVars.foregroundAccent, margin: 0, fontSize: '14px', overflowWrap: 'break-word', wordBreak: 'break-word' }}>
+              Point any AI tool at <code style={{ backgroundColor: cssVars.backgroundAccent, padding: '1px 6px', borderRadius: '4px', fontSize: '13px', wordBreak: 'break-all' }}>{baseUrl}/llms.txt</code> or fetch <code style={{ backgroundColor: cssVars.backgroundAccent, padding: '1px 6px', borderRadius: '4px', fontSize: '13px' }}>/llms-full.txt</code> for a single-file context dump covering every component, design standard, and configuration option.
             </p>
           </div>
         </div>

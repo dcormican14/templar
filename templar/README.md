@@ -78,10 +78,11 @@ function MyComponent() {
 
 ## Documentation
 
-- [Component Library](./src/app/docs/ELEMENT_LIBRARY_OVERVIEW.md)
-- [.mourn Configuration](./src/app/docs/MOURN_CONFIGURATION.md)
-- [Design Standards](./src/app/docs/COMPONENT_DESIGN_STANDARDS.md)
-- [CSS Variables](./src/app/docs/CSS_VARIABLES.md)
+- [Official Site](https://mournshire.vercel.app)
+- [Component Library](https://github.com/dcormican14/templar/blob/main/templar/src/app/docs/ELEMENT_LIBRARY_OVERVIEW.md)
+- [.mourn Configuration](https://github.com/dcormican14/templar/blob/main/templar/src/app/docs/MOURN_CONFIGURATION.md)
+- [Design Standards](https://github.com/dcormican14/templar/blob/main/templar/src/app/docs/COMPONENT_DESIGN_STANDARDS.md)
+- [CSS Variables](https://github.com/dcormican14/templar/blob/main/templar/src/app/docs/CSS_VARIABLES.md)
 
 ## Components
 
