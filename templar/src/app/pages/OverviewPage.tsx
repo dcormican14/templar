@@ -224,7 +224,7 @@ export function OverviewPage() {
           alt="Knight Background"
           style={{
             width: '100%',
-            minHeight: 'calc(100dvh + env(safe-area-inset-top) + env(safe-area-inset-bottom))',
+            minHeight: '100%',
             height: 'auto',
             objectFit: 'cover',
             objectPosition: 'center top',

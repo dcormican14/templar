@@ -1,25 +1,28 @@
 @import "tailwindcss";
 @import "./styles/index.css";
 
-/* Base styles - edge-to-edge fullscreen on iOS */
+/* Base styles - edge-to-edge fullscreen on iOS
+   With viewport-fit=cover, position:fixed inset:0 covers the full physical
+   screen including behind the notch and home indicator. The html/body
+   background paints edge-to-edge automatically. */
 html {
   height: 100%;
   overflow: hidden;
-  background: #0a0a0a; /* dark fallback before theme loads */
+  background: #0a0a0a;
   background: var(--background);
 }
 
 body {
-  background: #0a0a0a; /* dark fallback before theme loads */
+  background: #0a0a0a;
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
-  min-height: 100%;
-  min-height: 100dvh;
+  height: 100%;
   margin: 0;
   padding: 0;
   -webkit-text-size-adjust: 100%;
+  overflow: hidden;
 }
 
 /* Safe area utility classes */
