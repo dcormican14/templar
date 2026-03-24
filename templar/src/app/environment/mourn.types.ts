@@ -340,7 +340,7 @@ export const DEFAULT_MOURN_CONFIG: Required<MournConfig> = {
     },
     theme: {
       enabled: true,
-      defaultTheme: 'system',
+      defaultTheme: 'valor-dark',
       attribute: 'data-theme',
       storageKey: 'templar-theme',
       includeCustomThemes: true,
