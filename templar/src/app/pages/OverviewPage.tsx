@@ -332,7 +332,7 @@ export function OverviewPage() {
         onScrollEnd={handleScrollEnd}
         data-scroll-container="overview"
       >
-        <div style={{ height: '500vh', position: 'relative' }}>
+        <div style={{ height: '500vh', position: 'relative', paddingBottom: 'env(safe-area-inset-bottom)' }}>
           {/* Dummy content cards */}
           <div style={{
             display: 'flex',
