@@ -171,10 +171,11 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
 
   return (
     <div
-      className="h-dvh transition-all duration-300 overflow-hidden"
+      className="transition-all duration-300 overflow-hidden"
       style={{
+        color: cssVars.foreground,
+        height: 'calc(100dvh - env(safe-area-inset-bottom))',
         backgroundColor: cssVars.background,
-        color: cssVars.foreground
       }}
     >
       {/* Background Image Strip (behind nav bar) - Not shown on overview page */}

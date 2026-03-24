@@ -137,7 +137,7 @@ const availableThemes: Theme[] = ['light', 'dark', 'contrast', 'sepia-light', 's
 
 export function ThemeProvider({
   children,
-  defaultTheme = 'system',
+  defaultTheme = 'valor-dark',
   attribute = 'data-theme',
   storageKey = 'templar-theme',
 }: ThemeProviderProps) {
