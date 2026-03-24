@@ -206,14 +206,14 @@ export function OverviewPage() {
         enabled={true}
       />
 
-      {/* Fixed background knight image - extends to full viewport */}
+      {/* Fixed background knight image - extends to full viewport including safe areas */}
       <div
         style={{
           position: 'fixed',
           top: 0,
           left: 0,
-          width: '100%',
-          height: '100dvh',
+          right: 0,
+          bottom: 0,
           overflow: 'hidden',
           zIndex: 1
         }}
@@ -224,7 +224,7 @@ export function OverviewPage() {
           alt="Knight Background"
           style={{
             width: '100%',
-            minHeight: '100dvh',
+            minHeight: 'calc(100dvh + env(safe-area-inset-top) + env(safe-area-inset-bottom))',
             height: 'auto',
             objectFit: 'cover',
             objectPosition: 'center top',
@@ -239,8 +239,8 @@ export function OverviewPage() {
         position: 'fixed',
         top: 0,
         left: 0,
-        width: '100%',
-        height: '100dvh',
+        right: 0,
+        bottom: 0,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',

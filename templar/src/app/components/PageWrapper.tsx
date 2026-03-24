@@ -174,7 +174,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
       className="transition-all duration-300"
       style={{
         color: cssVars.foreground,
-        height: 'calc(100dvh + env(safe-area-inset-bottom))',
+        height: 'calc(100dvh + env(safe-area-inset-top) + env(safe-area-inset-bottom))',
         backgroundColor: cssVars.background,
       }}
     >
