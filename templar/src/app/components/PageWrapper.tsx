@@ -174,7 +174,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
       className="transition-all duration-300"
       style={{
         color: cssVars.foreground,
-        height: '100dvh',
+        height: 'calc(100dvh + env(safe-area-inset-bottom))',
         backgroundColor: cssVars.background,
       }}
     >
@@ -239,7 +239,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
         // Overview page has its own scrolling system with parallax - don't wrap in Scrollbar
         <div style={{
           marginTop: 'calc(48px + env(safe-area-inset-top))',
-          height: 'calc(100dvh - 48px - env(safe-area-inset-top))',
+          height: 'calc(100dvh - 48px - env(safe-area-inset-top) + env(safe-area-inset-bottom))',
           width: '100%',
         }}>
           {children}
@@ -248,7 +248,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
         // Other pages use PageWrapper's Scrollbar
         <div className="flex flex-col" style={{
           marginTop: 'calc(48px + env(safe-area-inset-top))',
-          height: 'calc(100dvh - 48px - env(safe-area-inset-top))',
+          height: 'calc(100dvh - 48px - env(safe-area-inset-top) + env(safe-area-inset-bottom))',
         }}>
           <Scrollbar
             variant="ghost"
