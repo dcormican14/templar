@@ -171,10 +171,10 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
 
   return (
     <div
-      className="transition-all duration-300 overflow-hidden"
+      className="transition-all duration-300"
       style={{
         color: cssVars.foreground,
-        height: 'calc(100dvh - env(safe-area-inset-bottom))',
+        height: '100dvh',
         backgroundColor: cssVars.background,
       }}
     >
@@ -237,12 +237,19 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
       {/* Main content */}
       {activeTab === 'overview' ? (
         // Overview page has its own scrolling system with parallax - don't wrap in Scrollbar
-        <div style={{ marginTop: 'calc(48px + env(safe-area-inset-top))', height: 'calc(100dvh - 48px - env(safe-area-inset-top))', width: '100%' }}>
+        <div style={{
+          marginTop: 'calc(48px + env(safe-area-inset-top))',
+          height: 'calc(100dvh - 48px - env(safe-area-inset-top))',
+          width: '100%',
+        }}>
           {children}
         </div>
       ) : (
         // Other pages use PageWrapper's Scrollbar
-        <div className="flex flex-col" style={{ marginTop: 'calc(48px + env(safe-area-inset-top))', height: 'calc(100dvh - 48px - env(safe-area-inset-top))' }}>
+        <div className="flex flex-col" style={{
+          marginTop: 'calc(48px + env(safe-area-inset-top))',
+          height: 'calc(100dvh - 48px - env(safe-area-inset-top))',
+        }}>
           <Scrollbar
             variant="ghost"
             color="secondary"
@@ -255,12 +262,12 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
           >
             {activeTab === 'components' || activeTab === 'environment' ? (
               // Full width for components and environment pages (have their own side menu layout)
-              <div style={{ width: '100%', margin: 0, padding: 0 }}>
+              <div style={{ width: '100%', margin: 0, padding: 0, paddingBottom: 'env(safe-area-inset-bottom)' }}>
                 {children}
               </div>
             ) : (
               // Container for other pages
-              <main className="container mx-auto px-6 py-8">
+              <main className="container mx-auto px-6 py-8" style={{ paddingBottom: 'calc(2rem + env(safe-area-inset-bottom))' }}>
                 {children}
               </main>
             )}
