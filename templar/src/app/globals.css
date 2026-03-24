@@ -1,26 +1,34 @@
 @import "tailwindcss";
 @import "./styles/index.css";
 
-/* Base styles - edge-to-edge fullscreen on iOS
-   With viewport-fit=cover, position:fixed inset:0 covers the full physical
-   screen including behind the notch and home indicator. The html/body
-   background paints edge-to-edge automatically. */
+/* Edge-to-edge fullscreen on iOS:
+   - viewport-fit=cover expands the viewport to full physical screen
+   - position:fixed inset:0 on the app shell bypasses body's implicit safe-area padding
+   - body padding:0 removes iOS Safari's implicit safe-area insets
+   - background-color set synchronously so Safari doesn't fall back to opaque status bar */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 html {
   height: 100%;
   overflow: hidden;
-  background: #0a0a0a;
-  background: var(--background);
+  margin: 0;
+  padding: 0;
+  background-color: #0a0a0a;
+  background-color: var(--background);
 }
 
 body {
-  background: #0a0a0a;
-  background: var(--background);
+  background-color: #0a0a0a;
+  background-color: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
   height: 100%;
   margin: 0;
-  padding: 0;
+  padding: 0 !important; /* Override iOS Safari implicit safe-area padding */
   -webkit-text-size-adjust: 100%;
   overflow: hidden;
 }
