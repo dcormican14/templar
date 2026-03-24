@@ -4,6 +4,7 @@
 .playwright-mcp
 templar/.next
 templar/node_modules
+templar/dist
 # dependencies
 /node_modules
 /.pnp

@@ -22,12 +22,23 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Mournshire",
-  description: "A modern React component library built with Next.js and TypeScript",
+  title: "Mourn Design",
+  description: "A TypeScript-first React component library featuring atomic design, theming with CSS variables, and a flexible provider architecture via .mourn configuration files.",
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [{ url: '/apple-touch-icon.png' }],
+    other: [
+      { rel: 'manifest', url: '/site.webmanifest' },
+    ],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Mournshire',
+    title: 'Mourn Design',
   },
 };
 
