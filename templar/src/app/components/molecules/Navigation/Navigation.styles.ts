@@ -192,11 +192,18 @@ export const createNavigationStyles = (
     top: sticky ? 0 : 'auto',
     zIndex: sticky ? 100 : 'auto',
     display: 'flex',
-    alignItems: 'stretch', // Changed from 'end' to 'stretch' to fill full height
+    alignItems: 'stretch',
     width: '100%',
     transition: 'all 0.2s ease-in-out',
+    // Extend into the iOS status bar area; content pushed down via paddingTop on the inner container
+    paddingTop: 'env(safe-area-inset-top)',
+    paddingLeft: 'env(safe-area-inset-left)',
+    paddingRight: 'env(safe-area-inset-right)',
+    boxSizing: 'border-box' as const,
     ...variantStyles,
     ...sizeStyles,
+    // sizeStyles sets height — override so the nav grows taller to accommodate inset
+    height: `calc(${sizeStyles.height} + env(safe-area-inset-top))`,
   };
 };
 
