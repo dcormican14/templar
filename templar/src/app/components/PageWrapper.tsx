@@ -173,28 +173,37 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
     <div
       className="transition-all duration-300"
       style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
         color: cssVars.foreground,
-        height: 'calc(100dvh + env(safe-area-inset-top) + env(safe-area-inset-bottom))',
         backgroundColor: cssVars.background,
+        display: 'flex',
+        flexDirection: 'column',
       }}
     >
       {/* Background Image Strip (behind nav bar) - Not shown on overview page */}
       {activeTab !== 'overview' && (
         <div
-          className="fixed top-0 left-0 right-0 z-30"
           style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 30,
             height: 'calc(48px + env(safe-area-inset-top))',
             backgroundImage: 'url(/assets/knight_background.png)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
-            width: '100%'
           }}
         />
       )}
 
       {/* Navigation Bar */}
-      <div className="fixed top-0 left-0 right-0" style={{ zIndex: 9999 }}>
+      <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999 }}>
         <Navigation
           icon={
             <div style={{
@@ -234,21 +243,23 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
         />
       </div>
 
-      {/* Main content */}
+      {/* Main content — fills remaining space below nav */}
       {activeTab === 'overview' ? (
-        // Overview page has its own scrolling system with parallax - don't wrap in Scrollbar
+        // Overview page has its own scrolling system with parallax
         <div style={{
+          flex: 1,
           marginTop: 'calc(48px + env(safe-area-inset-top))',
-          height: 'calc(100dvh - 48px - env(safe-area-inset-top) + env(safe-area-inset-bottom))',
           width: '100%',
+          overflow: 'hidden',
         }}>
           {children}
         </div>
       ) : (
         // Other pages use PageWrapper's Scrollbar
         <div className="flex flex-col" style={{
+          flex: 1,
           marginTop: 'calc(48px + env(safe-area-inset-top))',
-          height: 'calc(100dvh - 48px - env(safe-area-inset-top) + env(safe-area-inset-bottom))',
+          overflow: 'hidden',
         }}>
           <Scrollbar
             variant="ghost"
@@ -274,9 +285,9 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
           </Scrollbar>
         </div>
       )}
-      
+
       {/* Floating Theme Switcher */}
-      <div className="fixed right-6 z-50" style={{ bottom: 'calc(1.5rem + env(safe-area-inset-bottom))' }}>
+      <div style={{ position: 'fixed', right: '1.5rem', zIndex: 50, bottom: 'calc(1.5rem + env(safe-area-inset-bottom))' }}>
         <Button
           variant="solid"
           size="lg"

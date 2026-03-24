@@ -134,7 +134,7 @@ export const getCollapsibleMenuContainerStyles = (
     top: overlay ? '0' : 'auto',
     [position]: overlay ? '0' : 'auto',
     width,
-    height: overlay ? 'calc(100dvh + env(safe-area-inset-top) + env(safe-area-inset-bottom))' : '100%',
+    height: overlay ? '100dvh' : '100%',
     backgroundColor: cssVars.background,
     borderRight: position === 'left' ? `1px solid ${cssVars.border}` : 'none',
     borderLeft: position === 'right' ? `1px solid ${cssVars.border}` : 'none',
