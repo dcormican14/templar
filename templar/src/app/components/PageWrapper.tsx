@@ -171,7 +171,6 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
 
   return (
     <div
-      className="transition-all duration-300"
       style={{
         position: 'fixed',
         top: 0,
@@ -182,6 +181,10 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
         backgroundColor: cssVars.background,
         display: 'flex',
         flexDirection: 'column',
+        overflow: 'hidden',
+        /* Only transition color properties — never transform/filter/perspective,
+           which would create a containing block and break position:fixed children */
+        transition: 'background-color 0.3s ease, color 0.3s ease',
       }}
     >
       {/* Background Image Strip (behind nav bar) - Not shown on overview page */}
