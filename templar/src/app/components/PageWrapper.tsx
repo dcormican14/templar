@@ -182,7 +182,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
         <div
           className="fixed top-0 left-0 right-0 z-30"
           style={{
-            height: '48px',
+            height: 'calc(48px + env(safe-area-inset-top))',
             backgroundImage: 'url(/assets/knight_background.png)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
@@ -236,12 +236,12 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
       {/* Main content */}
       {activeTab === 'overview' ? (
         // Overview page has its own scrolling system with parallax - don't wrap in Scrollbar
-        <div style={{ marginTop: '48px', height: 'calc(100dvh - 48px)', width: '100%' }}>
+        <div style={{ marginTop: 'calc(48px + env(safe-area-inset-top))', height: 'calc(100dvh - 48px - env(safe-area-inset-top))', width: '100%' }}>
           {children}
         </div>
       ) : (
         // Other pages use PageWrapper's Scrollbar
-        <div className="flex flex-col" style={{ marginTop: '48px', height: 'calc(100dvh - 48px)' }}>
+        <div className="flex flex-col" style={{ marginTop: 'calc(48px + env(safe-area-inset-top))', height: 'calc(100dvh - 48px - env(safe-area-inset-top))' }}>
           <Scrollbar
             variant="ghost"
             color="secondary"
@@ -268,7 +268,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
       )}
       
       {/* Floating Theme Switcher */}
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed right-6 z-50" style={{ bottom: 'calc(1.5rem + env(safe-area-inset-bottom))' }}>
         <Button
           variant="solid"
           size="lg"
