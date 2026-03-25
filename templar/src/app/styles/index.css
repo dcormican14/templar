@@ -18,11 +18,14 @@
   border-color: var(--border);
 }
 
-/* Smooth transitions for theme switching */
-*,
-*::before,
-*::after {
-  transition: 
+/* Smooth transitions for theme switching.
+   IMPORTANT: Exclude html/body — transitions on root elements can cause
+   WebKit to create new containing blocks, breaking position:fixed children
+   from spanning the full physical viewport (iOS safe area bug). */
+*:not(html):not(body),
+*:not(html):not(body)::before,
+*:not(html):not(body)::after {
+  transition:
     background-color var(--duration-medium) var(--animation-smooth),
     color var(--duration-medium) var(--animation-smooth),
     border-color var(--duration-medium) var(--animation-smooth),

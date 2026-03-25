@@ -19,7 +19,9 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: 'cover',
-  themeColor: '#0a0a0a',
+  // themeColor intentionally omitted — it conflicts with black-translucent
+  // on some iOS versions, causing the status bar to render opaquely instead
+  // of transparently. The background-color in CSS handles the visual fill.
 };
 
 export const metadata: Metadata = {
