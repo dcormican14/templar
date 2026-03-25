@@ -203,8 +203,12 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
         />
       )}
 
-      {/* Navigation Bar */}
-      <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999 }}>
+      {/* Navigation Bar — wrapper is fixed but transparent so Safari's
+           Liquid Glass toolbar sampling sees through it. The absolute child
+           holds the actual Navigation; Safari ignores absolute children
+           when deriving toolbar tint. */}
+      <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999, background: 'transparent' }}>
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0 }}>
         <Navigation
           icon={
             <div style={{
@@ -242,6 +246,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
             </div>
           }
         />
+        </div>
       </div>
 
       {/* Main content — fills remaining space below nav */}
@@ -289,8 +294,10 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
         </div>
       )}
 
-      {/* Floating Theme Switcher */}
-      <div style={{ position: 'fixed', right: '1.5rem', zIndex: 50, bottom: 'calc(1.5rem + env(safe-area-inset-bottom))' }}>
+      {/* Floating Theme Switcher — same Liquid Glass trick: fixed wrapper
+           is transparent, button lives in an absolute child Safari ignores. */}
+      <div style={{ position: 'fixed', right: 0, bottom: 0, zIndex: 50, background: 'transparent', width: 0, height: 0 }}>
+        <div style={{ position: 'absolute', right: '1.5rem', bottom: 'calc(1.5rem + env(safe-area-inset-bottom))' }}>
         <Button
           variant="solid"
           size="lg"
@@ -303,6 +310,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
         >
           {!isMobile && <span className="ml-2">{getThemeLabel(theme)}</span>}
         </Button>
+        </div>
       </div>
     </div>
   );
