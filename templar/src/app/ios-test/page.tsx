@@ -21,11 +21,11 @@ export default function IOSTestPage() {
       <style>{`
         /* Kill every inherited style that could interfere */
         html, body {
+          position: fixed !important;
+          inset: 0 !important;
           margin: 0 !important;
           padding: 0 !important;
           overflow: hidden !important;
-          height: 100% !important;
-          width: 100% !important;
           background: #000 !important;
         }
 
