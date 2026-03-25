@@ -172,16 +172,14 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
   return (
     <div
       style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        width: '100vw',
-        height: 'calc(100dvh + env(safe-area-inset-top) + env(safe-area-inset-bottom))',
+        position: activeTab === 'overview' ? 'relative' as const : 'fixed' as const,
+        ...(activeTab !== 'overview' && { top: 0, left: 0, right: 0, bottom: 0 }),
         color: cssVars.foreground,
-        backgroundColor: cssVars.background,
+        backgroundColor: activeTab === 'overview' ? 'transparent' : cssVars.background,
         display: 'flex',
         flexDirection: 'column',
-        overflow: 'hidden',
+        ...(activeTab !== 'overview' && { overflow: 'hidden' }),
+        minHeight: activeTab === 'overview' ? '100vh' : undefined,
         /* NO transition, transform, filter, or will-change on the app shell.
            Any of these cause WebKit to create a new containing block, breaking
            position:fixed children from spanning the full physical viewport. */

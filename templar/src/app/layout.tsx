@@ -19,8 +19,6 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: 'cover',
-  // transparent status bar — lets app content show through
-  themeColor: 'transparent',
 };
 
 export const metadata: Metadata = {

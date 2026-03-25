@@ -12,8 +12,7 @@
 }
 
 html {
-  height: calc(100dvh + env(safe-area-inset-top) + env(safe-area-inset-bottom));
-  overflow: hidden;
+  height: 100%;
   margin: 0;
   padding: 0;
   background-color: transparent;
@@ -21,8 +20,7 @@ html {
 }
 
 body {
-  height: calc(100dvh + env(safe-area-inset-top) + env(safe-area-inset-bottom));
-  overflow: hidden;
+  height: 100%;
   margin: 0;
   padding: 0 !important;
   background-color: transparent;

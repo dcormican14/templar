@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Scrollbar, Card, Icon, FallingLeaves } from '../components/atoms';
+import { Card, Icon, FallingLeaves } from '../components/atoms';
 import { useCSSVariables } from '../providers';
 
 // Animated Card Wrapper Component
@@ -51,7 +51,6 @@ const AnimatedCard: React.FC<AnimatedCardProps> = ({ children, delay = 0, scroll
 export function OverviewPage() {
   const cssVars = useCSSVariables();
   const [scrollY, setScrollY] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [imageHeight, setImageHeight] = useState(0);
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
@@ -102,67 +101,45 @@ export function OverviewPage() {
     };
   }, []);
 
-  // Expose scroll container to parent for scroll detection
+  // Expose window as scroll target for scroll-to-top from nav
   useEffect(() => {
-    // Find the outer wrapper first
-    const outerContainer = document.querySelector('[data-scroll-container="overview"]');
-    // Then get the actual scrollable inner div (first child of the outer div)
-    const scrollContainer = outerContainer?.querySelector('div[style*="overflow"]') as HTMLDivElement;
-
-    if (scrollContainer) {
-      (window as any).__overviewScrollContainer = scrollContainer;
-    }
+    (window as any).__overviewScrollContainer = window;
     return () => {
       delete (window as any).__overviewScrollContainer;
     };
   }, []);
 
-  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
-    const target = event.currentTarget || event.target as HTMLDivElement;
-    if (target && typeof target.scrollTop === 'number') {
-      setScrollY(target.scrollTop);
+  // Listen to native window scroll for parallax and section detection
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      setScrollY(currentScrollY);
 
       // Check section positions and dispatch custom event
       const docsSection = document.getElementById('docs-section');
       const contactSection = document.getElementById('contact-section');
 
-      // Use window height for consistent viewport calculation
-      const viewportHeight = window.innerHeight;
-      const viewportTop = 0;
-      const viewportMiddle = viewportHeight / 2;
+      const viewportMiddle = window.innerHeight / 2;
 
       let currentSection = 'overview';
 
-      // Check which section is closest to the top of the viewport
       if (contactSection && docsSection) {
         const contactRect = contactSection.getBoundingClientRect();
         const docsRect = docsSection.getBoundingClientRect();
 
-        // If contact section has entered the viewport (top is above middle)
         if (contactRect.top <= viewportMiddle) {
           currentSection = 'contact';
-        }
-        // If docs section has entered the viewport (top is above middle), but contact hasn't
-        else if (docsRect.top <= viewportMiddle) {
+        } else if (docsRect.top <= viewportMiddle) {
           currentSection = 'docs';
-        }
-        // Otherwise we're still in overview
-        else {
-          currentSection = 'overview';
         }
       }
 
       window.dispatchEvent(new CustomEvent('overviewScroll', { detail: { currentSection } }));
-    }
-  };
+    };
 
-  const handleScrollStart = () => {
-    setIsDragging(true);
-  };
-
-  const handleScrollEnd = () => {
-    setIsDragging(false);
-  };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Parallax calculations
   const viewportHeight = typeof window !== 'undefined' ? window.innerHeight : 1080;
@@ -212,8 +189,8 @@ export function OverviewPage() {
           position: 'fixed',
           top: 0,
           left: 0,
-          width: '100vw',
-          height: 'calc(100dvh + env(safe-area-inset-top) + env(safe-area-inset-bottom))',
+          right: 0,
+          bottom: 0,
           overflow: 'hidden',
           zIndex: 1
         }}
@@ -228,8 +205,7 @@ export function OverviewPage() {
             height: 'auto',
             objectFit: 'cover',
             objectPosition: 'center top',
-            transform: `translateY(-${imageOffset}px)`,
-            transition: isDragging ? 'none' : 'transform 0.1s ease-out'
+            transform: `translateY(-${imageOffset}px)`
           }}
         />
       </div>
@@ -239,8 +215,8 @@ export function OverviewPage() {
         position: 'fixed',
         top: 0,
         left: 0,
-        width: '100vw',
-        height: 'calc(100dvh + env(safe-area-inset-top) + env(safe-area-inset-bottom))',
+        right: 0,
+        bottom: 0,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',
@@ -316,23 +292,17 @@ export function OverviewPage() {
         />
       </div>
 
-      {/* Scrollable content overlay */}
-      <Scrollbar
-        height="100%"
-        width="100%"
-        variant="ghost"
-        color="secondary"
-        size="md"
-        visibility={isMobile ? 'hidden' : 'hover'}
-        smoothScrolling={false}
-        orientation="vertical"
-        style={{ position: 'absolute', top: 0, left: 0, zIndex: 50 }}
-        onScroll={handleScroll}
-        onScrollStart={handleScrollStart}
-        onScrollEnd={handleScrollEnd}
-        data-scroll-container="overview"
+      {/* Scrollable content — flows naturally in the document so Safari's
+           toolbar auto-hides when the user scrolls */}
+      <div
+        ref={scrollContainerRef}
+        style={{
+          position: 'relative',
+          width: '100%',
+          zIndex: 50,
+        }}
       >
-        <div style={{ height: '500vh', position: 'relative', paddingBottom: 'env(safe-area-inset-bottom)' }}>
+        <div style={{ position: 'relative', paddingBottom: 'env(safe-area-inset-bottom)' }}>
           {/* Dummy content cards */}
           <div style={{
             display: 'flex',
@@ -835,7 +805,7 @@ export function OverviewPage() {
             </div>
           </div>
         </div>
-      </Scrollbar>
+      </div>
     </div>
   );
 }
