@@ -63,6 +63,21 @@ export function OverviewPage() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Make html/body transparent so the fixed background image shows through
+  // the iOS safe area insets instead of a solid background color
+  useEffect(() => {
+    const html = document.documentElement;
+    const body = document.body;
+    const prevHtmlBg = html.style.backgroundColor;
+    const prevBodyBg = body.style.backgroundColor;
+    html.style.backgroundColor = 'transparent';
+    body.style.backgroundColor = 'transparent';
+    return () => {
+      html.style.backgroundColor = prevHtmlBg;
+      body.style.backgroundColor = prevBodyBg;
+    };
+  }, []);
+
   // Measure image height when it loads
   useEffect(() => {
     const updateImageHeight = () => {
@@ -206,6 +221,32 @@ export function OverviewPage() {
             objectFit: 'cover',
             objectPosition: 'center top',
             transform: `translateY(-${imageOffset}px)`
+          }}
+        />
+        {/* Top fade to black — covers the status bar / notch area */}
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 'calc(env(safe-area-inset-top, 0px) + 48px)',
+            background: 'linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)',
+            pointerEvents: 'none',
+            zIndex: 2
+          }}
+        />
+        {/* Bottom fade to black — covers the home indicator area */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: 'calc(env(safe-area-inset-bottom, 0px) + 24px)',
+            background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)',
+            pointerEvents: 'none',
+            zIndex: 2
           }}
         />
       </div>
