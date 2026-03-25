@@ -173,10 +173,13 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
     <div
       style={{
         position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: '-200px',
+        top: '-500px',
+        left: '-500px',
+        right: '-500px',
+        bottom: '-500px',
+        width: 'calc(100vw + 1000px)',
+        height: 'calc(100dvh + 1000px)',
+        minHeight: 'calc(100dvh + 1000px)',
         color: cssVars.foreground,
         backgroundColor: cssVars.background,
         display: 'flex',

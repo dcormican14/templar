@@ -13,22 +13,32 @@
 
 html {
   position: fixed !important;
-  inset: 0 !important;
+  top: -500px !important;
+  left: -500px !important;
+  right: -500px !important;
+  bottom: -500px !important;
   overflow: hidden !important;
   margin: 0 !important;
   padding: 0 !important;
-  height: calc(100dvh + 200px) !important;
+  width: calc(100vw + 1000px) !important;
+  height: calc(100dvh + 1000px) !important;
+  min-height: calc(100dvh + 1000px) !important;
   background-color: #0a0a0a;
   background-color: var(--background);
 }
 
 body {
   position: fixed !important;
-  inset: 0 !important;
+  top: -500px !important;
+  left: -500px !important;
+  right: -500px !important;
+  bottom: -500px !important;
   overflow: hidden !important;
   margin: 0 !important;
   padding: 0 !important;
-  height: calc(100dvh + 200px) !important;
+  width: calc(100vw + 1000px) !important;
+  height: calc(100dvh + 1000px) !important;
+  min-height: calc(100dvh + 1000px) !important;
   background-color: #0a0a0a;
   background-color: var(--background);
   color: var(--foreground);

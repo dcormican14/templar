@@ -19,13 +19,19 @@ export default function IOSTestPage() {
         index.css wildcard transitions, etc.) for this test only.
       */}
       <style>{`
-        /* Kill every inherited style that could interfere */
+        /* Kill every inherited style — extend 500px past every edge */
         html, body {
           position: fixed !important;
-          inset: 0 !important;
+          top: -500px !important;
+          left: -500px !important;
+          right: -500px !important;
+          bottom: -500px !important;
           margin: 0 !important;
           padding: 0 !important;
           overflow: hidden !important;
+          width: calc(100vw + 1000px) !important;
+          height: calc(100dvh + 1000px) !important;
+          min-height: calc(100dvh + 1000px) !important;
           background: #000 !important;
         }
 
@@ -36,10 +42,13 @@ export default function IOSTestPage() {
 
         .ios-test-shell {
           position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
+          top: -500px;
+          left: -500px;
+          right: -500px;
+          bottom: -500px;
+          width: calc(100vw + 1000px);
+          height: calc(100dvh + 1000px);
+          min-height: calc(100dvh + 1000px);
           background: green;
           display: flex;
           flex-direction: column;
