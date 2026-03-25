@@ -63,15 +63,17 @@ export function OverviewPage() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Make html/body transparent so the fixed background image shows through
-  // the iOS safe area insets instead of a solid background color
+  // Override html/body background for the overview page:
+  // - 'transparent' lets the fixed background image show through safe areas
+  // - Safari 26 Liquid Glass derives toolbar tint from body background,
+  //   so we set it to near-black to blend with the dark knight image
   useEffect(() => {
     const html = document.documentElement;
     const body = document.body;
     const prevHtmlBg = html.style.backgroundColor;
     const prevBodyBg = body.style.backgroundColor;
-    html.style.backgroundColor = 'transparent';
-    body.style.backgroundColor = 'transparent';
+    html.style.setProperty('background-color', 'transparent', 'important');
+    body.style.setProperty('background-color', '#0c0c0c', 'important');
     return () => {
       html.style.backgroundColor = prevHtmlBg;
       body.style.backgroundColor = prevBodyBg;
@@ -216,8 +218,7 @@ export function OverviewPage() {
           alt="Knight Background"
           style={{
             width: '100%',
-            minHeight: '100%',
-            height: 'auto',
+            height: '100%',
             objectFit: 'cover',
             objectPosition: 'center top',
             transform: `translateY(-${imageOffset}px)`
