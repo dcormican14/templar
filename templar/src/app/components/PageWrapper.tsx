@@ -175,11 +175,8 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
         position: 'fixed',
         top: 0,
         left: 0,
-        /* Use 100dvh/100vw instead of bottom:0/right:0 — on iOS PWAs,
-           inset:0 can resolve to the safe-area-inset viewport rather than
-           the full physical viewport after app backgrounding/foregrounding. */
         width: '100vw',
-        height: '100dvh',
+        height: '200dvh',
         color: cssVars.foreground,
         backgroundColor: cssVars.background,
         display: 'flex',
@@ -251,12 +248,14 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
 
       {/* Main content — fills remaining space below nav */}
       {activeTab === 'overview' ? (
-        // Overview page has its own scrolling system with parallax
+        // Overview page has its own scrolling system with parallax.
+        // NO overflow:hidden here — the overview page uses position:fixed
+        // children (background image, text overlay) that must span the full
+        // viewport including safe areas. overflow:hidden would clip them.
         <div style={{
           flex: 1,
           marginTop: 'calc(48px + env(safe-area-inset-top))',
           width: '100%',
-          overflow: 'hidden',
         }}>
           {children}
         </div>

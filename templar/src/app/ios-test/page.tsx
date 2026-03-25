@@ -24,8 +24,7 @@ export default function IOSTestPage() {
           margin: 0 !important;
           padding: 0 !important;
           overflow: hidden !important;
-          height: 100dvh !important;
-          min-height: calc(100% + env(safe-area-inset-top) + env(safe-area-inset-bottom)) !important;
+          height: 200dvh !important;
           width: 100vw !important;
           background: #1E2A3A !important;
         }
@@ -40,7 +39,7 @@ export default function IOSTestPage() {
           top: 0;
           left: 0;
           width: 100vw;
-          height: 100dvh;
+          height: 200dvh;
           background: green;
           display: flex;
           flex-direction: column;

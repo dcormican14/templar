@@ -212,8 +212,8 @@ export function OverviewPage() {
           position: 'fixed',
           top: 0,
           left: 0,
-          right: 0,
-          bottom: 0,
+          width: '100vw',
+          height: '200dvh',
           overflow: 'hidden',
           zIndex: 1
         }}
@@ -239,8 +239,8 @@ export function OverviewPage() {
         position: 'fixed',
         top: 0,
         left: 0,
-        right: 0,
-        bottom: 0,
+        width: '100vw',
+        height: '200dvh',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',

@@ -19,9 +19,9 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: 'cover',
-  // themeColor intentionally omitted — it conflicts with black-translucent
-  // on some iOS versions, causing the status bar to render opaquely instead
-  // of transparently. The background-color in CSS handles the visual fill.
+  // themeColor controls the status bar color in Safari tab mode.
+  // In PWA standalone mode, black-translucent takes precedence.
+  themeColor: '#1E2A3A',
 };
 
 export const metadata: Metadata = {
