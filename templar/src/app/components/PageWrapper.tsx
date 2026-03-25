@@ -182,9 +182,11 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        /* Only transition color properties — never transform/filter/perspective,
-           which would create a containing block and break position:fixed children */
-        transition: 'background-color 0.3s ease, color 0.3s ease',
+        /* NO transition on the app shell — even color transitions can cause WebKit
+           to promote this element to a compositor layer, creating a new containing
+           block that prevents position:fixed children from spanning the full
+           physical viewport on iOS. Theme changes are instant here; child
+           components handle their own transitions. */
       }}
     >
       {/* Background Image Strip (behind nav bar) - Not shown on overview page */}
