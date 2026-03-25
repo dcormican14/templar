@@ -24,9 +24,10 @@ export default function IOSTestPage() {
           margin: 0 !important;
           padding: 0 !important;
           overflow: hidden !important;
-          height: 100% !important;
-          width: 100% !important;
-          background: #000 !important;
+          height: 100dvh !important;
+          min-height: calc(100% + env(safe-area-inset-top) + env(safe-area-inset-bottom)) !important;
+          width: 100vw !important;
+          background: #1E2A3A !important;
         }
 
         /* Nuke the wildcard transition from index.css */
@@ -38,8 +39,8 @@ export default function IOSTestPage() {
           position: fixed;
           top: 0;
           left: 0;
-          right: 0;
-          bottom: 0;
+          width: 100vw;
+          height: 100dvh;
           background: green;
           display: flex;
           flex-direction: column;

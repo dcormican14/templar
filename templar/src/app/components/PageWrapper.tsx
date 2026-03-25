@@ -175,18 +175,19 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
         position: 'fixed',
         top: 0,
         left: 0,
-        right: 0,
-        bottom: 0,
+        /* Use 100dvh/100vw instead of bottom:0/right:0 — on iOS PWAs,
+           inset:0 can resolve to the safe-area-inset viewport rather than
+           the full physical viewport after app backgrounding/foregrounding. */
+        width: '100vw',
+        height: '100dvh',
         color: cssVars.foreground,
         backgroundColor: cssVars.background,
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        /* NO transition on the app shell — even color transitions can cause WebKit
-           to promote this element to a compositor layer, creating a new containing
-           block that prevents position:fixed children from spanning the full
-           physical viewport on iOS. Theme changes are instant here; child
-           components handle their own transitions. */
+        /* NO transition, transform, filter, or will-change on the app shell.
+           Any of these cause WebKit to create a new containing block, breaking
+           position:fixed children from spanning the full physical viewport. */
       }}
     >
       {/* Background Image Strip (behind nav bar) - Not shown on overview page */}

@@ -12,16 +12,24 @@
 }
 
 html {
-  height: 100%;
+  /* Use 100dvh (dynamic viewport height) so iOS includes safe-area in the
+     calculation. min-height extends past the safe area so the background
+     color covers the home-indicator strip. */
+  height: 100dvh;
+  min-height: calc(100% + env(safe-area-inset-top) + env(safe-area-inset-bottom));
   overflow: hidden;
   margin: 0;
   padding: 0;
   background-color: #1E2A3A;
   background-color: var(--background);
+  /* NO transition, transform, filter, or will-change on html/body — any of
+     these cause WebKit to create a containing block, breaking position:fixed
+     children from spanning the full physical viewport on iOS. */
 }
 
 body {
-  height: 100%;
+  height: 100dvh;
+  min-height: calc(100% + env(safe-area-inset-top) + env(safe-area-inset-bottom));
   overflow: hidden;
   margin: 0;
   padding: 0 !important; /* Override iOS Safari implicit safe-area padding */

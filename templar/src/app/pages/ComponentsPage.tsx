@@ -89,7 +89,7 @@ export function ComponentsPage() {
                 fontSize: '14px',
                 fontWeight: selectedComponent === component ? '500' : '400',
                 textAlign: 'left',
-                transition: 'all 0.2s ease',
+                transition: 'background-color 0.2s ease, color 0.2s ease',
               }}
               onMouseEnter={(e) => {
                 if (selectedComponent !== component) {

@@ -98,7 +98,7 @@ export function EnvironmentPage() {
           fontSize: '14px',
           fontWeight: selectedItem === item ? '500' : '400',
           textAlign: 'left',
-          transition: 'all 0.2s ease',
+          transition: 'background-color 0.2s ease, color 0.2s ease',
         }}
         onMouseEnter={(e) => {
           if (selectedItem !== item) {

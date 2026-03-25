@@ -537,7 +537,7 @@ export const getToastAnimationStyles = (
   if (!animationsEnabled) return {};
 
   const baseStyles: React.CSSProperties = {
-    transition: 'all var(--duration-fast) var(--animation-smooth)',
+    transition: 'background-color var(--duration-fast) var(--animation-smooth), color var(--duration-fast) var(--animation-smooth), border-color var(--duration-fast) var(--animation-smooth), box-shadow var(--duration-fast) var(--animation-smooth), opacity var(--duration-fast) var(--animation-smooth)',
   };
 
   if (position.includes('right')) {
