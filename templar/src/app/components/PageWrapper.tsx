@@ -176,7 +176,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
         top: 0,
         left: 0,
         width: '100vw',
-        height: '200dvh',
+        height: 'calc(100dvh + env(safe-area-inset-top) + env(safe-area-inset-bottom))',
         color: cssVars.foreground,
         backgroundColor: cssVars.background,
         display: 'flex',

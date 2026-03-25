@@ -213,7 +213,7 @@ export function OverviewPage() {
           top: 0,
           left: 0,
           width: '100vw',
-          height: '200dvh',
+          height: 'calc(100dvh + env(safe-area-inset-top) + env(safe-area-inset-bottom))',
           overflow: 'hidden',
           zIndex: 1
         }}
@@ -240,7 +240,7 @@ export function OverviewPage() {
         top: 0,
         left: 0,
         width: '100vw',
-        height: '200dvh',
+        height: 'calc(100dvh + env(safe-area-inset-top) + env(safe-area-inset-bottom))',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',
