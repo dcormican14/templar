@@ -19,9 +19,8 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: 'cover',
-  // themeColor controls the status bar color in Safari tab mode.
-  // In PWA standalone mode, black-translucent takes precedence.
-  themeColor: '#1E2A3A',
+  // transparent status bar — lets app content show through
+  themeColor: 'transparent',
 };
 
 export const metadata: Metadata = {
