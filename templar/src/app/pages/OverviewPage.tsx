@@ -224,32 +224,6 @@ export function OverviewPage() {
             transform: `translateY(-${imageOffset}px)`
           }}
         />
-        {/* Top fade to black — covers the status bar / notch area */}
-        <div
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 'calc(env(safe-area-inset-top, 0px) + 48px)',
-            background: 'linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)',
-            pointerEvents: 'none',
-            zIndex: 2
-          }}
-        />
-        {/* Bottom fade to black — covers the home indicator area */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 'calc(env(safe-area-inset-bottom, 0px) + 24px)',
-            background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)',
-            pointerEvents: 'none',
-            zIndex: 2
-          }}
-        />
       </div>
 
       {/* Fixed header text overlay */}

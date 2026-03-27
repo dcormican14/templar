@@ -16,6 +16,7 @@ interface PageWrapperProps {
 export function PageWrapper({ children, activeTab }: PageWrapperProps) {
   const [mounted, setMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [displayTab, setDisplayTab] = useState(activeTab);
   const router = useRouter();
   const { theme, setTheme } = useSafeTheme();
@@ -40,6 +41,13 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, [stopLoading]);
+
+  // Track scroll position for navbar transparency
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Update display tab when activeTab changes
   useEffect(() => {
@@ -172,13 +180,14 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
   return (
     <>
       {/* Navigation Bar — fixed at top, extends into safe area */}
-      <nav
+      <div
         style={{
           position: 'fixed',
           top: 0,
           left: 0,
           right: 0,
           zIndex: 1000,
+          transition: 'all 300ms ease-in-out',
         }}
       >
         <Navigation
@@ -202,7 +211,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
           tabs={tabs}
           activeTab={displayTab}
           onTabChange={handleTabChange}
-          variant="glassmorphic"
+          variant={scrolled ? 'glassmorphic' : 'ghost'}
           color="primary"
           size="md"
           trailingContent={
@@ -218,7 +227,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
             </div>
           }
         />
-      </nav>
+      </div>
 
       {/* Main content — natural document flow, offset below fixed nav */}
       <main style={{
