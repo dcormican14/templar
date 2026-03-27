@@ -26,7 +26,7 @@ export default function IOSTestPage() {
           overflow: hidden !important;
           height: 100% !important;
           width: 100% !important;
-          background: #000 !important;
+          background: #1E2A3A !important;
         }
 
         /* Nuke the wildcard transition from index.css */

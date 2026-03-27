@@ -298,7 +298,7 @@ export const getIsometricStyles = (color: any, variant: BadgeVariant, shape: Bad
     borderRightColor: borderColor,
     borderBottomColor: borderColor,
     transform: 'translateY(0)',
-    transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+    transition: 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
     // Ensure proper box-sizing and prevent collapse
     boxSizing: 'border-box',
     position: 'relative',

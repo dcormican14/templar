@@ -21,25 +21,27 @@
   --modal-duration: 0.3s;
 }
 
-/* Base Animation Classes */
+/* Base Animation Classes — never use transition:all, it can cause WebKit
+   to implicitly transition transform/filter, creating containing blocks
+   that break position:fixed on iOS. */
 .animate-spring {
-  transition: all var(--duration-medium) var(--animation-spring);
+  transition: background-color var(--duration-medium) var(--animation-spring), color var(--duration-medium) var(--animation-spring), border-color var(--duration-medium) var(--animation-spring), box-shadow var(--duration-medium) var(--animation-spring), opacity var(--duration-medium) var(--animation-spring);
 }
 
 .animate-smooth {
-  transition: all var(--duration-fast) var(--animation-smooth);
+  transition: background-color var(--duration-fast) var(--animation-smooth), color var(--duration-fast) var(--animation-smooth), border-color var(--duration-fast) var(--animation-smooth), box-shadow var(--duration-fast) var(--animation-smooth), opacity var(--duration-fast) var(--animation-smooth);
 }
 
 .animate-fast {
-  transition: all var(--duration-fast) var(--animation-smooth);
+  transition: background-color var(--duration-fast) var(--animation-smooth), color var(--duration-fast) var(--animation-smooth), border-color var(--duration-fast) var(--animation-smooth), box-shadow var(--duration-fast) var(--animation-smooth), opacity var(--duration-fast) var(--animation-smooth);
 }
 
 .animate-medium {
-  transition: all var(--duration-medium) var(--animation-spring);
+  transition: background-color var(--duration-medium) var(--animation-spring), color var(--duration-medium) var(--animation-spring), border-color var(--duration-medium) var(--animation-spring), box-shadow var(--duration-medium) var(--animation-spring), opacity var(--duration-medium) var(--animation-spring);
 }
 
 .animate-slow {
-  transition: all var(--duration-slow) var(--animation-smooth);
+  transition: background-color var(--duration-slow) var(--animation-smooth), color var(--duration-slow) var(--animation-smooth), border-color var(--duration-slow) var(--animation-smooth), box-shadow var(--duration-slow) var(--animation-smooth), opacity var(--duration-slow) var(--animation-smooth);
 }
 
 /* Component-Specific Animation Utilities */
@@ -52,7 +54,7 @@
 }
 
 .animate-toggle-bubble {
-  transition: all var(--toggle-duration) var(--animation-spring);
+  transition: transform var(--toggle-duration) var(--animation-spring), background-color var(--toggle-duration) var(--animation-spring), box-shadow var(--toggle-duration) var(--animation-spring);
 }
 
 /* SegmentedControl Animations */

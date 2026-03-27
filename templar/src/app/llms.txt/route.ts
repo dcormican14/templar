@@ -3,7 +3,7 @@ import { getComponents, STATIC_DOCS } from '../llms/components';
 
 export const dynamic = 'force-dynamic';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://templar.dev';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://mournshire.vercel.app';
 
 export async function GET() {
   const components = getComponents();

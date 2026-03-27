@@ -243,7 +243,7 @@ export const getBubbleStyles = (
     transform: checked
       ? `translateX(${travelDistance}px) translateY(-50%)`
       : 'translateX(0) translateY(-50%)',
-    transition: 'all var(--toggle-duration) var(--animation-spring)',
+    transition: 'transform var(--toggle-duration) var(--animation-spring), background-color var(--toggle-duration) var(--animation-spring), box-shadow var(--toggle-duration) var(--animation-spring)',
   };
 
   // Variant-specific bubble styles

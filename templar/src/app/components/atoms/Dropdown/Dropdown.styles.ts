@@ -365,7 +365,7 @@ export const getMenuStyles = (
     marginTop: '4px',
     opacity: 1,
     transform: 'translateY(0)',
-    transition: animationsEnabled ? 'all 0.2s ease-in-out' : 'none',
+    transition: animationsEnabled ? 'opacity 0.2s ease-in-out, transform 0.2s ease-in-out, background-color 0.2s ease-in-out' : 'none',
   };
 
   // Position-specific styles
@@ -410,7 +410,7 @@ export const getOptionStyles = (
     textAlign: 'left',
     cursor: disabled ? 'not-allowed' : 'pointer',
     outline: 'none',
-    transition: animationsEnabled ? 'all 0.15s ease-in-out' : 'none',
+    transition: animationsEnabled ? 'background-color 0.15s ease-in-out, color 0.15s ease-in-out, border-color 0.15s ease-in-out' : 'none',
     color: 'inherit',
     fontFamily: 'inherit',
   };
@@ -752,7 +752,7 @@ export const getIsometricStyles = (color: any, variant: DropdownVariant, shape: 
     borderRightColor: borderColor,
     borderBottomColor: borderColor,
     transform: 'translateY(0)',
-    transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+    transition: 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
     // Ensure proper box-sizing and prevent collapse
     boxSizing: 'border-box',
     position: 'relative',

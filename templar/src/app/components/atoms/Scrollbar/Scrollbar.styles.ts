@@ -163,8 +163,11 @@ export const createScrollbarContainerStyles = (
     maxWidth: formatDimension(maxWidth),
     maxHeight: formatDimension(maxHeight),
     cursor: disabled ? 'not-allowed' : 'default',
-    transition: animationsEnabled 
-      ? 'all var(--duration-fast) var(--animation-smooth)'
+    /* Never use transition:all — on WebKit it can implicitly transition
+       transform/filter, creating a containing block that breaks
+       position:fixed descendants from reaching viewport edges (iOS). */
+    transition: animationsEnabled
+      ? 'opacity var(--duration-fast) var(--animation-smooth), background-color var(--duration-fast) var(--animation-smooth), border-color var(--duration-fast) var(--animation-smooth)'
       : 'none',
     overflow: 'hidden', // Container should hide overflow
   };
@@ -182,9 +185,9 @@ export const getScrollableContentStyles = (
   const baseStyles: React.CSSProperties = {
     width: '100%',
     height: '100%',
-    transition: animationsEnabled 
-      ? 'transform var(--duration-smooth) var(--animation-smooth)' 
-      : 'none',
+    /* Avoid transitioning transform — it creates a containing block on
+       WebKit, breaking position:fixed from spanning the full viewport. */
+    transition: 'none',
     scrollBehavior: smoothScrolling ? 'smooth' : 'auto',
     WebkitOverflowScrolling: momentum ? 'touch' : 'auto',
     // Hide native scrollbars if requested
@@ -759,8 +762,8 @@ export const getScrollIndicatorStyles = (
     position: 'absolute',
     ...variantStyles,
     opacity: visible ? 1 : 0.5,
-    transition: animationsEnabled 
-      ? 'all var(--duration-fast) var(--animation-smooth)' 
+    transition: animationsEnabled
+      ? 'opacity var(--duration-fast) var(--animation-smooth), color var(--duration-fast) var(--animation-smooth), background-color var(--duration-fast) var(--animation-smooth)'
       : 'none',
     pointerEvents: disabled ? 'none' : 'auto',
     cursor: disabled ? 'not-allowed' : (visible ? 'pointer' : 'default'),

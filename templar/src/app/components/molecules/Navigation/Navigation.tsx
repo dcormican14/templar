@@ -481,7 +481,7 @@ export const Navigation = forwardRef<HTMLElement, NavigationProps>(
                   display: 'flex',
                   alignItems: 'center',
                   gap: '12px',
-                  transition: 'all 0.2s ease',
+                  transition: 'background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease',
                   backdropFilter: 'blur(10px)',
                   WebkitBackdropFilter: 'blur(10px)',
                   pointerEvents: 'auto',

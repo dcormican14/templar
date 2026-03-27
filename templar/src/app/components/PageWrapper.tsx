@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Navigation } from './molecules/Navigation/Navigation';
-import { Icon, Button, Scrollbar } from './atoms';
+import { Icon, Button } from './atoms';
 import { useSafeTheme } from '../hooks/useSafeTheme';
 import { useSafeCSSVariables } from '../hooks/useSafeCSSVariables';
 import { useSafeLoading } from '../hooks/useSafeLoading';
@@ -16,13 +16,12 @@ interface PageWrapperProps {
 export function PageWrapper({ children, activeTab }: PageWrapperProps) {
   const [mounted, setMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [displayTab, setDisplayTab] = useState(activeTab);
+  const [scrolled, setScrolled] = useState(false);
   const router = useRouter();
   const { theme, setTheme } = useSafeTheme();
   const cssVars = useSafeCSSVariables();
   const { stopLoading } = useSafeLoading();
 
-  // Custom theme cycling for demo website - only cycles through selected themes
   const allowedThemes = ['valor-dark', 'sepia-dark', 'solarized-dark', 'contrast'] as const;
 
   const cycleTheme = () => {
@@ -31,7 +30,6 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
     setTheme(allowedThemes[nextIndex]);
   };
 
-  // Mount on client, then dismiss the loading screen
   useEffect(() => {
     setMounted(true);
     stopLoading('app-init');
@@ -41,69 +39,42 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
     return () => window.removeEventListener('resize', checkMobile);
   }, [stopLoading]);
 
-  // Update display tab when activeTab changes
   useEffect(() => {
-    setDisplayTab(activeTab);
-  }, [activeTab]);
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
-  // Handle scroll-based tab switching for overview/docs/contact
-  useEffect(() => {
-    if (activeTab !== 'overview') return;
-
-    const handleOverviewScroll = (event: Event) => {
-      const customEvent = event as CustomEvent;
-      const currentSection = customEvent.detail?.currentSection;
-
-      if (currentSection === 'contact') {
-        setDisplayTab('contact');
-      } else if (currentSection === 'docs') {
-        setDisplayTab('docs');
-      } else {
-        setDisplayTab('overview');
-      }
-    };
-
-    window.addEventListener('overviewScroll', handleOverviewScroll);
-    return () => window.removeEventListener('overviewScroll', handleOverviewScroll);
-  }, [activeTab]);
-
-  // Don't render during SSR — the loading screen covers the page
   if (!mounted) return null;
 
   const tabs = [
-    { id: 'overview', label: 'Overview'},
-    { id: 'docs', label: 'Docs'},
-    { id: 'contact', label: 'Contact'},
-    { id: 'components', label: 'Components'},
-    { id: 'environment', label: 'Environment'}
+    { id: 'overview', label: 'Overview' },
+    { id: 'docs', label: 'Docs' },
+    { id: 'contact', label: 'Contact' },
+    { id: 'components', label: 'Components' },
+    { id: 'environment', label: 'Environment' },
   ];
 
   const handleTabChange = (tabId: string) => {
-    // Navigate based on tab selection
     switch (tabId) {
       case 'overview':
         if (activeTab === 'overview') {
-          // Scroll to top if already on overview page
-          const scrollContainer = (window as any).__overviewScrollContainer;
-          if (scrollContainer) {
-            scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
-          } else {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
-          // Navigate to overview page
           router.push('/');
         }
         break;
       case 'docs':
-        // Scroll to docs section on overview page
         if (activeTab === 'overview') {
-          const docsSection = document.getElementById('docs-section');
-          if (docsSection) {
-            docsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
+          document.getElementById('docs-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {
-          // Navigate to overview and scroll after navigation
+          router.push('/');
+        }
+        break;
+      case 'contact':
+        if (activeTab === 'overview') {
+          document.getElementById('contact-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
           router.push('/');
         }
         break;
@@ -113,102 +84,45 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
       case 'environment':
         router.push('/environment');
         break;
-      case 'contact':
-        // Scroll to contact section on overview page
-        if (activeTab === 'overview') {
-          const contactSection = document.getElementById('contact-section');
-          if (contactSection) {
-            contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        } else {
-          // Navigate to overview and scroll after navigation
-          router.push('/');
-        }
-        break;
       default:
         router.push('/');
     }
   };
 
-  // Theme icon mapping
-  const getThemeIcon = (themeName: string) => {
-    switch (themeName) {
-      case 'light':
-        return 'SunLight';
-      case 'contrast':
-        return 'Lens';
-      case 'sepia-light':
-        return 'Lamp';
-      case 'sepia-dark':
-        return 'CoffeeCup';
-      case 'solarized-dark':
-        return 'SeaAndSun';
-      case 'valor':
-        return 'HistoricShield';
-      case 'valor-dark':
-        return 'HomeShield';
-      default:
-        return 'Palette';
-    }
+  const getThemeIcon = (t: string) => {
+    const map: Record<string, string> = {
+      light: 'SunLight', contrast: 'Lens', 'sepia-light': 'Lamp',
+      'sepia-dark': 'CoffeeCup', 'solarized-dark': 'SeaAndSun',
+      valor: 'HistoricShield', 'valor-dark': 'HomeShield',
+    };
+    return map[t] || 'Palette';
   };
 
-  const getThemeLabel = (themeName: string) => {
-    switch (themeName) {
-      case 'contrast':
-        return 'High Contrast';
-      case 'sepia-dark':
-        return 'Sepia';
-      case 'sepia-light':
-        return 'Sepia Light';
-      case 'solarized-dark':
-        return 'Solarized';
-      case 'valor-dark':
-        return 'Valor';
-      default:
-        return themeName.charAt(0).toUpperCase() + themeName.slice(1);
-    }
+  const getThemeLabel = (t: string) => {
+    const map: Record<string, string> = {
+      contrast: 'High Contrast', 'sepia-dark': 'Sepia', 'sepia-light': 'Sepia Light',
+      'solarized-dark': 'Solarized', 'valor-dark': 'Valor',
+    };
+    return map[t] || t.charAt(0).toUpperCase() + t.slice(1);
   };
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        color: cssVars.foreground,
-        backgroundColor: cssVars.background,
-        display: 'flex',
-        flexDirection: 'column',
-        overflow: 'hidden',
-        /* NO transition on the app shell — even color transitions can cause WebKit
-           to promote this element to a compositor layer, creating a new containing
-           block that prevents position:fixed children from spanning the full
-           physical viewport on iOS. Theme changes are instant here; child
-           components handle their own transitions. */
-      }}
-    >
-      {/* Background Image Strip (behind nav bar) - Not shown on overview page */}
-      {activeTab !== 'overview' && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            zIndex: 30,
-            height: 'calc(48px + env(safe-area-inset-top))',
-            backgroundImage: 'url(/assets/knight_background.png)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-          }}
-        />
-      )}
-
-      {/* Navigation Bar */}
-      <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999 }}>
+    <>
+      {/* Fixed navbar — transparent at top, glassmorphic on scroll */}
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 1000,
+          background: scrolled ? `${cssVars.background}CC` : 'transparent',
+          backdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'none',
+          WebkitBackdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'none',
+          borderBottom: scrolled ? `1px solid ${cssVars.border}` : '1px solid transparent',
+          transition: 'background 300ms ease, backdrop-filter 300ms ease, -webkit-backdrop-filter 300ms ease, border-color 300ms ease',
+        }}
+      >
         <Navigation
           icon={
             <div style={{
@@ -228,71 +142,26 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
           appName="Mourn Design"
           onBrandClick={() => router.push('/')}
           tabs={tabs}
-          activeTab={displayTab}
+          activeTab={activeTab}
           onTabChange={handleTabChange}
-          variant="glassmorphic"
+          variant="ghost"
           color="primary"
           size="md"
           trailingContent={
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              color: cssVars.foregroundAccent,
-              fontSize: '14px',
-              fontWeight: '500'
-            }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: cssVars.foregroundAccent, fontSize: '14px', fontWeight: '500' }}>
               v1.2.4
             </div>
           }
         />
       </div>
 
-      {/* Main content — fills remaining space below nav */}
-      {activeTab === 'overview' ? (
-        // Overview page has its own scrolling system with parallax
-        <div style={{
-          flex: 1,
-          marginTop: 'calc(48px + env(safe-area-inset-top))',
-          width: '100%',
-          overflow: 'hidden',
-        }}>
-          {children}
-        </div>
-      ) : (
-        // Other pages use PageWrapper's Scrollbar
-        <div className="flex flex-col" style={{
-          flex: 1,
-          marginTop: 'calc(48px + env(safe-area-inset-top))',
-          overflow: 'hidden',
-        }}>
-          <Scrollbar
-            variant="ghost"
-            color="secondary"
-            size="md"
-            visibility={isMobile ? 'hidden' : 'always'}
-            disabled={false}
-            smoothScrolling={true}
-            height="100%"
-            width="100%"
-          >
-            {activeTab === 'components' || activeTab === 'environment' ? (
-              // Full width for components and environment pages (have their own side menu layout)
-              <div style={{ width: '100%', margin: 0, padding: 0, paddingBottom: 'env(safe-area-inset-bottom)' }}>
-                {children}
-              </div>
-            ) : (
-              // Container for other pages
-              <main className="container mx-auto px-6 py-8" style={{ paddingBottom: 'calc(2rem + env(safe-area-inset-bottom))' }}>
-                {children}
-              </main>
-            )}
-          </Scrollbar>
-        </div>
-      )}
+      {/* Main content — normal document flow */}
+      <main style={{ paddingTop: 'calc(var(--nav-height) + var(--safe-top))', minHeight: '100vh' }}>
+        {children}
+      </main>
 
-      {/* Floating Theme Switcher */}
-      <div style={{ position: 'fixed', right: '1.5rem', zIndex: 50, bottom: 'calc(1.5rem + env(safe-area-inset-bottom))' }}>
+      {/* Theme switcher */}
+      <div style={{ position: 'fixed', right: '1.5rem', bottom: 'calc(1.5rem + var(--safe-bottom))', zIndex: 50 }}>
         <Button
           variant="solid"
           size="lg"
@@ -306,6 +175,6 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
           {!isMobile && <span className="ml-2">{getThemeLabel(theme)}</span>}
         </Button>
       </div>
-    </div>
+    </>
   );
 }

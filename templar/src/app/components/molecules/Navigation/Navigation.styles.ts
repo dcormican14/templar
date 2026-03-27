@@ -194,7 +194,7 @@ export const createNavigationStyles = (
     display: 'flex',
     alignItems: 'stretch',
     width: '100%',
-    transition: 'all 0.2s ease-in-out',
+    transition: 'background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
     // Extend into the iOS status bar area; content pushed down via paddingTop on the inner container
     paddingTop: 'env(safe-area-inset-top)',
     paddingLeft: 'env(safe-area-inset-left)',
@@ -262,7 +262,7 @@ export const createTabStyles = (
     gap: '6px',
     padding: `8px 12px 0 12px`,
     cursor: 'pointer',
-    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    transition: 'background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     textDecoration: 'none',
     fontSize: sizeStyles.fontSize,
     fontWeight: isActive ? '600' : '500',
