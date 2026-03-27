@@ -88,14 +88,7 @@ export function OverviewPage() {
     <>
       <FallingLeaves leafCount={5} spawnRate={1000} enabled={true} />
 
-      {/* Background image — behind all content via negative z-index */}
-      <img
-        src="/assets/knight_background.png"
-        alt=""
-        style={{ position: 'fixed', inset: 0, zIndex: -1, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
-      />
-
-      {/* Hero — normal document flow */}
+      {/* Hero — background image is CSS, flows naturally, no fixed positioning */}
       <section
         style={{
           minHeight: '100vh',
@@ -105,6 +98,10 @@ export function OverviewPage() {
           alignItems: 'center',
           padding: '80px 32px',
           gap: '48px',
+          backgroundImage: 'url(/assets/knight_background.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center top',
+          backgroundRepeat: 'no-repeat',
         }}
       >
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: isMobile ? 'center' : 'flex-end', justifyContent: 'center' }}>
