@@ -27,13 +27,14 @@ html {
   text-size-adjust: 100%;
   overflow: auto;
   height: auto;
+  background-color: transparent;
 }
 
 body {
   margin: 0;
   padding: 0 !important;
   min-height: 100vh;
-  background-color: var(--background);
+  background-color: #000;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;

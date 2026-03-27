@@ -63,22 +63,6 @@ export function OverviewPage() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Override html/body background for the overview page:
-  // - 'transparent' lets the fixed background image show through safe areas
-  // - Safari 26 Liquid Glass derives toolbar tint from body background,
-  //   so we set it to near-black to blend with the dark knight image
-  useEffect(() => {
-    const html = document.documentElement;
-    const body = document.body;
-    const prevHtmlBg = html.style.backgroundColor;
-    const prevBodyBg = body.style.backgroundColor;
-    html.style.setProperty('background-color', 'transparent', 'important');
-    body.style.setProperty('background-color', '#0c0c0c', 'important');
-    return () => {
-      html.style.backgroundColor = prevHtmlBg;
-      body.style.backgroundColor = prevBodyBg;
-    };
-  }, []);
 
   // Measure image height when it loads
   useEffect(() => {

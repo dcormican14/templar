@@ -179,7 +179,9 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
 
   return (
     <>
-      {/* Navigation Bar — fixed at top, extends into safe area */}
+      {/* Navigation Bar — fixed at top, extends into safe area.
+           Starts transparent; transitions to a blurred glassmorphic bar on scroll
+           (mirrors the test_website Navbar pattern). */}
       <div
         style={{
           position: 'fixed',
@@ -187,7 +189,13 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
           left: 0,
           right: 0,
           zIndex: 1000,
-          transition: 'all 300ms ease-in-out',
+          background: scrolled
+            ? `${cssVars.background}CC`
+            : 'transparent',
+          backdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'none',
+          WebkitBackdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'none',
+          borderBottom: scrolled ? `1px solid ${cssVars.border}` : '1px solid transparent',
+          transition: 'background 300ms ease-in-out, backdrop-filter 300ms ease-in-out, -webkit-backdrop-filter 300ms ease-in-out, border-color 300ms ease-in-out',
         }}
       >
         <Navigation
@@ -211,7 +219,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
           tabs={tabs}
           activeTab={displayTab}
           onTabChange={handleTabChange}
-          variant={scrolled ? 'glassmorphic' : 'ghost'}
+          variant="ghost"
           color="primary"
           size="md"
           trailingContent={
@@ -229,10 +237,13 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
         />
       </div>
 
-      {/* Main content — natural document flow, offset below fixed nav */}
+      {/* Main content — natural document flow, offset below fixed nav.
+           Overview page gets transparent background so fixed image shows through;
+           other pages get the theme background. */}
       <main style={{
         paddingTop: 'calc(var(--nav-height) + var(--safe-top))',
         minHeight: '100vh',
+        backgroundColor: activeTab === 'overview' ? 'transparent' : 'var(--background)',
       }}>
         {activeTab === 'components' || activeTab === 'environment' ? (
           // Full width for components and environment pages (have their own side menu layout)
