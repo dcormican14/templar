@@ -142,11 +142,9 @@ export function ComponentsPage() {
   return (
     <div style={{
       display: 'flex',
-      height: 'calc(100dvh - 48px)', // Full viewport height minus navigation
+      height: 'calc(100dvh - var(--nav-height) - var(--safe-top))',
       overflow: 'hidden',
-      position: 'relative'
     }}>
-      {/* Collapsible Menu - Fixed height with its own scroll */}
       <CollapsibleMenu
         collapsed={menuCollapsed}
         onToggle={setMenuCollapsed}
@@ -155,7 +153,6 @@ export function ComponentsPage() {
         position="left"
         style={{
           borderRight: `1px solid ${cssVars.border}`,
-          backgroundColor: cssVars.background,
           height: '100%',
           flexShrink: 0,
           zIndex: 10,
@@ -164,17 +161,7 @@ export function ComponentsPage() {
         {renderComponentTree()}
       </CollapsibleMenu>
 
-      {/* Main Content Area - Independent scroll */}
-      <div
-        style={{
-          flex: 1,
-          overflow: 'hidden',
-          backgroundColor: cssVars.background,
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
+      <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
         {renderMainContent()}
       </div>
     </div>

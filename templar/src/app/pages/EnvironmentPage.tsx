@@ -207,11 +207,9 @@ export function EnvironmentPage() {
   return (
     <div style={{
       display: 'flex',
-      height: 'calc(100dvh - 48px)',
+      height: 'calc(100dvh - var(--nav-height) - var(--safe-top))',
       overflow: 'hidden',
-      position: 'relative'
     }}>
-      {/* Collapsible Menu */}
       <CollapsibleMenu
         collapsed={menuCollapsed}
         onToggle={setMenuCollapsed}
@@ -220,7 +218,6 @@ export function EnvironmentPage() {
         position="left"
         style={{
           borderRight: `1px solid ${cssVars.border}`,
-          backgroundColor: cssVars.background,
           height: '100%',
           flexShrink: 0,
           zIndex: 10,
@@ -229,17 +226,7 @@ export function EnvironmentPage() {
         {renderProviderTree()}
       </CollapsibleMenu>
 
-      {/* Main Content Area */}
-      <div
-        style={{
-          flex: 1,
-          overflow: 'hidden',
-          backgroundColor: cssVars.background,
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
+      <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
         {renderMainContent()}
       </div>
     </div>
