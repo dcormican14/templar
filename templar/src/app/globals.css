@@ -3,48 +3,58 @@
 
 /* Edge-to-edge fullscreen on iOS:
    - viewport-fit=cover expands the viewport to full physical screen
-   - position:fixed inset:0 on the app shell bypasses body's implicit safe-area padding
-   - body padding:0 removes iOS Safari's implicit safe-area insets
-   - background-color set synchronously so Safari doesn't fall back to opaque status bar */
+   - Safe area CSS variables let every component reference insets by name
+   - Native body scrolling enables pull-to-refresh on mobile */
+
+:root {
+  /* Safe area tokens — fallback to 0px on non-notched devices */
+  --safe-top:    env(safe-area-inset-top,    0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left:   env(safe-area-inset-left,   0px);
+  --safe-right:  env(safe-area-inset-right,  0px);
+
+  /* Navigation height (matches Navigation size="md" = 48px) */
+  --nav-height: 48px;
+}
 
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
 html {
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  background-color: transparent;
-  background-color: var(--background);
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow: auto;
+  height: auto;
 }
 
 body {
-  height: 100%;
   margin: 0;
   padding: 0 !important;
-  background-color: transparent;
+  min-height: 100vh;
   background-color: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
-  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Safe area utility classes */
 .safe-area-top {
-  padding-top: env(safe-area-inset-top);
+  padding-top: var(--safe-top);
 }
 
 .safe-area-bottom {
-  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: var(--safe-bottom);
 }
 
 .safe-area-left {
-  padding-left: env(safe-area-inset-left);
+  padding-left: var(--safe-left);
 }
 
 .safe-area-right {
-  padding-right: env(safe-area-inset-right);
+  padding-right: var(--safe-right);
 }
 
 /* Hide scrollbar for dropdown content while maintaining scroll functionality */

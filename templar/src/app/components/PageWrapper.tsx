@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Navigation } from './molecules/Navigation/Navigation';
-import { Icon, Button, Scrollbar } from './atoms';
+import { Icon, Button } from './atoms';
 import { useSafeTheme } from '../hooks/useSafeTheme';
 import { useSafeCSSVariables } from '../hooks/useSafeCSSVariables';
 import { useSafeLoading } from '../hooks/useSafeLoading';
@@ -170,45 +170,17 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
   };
 
   return (
-    <div
-      style={{
-        position: activeTab === 'overview' ? 'relative' as const : 'fixed' as const,
-        ...(activeTab !== 'overview' && { top: 0, left: 0, right: 0, bottom: 0 }),
-        color: cssVars.foreground,
-        backgroundColor: activeTab === 'overview' ? 'transparent' : cssVars.background,
-        display: 'flex',
-        flexDirection: 'column',
-        ...(activeTab !== 'overview' && { overflow: 'hidden' }),
-        minHeight: activeTab === 'overview' ? '100vh' : undefined,
-        /* NO transition, transform, filter, or will-change on the app shell.
-           Any of these cause WebKit to create a new containing block, breaking
-           position:fixed children from spanning the full physical viewport. */
-      }}
-    >
-      {/* Background Image Strip (behind nav bar) - Not shown on overview page */}
-      {activeTab !== 'overview' && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            zIndex: 30,
-            height: 'calc(48px + env(safe-area-inset-top))',
-            backgroundImage: 'url(/assets/knight_background.png)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-          }}
-        />
-      )}
-
-      {/* Navigation Bar — wrapper is fixed but transparent so Safari's
-           Liquid Glass toolbar sampling sees through it. The absolute child
-           holds the actual Navigation; Safari ignores absolute children
-           when deriving toolbar tint. */}
-      <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999, background: 'transparent' }}>
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0 }}>
+    <>
+      {/* Navigation Bar — fixed at top, extends into safe area */}
+      <nav
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 1000,
+        }}
+      >
         <Navigation
           icon={
             <div style={{
@@ -246,58 +218,38 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
             </div>
           }
         />
-        </div>
-      </div>
+      </nav>
 
-      {/* Main content — fills remaining space below nav */}
-      {activeTab === 'overview' ? (
-        // Overview page has its own scrolling system with parallax.
-        // NO overflow:hidden here — the overview page uses position:fixed
-        // children (background image, text overlay) that must span the full
-        // viewport including safe areas. overflow:hidden would clip them.
-        <div style={{
-          flex: 1,
-          marginTop: 'calc(48px + env(safe-area-inset-top))',
-          width: '100%',
-        }}>
-          {children}
-        </div>
-      ) : (
-        // Other pages use PageWrapper's Scrollbar
-        <div className="flex flex-col" style={{
-          flex: 1,
-          marginTop: 'calc(48px + env(safe-area-inset-top))',
-          overflow: 'hidden',
-        }}>
-          <Scrollbar
-            variant="ghost"
-            color="secondary"
-            size="md"
-            visibility={isMobile ? 'hidden' : 'always'}
-            disabled={false}
-            smoothScrolling={true}
-            height="100%"
-            width="100%"
-          >
-            {activeTab === 'components' || activeTab === 'environment' ? (
-              // Full width for components and environment pages (have their own side menu layout)
-              <div style={{ width: '100%', margin: 0, padding: 0, paddingBottom: 'env(safe-area-inset-bottom)' }}>
-                {children}
-              </div>
-            ) : (
-              // Container for other pages
-              <main className="container mx-auto px-6 py-8" style={{ paddingBottom: 'calc(2rem + env(safe-area-inset-bottom))' }}>
-                {children}
-              </main>
-            )}
-          </Scrollbar>
-        </div>
-      )}
+      {/* Main content — natural document flow, offset below fixed nav */}
+      <main style={{
+        paddingTop: 'calc(var(--nav-height) + var(--safe-top))',
+        minHeight: '100vh',
+      }}>
+        {activeTab === 'components' || activeTab === 'environment' ? (
+          // Full width for components and environment pages (have their own side menu layout)
+          <div style={{ width: '100%', paddingBottom: 'calc(2rem + var(--safe-bottom))' }}>
+            {children}
+          </div>
+        ) : activeTab === 'overview' ? (
+          // Overview page — no extra container, page manages its own layout
+          <div style={{ width: '100%' }}>
+            {children}
+          </div>
+        ) : (
+          // Container for other pages
+          <div className="container mx-auto px-6 py-8" style={{ paddingBottom: 'calc(2rem + var(--safe-bottom))' }}>
+            {children}
+          </div>
+        )}
+      </main>
 
-      {/* Floating Theme Switcher — same Liquid Glass trick: fixed wrapper
-           is transparent, button lives in an absolute child Safari ignores. */}
-      <div style={{ position: 'fixed', right: 0, bottom: 0, zIndex: 50, background: 'transparent', width: 0, height: 0 }}>
-        <div style={{ position: 'absolute', right: '1.5rem', bottom: 'calc(1.5rem + env(safe-area-inset-bottom))' }}>
+      {/* Floating Theme Switcher */}
+      <div style={{
+        position: 'fixed',
+        right: '1.5rem',
+        bottom: 'calc(1.5rem + var(--safe-bottom))',
+        zIndex: 50,
+      }}>
         <Button
           variant="solid"
           size="lg"
@@ -310,8 +262,7 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
         >
           {!isMobile && <span className="ml-2">{getThemeLabel(theme)}</span>}
         </Button>
-        </div>
       </div>
-    </div>
+    </>
   );
 }
