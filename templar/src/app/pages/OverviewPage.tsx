@@ -85,24 +85,15 @@ export function OverviewPage() {
   }, []);
 
   return (
-    <div style={{ position: 'relative' }}>
+    <>
       <FallingLeaves leafCount={5} spawnRate={1000} enabled={true} />
 
       {/* Background image — behind all content via negative z-index */}
-      <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: -1,
-          overflow: 'hidden',
-        }}
-      >
-        <img
-          src="/assets/knight_background.png"
-          alt=""
-          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
-        />
-      </div>
+      <img
+        src="/assets/knight_background.png"
+        alt=""
+        style={{ position: 'fixed', inset: 0, zIndex: -1, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
+      />
 
       {/* Hero — normal document flow */}
       <section
@@ -404,6 +395,6 @@ export function OverviewPage() {
           </AnimatedCard>
         </div>
       </section>
-    </div>
+    </>
   );
 }
