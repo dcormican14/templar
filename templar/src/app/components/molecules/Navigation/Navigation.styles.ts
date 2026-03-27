@@ -194,7 +194,7 @@ export const createNavigationStyles = (
     display: 'flex',
     alignItems: 'stretch',
     width: '100%',
-    transition: 'background 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out, border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, backdrop-filter 0.3s ease-in-out, -webkit-backdrop-filter 0.3s ease-in-out',
+    transition: 'background-color 0.2s ease-in-out, color 0.2s ease-in-out, border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
     // Extend into the iOS status bar area; content pushed down via paddingTop on the inner container
     paddingTop: 'env(safe-area-inset-top)',
     paddingLeft: 'env(safe-area-inset-left)',

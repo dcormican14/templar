@@ -17,13 +17,11 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
   const [mounted, setMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [displayTab, setDisplayTab] = useState(activeTab);
   const router = useRouter();
   const { theme, setTheme } = useSafeTheme();
   const cssVars = useSafeCSSVariables();
   const { stopLoading } = useSafeLoading();
 
-  // Custom theme cycling for demo website - only cycles through selected themes
   const allowedThemes = ['valor-dark', 'sepia-dark', 'solarized-dark', 'contrast'] as const;
 
   const cycleTheme = () => {
@@ -32,7 +30,6 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
     setTheme(allowedThemes[nextIndex]);
   };
 
-  // Mount on client, then dismiss the loading screen
   useEffect(() => {
     setMounted(true);
     stopLoading('app-init');
@@ -42,76 +39,42 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
     return () => window.removeEventListener('resize', checkMobile);
   }, [stopLoading]);
 
-  // Track scroll position for navbar transparency
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  // Update display tab when activeTab changes
-  useEffect(() => {
-    setDisplayTab(activeTab);
-  }, [activeTab]);
-
-  // Handle scroll-based tab switching for overview/docs/contact
-  useEffect(() => {
-    if (activeTab !== 'overview') return;
-
-    const handleOverviewScroll = (event: Event) => {
-      const customEvent = event as CustomEvent;
-      const currentSection = customEvent.detail?.currentSection;
-
-      if (currentSection === 'contact') {
-        setDisplayTab('contact');
-      } else if (currentSection === 'docs') {
-        setDisplayTab('docs');
-      } else {
-        setDisplayTab('overview');
-      }
-    };
-
-    window.addEventListener('overviewScroll', handleOverviewScroll);
-    return () => window.removeEventListener('overviewScroll', handleOverviewScroll);
-  }, [activeTab]);
-
-  // Don't render during SSR — the loading screen covers the page
   if (!mounted) return null;
 
   const tabs = [
-    { id: 'overview', label: 'Overview'},
-    { id: 'docs', label: 'Docs'},
-    { id: 'contact', label: 'Contact'},
-    { id: 'components', label: 'Components'},
-    { id: 'environment', label: 'Environment'}
+    { id: 'overview', label: 'Overview' },
+    { id: 'docs', label: 'Docs' },
+    { id: 'contact', label: 'Contact' },
+    { id: 'components', label: 'Components' },
+    { id: 'environment', label: 'Environment' },
   ];
 
   const handleTabChange = (tabId: string) => {
-    // Navigate based on tab selection
     switch (tabId) {
       case 'overview':
         if (activeTab === 'overview') {
-          // Scroll to top if already on overview page
-          const scrollContainer = (window as any).__overviewScrollContainer;
-          if (scrollContainer) {
-            scrollContainer.scrollTo({ top: 0, behavior: 'smooth' });
-          } else {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
-          // Navigate to overview page
           router.push('/');
         }
         break;
       case 'docs':
-        // Scroll to docs section on overview page
         if (activeTab === 'overview') {
-          const docsSection = document.getElementById('docs-section');
-          if (docsSection) {
-            docsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
+          document.getElementById('docs-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {
-          // Navigate to overview and scroll after navigation
+          router.push('/');
+        }
+        break;
+      case 'contact':
+        if (activeTab === 'overview') {
+          document.getElementById('contact-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
           router.push('/');
         }
         break;
@@ -121,67 +84,31 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
       case 'environment':
         router.push('/environment');
         break;
-      case 'contact':
-        // Scroll to contact section on overview page
-        if (activeTab === 'overview') {
-          const contactSection = document.getElementById('contact-section');
-          if (contactSection) {
-            contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        } else {
-          // Navigate to overview and scroll after navigation
-          router.push('/');
-        }
-        break;
       default:
         router.push('/');
     }
   };
 
-  // Theme icon mapping
-  const getThemeIcon = (themeName: string) => {
-    switch (themeName) {
-      case 'light':
-        return 'SunLight';
-      case 'contrast':
-        return 'Lens';
-      case 'sepia-light':
-        return 'Lamp';
-      case 'sepia-dark':
-        return 'CoffeeCup';
-      case 'solarized-dark':
-        return 'SeaAndSun';
-      case 'valor':
-        return 'HistoricShield';
-      case 'valor-dark':
-        return 'HomeShield';
-      default:
-        return 'Palette';
-    }
+  const getThemeIcon = (t: string) => {
+    const map: Record<string, string> = {
+      light: 'SunLight', contrast: 'Lens', 'sepia-light': 'Lamp',
+      'sepia-dark': 'CoffeeCup', 'solarized-dark': 'SeaAndSun',
+      valor: 'HistoricShield', 'valor-dark': 'HomeShield',
+    };
+    return map[t] || 'Palette';
   };
 
-  const getThemeLabel = (themeName: string) => {
-    switch (themeName) {
-      case 'contrast':
-        return 'High Contrast';
-      case 'sepia-dark':
-        return 'Sepia';
-      case 'sepia-light':
-        return 'Sepia Light';
-      case 'solarized-dark':
-        return 'Solarized';
-      case 'valor-dark':
-        return 'Valor';
-      default:
-        return themeName.charAt(0).toUpperCase() + themeName.slice(1);
-    }
+  const getThemeLabel = (t: string) => {
+    const map: Record<string, string> = {
+      contrast: 'High Contrast', 'sepia-dark': 'Sepia', 'sepia-light': 'Sepia Light',
+      'solarized-dark': 'Solarized', 'valor-dark': 'Valor',
+    };
+    return map[t] || t.charAt(0).toUpperCase() + t.slice(1);
   };
 
   return (
     <>
-      {/* Navigation Bar — fixed at top, extends into safe area.
-           Starts transparent; transitions to a blurred glassmorphic bar on scroll
-           (mirrors the test_website Navbar pattern). */}
+      {/* Fixed navbar — transparent at top, glassmorphic on scroll */}
       <div
         style={{
           position: 'fixed',
@@ -189,13 +116,11 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
           left: 0,
           right: 0,
           zIndex: 1000,
-          background: scrolled
-            ? `${cssVars.background}CC`
-            : 'transparent',
+          background: scrolled ? `${cssVars.background}CC` : 'transparent',
           backdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'none',
           WebkitBackdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'none',
           borderBottom: scrolled ? `1px solid ${cssVars.border}` : '1px solid transparent',
-          transition: 'background 300ms ease-in-out, backdrop-filter 300ms ease-in-out, -webkit-backdrop-filter 300ms ease-in-out, border-color 300ms ease-in-out',
+          transition: 'background 300ms ease, backdrop-filter 300ms ease, -webkit-backdrop-filter 300ms ease, border-color 300ms ease',
         }}
       >
         <Navigation
@@ -217,59 +142,26 @@ export function PageWrapper({ children, activeTab }: PageWrapperProps) {
           appName="Mourn Design"
           onBrandClick={() => router.push('/')}
           tabs={tabs}
-          activeTab={displayTab}
+          activeTab={activeTab}
           onTabChange={handleTabChange}
           variant="ghost"
           color="primary"
           size="md"
           trailingContent={
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              color: cssVars.foregroundAccent,
-              fontSize: '14px',
-              fontWeight: '500'
-            }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: cssVars.foregroundAccent, fontSize: '14px', fontWeight: '500' }}>
               v1.2.4
             </div>
           }
         />
       </div>
 
-      {/* Main content — natural document flow, offset below fixed nav.
-           Overview page gets transparent background so fixed image shows through;
-           other pages get the theme background. */}
-      <main style={{
-        paddingTop: 'calc(var(--nav-height) + var(--safe-top))',
-        minHeight: '100vh',
-        backgroundColor: activeTab === 'overview' ? 'transparent' : 'var(--background)',
-      }}>
-        {activeTab === 'components' || activeTab === 'environment' ? (
-          // Full width for components and environment pages (have their own side menu layout)
-          <div style={{ width: '100%', paddingBottom: 'calc(2rem + var(--safe-bottom))' }}>
-            {children}
-          </div>
-        ) : activeTab === 'overview' ? (
-          // Overview page — no extra container, page manages its own layout
-          <div style={{ width: '100%' }}>
-            {children}
-          </div>
-        ) : (
-          // Container for other pages
-          <div className="container mx-auto px-6 py-8" style={{ paddingBottom: 'calc(2rem + var(--safe-bottom))' }}>
-            {children}
-          </div>
-        )}
+      {/* Main content — normal document flow */}
+      <main style={{ paddingTop: 'calc(var(--nav-height) + var(--safe-top))', minHeight: '100vh' }}>
+        {children}
       </main>
 
-      {/* Floating Theme Switcher */}
-      <div style={{
-        position: 'fixed',
-        right: '1.5rem',
-        bottom: 'calc(1.5rem + var(--safe-bottom))',
-        zIndex: 50,
-      }}>
+      {/* Theme switcher */}
+      <div style={{ position: 'fixed', right: '1.5rem', bottom: 'calc(1.5rem + var(--safe-bottom))', zIndex: 50 }}>
         <Button
           variant="solid"
           size="lg"
